@@ -23,7 +23,8 @@ on:
         default: release
 
 permissions:
-  contents: read
+  # write: publish the APK as a GitHub Release asset (a direct .apk link, no zip to unpack)
+  contents: write
 
 jobs:
   build:
@@ -75,6 +76,11 @@ jobs:
             echo "$DEBUG_KEYSTORE_BASE64" | base64 --decode > ~/.android/debug.keystore
           elif [ -f ~/.android/debug.keystore ]; then
             echo "Using cached debug keystore"
+          elif [ "$GITHUB_REF_NAME" != "${{ github.event.repository.default_branch }}" ]; then
+            # Caches are scoped per branch: a key generated here would only ever be used by this
+            # branch, and its APKs would not install over builds from the default branch.
+            echo "::error::No signing key available on this branch. Run this workflow on ${{ github.event.repository.default_branch }} first (or set DEBUG_KEYSTORE_BASE64)."
+            exit 1
           else
             echo "::warning::No DEBUG_KEYSTORE_BASE64 secret or cached key; generating a new one. Builds signed with it won't install over APKs signed with a different key."
             keytool -genkeypair -v \
@@ -120,7 +126,9 @@ jobs:
           echo "artifact=GameNative-modern-${type}-${branch}-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build APK
-        run: ./gradlew -Pkotlin.daemon.jvmargs=-Xmx3g ${{ steps.meta.outputs.task }}
+        # A strictly increasing versionCode (24000 + run number) so each build installs over the
+        # previous one as an ordinary update.
+        run: ./gradlew -Pkotlin.daemon.jvmargs=-Xmx3g -PversionCodeOverride=$((24000 + GITHUB_RUN_NUMBER)) ${{ steps.meta.outputs.task }}
 
       - name: Collect APK
         run: |
@@ -133,9 +141,46 @@ jobs:
           cp "$apk" "dist/${{ steps.meta.outputs.artifact }}.apk"
           ls -la dist
 
+      - name: Verify APK
+        env:
+          # The certificate of the installed build; override with the EXPECTED_SIGNER_SHA256 repo
+          # variable when the signing key is intentionally changed.
+          EXPECTED_SIGNER_SHA256: ${{ vars.EXPECTED_SIGNER_SHA256 || 'b36f992b21e522acd7de9bc63ab087711881c73b68e530d9a9b5e83fa4da451b' }}
+        run: |
+          BT="$ANDROID_HOME/build-tools/34.0.0"
+          [ -d "$BT" ] || BT="$ANDROID_SDK_ROOT/build-tools/34.0.0"
+          apk="$(ls dist/*.apk | head -n 1)"
+          # Signature + certificate fingerprint: an update only installs over an app signed with the
+          # same certificate, so compare this digest between builds when an install is refused.
+          "$BT/apksigner" verify --verbose --print-certs "$apk" | grep -E "Verifies|Verified using|Signer #1 certificate (DN|SHA-256)"
+          # Refuse to publish an APK that can't update the installed app (different signing key).
+          signer="$("$BT/apksigner" verify --print-certs "$apk" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')"
+          if [ -n "$EXPECTED_SIGNER_SHA256" ] && [ "$signer" != "$EXPECTED_SIGNER_SHA256" ]; then
+            echo "::error::APK is signed with $signer, expected $EXPECTED_SIGNER_SHA256: it would not install over the existing app."
+            exit 1
+          fi
+          "$BT/aapt" dump badging "$apk" | grep -E "^package:|^sdkVersion|^targetSdkVersion|^native-code"
+          echo "APK size: $(du -h "$apk" | cut -f1)"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.meta.outputs.artifact }}
           path: dist/*.apk
           if-no-files-found: error
+
+      - name: Publish direct download (GitHub Release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # One release per build type, replaced on every build, so the download link never changes:
+          # https://github.com/<repo>/releases/download/modern-<type>/GameNative-modern-<type>.apk
+          branch="${GITHUB_REF_NAME//\//-}"
+          tag="modern-${{ inputs.build_type }}"
+          stable="dist/GameNative-modern-${{ inputs.build_type }}.apk"
+          cp "$(ls dist/*.apk | head -n 1)" "$stable"
+          gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$tag" "$stable" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease \
+            --title "GameNative Modern ${{ inputs.build_type }} (${branch} @ ${GITHUB_SHA::7})" \
+            --notes "Built by the Build Modern APK workflow from ${branch} at ${GITHUB_SHA}."
+          echo "Direct download: https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$(basename "$stable")" | tee -a "$GITHUB_STEP_SUMMARY"

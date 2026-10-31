@@ -24,8 +24,29 @@ import com.winlator.container.Container
  *   "wmdecoder" Windows component calls mfplat.MFCreateLegacyMediaBufferOnMFMediaBuffer, which this
  *   Wine doesn't implement; the thread aborts and the game deadlocks on the title screen. wmdecoder=0
  *   restores Wine's builtin decoder.
+ * - Wine's DirectSound: the native dsound.dll installed by the "directsound" Windows component failed
+ *   in its DllMain on a fresh container ("DSOUND.dll" failed to initialize, c0000005), so BlackOps.exe
+ *   aborted before opening a window (black screen). directsound=0 uses Wine's builtin DirectSound.
+ * - Native XAudio: much of the game's audio is xWMA played through XAudio2. Wine's xaudio2_7 hands
+ *   xWMA to the WMA decoder (winegstreamer), which fails on every stream here (Proton's media
+ *   converter claims it; "Failed to create winegstreamer transform"), so sounds such as knife hits
+ *   are silent. Microsoft's xaudio2_7 decodes xWMA itself. The "xaudio" entry also makes the
+ *   component show up in the container's Win Components list, where it can be switched back.
  * - The PC version has no controller support, so a physical controller defaults to the bundled
  *   "Call of Duty (Console Layout)" profile, which maps the console layout onto keyboard/mouse.
+ * - No virtual gamepad inside Wine (EVSHIM_MAX_PLAYERS=0): the game still polls XInput, and loading
+ *   into a map its main thread hung while holding xinput1_3's controller lock ("controllers[0].crit
+ *   wait timed out ... blocked by" the game thread), freezing and then crashing the game. The profile
+ *   above drives the game through keyboard/mouse, so the game loses nothing without the pad.
+ * - No 3D for WineD3D in BlackOps.exe (AppDefaults renderer=no3d): the game renders through DXVK's
+ *   d3d9, but it also opens DirectDraw, which brings up WineD3D's OpenGL renderer (GL over zink)
+ *   inside the 32-bit process, and while loading a map it keeps creating new GL contexts ("threaded
+ *   context created" / wined3d_cs_create). Loading Ascension froze the game every time and the app
+ *   stopped responding. no3d keeps DirectDraw working for its 2D/caps queries without any GL.
+ * - No Steam overlay in the game (gameoverlayrenderer disabled for the exe): it is injected into the
+ *   32-bit game, hooks every graphics API by creating throwaway devices (the likely source of the
+ *   DirectDraw/GL contexts above), and its UI process (gameoverlayui64) crashed on every run.
+ *   It can't be opened from a touch screen anyway.
  */
 val STEAM_Fix_42700: KeyedGameFix = KeyedCompositeGameFix(
     gameSource = GameSource.STEAM,
@@ -33,10 +54,14 @@ val STEAM_Fix_42700: KeyedGameFix = KeyedCompositeGameFix(
     fixes = listOf(
         SteamClientRequiredFix(),
         DxWrapperDefaultFix("dxvk", mapOf("maxDeviceMemory" to "1024")),
-        WineEnvVarFix(mapOf("WINE_LARGE_ADDRESS_AWARE" to "1")),
+        WineEnvVarFix(mapOf("WINE_LARGE_ADDRESS_AWARE" to "1", "EVSHIM_MAX_PLAYERS" to "0")),
         ContainerSettingDefaultFix.displayServer(Container.DISPLAY_SERVER_X11),
         ContainerSettingDefaultFix.audioDriver("alsa"),
         ContainerSettingDefaultFix.winComponent("wmdecoder", "0"),
+        ContainerSettingDefaultFix.winComponent("directsound", "0"),
+        ContainerSettingDefaultFix.winComponent("xaudio", "1"),
+        WineAppDefaultsFix("BlackOps.exe", "Direct3D", mapOf("renderer" to "no3d")),
+        WineAppDefaultsFix("BlackOps.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
         ControlProfileDefaultFix("Call of Duty (Console Layout)"),
     ),
 )
