@@ -614,23 +614,53 @@ public class InputControlsView extends View {
         return (int)Mathf.roundTo(getHeight(), snappingSize);
     }
 
+    // Stick-to-mouse movement: small steps at a high rate, each sized by the time that really
+    // passed. It used to step once per 16 ms (~62.5 Hz, fixed-delay): against a game rendering at
+    // ~60 fps most frames got one step, some two and some none, so turning at a steady stick angle
+    // stuttered, and a late tick moved as far as an on-time one. At 250 Hz every frame gets 4-5
+    // steps. Speed is unchanged: the same distance per 1/60 s as before.
+    private static final long MOUSE_MOVE_PERIOD_MS = 4;
+    private static final float MOUSE_MOVE_REFERENCE_MS = 1000f / 60f;
+    // A stalled timer thread must not turn into one large jump
+    private static final float MOUSE_MOVE_MAX_STEP_MS = 50f;
+    private long lastMouseMoveNanos = 0;
+
     private synchronized void createMouseMoveTimer() {
         if (profile != null && mouseMoveTimer == null) {
-            mouseMoveTimer = new Timer();
-            mouseMoveTimer.schedule(new TimerTask() {
+            synchronized (mouseMoveStateLock) {
+                lastMouseMoveNanos = 0;
+            }
+            mouseMoveTimer = new Timer("StickMouse", true);
+            mouseMoveTimer.scheduleAtFixedRate(new TimerTask() {
+                private boolean priorityRaised = false;
+
                 @Override
                 public void run() {
+                    if (!priorityRaised) {
+                        priorityRaised = true;
+                        try {
+                            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DISPLAY);
+                        }
+                        catch (Exception ignored) {
+                        }
+                    }
+                    long now = System.nanoTime();
                     synchronized (mouseMoveStateLock) {
                         ControlsProfile currentProfile = profile;
                         if (currentProfile == null) return;
+
+                        float elapsedMs = lastMouseMoveNanos == 0
+                                ? MOUSE_MOVE_PERIOD_MS
+                                : Math.min((now - lastMouseMoveNanos) / 1_000_000f, MOUSE_MOVE_MAX_STEP_MS);
+                        lastMouseMoveNanos = now;
 
                         if (mouseMoveOffset.x == 0f) mouseMoveRemainder.x = 0f;
                         if (mouseMoveOffset.y == 0f) mouseMoveRemainder.y = 0f;
                         if (mouseMoveOffset.x == 0f && mouseMoveOffset.y == 0f) return;
 
-                        float cursorSpeed = currentProfile.getCursorSpeed();
-                        float scaledX = mouseMoveOffset.x * 10 * cursorSpeed + mouseMoveRemainder.x;
-                        float scaledY = mouseMoveOffset.y * 10 * cursorSpeed + mouseMoveRemainder.y;
+                        float step = 10 * currentProfile.getCursorSpeed() * (elapsedMs / MOUSE_MOVE_REFERENCE_MS);
+                        float scaledX = mouseMoveOffset.x * step + mouseMoveRemainder.x;
+                        float scaledY = mouseMoveOffset.y * step + mouseMoveRemainder.y;
                         int deltaX = (int)scaledX;
                         int deltaY = (int)scaledY;
                         mouseMoveRemainder.set(scaledX - deltaX, scaledY - deltaY);
@@ -639,7 +669,7 @@ public class InputControlsView extends View {
                         }
                     }
                 }
-            }, 0, 1000 / 60);
+            }, 0, MOUSE_MOVE_PERIOD_MS);
         }
     }
 
