@@ -620,15 +620,17 @@ public class InputControlsView extends View {
     // stuttered, and a late tick moved as far as an on-time one. At 250 Hz every frame gets 4-5
     // steps. Speed is unchanged: the same distance per 1/60 s as before.
     private static final long MOUSE_MOVE_PERIOD_MS = 4;
-    private static final float MOUSE_MOVE_REFERENCE_MS = 1000f / 60f;
+    private static final long MOUSE_MOVE_REFERENCE_NANOS = 1_000_000_000L / 60;
     // A stalled timer thread must not turn into one large jump
-    private static final float MOUSE_MOVE_MAX_STEP_MS = 50f;
+    private static final long MOUSE_MOVE_MAX_STEP_NANOS = 50_000_000L;
     private long lastMouseMoveNanos = 0;
+    // Monotonic clock for the steps; tests substitute their own
+    java.util.function.LongSupplier mouseMoveClock = System::nanoTime;
 
     private synchronized void createMouseMoveTimer() {
         if (profile != null && mouseMoveTimer == null) {
             synchronized (mouseMoveStateLock) {
-                lastMouseMoveNanos = 0;
+                lastMouseMoveNanos = mouseMoveClock.getAsLong();
             }
             mouseMoveTimer = new Timer("StickMouse", true);
             mouseMoveTimer.scheduleAtFixedRate(new TimerTask() {
@@ -644,21 +646,20 @@ public class InputControlsView extends View {
                         catch (Exception ignored) {
                         }
                     }
-                    long now = System.nanoTime();
+                    long now = mouseMoveClock.getAsLong();
                     synchronized (mouseMoveStateLock) {
                         ControlsProfile currentProfile = profile;
                         if (currentProfile == null) return;
 
-                        float elapsedMs = lastMouseMoveNanos == 0
-                                ? MOUSE_MOVE_PERIOD_MS
-                                : Math.min((now - lastMouseMoveNanos) / 1_000_000f, MOUSE_MOVE_MAX_STEP_MS);
+                        long elapsedNanos = Math.max(0L, Math.min(now - lastMouseMoveNanos, MOUSE_MOVE_MAX_STEP_NANOS));
                         lastMouseMoveNanos = now;
 
                         if (mouseMoveOffset.x == 0f) mouseMoveRemainder.x = 0f;
                         if (mouseMoveOffset.y == 0f) mouseMoveRemainder.y = 0f;
                         if (mouseMoveOffset.x == 0f && mouseMoveOffset.y == 0f) return;
 
-                        float step = 10 * currentProfile.getCursorSpeed() * (elapsedMs / MOUSE_MOVE_REFERENCE_MS);
+                        float step = 10 * currentProfile.getCursorSpeed()
+                                * (float) ((double) elapsedNanos / MOUSE_MOVE_REFERENCE_NANOS);
                         float scaledX = mouseMoveOffset.x * step + mouseMoveRemainder.x;
                         float scaledY = mouseMoveOffset.y * step + mouseMoveRemainder.y;
                         int deltaX = (int)scaledX;
