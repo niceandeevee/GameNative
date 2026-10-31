@@ -61,7 +61,6 @@ import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.utils.BestConfigService
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.DeviceGameStatsCache
-import app.gamenative.utils.SessionReport
 import app.gamenative.utils.DiagnosticsLog
 import app.gamenative.utils.GameCompatibilityCache
 import app.gamenative.utils.GameCompatibilityService
@@ -516,19 +515,6 @@ abstract class BaseAppScreen {
         return AppMenuOption(
             AppOptionMenuType.PlayWithDiagnostics,
             onClick = { onPlayWithDiagnostics() },
-        )
-    }
-
-    @Composable
-    protected open fun getAiDebugRunOption(
-        context: Context,
-        libraryItem: LibraryItem,
-        onAiDebugRun: () -> Unit,
-    ): AppMenuOption? {
-        if (PrefManager.hideAiFeatures) return null
-        return AppMenuOption(
-            AppOptionMenuType.AiDebugRun,
-            onClick = { onAiDebugRun() },
         )
     }
 
@@ -1024,7 +1010,6 @@ abstract class BaseAppScreen {
                     parsedConfig,
                 )
                 ContainerUtils.applyToContainer(context, container, updatedData)
-                SessionReport.markConfigApplied(container, "known")
                 SnackbarManager.show(context.getString(R.string.best_config_applied_successfully))
             } else {
                 SnackbarManager.show(context.getString(R.string.best_config_known_config_invalid))
@@ -1113,7 +1098,6 @@ abstract class BaseAppScreen {
                                     val currentData = ContainerUtils.toContainerData(container)
                                     val updatedData = ContainerUtils.applyBestConfigMapToContainerData(currentData, forced)
                                     ContainerUtils.applyToContainer(context, container, updatedData)
-                                    SessionReport.markConfigApplied(container, "imported")
                                     SnackbarManager.show(context.getString(R.string.best_config_applied_with_defaults))
                                 } else {
                                     SnackbarManager.show(context.getString(R.string.best_config_known_config_invalid))
@@ -1139,7 +1123,6 @@ abstract class BaseAppScreen {
                     val currentData = ContainerUtils.toContainerData(container)
                     val updatedData = ContainerUtils.applyBestConfigMapToContainerData(currentData, parsedConfig)
                     ContainerUtils.applyToContainer(context, container, updatedData)
-                    SessionReport.markConfigApplied(container, "imported")
                 }
                 SnackbarManager.show(context.getString(R.string.best_config_applied_successfully))
                 true
@@ -1204,7 +1187,6 @@ abstract class BaseAppScreen {
         onClickPlay: (Boolean) -> Unit,
         onTestGraphics: () -> Unit,
         onPlayWithDiagnostics: () -> Unit,
-        onAiDebugRun: () -> Unit,
         exportFrontendLauncher: ActivityResultLauncher<String>,
     ): List<AppMenuOption> {
         val isInstalled = isInstalled(context, libraryItem)
@@ -1218,7 +1200,6 @@ abstract class BaseAppScreen {
             getRunContainerOption(context, libraryItem, onClickPlay)?.let { menuOptions.add(it) }
             getTestGraphicsOption(context, libraryItem, onTestGraphics)?.let { menuOptions.add(it) }
             getPlayWithDiagnosticsOption(context, libraryItem, onPlayWithDiagnostics)?.let { menuOptions.add(it) }
-            getAiDebugRunOption(context, libraryItem, onAiDebugRun)?.let { menuOptions.add(it) }
             getShareDiagnosticsOption(context, libraryItem)?.let { menuOptions.add(it) }
             getResetContainerOption(context, libraryItem)?.let { menuOptions.add(it) }
             getCreateShortcutOption(context, libraryItem)?.let { menuOptions.add(it) }
@@ -1278,7 +1259,6 @@ abstract class BaseAppScreen {
         onClickPlay: (Boolean) -> Unit,
         onTestGraphics: () -> Unit,
         onPlayWithDiagnostics: () -> Unit,
-        onAiDebugRun: () -> Unit,
         onBack: () -> Unit,
     ) {
         val context = LocalContext.current
@@ -1778,7 +1758,6 @@ abstract class BaseAppScreen {
             onClickPlay,
             onTestGraphics,
             onPlayWithDiagnostics,
-            onAiDebugRun,
             exportFrontendLauncher,
         )
 

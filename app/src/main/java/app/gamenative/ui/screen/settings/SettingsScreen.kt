@@ -133,14 +133,6 @@ private fun SettingsScreenContent(
                     SettingsGroupEmulation()
                 }
 
-                SettingsSection(
-                    title = stringResource(R.string.gamenative_account_title),
-                    icon = Icons.Default.AccountCircle,
-                    iconTint = PluviaTheme.colors.accentPurple,
-                ) {
-                    SettingsGroupGameNativeAccount()
-                }
-
                 // Game launcher accounts section
                 SettingsSection(
                     title = stringResource(R.string.settings_accounts_title),

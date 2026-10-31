@@ -20,7 +20,6 @@ import app.gamenative.sync.FrontendSyncManager
 import app.gamenative.ui.screen.xserver.RadialMenuCoordinator
 import app.gamenative.utils.AppExitRecorder
 import app.gamenative.utils.ContainerMigrator
-import app.gamenative.utils.DebugReportUtils
 import app.gamenative.utils.IntentLaunchManager
 import app.gamenative.utils.PlayIntegrity
 import app.gamenative.utils.downloader.ContainerFilesDownloader
@@ -29,7 +28,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import android.app.Application
 
-import app.gamenative.billing.PlayBilling
 import com.winlator.container.Container
 import com.winlator.inputcontrols.InputControlsManager
 import com.winlator.widget.InputControlsView
@@ -78,20 +76,17 @@ class PluviaApp : Application() {
         // Init our custom crash handler.
         CrashHandler.initialize(this)
 
-        // Android's record of why the last process died, then any debug run it never finished.
-        DebugReportUtils.recovery = appScope.async {
+        // Android's record of why the last process died (exported with Settings > Save logcat)
+        appScope.launch {
             try {
                 AppExitRecorder.record(applicationContext)
-                DebugReportUtils.recoverInterruptedRuns(applicationContext)
             } catch (e: Throwable) {
-                Timber.w(e, "[PluviaApp]: exit record / run recovery failed")
-                emptyList()
+                Timber.w(e, "[PluviaApp]: exit record failed")
             }
         }
 
         // Init our datastore preferences.
         PrefManager.init(this)
-        PlayBilling.init(this)
         NexusAuthManager.initialize(this)
         FrontendSyncManager.init(this)
 

@@ -45,7 +45,6 @@ import app.gamenative.ui.screen.library.appscreen.BaseAppScreen
 import app.gamenative.service.SteamService
 import app.gamenative.ui.PluviaMain
 import app.gamenative.ui.enums.Orientation
-import app.gamenative.ui.screen.support.SupportSession
 import app.gamenative.ui.util.LocalSnackbarHostController
 import app.gamenative.ui.util.SnackbarHostController
 import app.gamenative.utils.AnimatedPngDecoder
@@ -93,8 +92,6 @@ class MainActivity : ComponentActivity() {
                 Build.MANUFACTURER.equals("Meta", true) ||
                 Build.BRAND.equals("oculus", true)
 
-        const val ACTION_OPEN_SUPPORT = "app.gamenative.OPEN_SUPPORT_CONVERSATION"
-        const val EXTRA_SUPPORT_CONVERSATION = "support_conversation_id"
 
         // Store pending launch request to be processed after UI is ready
         @Volatile
@@ -344,32 +341,6 @@ class MainActivity : ComponentActivity() {
         // recents re-delivers the same intent with this flag — don't re-launch
         if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) {
             Timber.d("[IntentLaunch]: Ignoring intent re-delivered from recents")
-            return
-        }
-        if (intent.action == Intent.ACTION_VIEW &&
-            intent.data?.scheme.equals("gamenative", ignoreCase = true) &&
-            intent.data?.host.equals("discord-linked", ignoreCase = true)
-        ) {
-            val token = intent.data?.getQueryParameter("token").orEmpty()
-            val state = intent.data?.getQueryParameter("state").orEmpty()
-            // Do not retain the token-bearing link as the Activity's launch intent.
-            setIntent(Intent(this, MainActivity::class.java).setAction(Intent.ACTION_MAIN))
-            val expectedNonce = PrefManager.discordOauthNonce
-            if (token.isNotEmpty() && expectedNonce.isNotEmpty() && state == expectedNonce) {
-                PrefManager.discordOauthNonce = ""
-                PrefManager.discordRelayToken = token
-                PrefManager.discordLinkedName = intent.data?.getQueryParameter("name").orEmpty()
-                PrefManager.discordMergePending = true
-                SnackbarManager.show(getString(R.string.debug_report_discord_linked))
-            } else if (token.isNotEmpty()) {
-                Timber.w("[IntentLaunch]: Rejecting discord-linked token with mismatched state")
-            }
-            return
-        }
-        if (intent.action == ACTION_OPEN_SUPPORT) {
-            val conversationId = intent.getStringExtra(EXTRA_SUPPORT_CONVERSATION)
-            setIntent(Intent(this, MainActivity::class.java).setAction(Intent.ACTION_MAIN))
-            if (!conversationId.isNullOrEmpty()) SupportSession.pendingConversationId.value = conversationId
             return
         }
         if (intent.action == Intent.ACTION_VIEW && intent.data?.scheme.equals("nxm", ignoreCase = true)) {

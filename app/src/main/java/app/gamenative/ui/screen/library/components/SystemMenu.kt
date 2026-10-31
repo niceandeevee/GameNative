@@ -87,9 +87,7 @@ import app.gamenative.data.SteamFriend
 import app.gamenative.events.AndroidEvent
 import app.gamenative.events.SteamEvent
 import app.gamenative.service.SteamService
-import app.gamenative.ui.component.dialog.SupportersDialog
 import app.gamenative.ui.screen.PluviaScreen
-import app.gamenative.ui.screen.support.SupportReplyWatcher
 import app.gamenative.ui.theme.PluviaTheme
 import app.gamenative.ui.util.SteamIconImage
 import app.gamenative.ui.util.adaptivePanelWidth
@@ -273,7 +271,6 @@ fun SystemMenu(
 
     var persona by remember { mutableStateOf<SteamFriend?>(null) }
     var selectedStatus by remember(persona) { mutableStateOf(persona?.state ?: EPersonaState.Online) }
-    var showSupporters by remember { mutableStateOf(false) }
     var showStatusPicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -311,7 +308,6 @@ fun SystemMenu(
         onDismiss()
     }
 
-    SupportersDialog(visible = showSupporters, onDismiss = { showSupporters = false })
 
     val colorOnline = PluviaTheme.colors.statusInstalled
     val colorAway = PluviaTheme.colors.statusAway
@@ -618,16 +614,6 @@ fun SystemMenu(
                         )
 
                         SystemMenuItem(
-                            text = stringResource(R.string.support_title),
-                            icon = Icons.Default.SupportAgent,
-                            onClick = {
-                                onNavigateRoute(PluviaScreen.Support.route)
-                                onDismiss()
-                            },
-                            badge = SupportReplyWatcher.unread.value.isNotEmpty(),
-                        )
-
-                        SystemMenuItem(
                             text = stringResource(R.string.app_downloads),
                             icon = Icons.Default.Download,
                             onClick = {
@@ -643,12 +629,6 @@ fun SystemMenu(
                             onClick = {
                                 uriHandler.openUri("https://discord.gg/2hKv4VfZfE")
                             },
-                        )
-
-                        SystemMenuItem(
-                            text = stringResource(R.string.hall_of_fame),
-                            icon = Icons.AutoMirrored.Filled.StarHalf,
-                            onClick = { showSupporters = true },
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))

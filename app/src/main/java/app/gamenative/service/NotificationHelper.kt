@@ -35,48 +35,8 @@ class NotificationHelper @Inject constructor(@ApplicationContext appContext: Con
         private const val NOTIFICATION_ID_SUMMARY = 100
 
         const val ACTION_EXIT = "com.oxgames.pluvia.EXIT"
-        const val ACTION_SUPPORT_STOP = "app.gamenative.SUPPORT_WAIT_STOP"
-
-        const val CHANNEL_SUPPORT_WAIT = "support_wait"
-        const val CHANNEL_SUPPORT_REPLIES = "support_replies_v2"
-        private const val CHANNEL_SUPPORT_REPLIES_LEGACY = "support_replies"
-        const val NOTIFICATION_ID_SUPPORT_WAIT = 61
-        const val NOTIFICATION_ID_SUPPORT_REPLY = 62
 
         private const val NO_PROGRESS = -2
-
-        fun createSupportChannels(context: Context) {
-            val localized = LocaleHelper.applyLanguage(context, PrefManager.appLanguage)
-            val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            val wait = NotificationChannel(
-                CHANNEL_SUPPORT_WAIT,
-                localized.getString(R.string.support_wait_channel_name),
-                NotificationManager.IMPORTANCE_LOW,
-            ).apply {
-                description = localized.getString(R.string.support_wait_channel_description)
-                setShowBadge(false)
-            }
-            val replies = NotificationChannel(
-                CHANNEL_SUPPORT_REPLIES,
-                localized.getString(R.string.support_replies_channel_name),
-                NotificationManager.IMPORTANCE_HIGH,
-            ).apply {
-                description = localized.getString(R.string.support_replies_channel_description)
-                setSound(
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-                    AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .build(),
-                )
-                enableVibration(true)
-                vibrationPattern = longArrayOf(0, 250, 150, 250)
-                enableLights(true)
-                setShowBadge(true)
-            }
-            manager.deleteNotificationChannel(CHANNEL_SUPPORT_REPLIES_LEGACY)
-            manager.createNotificationChannels(listOf(wait, replies))
-        }
     }
 
     private val notificationManager: NotificationManager =

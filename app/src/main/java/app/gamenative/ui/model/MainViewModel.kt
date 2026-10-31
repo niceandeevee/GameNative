@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import app.gamenative.BuildConfig
 import app.gamenative.PluviaApp
 import app.gamenative.PrefManager
-import app.gamenative.billing.Membership
 import app.gamenative.data.GameProcessInfo
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryPlayHistory
@@ -27,10 +26,7 @@ import app.gamenative.utils.CustomGameScanner
 import app.gamenative.ui.data.MainState
 import app.gamenative.ui.enums.ConnectionState
 import app.gamenative.ui.screen.PluviaScreen
-import app.gamenative.ui.screen.support.SupportAppliedRun
 import app.gamenative.utils.ContainerUtils
-import app.gamenative.utils.DebugReportUtils
-import app.gamenative.utils.DebugRunParamsHolder
 import app.gamenative.utils.IntentLaunchManager
 import app.gamenative.utils.SteamUtils
 import app.gamenative.utils.UpdateInfo
@@ -71,13 +67,7 @@ class MainViewModel @Inject constructor(
 
     companion object {
         private const val KEY_CURRENT_SCREEN_ROUTE = "current_screen_route"
-        private const val MIN_WARM_PITCH_SESSION_MS = 7 * 60 * 1000L
-        private const val WARM_PITCH_COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000L
-        private const val SHORT_SESSION_MS = 90 * 1000L
-        private const val AI_DEBUG_OFFER_INTERVAL_MS = 3 * 24 * 60 * 60 * 1000L
         private const val BOOT_GAME_SEEN_GRACE_MS = 15_000L
-        private const val LOW_RATING_MAX = 3
-        private val FAILURE_TAGS = setOf("does_not_open", "no_graphics", "directx_error")
 
         var gamePlayedThisSession = false
             private set
@@ -86,30 +76,6 @@ class MainViewModel @Inject constructor(
     private var gameSessionStartTime = 0L
     private var bootAwaitingGameWindow = false
     private var gameWindowSeen = false
-    private var pendingWarmPitch: Pair<String, Boolean>? = null
-
-    private fun warmPitchAllowed(): Boolean {
-        if (!Membership.canPitch()) return false
-        return System.currentTimeMillis() - PrefManager.lastWarmPitchTime >= WARM_PITCH_COOLDOWN_MS
-    }
-
-    fun onGameFeedbackResolved(context: Context, rating: Int?, tags: Set<String> = emptySet()) {
-        val (appId, sessionLongEnough) = pendingWarmPitch ?: return
-        pendingWarmPitch = null
-        if (rating != null && (rating <= LOW_RATING_MAX || tags.any { it in FAILURE_TAGS })) {
-            viewModelScope.launch { offerAiDebugRun(context, appId, "low_rating") }
-            return
-        }
-        val trigger = when {
-            rating == 5 -> "five_star"
-            rating == null && sessionLongEnough -> "long_session"
-            else -> return
-        }
-        if (!warmPitchAllowed()) return
-        viewModelScope.launch {
-            _uiEvent.send(MainUiEvent.ShowMembershipPitch(appId, trigger))
-        }
-    }
 
     sealed class MainUiEvent {
         data object OnBackPressed : MainUiEvent()
@@ -120,9 +86,6 @@ class MainViewModel @Inject constructor(
         data class SteamDisconnected(val isTerminal: Boolean) : MainUiEvent()
         data object ShowDiscordSupportDialog : MainUiEvent()
         data class ShowGameFeedbackDialog(val appId: String) : MainUiEvent()
-        data class ShowMembershipPitch(val appId: String, val trigger: String) : MainUiEvent()
-        data class ShowDebugReportDialog(val appId: String) : MainUiEvent()
-        data class ShowAiDebugOffer(val appId: String, val trigger: String) : MainUiEvent()
         data object ServiceReady : MainUiEvent()
     }
 
@@ -131,10 +94,6 @@ class MainViewModel @Inject constructor(
 
     private val _uiEvent = Channel<MainUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-
-    private val pendingDebugReports = mutableMapOf<String, Deferred<File?>>()
-
-    fun pendingDebugReport(appId: String): Deferred<File?>? = pendingDebugReports[appId]
 
     private val _offline = MutableStateFlow(false)
     val isOffline: StateFlow<Boolean> get() = _offline
@@ -291,7 +250,6 @@ class MainViewModel @Inject constructor(
             PluviaScreen.Home.route -> PluviaScreen.Home
             PluviaScreen.XServer.route -> PluviaScreen.XServer
             PluviaScreen.Settings.route -> PluviaScreen.Settings
-            PluviaScreen.Support.route -> PluviaScreen.Support
             PluviaScreen.Chat.route -> PluviaScreen.Chat
             else -> null
         }
@@ -310,16 +268,6 @@ class MainViewModel @Inject constructor(
                 currentScreen = restoredScreen,
                 connectionState = initialConnectionState,
             )
-        }
-
-        // A debug run the previous process never finished: offer its recovered report once.
-        viewModelScope.launch {
-            DebugReportUtils.recovery?.let { recovered ->
-                recovered.await()
-                if (DebugReportUtils.recovery === recovered) DebugReportUtils.recovery = null
-            }
-            withContext(Dispatchers.IO) { DebugReportUtils.takePendingOffer(appContext) }
-                ?.let { _uiEvent.send(MainUiEvent.ShowDebugReportDialog(it)) }
         }
 
         // Register event handlers
@@ -472,7 +420,6 @@ class MainViewModel @Inject constructor(
             currentScreen.startsWith(PluviaScreen.Home.route) -> PluviaScreen.Home
             currentScreen == PluviaScreen.XServer.route -> PluviaScreen.XServer
             currentScreen == PluviaScreen.Settings.route -> PluviaScreen.Settings
-            currentScreen == PluviaScreen.Support.route -> PluviaScreen.Support
             currentScreen.startsWith("chat") -> PluviaScreen.Chat
             else -> PluviaScreen.LoginUser
         }
@@ -544,10 +491,6 @@ class MainViewModel @Inject constructor(
         _state.update { it.copy(diagnostics = value) }
     }
 
-    fun setDebugRun(value: Boolean) {
-        _state.update { it.copy(debugRun = value) }
-    }
-
     fun launchApp(context: Context, appId: String) {
         launchAppWithArgs(context, appId, null)
     }
@@ -559,12 +502,6 @@ class MainViewModel @Inject constructor(
         PrefManager.hasAttemptedGameLaunch = true
         // Show booting splash before launching the app
         viewModelScope.launch {
-            _state.value.takeIf { !it.debugRun && !it.bootToContainer && !it.testGraphics && !it.diagnostics }?.let {
-                withContext(Dispatchers.IO) { SupportAppliedRun.pending(context, appId) }?.let { pending ->
-                    DebugRunParamsHolder.set(appId, pending.run)
-                    setDebugRun(true)
-                }
-            }
             viewModelScope.launch(Dispatchers.IO) {
                 libraryPlayHistoryDao.upsert(
                     LibraryPlayHistory(
@@ -672,15 +609,6 @@ class MainViewModel @Inject constructor(
                 ActiveGameRegistry.clearIfMatches(gameId)
                 SteamService.notifyRunningProcesses()
 
-                val debugRun = _state.value.debugRun
-                if (debugRun) {
-                    setDebugRun(false)
-                    pendingDebugReports[appId] = viewModelScope.async {
-                        DebugReportUtils.createPendingReport(context, appId)
-                    }
-                    _uiEvent.send(MainUiEvent.ShowDebugReportDialog(appId))
-                }
-
                 handleExitCloudSync(context, appId, gameId)
                 closeSync.complete()
 
@@ -692,24 +620,8 @@ class MainViewModel @Inject constructor(
 
                 // After app closes, check if we need to show the feedback dialog
                 // Show feedback if: first time running this game OR config was changed
-                val sessionLengthMs = if (gameSessionStartTime > 0) {
-                    System.currentTimeMillis() - gameSessionStartTime
-                } else {
-                    0L
-                }
-                val sessionLongEnough = sessionLengthMs >= MIN_WARM_PITCH_SESSION_MS
                 gameSessionStartTime = 0L
 
-                if (debugRun) {
-                    return@launch
-                }
-
-                val aiOfferRequested = maybeOfferAiDebugRun(context, appId, sessionLengthMs)
-                if (aiOfferRequested) {
-                    return@launch
-                }
-
-                var feedbackRequested = false
                 try {
                     // Show feedback for all stores except custom games.
                     val feedbackGameSource = ContainerUtils.extractGameSourceFromContainerId(appId)
@@ -721,7 +633,6 @@ class MainViewModel @Inject constructor(
                         if (!shown) {
                             container.putExtra("discord_support_prompt_shown", "true")
                             container.saveData()
-                            feedbackRequested = true
                             _uiEvent.send(MainUiEvent.ShowGameFeedbackDialog(appId))
                         }
 
@@ -731,7 +642,6 @@ class MainViewModel @Inject constructor(
                             container.putExtra("config_changed", "false")
                             container.saveData()
                             // Show the feedback dialog
-                            feedbackRequested = true
                             _uiEvent.send(MainUiEvent.ShowGameFeedbackDialog(appId))
                         }
                     } else {
@@ -741,11 +651,6 @@ class MainViewModel @Inject constructor(
                     Timber.w(e, "Failed to check/update feedback dialog state for $appId")
                 }
 
-                if (feedbackRequested) {
-                    pendingWarmPitch = appId to sessionLongEnough
-                } else if (sessionLongEnough && warmPitchAllowed()) {
-                    _uiEvent.send(MainUiEvent.ShowMembershipPitch(appId, "long_session"))
-                }
             } finally {
                 onComplete?.invoke()
             }
@@ -753,33 +658,6 @@ class MainViewModel @Inject constructor(
             // backstop: a launch cancelled before it runs, or one that throws before the sync, must not
             // leave the delete waiting forever.
             closeSync.complete()
-        }
-    }
-
-    private suspend fun maybeOfferAiDebugRun(context: Context, appId: String, sessionLengthMs: Long): Boolean {
-        val trigger = when {
-            !gameWindowSeen -> "no_window"
-            sessionLengthMs in 1 until SHORT_SESSION_MS -> "short_session"
-            else -> return false
-        }
-        return offerAiDebugRun(context, appId, trigger)
-    }
-
-    private suspend fun offerAiDebugRun(context: Context, appId: String, trigger: String): Boolean {
-        if (PrefManager.hideAiFeatures) return false
-        return try {
-            val container = ContainerUtils.getContainer(context, appId)
-            val now = System.currentTimeMillis()
-            val lastShownForGame = container.getExtra("ai_debug_offer_last_shown", "0").toLongOrNull() ?: 0L
-            if (now - lastShownForGame < AI_DEBUG_OFFER_INTERVAL_MS) return false
-
-            container.putExtra("ai_debug_offer_last_shown", now.toString())
-            container.saveData()
-            _uiEvent.send(MainUiEvent.ShowAiDebugOffer(appId, trigger))
-            true
-        } catch (e: Exception) {
-            Timber.w(e, "Failed to evaluate AI debug offer for $appId")
-            false
         }
     }
 

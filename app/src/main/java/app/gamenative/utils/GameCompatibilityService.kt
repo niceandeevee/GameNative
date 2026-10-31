@@ -54,18 +54,6 @@ object GameCompatibilityService {
             -> GameCompatibilityStatus.UNKNOWN
         }
 
-    fun badgeProperties(gameName: String): Map<String, Any> {
-        val response = GameCompatibilityCache.getCached(gameName) ?: return emptyMap()
-        return badgeProperties(response)
-    }
-
-    internal fun badgeProperties(response: GameCompatibilityResponse): Map<String, Any> = buildMap {
-        val summary = CommunityCompatibilityClassifier.fromCompatibilityResponse(response)
-        put("compat_badge", summary.verdict.name)
-        response.state?.let { put("compat_server_state", it) }
-        put("compat_evidence_tier", summary.evidenceTier.name)
-    }
-
     /** Returns valid requested entries; missing/old count-only entries remain retryable. */
     suspend fun fetchCompatibility(
         gameNames: List<String>,

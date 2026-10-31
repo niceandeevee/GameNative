@@ -142,18 +142,12 @@ import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.ExtractionFingerprint
 import app.gamenative.utils.downloader.CoreDriverDownloader
 import app.gamenative.utils.CustomGameScanner
-import app.gamenative.utils.DebugReportUtils
-import app.gamenative.utils.DebugRunParams
-import app.gamenative.utils.DebugRunParamsHolder
 import app.gamenative.utils.ExecutableSelectionUtils
 import app.gamenative.utils.LsfgQuickMenuHelper
 import app.gamenative.utils.LsfgVkManager
 import app.gamenative.utils.ManifestComponentHelper
 import app.gamenative.utils.ModDllOverrides
-import app.gamenative.utils.WindowActivity
-import app.gamenative.utils.PerfSampler
 import app.gamenative.utils.GameCompatibilityService
-import app.gamenative.utils.SessionReport
 import app.gamenative.utils.launchdependencies.BionicSteamAssetsDependency
 import app.gamenative.utils.downloader.DXWrapperDownloader
 import app.gamenative.utils.downloader.GraphicsDriverDownloader
@@ -298,7 +292,6 @@ private val isExiting = AtomicBoolean(false)
 
 // Bumped per launch so a previous session's leftover processes can't end the current one.
 private val guestSession = AtomicInteger(0)
-private val windowActivity = WindowActivity()
 
 private const val EXIT_PROCESS_TIMEOUT_MS = 30_000L
 private const val EXIT_PROCESS_POLL_INTERVAL_MS = 1_000L
@@ -507,7 +500,6 @@ fun XServerScreen(
     bootToContainer: Boolean,
     testGraphics: Boolean = false,
     diagnostics: Boolean = false,
-    debugRun: Boolean = false,
     isOffline: Boolean = false,
     registerBackAction: ( ( ) -> Unit ) -> Unit,
     navigateBack: () -> Unit,
@@ -542,7 +534,6 @@ fun XServerScreen(
 
     LaunchedEffect(appId) {
         isExiting.set(false)
-        runCatching { windowActivity.start(context) }
     }
 
     val container = remember(appId) {
@@ -2220,7 +2211,6 @@ fun XServerScreen(
                                     )
                                 }
                                 frameRatingWindowId = -1
-                                runCatching { windowActivity.onTrackedWindow(null, rating.totalFrames, rating.activeMs) }
                                 (context as? Activity)?.runOnUiThread {
                                     rating.visibility = View.GONE
                                 }
@@ -2228,7 +2218,6 @@ fun XServerScreen(
                             }
 
                             frameRatingWindowId = nextId
-                            runCatching { windowActivity.onTrackedWindow(topmost, rating.totalFrames, rating.activeMs) }
                             Timber.i(
                                 "FrameRating tracking attached (%s) to topmost app window %s",
                                 reason,
@@ -2247,7 +2236,6 @@ fun XServerScreen(
                             }
                             if (!getxServer().isFlatPresentationEnabled) return
                             if (window.isApplicationWindow()) {
-                                runCatching { windowActivity.onWindowContent(window) }
                             }
                             if (frameRatingWindowId == -1 && window.isApplicationWindow()) {
                                 refreshFrameRatingTracking("content-update")
@@ -2268,7 +2256,6 @@ fun XServerScreen(
 
                         override fun onMapWindow(window: Window) {
                             if (getxServer().isDesktopWindow(window)) refreshTouchTransform()
-                            if (window.isApplicationWindow()) runCatching { windowActivity.onWindowMapped(window) }
                             Timber.i(
                                 "onMapWindow:" +
                                         "\n\twindowName: ${window.name}" +
@@ -2284,7 +2271,6 @@ fun XServerScreen(
 
                         override fun onUnmapWindow(window: Window) {
                             if (getxServer().isDesktopWindow(window)) refreshTouchTransform()
-                            runCatching { windowActivity.onWindowUnmapped(window) }
                             Timber.i(
                                 "onUnmapWindow:" +
                                         "\n\twindowName: ${window.name}" +
@@ -2451,7 +2437,6 @@ fun XServerScreen(
                                 bootToContainer,
                                 testGraphics,
                                 diagnostics,
-                                debugRun,
                                 xServerState,
                                 envVars,
                                 container,
@@ -2466,14 +2451,6 @@ fun XServerScreen(
 
                             // Autostart performance driver after environment is set up
                             PowerManager.autoStart(container.rootDir)
-
-                            if (debugRun) {
-                                PerfSampler.start(
-                                    context,
-                                    fpsProvider = fpsProvider,
-                                    drives = container.drives,
-                                )
-                            }
 
                             // Pin game process to performance cores (CPUs 4-7)
                             container.executablePath
@@ -4266,7 +4243,6 @@ private fun setupXEnvironment(
     bootToContainer: Boolean,
     testGraphics: Boolean,
     diagnostics: Boolean,
-    debugRun: Boolean,
     xServerState: MutableState<XServerState>,
     envVars: EnvVars,
     container: Container?,
@@ -4325,12 +4301,7 @@ private fun setupXEnvironment(
     val enableBox86Logs = WinlatorPrefManager.getBoolean("enable_box86_64_logs", false)
     val wineDebugChannels = PrefManager.wineDebugChannels
     // explicitly enable or disable Wine debug channels
-    if (debugRun) {
-        envVars.put("WINEDEBUG", "warn+seh,+loaddll,+process,+timestamp,+pid,+tid")
-        envVars.put("DXVK_LOG_LEVEL", "info")
-        envVars.put("DXVK_LOG_PATH", "none")
-        envVars.put("VKD3D_DEBUG", "warn")
-    } else if (diagnostics) {
+    if (diagnostics) {
         envVars.put("WRAPPER_DIAG", "1")
         envVars.put("WRAPPER_DIAG_APPID", appId)
         envVars.put("WRAPPER_LOG_LEVEL", "info")
@@ -4348,13 +4319,12 @@ private fun setupXEnvironment(
     }
     // capture debug output to file if either Wine or Box86/64 logging is enabled
     var logFile: File? = null
-    val captureLogs = debugRun || enableWineDebug || enableBox86Logs
+    val captureLogs = enableWineDebug || enableBox86Logs
     if (captureLogs) {
         val wineLogDir = File(context.getExternalFilesDir(null), "wine_logs")
         wineLogDir.mkdirs()
-        logFile = File(wineLogDir, if (debugRun) "debug_run_$appId.log" else "wine_debug.log")
+        logFile = File(wineLogDir, "wine_debug.log")
         if (logFile.exists()) logFile.delete()
-        if (debugRun) DebugReportUtils.startLogcatCapture(context, appId)
     }
 
     ProcessHelper.addDebugCallback { line ->
@@ -4460,10 +4430,6 @@ private fun setupXEnvironment(
         envVars.remove("VKD3D_FRAME_RATE")
         if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
         if (!envVars.has("_JAVA_OPTIONS")) envVars.put("_JAVA_OPTIONS", "-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:-UseZGC")
-        if (debugRun) {
-            DebugRunParamsHolder.get(appId)?.let { DebugRunParams.applyToDebugEnv(envVars, appId, it) }
-            PerfSampler.armCpuProfile(DebugRunParamsHolder.get(appId)?.attach?.contains(DebugRunParams.ATTACH_CPU) == true)
-        }
 
         val graphicsDriverConfig = KeyValueSet(container.getGraphicsDriverConfig())
         if (graphicsDriverConfig.get("version").lowercase(Locale.getDefault()).contains("gen8")) {
@@ -5063,21 +5029,7 @@ private fun exit(
         return
     }
 
-    PerfSampler.halt()
 
-    val exitProperties = mapOf(
-        "game_name" to ContainerUtils.resolveGameName(appId),
-        "game_store" to ContainerUtils.extractGameSourceFromContainerId(appId).name,
-        "session_length" to (frameRating?.sessionLengthSec ?: 0),
-        "avg_fps" to (frameRating?.avgFPS ?: 0.0),
-        "container_config" to container.containerJson,
-    ) + runCatching {
-        SessionReport.exitProperties(frameRating?.context ?: PluviaApp.xServerView?.context, frameRating, windowActivity, container, reason)
-    }.getOrElse { emptyMap() } + runCatching {
-        GameCompatibilityService.badgeProperties(ContainerUtils.resolveGameName(appId))
-    }.getOrElse { emptyMap() }
-    CoroutineScope(Dispatchers.IO).launch { SessionReport.recordRun(container, exitProperties) }
-    runCatching { windowActivity.stop() }
 
     // Store session data in container metadata
     frameRating?.let { rating ->

@@ -63,7 +63,6 @@ import app.gamenative.PrefManager
 import app.gamenative.R
 import app.gamenative.ui.component.focusRing
 import app.gamenative.ui.enums.LibraryTab
-import app.gamenative.ui.screen.support.SupportReplyWatcher
 import app.gamenative.ui.theme.PluviaTheme
 import app.gamenative.ui.util.WindowWidthClass
 import app.gamenative.ui.util.rememberWindowWidthClass
@@ -306,20 +305,9 @@ private fun CompactLibraryTabBar(
                     contentDescription = stringResource(R.string.menu),
                     onClick = onMenuClick,
                 )
-                SupportUnreadDot(modifier = Modifier.align(Alignment.TopEnd))
             }
         }
     }
-}
-
-@Composable
-private fun SupportUnreadDot(modifier: Modifier = Modifier) {
-    if (SupportReplyWatcher.unread.value.isEmpty()) return
-    Box(
-        modifier = modifier
-            .size(10.dp)
-            .background(MaterialTheme.colorScheme.primary, CircleShape),
-    )
 }
 
 /**
@@ -541,7 +529,6 @@ private fun ExpandedLibraryTabBar(
                     contentDescription = stringResource(R.string.menu),
                     onClick = onMenuClick,
                 )
-                SupportUnreadDot(modifier = Modifier.align(Alignment.TopEnd))
             }
         }
     }

@@ -362,17 +362,6 @@ fun SettingsGroupInterface(
             },
         )
 
-        var hideAiFeatures by rememberSaveable { mutableStateOf(PrefManager.hideAiFeatures) }
-        SettingsSwitch(
-            colors = settingsTileColorsAlt(),
-            title = { Text(text = stringResource(R.string.settings_hide_ai_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_hide_ai_subtitle)) },
-            state = hideAiFeatures,
-            onCheckedChange = {
-                hideAiFeatures = it
-                PrefManager.hideAiFeatures = it
-            },
-        )
 
         val configurableLibraryTabs = LibraryTab.configurableEntries.filter { it in LibraryTab.visibleEntries }
         val selectedLibraryTabIndices = configurableLibraryTabs.mapIndexedNotNull { index, tab ->

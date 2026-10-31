@@ -90,17 +90,6 @@
                 <data android:scheme="nxm" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- Relay redirects here after the user links their Discord account. -->
-                <data
-                    android:host="discord-linked"
-                    android:scheme="gamenative" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="app.gamenative.LAUNCH_GAME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -194,12 +183,6 @@
 
         <service
             android:name=".service.NexusModImportService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
-
-        <service
-            android:name=".service.SupportReplyWatchService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />

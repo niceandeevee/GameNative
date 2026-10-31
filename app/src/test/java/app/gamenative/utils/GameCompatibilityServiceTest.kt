@@ -29,7 +29,6 @@ class GameCompatibilityServiceTest {
         assertEquals(CommunityCompatibilityVerdict.WORKS, summary.verdict)
         assertEquals(app.gamenative.data.CommunityEvidenceTier.SAME_SOC, summary.evidenceTier)
         assertEquals(10, summary.sessionCount)
-        assertEquals("SAME_SOC", GameCompatibilityService.badgeProperties(restored.response)["compat_evidence_tier"])
     }
 
     @Test
@@ -101,18 +100,6 @@ class GameCompatibilityServiceTest {
         assertEquals(10, restored.response.tiers.getValue("gpu").sessions)
         assertNull(restored.response.tiers.getValue("gpu").ratedDevices)
         assertNull(restored.response.tiers.getValue("gpu").playableRate)
-    }
-
-    @Test fun analyticsUsesTheSameVerdictAsTheLibraryRatherThanLegacyRunCounts() {
-        val response = GameCompatibilityResponse(
-            "Game", "Works", "gpu",
-            mapOf(
-                "gpu" to GameCompatibilityService.CompatibilityTierMetrics("GPU", 10, 8, .8, ratedDevices = 5, okDevices = 4),
-            ),
-        )
-        val properties = GameCompatibilityService.badgeProperties(response)
-        assertEquals("SHOULD_WORK", properties["compat_badge"])
-        assertEquals("Works", properties["compat_server_state"])
     }
 
     @Test fun oldCacheMetricsAreIgnoredWithoutLosingEvidenceOrInvalidatingTheCache() {

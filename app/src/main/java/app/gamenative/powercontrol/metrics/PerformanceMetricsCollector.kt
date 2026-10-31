@@ -64,7 +64,6 @@ object PerformanceMetricsCollector {
         sampleCount = 0L
         paused = false
         FrameTimeRing.start()
-        PowerTelemetry.start()
         openLog(appContext, sessionStartMillis)
 
         val gpuPaths = SystemMetricsSources.gpuUsagePaths()
@@ -148,7 +147,6 @@ object PerformanceMetricsCollector {
         )
 
         publish(snapshot)
-        runCatching { PowerTelemetry.record(snapshot) }
         appendLog(snapshot)
 
         sampleCount++

@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import app.gamenative.Constants
 import app.gamenative.PrefManager
 import app.gamenative.R
-import app.gamenative.billing.Membership
 import app.gamenative.ui.component.dialog.LibrariesDialog
 import app.gamenative.ui.theme.settingsTileColors
 import app.gamenative.ui.theme.settingsTileColorsAlt
@@ -26,7 +25,6 @@ import com.alorma.compose.settings.ui.SettingsSwitch
 fun SettingsGroupInfo() {
     SettingsGroup() {
         val uriHandler = LocalUriHandler.current
-        var askForTip by rememberSaveable { mutableStateOf(!PrefManager.tipped) }
         var showLibrariesDialog by rememberSaveable { mutableStateOf(false) }
 
         LibrariesDialog(
@@ -34,26 +32,6 @@ fun SettingsGroupInfo() {
             onDismissRequest = { showLibrariesDialog = false },
         )
 
-        if (!Membership.isMember()) {
-            SettingsMenuLink(
-                colors = settingsTileColors(),
-                title = { Text(stringResource(R.string.settings_info_send_tip_title)) },
-                subtitle = { Text(text = stringResource(R.string.settings_info_send_tip_subtitle)) },
-                icon = { Icon(imageVector = Icons.Filled.Star, contentDescription = null) },
-                onClick = { Membership.plansRequested.value = true },
-            )
-        }
-
-        SettingsSwitch(
-            colors = settingsTileColorsAlt(),
-            state = askForTip,
-            title = { Text(stringResource(R.string.settings_info_ask_tip_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_info_ask_tip_subtitle)) },
-            onCheckedChange = {
-                askForTip = it
-                PrefManager.tipped = !askForTip
-            },
-        )
 
         SettingsMenuLink(
             colors = settingsTileColors(),
