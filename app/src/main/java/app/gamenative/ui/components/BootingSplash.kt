@@ -44,7 +44,7 @@ import app.gamenative.data.localizedWinBody
 import app.gamenative.data.localizedLoseBody
 import app.gamenative.data.isPlayable
 import app.gamenative.utils.BootAdView
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

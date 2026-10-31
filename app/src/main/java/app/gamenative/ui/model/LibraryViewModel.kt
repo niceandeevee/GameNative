@@ -399,6 +399,14 @@ class LibraryViewModel @Inject constructor(
     }
 
     private fun refreshRecommendationHero() {
+        // Recommendations are removed from this build: no hero / featured / boot-card fetch
+        if (!PrefManager.showRecommendations) {
+            cachedFeatured = null
+            cachedRecommendation = null
+            cachedRecTeaser = false
+            cachedRecLoading = false
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             val hero = RecommendationRepository.getHero(context)
             val daySeed = System.currentTimeMillis() / (24L * 60 * 60 * 1000)

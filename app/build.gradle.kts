@@ -509,9 +509,6 @@ dependencies {
     testImplementation(libs.orgJson)
     testImplementation(libs.mockwebserver)
 
-    // Add PostHog Android SDK dependency
-    implementation("com.posthog:posthog-android:3.8.0")
-
     implementation("com.auth0.android:jwtdecode:2.0.2")
 
     // Samsung Performance SDK

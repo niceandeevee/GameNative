@@ -8,7 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import app.gamenative.PrefManager
 import app.gamenative.R
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 
 @Composable
 fun RecommendationDisclosureDialog(

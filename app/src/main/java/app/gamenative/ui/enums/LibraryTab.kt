@@ -101,7 +101,8 @@ enum class LibraryTab(
          * in place via all-files access, modern imports them into app-owned storage.
          */
         val visibleEntries: List<LibraryTab>
-            get() = entries.toList()
+            // The Recommended tab is removed from this build
+            get() = entries.filter { it != RECOMMENDED }
 
         fun normalizeVisibleTabs(
             serialized: String,

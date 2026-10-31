@@ -120,7 +120,7 @@ import app.gamenative.service.gog.GOGService
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.utils.PlatformOAuthHandlers
 import app.gamenative.utils.SteamUtils
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import kotlinx.coroutines.launch
 import android.os.SystemClock
 

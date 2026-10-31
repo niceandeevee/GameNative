@@ -35,7 +35,7 @@ import app.gamenative.ui.model.GogRecommendationsViewModel
 import app.gamenative.ui.screen.library.components.LibraryCarouselPane
 import app.gamenative.ui.screen.library.components.LibraryListPane
 import app.gamenative.utils.ConversionTracker
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import android.os.SystemClock
 import kotlinx.coroutines.delay
 import java.util.EnumSet

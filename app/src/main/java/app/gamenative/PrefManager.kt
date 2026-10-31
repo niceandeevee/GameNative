@@ -1033,14 +1033,15 @@ object PrefManager {
 
     private val LIBRARY_TAB_PREFERENCES = stringPreferencesKey("library_tab_preferences")
     var libraryTabs: List<LibraryTab>
+        // visibleEntries: tabs removed from this build (Recommended) never come back from prefs
         get() = LibraryTab.normalizeVisibleTabs(
             getPref(LIBRARY_TAB_PREFERENCES, ""),
-            LibraryTab.entries.toList(),
+            LibraryTab.visibleEntries,
         )
         set(value) {
             val normalized = LibraryTab.normalizeVisibleTabs(
                 LibraryTab.serializeVisibleTabs(value),
-                LibraryTab.entries.toList(),
+                LibraryTab.visibleEntries,
             )
             setPref(LIBRARY_TAB_PREFERENCES, LibraryTab.serializeVisibleTabs(normalized))
         }
@@ -1505,10 +1506,10 @@ object PrefManager {
             setPref(HIDE_AI_FEATURES, value)
         }
 
-    // Show game recommendations in library
+    // Game recommendations are removed from this build: always off, whatever was saved
     private val SHOW_RECOMMENDATIONS = booleanPreferencesKey("show_recommendations")
     var showRecommendations: Boolean
-        get() = getPref(SHOW_RECOMMENDATIONS, true)
+        get() = false
         set(value) {
             setPref(SHOW_RECOMMENDATIONS, value)
         }

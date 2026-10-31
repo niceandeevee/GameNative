@@ -35,7 +35,7 @@ import app.gamenative.service.SteamWishlistService
 import app.gamenative.ui.component.focusRing
 import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.utils.ConversionTracker
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import kotlinx.coroutines.launch
 
 @Composable

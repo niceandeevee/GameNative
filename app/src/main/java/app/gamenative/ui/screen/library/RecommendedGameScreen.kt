@@ -60,7 +60,7 @@ import app.gamenative.ui.screen.library.components.VideoHero
 import app.gamenative.PrefManager
 import app.gamenative.utils.ConversionTracker
 import app.gamenative.data.gog.GogRecommendationsRepository
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 

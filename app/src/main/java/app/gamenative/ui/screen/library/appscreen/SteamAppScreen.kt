@@ -78,7 +78,7 @@ import app.gamenative.NetworkMonitor
 import app.gamenative.service.SteamService.Companion.getInstalledApp
 import com.google.android.play.core.splitcompat.SplitCompat
 import app.gamenative.utils.ConversionTracker
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import com.winlator.container.Container
 import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
