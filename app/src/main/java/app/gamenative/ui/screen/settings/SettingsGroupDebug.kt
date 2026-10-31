@@ -42,6 +42,7 @@ import app.gamenative.ui.component.dialog.WineDebugChannelsDialog
 import app.gamenative.utils.AppExitRecorder
 
 private const val EXIT_TRACE_WINDOW_MS = 48L * 60 * 60 * 1000
+private const val WINE_LOG_TAIL_BYTES = 8L * 1024 * 1024
 
 @Suppress("UnnecessaryOptInAnnotation") // ExperimentalFoundationApi
 @OptIn(ExperimentalCoilApi::class, ExperimentalFoundationApi::class)
@@ -121,7 +122,7 @@ fun SettingsGroupDebug() {
     ) { resultUri ->
         try {
             resultUri?.let {
-                val logs = CrashHandler.getAppLogs(1000)
+                val logs = CrashHandler.getAppLogs(20000)
                 // The logcat only covers this process. When the previous one died (ANR, native crash),
                 // append the stack dump Android kept for it, which shows where the app was stuck.
                 val exitTrace = AppExitRecorder.newestHardExit(context, System.currentTimeMillis() - EXIT_TRACE_WINDOW_MS)
@@ -131,9 +132,26 @@ fun SettingsGroupDebug() {
                                 file.readText()
                         }
                     }
+                // The last game's Wine/Box64 log (Settings > Debug > Wine debug), tail-capped so a
+                // chatty channel can't make the file unusably large.
+                val wineLog = File(context.getExternalFilesDir(null), "wine_logs/wine_debug.log")
+                    .takeIf { it.isFile && it.length() > 0 }
                 context.contentResolver.openOutputStream(resultUri)?.use { outputStream ->
                     outputStream.write(logs.toByteArray())
                     exitTrace?.let { outputStream.write(it.toByteArray()) }
+                    wineLog?.let { file ->
+                        outputStream.write("\n\n===== Last Wine log (${file.length()} bytes) =====\n".toByteArray())
+                        java.io.RandomAccessFile(file, "r").use { raf ->
+                            val start = (raf.length() - WINE_LOG_TAIL_BYTES).coerceAtLeast(0L)
+                            raf.seek(start)
+                            val buf = ByteArray(64 * 1024)
+                            while (true) {
+                                val n = raf.read(buf)
+                                if (n <= 0) break
+                                outputStream.write(buf, 0, n)
+                            }
+                        }
+                    }
                 }
             }
         } catch (e: Exception) {
