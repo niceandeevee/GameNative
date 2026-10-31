@@ -76,7 +76,6 @@ import app.gamenative.utils.StorageUtils
 import app.gamenative.workshop.WorkshopManager
 import app.gamenative.NetworkMonitor
 import app.gamenative.service.SteamService.Companion.getInstalledApp
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.winlator.container.Container
 import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
@@ -1328,9 +1327,6 @@ class SteamAppScreen : BaseAppScreen() {
                                     ).await()
                                 }
                                 if (!SteamService.isImageFsInstalled(context)) {
-                                    withContext(Dispatchers.Main) {
-                                        SplitCompat.install(context)
-                                    }
                                     ImageFsInstaller.installIfNeededFuture(context, context.assets, container) { progress ->
                                         // TODO: Update loading dialog progress
                                     }.get()

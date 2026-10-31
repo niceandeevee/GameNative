@@ -43,44 +43,6 @@
     <string name="allow_steam_updates">Разрешить обновления Steam</string>
     <string name="allow_steam_updates_description">Обновляет Steam до последней версии. Значительно снижает производительность.</string>
     <string name="allowed_orientations">Разрешённые ориентации</string>
-    <string name="amazon_install_confirmation_message">Устанавливаемое приложение имеет следующие требования к пространству. Вы хотите продолжить?
-
-	Размер загрузки: %1$s
-	Доступное место: %2$s</string>
-    <string name="amazon_install_game_title">Загрузить игру</string>
-    <string name="amazon_integration_title">Интеграция Amazon Games (альфа)</string>
-    <string name="amazon_login_cancel">Отмена</string>
-    <string name="amazon_login_success_title">Вход выполнен успешно</string>
-    <string name="amazon_logout_confirm">Выход</string>
-    <string name="amazon_logout_confirm_message">Это удалит ваши учётные данные Amazon Games и очистит вашу библиотеку Amazon с этого устройства. Вы можете войти снова в любое время.</string>
-    <string name="amazon_logout_confirm_title">Выйти из Amazon Games?</string>
-    <string name="amazon_logout_failed">Ошибка выхода: %s</string>
-    <string name="amazon_logout_in_progress">Выход из Amazon Games…</string>
-    <string name="amazon_logout_success">Успешно вышли из Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Войдите в свой аккаунт Amazon Games</string>
-    <string name="amazon_settings_login_title">Войти в Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Выйдите из своего аккаунта Amazon Games</string>
-    <string name="amazon_settings_logout_title">Выйти из Amazon Games</string>
-    <string name="amazon_uninstall_confirmation_message">Вы уверены, что хотите удалить %1$s? Это действие не может быть отменено.</string>
-    <string name="amazon_uninstall_game_title">Удалить игру</string>
-    <string name="amazon_verify_confirm">Проверить</string>
-    <string name="amazon_verify_error">Ошибка проверки: %1$s</string>
-    <string name="amazon_verify_failed_detail">Проверка обнаружила проблемы.
-
-%1$d / %2$d файлов OK
-%3$d отсутствует
-%4$d несоответствие размера
-%5$d несоответствие хэша
-
-Переустановите игру, чтобы исправить повреждённые файлы.</string>
-    <string name="amazon_verify_files_message">Это проверит все установленные файлы в сравнении с манифестом загрузки, чтобы обнаружить отсутствующие или повреждённые файлы.
-
-Для больших игр это может занять некоторое время.</string>
-    <string name="amazon_verify_files_title">Проверить файлы</string>
-    <string name="amazon_verify_in_progress">Проверка файлов… Это может занять некоторое время.</string>
-    <string name="amazon_verify_success">Все файлы успешно проверены.
-
-%1$d / %2$d файлов OK.</string>
     <string name="androidx_startup">androidx.startup</string>
     <string name="app_downloads">Загрузки</string>
     <string name="app_filter_application">Приложение</string>
@@ -455,36 +417,6 @@
     <string name="enable_xinput_api">Включить API XInput</string>
     <string name="end_process">Завершить процесс</string>
     <string name="environment_variables">Переменные окружения</string>
-    <string name="epic_cancel_download_message">Вы уверены, что хотите отменить загрузку приложения?</string>
-    <string name="epic_delete_download_message">Удалить все загруженные данные для этой игры?</string>
-    <string name="epic_download_error">Ошибка загрузки: %1$s</string>
-    <string name="epic_download_failed">Ошибка при запуске загрузки: %1$s</string>
-    <string name="epic_game_not_found">Игра не найдена</string>
-    <string name="epic_install_game_message">Устанавливаемое приложение имеет следующие требования к пространству. Вы хотите продолжить?
-
-	Размер загрузки: %1$s
-	Размер на диске: %2$s
-	Доступное место: %3$s</string>
-    <string name="epic_install_game_title">Загрузить игру</string>
-    <string name="epic_integration_title">Интеграция Epic Games</string>
-    <string name="epic_login_cancel">Отмена</string>
-    <string name="epic_login_success_title">Вход выполнен успешно</string>
-    <string name="epic_logout_confirm">Выход</string>
-    <string name="epic_logout_confirm_message">Это удалит ваши учётные данные Epic Games и очистит вашу библиотеку Epic Games с этого устройства. Вы можете войти снова в любое время.</string>
-    <string name="epic_logout_confirm_title">Выйти из Epic Games?</string>
-    <string name="epic_logout_failed">Ошибка выхода: %s</string>
-    <string name="epic_logout_in_progress">Выход из Epic Games…</string>
-    <string name="epic_logout_success">Успешно вышли из Epic Games</string>
-    <string name="epic_settings_login_subtitle">Войдите в свой аккаунт Epic Games</string>
-    <string name="epic_settings_login_title">Войти в Epic</string>
-    <string name="epic_settings_logout_subtitle">Выйдите из своего аккаунта Epic Games</string>
-    <string name="epic_settings_logout_title">Выйти из Epic</string>
-    <string name="epic_starting_download">Начало загрузки: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Начало загрузки: %1$s + DLC</string>
-    <string name="epic_uninstall_error">Ошибка удаления: %1$s</string>
-    <string name="epic_uninstall_failed">Ошибка удаления: %1$s</string>
-    <string name="epic_uninstall_game_message">Вы уверены, что хотите удалить %1$s? Это действие не может быть отменено.</string>
-    <string name="epic_uninstall_game_title">Удалить игру</string>
     <string name="error_a11y_label">Ошибка: невалидно</string>
     <string name="error_icon_content_description">Ошибка</string>
     <string name="exec_arguments">Аргументы исполняемого файла</string>
@@ -626,13 +558,6 @@
     <string name="gesture_zoom_plus_minus">+/- клавиши</string>
     <string name="gesture_zoom_scroll_wheel">Колесо прокрутки</string>
     <string name="get_support_on_discord">Получить поддержку на Discord</string>
-    <string name="gog_install_confirmation_message">Устанавливаемое приложение имеет следующие требования к пространству. Вы хотите продолжить?
-
-	Размер загрузки: %1$s
-	Доступное место: %2$s</string>
-    <string name="gog_install_game_title">Загрузить игру</string>
-    <string name="gog_login_cancel">Отмена</string>
-    <string name="gog_login_success_title">Вход выполнен успешно</string>
     <string name="rockstar_login_required_title">Требуется вход в Rockstar</string>
     <string name="rockstar_login_failed">Не удалось войти в Rockstar: %1$s</string>
     <string name="rockstar_link_refused">Эта учетная запись Rockstar привязана к другой учетной записи Steam.</string>
@@ -650,12 +575,6 @@
     <string name="rockstar_preparing">Подготовка поддержки лаунчера Rockstar</string>
     <string name="rockstar_runtime_installing">Установка среды Social Club</string>
     <string name="rockstar_installer_missing">В файлах игры отсутствует установщик Social Club. Проверьте файлы игры в Steam и попробуйте снова.</string>
-    <string name="gog_logout_failed">Ошибка выхода: %s</string>
-    <string name="gog_logout_success">Успешно вышли из GOG</string>
-    <string name="gog_settings_login_title">Войти в GOG</string>
-    <string name="gog_settings_logout_title">Выйти из GOG</string>
-    <string name="gog_uninstall_confirmation_message">Вы уверены, что хотите удалить %1$s? Это действие не может быть отменено.</string>
-    <string name="gog_uninstall_game_title">Удалить игру</string>
     <string name="gpu_name">Имя GPU</string>
     <string name="graphics_driver">Графический драйвер</string>
     <string name="graphics_driver_version">Версия графического драйвера</string>
@@ -909,9 +828,6 @@ https://gamenative.app
 
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Войдите, чтобы получить доступ к библиотеке Steam.</string>
-    <string name="library_source_not_logged_in_gog">Войдите, чтобы получить доступ к библиотеке GOG.</string>
-    <string name="library_source_not_logged_in_epic">Войдите, чтобы получить доступ к библиотеке Epic.</string>
-    <string name="library_source_not_logged_in_amazon">Войдите, чтобы получить доступ к библиотеке Amazon.</string>
     <string name="library_source_no_custom_games">Вы не добавили ни одной пользовательской игры.</string>
 
     <string name="material_clock_display_divider">:</string>
@@ -1362,8 +1278,6 @@ https://gamenative.app
     <string name="settings_info_libraries_title">Используемые библиотеки</string>
     <string name="settings_info_privacy_subtitle">Открывает ссылку на политику конфиденциальности GameNative</string>
     <string name="settings_info_privacy_title">Политика конфиденциальности</string>
-    <string name="settings_info_usage_analytics_title">Аналитика использования</string>
-    <string name="settings_info_usage_analytics_subtitle">Мы никогда не отслеживаем личную информацию. Отключение останавливает несущественную аналитику, однако основные данные о производительности игр по-прежнему собираются как законный интерес для улучшения совместимости.</string>
     <string name="settings_info_source_subtitle">Просмотреть исходный код этого проекта</string>
     <string name="settings_info_send_tip_title">Стать участником</string>
     <string name="settings_info_send_tip_subtitle">Помощь ИИ с запуском игр, ранний доступ к версиям и другое</string>
@@ -1476,8 +1390,6 @@ https://gamenative.app
     <string name="steam_not_logged_in">Вы должны войти в Steam, чтобы использовать эту функцию</string>
     <string name="steam_offline_mode">Автономный режим Steam</string>
     <string name="steam_offline_mode_description">Запускать игры Steam в автономном режиме</string>
-    <string name="epic_offline_mode">Автономный режим Epic</string>
-    <string name="epic_offline_mode_description">Запускать игры Epic в автономном режиме</string>
     <string name="steam_reset_container_message">Это восстановит ваш контейнер к конфигурации по умолчанию.</string>
     <string name="steam_reset_container_title">Сбросить контейнер</string>
     <string name="steam_sign_in">Войти в Steam</string>
@@ -1564,9 +1476,6 @@ https://gamenative.app
     <string name="settings_storage_manage_title">Управление хранилищем</string>
     <string name="settings_storage_manage_subtitle">Просматривайте установки, перемещайте их между хранилищами и очищайте контейнеры</string>
     <string name="tab_all">Все</string>
-    <string name="tab_amazon">Amazon</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_gog">GOG</string>
     <string name="tab_installed">Установлено</string>
     <string name="tab_local">Пользовательское</string>
     <string name="tab_steam">Steam</string>
@@ -1737,9 +1646,6 @@ https://gamenative.app
 
     <!-- Recommendations -->
     <string name="recommended_badge">Рекомендуемое</string>
-    <string name="recommended_buy_button">Купить в GOG</string>
-    <string name="rec_buy_with_price">%1$s · Купить в GOG</string>
-    <string name="recommended_support_message">Мы получаем комиссию с покупок, совершённых по этой ссылке.</string>
     <string name="recommended_about_heading">Об этой игре</string>
     <string name="recommended_review_count">На основе %1$s отзывов</string>
     <string name="library_store_media_page">%1$d из %2$d</string>
@@ -1755,8 +1661,6 @@ https://gamenative.app
     <string name="review_mixed">Смешанные</string>
     <string name="review_mostly_negative">В основном отрицательные</string>
     <string name="review_overwhelmingly_negative">Крайне отрицательные</string>
-    <string name="settings_interface_show_recommendations_title">Показывать рекомендации игр</string>
-    <string name="settings_interface_show_recommendations_subtitle">Показывает персональные рекомендации. Оставив это включённым, вы помогаете поддержать GameNative.</string>
     <string name="settings_interface_library_tabs_title">Вкладки библиотеки</string>
     <string name="settings_interface_library_tabs_subtitle">Выберите, какие вкладки магазинов отображать в библиотеке.</string>
     <string name="settings_interface_library_tabs_none">Нет вкладок магазинов</string>
@@ -1842,9 +1746,6 @@ https://gamenative.app
     <string name="settings_interface_frontend_sync_subtitle">Автоматически экспортировать установленные игры для фронтендов библиотеки</string>
     <string name="frontend_sync_dialog_title">Синхронизация frontend</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Пользовательские игры</string>
     <string name="frontend_sync_not_set">Не задано</string>
     <string name="frontend_sync_clear_confirm_title">Удалить старые файлы экспорта?</string>
@@ -2448,37 +2349,8 @@ https://gamenative.app
     <string name="toast_no_buttons_to_copy_appearance">Нет других элементов для копирования внешнего вида</string>
     <string name="toast_copied_button_appearance">Внешний вид элемента скопирован</string>
     <string name="toast_applied_button_appearance">Внешний вид применен ко всем элементам</string>
-    <string name="rec_disclosure_title">Рекомендации игр</string>
-    <string name="rec_disclosure_body">Для персональных рекомендаций мы передаём игры, в которые вы играете, сервису GOG. Отключить можно в любой момент в Настройках.</string>
-    <string name="rec_disclosure_allow">Разрешить</string>
-    <string name="rec_disclosure_not_now">Не сейчас</string>
-    <string name="rec_teaser_title">Откройте игры для вашего устройства</string>
-    <string name="rec_teaser_subtitle">Нажмите, чтобы посмотреть</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Спонсировано</string>
-    <string name="featured_action_wishlist">Список желаемого</string>
-    <string name="featured_action_wishlist_on">В список желаемого в %1$s</string>
-    <string name="featured_action_wishlisted">В списке желаемого</string>
-    <string name="featured_action_get_demo">Получить демо</string>
-    <string name="featured_action_in_library">В библиотеке</string>
-    <string name="featured_action_failed">Не удалось выполнить в приложении — открывается страница магазина</string>
-    <string name="featured_action_preorder">Предзаказ</string>
-    <string name="featured_action_preorder_on">Предзаказ в %1$s</string>
-    <string name="featured_action_buy">Купить</string>
-    <string name="featured_action_buy_on">Купить в %1$s</string>
-    <string name="featured_action_notify">Уведомить меня</string>
-    <string name="featured_action_visit">Подробнее</string>
-    <string name="featured_status_coming_soon_title">Скоро</string>
-    <string name="featured_status_coming_soon_body">Добавьте в список желаемого, чтобы получить уведомление о выходе</string>
-    <string name="featured_status_early_access_title">Ранний доступ</string>
-    <string name="featured_status_early_access_body">Уже доступно в раннем доступе</string>
-    <string name="featured_status_preorder_title">Оформить предзаказ</string>
-    <string name="featured_status_preorder_body">Оформите предзаказ, чтобы быть готовым к выходу</string>
-    <string name="featured_status_out_now_title">Уже вышло</string>
-    <string name="featured_status_out_now_body">Доступно сейчас</string>
-    <string name="tab_recommended">Рекомендации</string>
-    <string name="gog_rec_empty">Добавьте или поиграйте в игры, чтобы получить рекомендации GOG на основе вашей библиотеки.</string>
     <!-- Steam achievements -->
     <string name="achievements">Достижения</string>
     <string name="achievements_all_title">Все достижения</string>
@@ -2751,8 +2623,6 @@ https://gamenative.app
     <string name="faster_external_loading_subtitle">Может значительно ускорить запуск игр с внешнего накопителя, но может вызывать проблемы в некоторых играх</string>
     <string name="disable_libredirect_title">Отключить libredirect</string>
     <string name="disable_libredirect_subtitle">Может повысить производительность, но также может вызвать непредвиденные проблемы</string>
-    <string name="disable_epic_overlay_title">Отключить оверлей Epic</string>
-    <string name="disable_epic_overlay_subtitle">Отключает оверлей EOS и рендерер CEF, чтобы предотвратить вылеты из-за нехватки памяти в некоторых играх</string>
     <string name="binding_mode_simultaneous">Одновременно</string>
     <string name="binding_mode_sequence">Последовательно</string>
     <string name="binding_sequence_delay_ms">Задержка последовательности (мс)</string>
@@ -2770,20 +2640,6 @@ https://gamenative.app
     <string name="xr_render_scale">Масштаб рендеринга VR</string>
     <string name="settings_hide_ai_title">Скрыть функции ИИ</string>
     <string name="settings_hide_ai_subtitle">Скрывает необязательную помощь ИИ в отладке</string>
-    <string name="settings_info_boot_ads_title">Спонсорские экраны загрузки</string>
-    <string name="settings_info_boot_ads_subtitle">Если оставить это включённым, вы поддержите разработку GameNative. Это никогда не замедляет запуск игр и никак на вас не влияет.</string>
-    <string name="settings_info_boot_recs_title">Рекомендации игр на экранах загрузки</string>
-    <string name="settings_info_boot_recs_subtitle">Показывать игру, которая может вам понравиться, во время запуска, если нет карточки спонсора.</string>
-    <string name="boot_rec_badge">Рекомендовано для вас</string>
-    <string name="boot_ad_close_cd">Закрыть эту карточку</string>
-    <string name="boot_ad_sheet_title_sponsored">О спонсорских карточках</string>
-    <string name="boot_ad_sheet_title_rec">О рекомендациях</string>
-    <string name="boot_ad_sheet_body_sponsored">Спонсорские карточки помогают финансировать работу над GameNative на полную ставку. Это можно изменить в любой момент в Настройках.</string>
-    <string name="boot_ad_sheet_body_rec">Рекомендации подбираются по играм, в которые вы играете. Это можно изменить в любой момент в Настройках.</string>
-    <string name="boot_ad_close_one">Закрыть эту</string>
-    <string name="boot_ad_turn_off_sponsored">Отключить спонсорские карточки</string>
-    <string name="boot_ad_turn_off_rec">Отключить рекомендации</string>
-    <string name="boot_ad_not_now">Не сейчас</string>
     <string name="boot_quiz_win_default">Верно!</string>
     <string name="boot_quiz_lose_default">Правильный ответ: %1$s</string>
     <string name="gyro_aiming">Гироскопическое прицеливание</string>

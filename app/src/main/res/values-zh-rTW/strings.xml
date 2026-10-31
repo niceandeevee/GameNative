@@ -40,26 +40,7 @@
     <string name="steam_uninstall_success">%1$s 已卸載</string>
     <string name="steam_uninstall_failed">卸載遊戲失敗</string>
     <string name="deleting">正在刪除…</string>
-    <string name="amazon_uninstall_game_title">卸載遊戲</string>
-    <string name="amazon_uninstall_confirmation_message">您確定要卸載 %1$s 嗎? 此操作無法撤回</string>
-    <string name="amazon_install_game_title">下載遊戲</string>
-    <string name="amazon_install_confirmation_message">正在安裝的應用程式有以下空間需求。是否繼續？\n\n\t下載大小: %1$s\n\t可用空間: %2$s</string>
-    <string name="amazon_verify_files_title">驗證檔案</string>
-    <string name="amazon_verify_files_message">這將檢查所有已安裝的檔案與下載清單進行比對，以檢測缺失或損壞的檔案。\n\n對於大型遊戲，這可能需要一段時間。</string>
-    <string name="amazon_verify_confirm">驗證</string>
-    <string name="amazon_verify_in_progress">正在驗證檔案… 這可能需要一段時間。</string>
-    <string name="amazon_verify_success">所有檔案驗證成功。\n\n%1$d / %2$d 個檔案 OK。</string>
-    <string name="amazon_verify_failed_detail">驗證發現問題。\n\n%1$d / %2$d 個檔案 OK\n%3$d 個缺失\n%4$d 個大小不匹配\n%5$d 個雜湊不匹配\n\n重新安裝遊戲以修復損壞的檔案。</string>
-    <string name="amazon_verify_error">驗證失敗：%1$s</string>
-    <string name="gog_uninstall_game_title">卸載遊戲</string>
-    <string name="gog_uninstall_confirmation_message">您確定要卸載 %1$s 嗎? 此操作無法撤回</string>
-    <string name="gog_install_game_title">下載遊戲</string>
-    <string name="gog_install_confirmation_message">正在安裝的應用程式有以下空間需求:\n\n\t下載大小: %1$s\n\t可用空間: %2$s</string>
     <string name="steam_never">從不</string>
-    <string name="epic_cancel_download_message">確定要取消下載應用程式嗎？</string>
-    <string name="epic_delete_download_message">刪除此遊戲的所有已下載資料？</string>
-    <string name="epic_uninstall_failed">解除安裝失敗：%1$s</string>
-    <string name="epic_uninstall_error">解除安裝錯誤：%1$s</string>
     <string name="steam_continue">繼續</string>
     <string name="header_img_desc">App header image</string>
     <string name="download">下載</string>
@@ -160,9 +141,6 @@
     <string name="settings_storage_manage_subtitle">檢視安裝內容、在不同儲存位置之間移動它們，並清理容器</string>
     <string name="tab_all">全部</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">已安裝</string>
     <string name="tab_local">自訂</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -759,8 +737,6 @@
     <string name="launch_steam_client_beta">啟動 Steam 用戶端</string>
     <string name="steam_offline_mode">Steam 離線模式</string>
     <string name="steam_offline_mode_description">以離線模式啟動 Steam 遊戲</string>
-    <string name="epic_offline_mode">Epic 離線模式</string>
-    <string name="epic_offline_mode_description">以離線模式啟動 Epic 遊戲</string>
     <string name="achievement_unlocked">成就已解鎖</string>
     <string name="settings_achievement_notification_position">成就通知位置</string>
     <string name="achievement_position_top_left">左上</string>
@@ -1212,8 +1188,6 @@
     <string name="settings_info_libraries_subtitle">了解哪些技術讓GameNative成為可能</string>
     <string name="settings_info_privacy_title">隱私權政策</string>
     <string name="settings_info_privacy_subtitle">開啟連結至 GameNative 的隱私權政策</string>
-    <string name="settings_info_usage_analytics_title">使用分析</string>
-    <string name="settings_info_usage_analytics_subtitle">我們絕不追蹤個人資訊。關閉此選項將停止非必要的分析，但核心遊戲效能資料仍會作為合法權益繼續收集，以改善相容性。</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">介面</string>
@@ -1675,10 +1649,6 @@
     <string name="auth_webview_title">授權</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">GOG 整合 (Alpha)</string>
-    <string name="gog_settings_login_title">登入 GOG</string>
-    <string name="gog_settings_login_subtitle">登入您的 GOG 帳戶</string>
-    <string name="gog_login_success_title">登入成功</string>
     <string name="rockstar_login_required_title">需要登入 Rockstar</string>
     <string name="rockstar_login_failed">Rockstar 登入失敗：%1$s</string>
     <string name="rockstar_link_refused">此 Rockstar 帳戶已連結至其他 Steam 帳戶。</string>
@@ -1696,56 +1666,12 @@
     <string name="rockstar_preparing">正在準備 Rockstar 啟動器支援</string>
     <string name="rockstar_runtime_installing">正在安裝 Social Club 執行環境</string>
     <string name="rockstar_installer_missing">遊戲檔案中缺少 Social Club 安裝程式。請在 Steam 中驗證遊戲檔案後再試一次。</string>
-    <string name="gog_login_cancel">取消</string>
-    <string name="gog_settings_logout_title">登出 GOG</string>
-    <string name="gog_settings_logout_subtitle">從您的 GOG 帳戶登出</string>
-    <string name="gog_logout_confirm_title">從 GOG 登出?</string>
-    <string name="gog_logout_confirm_message">這將刪除您的 GOG 憑證並清除此裝置上的 GOG 遊戲庫。您可以隨時重新登入。</string>
-    <string name="gog_logout_confirm">登出</string>
-    <string name="gog_logout_success">成功從 GOG 登出</string>
-    <string name="gog_logout_failed">登出失敗: %s</string>
-    <string name="gog_logout_in_progress">正在從 GOG 登出…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Epic Games 整合</string>
-    <string name="epic_settings_login_title">登入 Epic</string>
-    <string name="epic_settings_login_subtitle">登入您的 Epic Games 帳戶</string>
-    <string name="epic_login_success_title">登入成功</string>
-    <string name="epic_login_cancel">取消</string>
-    <string name="epic_settings_logout_title">登出 Epic</string>
-    <string name="epic_settings_logout_subtitle">從您的 Epic Games 帳戶登出</string>
-    <string name="epic_logout_confirm_title">從 Epic Games 登出？</string>
-    <string name="epic_logout_confirm_message">這將刪除您的 Epic Games 憑證並清除此裝置上的 Epic Games 遊戲庫。您可以隨時重新登入。</string>
-    <string name="epic_logout_confirm">登出</string>
-    <string name="epic_logout_success">已成功從 Epic Games 登出</string>
-    <string name="epic_logout_failed">登出失敗：%s</string>
-    <string name="epic_logout_in_progress">正在從 Epic Games 登出…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Amazon Games 整合 (Alpha)</string>
-    <string name="amazon_settings_login_title">登入 Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">登入您的 Amazon Games 帳戶</string>
-    <string name="amazon_login_success_title">登入成功</string>
-    <string name="amazon_login_cancel">取消</string>
-    <string name="amazon_settings_logout_title">登出 Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">從您的 Amazon Games 帳戶登出</string>
-    <string name="amazon_logout_confirm_title">從 Amazon Games 登出？</string>
-    <string name="amazon_logout_confirm_message">這將刪除您的 Amazon Games 憑證並清除此裝置上的 Amazon 庫。您可以隨時重新登入。</string>
-    <string name="amazon_logout_confirm">登出</string>
-    <string name="amazon_logout_success">已成功從 Amazon Games 登出</string>
-    <string name="amazon_logout_failed">登出失敗：%s</string>
-    <string name="amazon_logout_in_progress">正在從 Amazon Games 登出…</string>
 
     <!-- Epic Install/Uninstall -->
-    <string name="epic_uninstall_game_title">卸載遊戲</string>
-    <string name="epic_uninstall_game_message">您確定要卸載 %1$s 嗎？此操作無法撤回。</string>
-    <string name="epic_install_game_title">下載遊戲</string>
-    <string name="epic_install_game_message">正在安裝的應用程式有以下空間需求。是否繼續？\n\n\t下載大小: %1$s\n\t磁碟大小: %2$s\n\t可用空間: %3$s</string>
-    <string name="epic_game_not_found">找不到遊戲</string>
-    <string name="epic_starting_download">開始下載: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">開始下載: %1$s + DLC</string>
-    <string name="epic_download_failed">無法開始下載: %1$s</string>
-    <string name="epic_download_error">下載錯誤: %1$s</string>
     <string name="manifest_downloading_item">正在下載 %1$s...</string>
     <string name="manifest_download_failed">下載失敗: %1$s</string>
     <string name="manifest_install_failed">安裝 %1$s 失敗</string>
@@ -1755,9 +1681,6 @@
     <string name="manifest_glibc_not_supported">不支援 GLIBC 版本。</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">登入以存取您的 Steam 遊戲庫。</string>
-    <string name="library_source_not_logged_in_gog">登入以存取您的 GOG 遊戲庫。</string>
-    <string name="library_source_not_logged_in_epic">登入以存取您的 Epic 遊戲庫。</string>
-    <string name="library_source_not_logged_in_amazon">登入以存取您的 Amazon 遊戲庫。</string>
     <string name="library_source_no_custom_games">您尚未新增任何自訂遊戲。</string>
     <string name="download_failed_title">下載失敗</string>
     <string name="download_failed_message">無法下載必要的檔案。請檢查您的網路連線後重試。</string>
@@ -1779,9 +1702,6 @@
 
     <!-- Recommendations -->
     <string name="recommended_badge">推薦</string>
-    <string name="recommended_buy_button">在 GOG 購買</string>
-    <string name="rec_buy_with_price">%1$s · 在 GOG 購買</string>
-    <string name="recommended_support_message">透過此連結購買，我們會獲得佣金。</string>
     <string name="recommended_about_heading">關於本遊戲</string>
     <string name="recommended_review_count">基於 %1$s 則評價</string>
     <string name="library_store_media_page">第 %1$d 項，共 %2$d 項</string>
@@ -1797,8 +1717,6 @@
     <string name="review_mixed">褒貶不一</string>
     <string name="review_mostly_negative">大多負評</string>
     <string name="review_overwhelmingly_negative">壓倒性負評</string>
-    <string name="settings_interface_show_recommendations_title">顯示遊戲推薦</string>
-    <string name="settings_interface_show_recommendations_subtitle">顯示個人化推薦。保持開啟有助於支持 GameNative。</string>
     <string name="settings_interface_library_tabs_title">遊戲庫分頁</string>
     <string name="settings_interface_library_tabs_subtitle">選擇要在遊戲庫中顯示哪些商店分頁。</string>
     <string name="settings_interface_library_tabs_none">沒有商店分頁</string>
@@ -1955,9 +1873,6 @@
     <string name="settings_interface_frontend_sync_subtitle">自動將已安裝的遊戲匯出到遊戲庫前端程式</string>
     <string name="frontend_sync_dialog_title">前端同步</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">自訂遊戲</string>
     <string name="frontend_sync_not_set">未設定</string>
     <string name="frontend_sync_clear_confirm_title">刪除舊的匯出檔案？</string>
@@ -2529,37 +2444,8 @@
     <string name="toast_no_buttons_to_copy_appearance">沒有其他可複製外觀的控制項</string>
     <string name="toast_copied_button_appearance">已複製控制項外觀</string>
     <string name="toast_applied_button_appearance">已將外觀套用到所有控制項</string>
-    <string name="rec_disclosure_title">遊戲推薦</string>
-    <string name="rec_disclosure_body">為提供個人化推薦，我們會將你玩過的遊戲分享給 GOG。可隨時在設定中關閉。</string>
-    <string name="rec_disclosure_allow">允許</string>
-    <string name="rec_disclosure_not_now">暫不</string>
-    <string name="rec_teaser_title">探索適合你裝置的遊戲</string>
-    <string name="rec_teaser_subtitle">點按查看</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">贊助</string>
-    <string name="featured_action_wishlist">願望清單</string>
-    <string name="featured_action_wishlist_on">在 %1$s 加入願望清單</string>
-    <string name="featured_action_wishlisted">已加入願望清單</string>
-    <string name="featured_action_get_demo">取得試玩版</string>
-    <string name="featured_action_in_library">已在收藏庫中</string>
-    <string name="featured_action_failed">無法在應用程式內完成，正在開啟商店頁面</string>
-    <string name="featured_action_preorder">預購</string>
-    <string name="featured_action_preorder_on">在 %1$s 預購</string>
-    <string name="featured_action_buy">購買</string>
-    <string name="featured_action_buy_on">在 %1$s 購買</string>
-    <string name="featured_action_notify">提醒我</string>
-    <string name="featured_action_visit">了解更多</string>
-    <string name="featured_status_coming_soon_title">即將推出</string>
-    <string name="featured_status_coming_soon_body">立即加入願望清單，發售時第一時間收到通知</string>
-    <string name="featured_status_early_access_title">搶先體驗</string>
-    <string name="featured_status_early_access_body">搶先體驗現已推出</string>
-    <string name="featured_status_preorder_title">立即預購</string>
-    <string name="featured_status_preorder_body">預購以在發售時做好準備</string>
-    <string name="featured_status_out_now_title">現已推出</string>
-    <string name="featured_status_out_now_body">現在可用</string>
-    <string name="tab_recommended">推薦</string>
-    <string name="gog_rec_empty">新增或試玩一些遊戲，即可根據你的遊戲庫獲得 GOG 推薦。</string>
     <!-- Steam achievements -->
     <string name="achievements">成就</string>
     <string name="achievements_all_title">所有成就</string>
@@ -2823,8 +2709,6 @@
     <string name="faster_external_loading_subtitle">可顯著加快從外部儲存空間啟動遊戲的速度，但可能導致部分遊戲出現問題</string>
     <string name="disable_libredirect_title">停用 libredirect</string>
     <string name="disable_libredirect_subtitle">可能提升效能，但也可能導致意外問題</string>
-    <string name="disable_epic_overlay_title">停用 Epic 疊加層</string>
-    <string name="disable_epic_overlay_subtitle">停用 EOS 疊加層和 CEF 轉譯器，以防止某些遊戲因記憶體耗盡而當機</string>
     <string name="binding_mode_simultaneous">同時</string>
     <string name="binding_mode_sequence">順序</string>
     <string name="binding_sequence_delay_ms">順序延遲（毫秒）</string>
@@ -2842,20 +2726,6 @@
     <string name="xr_render_scale">VR 算繪比例</string>
     <string name="settings_hide_ai_title">隱藏 AI 功能</string>
     <string name="settings_hide_ai_subtitle">隱藏可選的 AI 偵錯協助</string>
-    <string name="settings_info_boot_ads_title">贊助載入畫面</string>
-    <string name="settings_info_boot_ads_subtitle">保持開啟有助於支持 GameNative 的開發。它絕不會拖慢遊戲啟動，也不會以任何方式影響你。</string>
-    <string name="settings_info_boot_recs_title">在載入畫面顯示遊戲推薦</string>
-    <string name="settings_info_boot_recs_subtitle">沒有贊助商卡片時，在遊戲啟動期間顯示你可能喜歡的遊戲。</string>
-    <string name="boot_rec_badge">為你推薦</string>
-    <string name="boot_ad_close_cd">關閉此卡片</string>
-    <string name="boot_ad_sheet_title_sponsored">關於贊助卡片</string>
-    <string name="boot_ad_sheet_title_rec">關於推薦</string>
-    <string name="boot_ad_sheet_body_sponsored">贊助卡片有助於支持 GameNative 的全職開發。你可以隨時在設定中更改。</string>
-    <string name="boot_ad_sheet_body_rec">推薦內容依你玩過的遊戲挑選。你可以隨時在設定中更改。</string>
-    <string name="boot_ad_close_one">關閉這一個</string>
-    <string name="boot_ad_turn_off_sponsored">關閉贊助卡片</string>
-    <string name="boot_ad_turn_off_rec">關閉推薦</string>
-    <string name="boot_ad_not_now">暫不</string>
     <string name="boot_quiz_win_default">答對了！</string>
     <string name="boot_quiz_lose_default">正確答案是 %1$s</string>
     <string name="gyro_aiming">陀螺儀瞄準</string>

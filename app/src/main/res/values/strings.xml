@@ -41,34 +41,6 @@
     <string name="steam_uninstall_success">%1$s has been uninstalled</string>
     <string name="steam_uninstall_failed">Failed to uninstall game</string>
     <string name="deleting">Deleting…</string>
-    <string name="amazon_uninstall_game_title">Uninstall Game</string>
-    <string name="amazon_uninstall_confirmation_message">Are you sure you want to uninstall %1$s? This action cannot be undone.</string>
-    <string name="amazon_install_game_title">Download Game</string>
-    <string name="amazon_install_confirmation_message">The app being installed has the following space requirements. Would you like to proceed?\n\n\tDownload Size: %1$s\n\tAvailable Space: %2$s</string>
-    <string name="amazon_verify_files_title">Verify Files</string>
-    <string name="amazon_verify_files_message">This will check all installed files against the download manifest to detect missing or corrupted files.\n\nThis may take a while for large games.</string>
-    <string name="amazon_verify_confirm">Verify</string>
-    <string name="amazon_verify_in_progress">Verifying files… This may take a while.</string>
-    <string name="amazon_verify_success">All files verified successfully.\n\n%1$d / %2$d files OK.</string>
-    <string name="amazon_verify_failed_detail">Verification found issues.\n\n%1$d / %2$d files OK\n%3$d missing\n%4$d size mismatch\n%5$d hash mismatch\n\nReinstall the game to fix corrupted files.</string>
-    <string name="amazon_verify_error">Verification failed: %1$s</string>
-    <string name="gog_uninstall_game_title">Uninstall Game</string>
-    <string name="gog_uninstall_confirmation_message">Are you sure you want to uninstall %1$s? This action cannot be undone.</string>
-    <string name="gog_install_game_title">Download Game</string>
-    <string name="gog_install_confirmation_message">The app being installed has the following space requirements. Would you like to proceed?\n\n\tDownload Size: %1$s\n\tAvailable Space: %2$s</string>
-    <string name="epic_uninstall_game_title">Uninstall Game</string>
-    <string name="epic_uninstall_game_message">Are you sure you want to uninstall %1$s? This action cannot be undone.</string>
-    <string name="epic_install_game_title">Download Game</string>
-    <string name="epic_install_game_message">The app being installed has the following space requirements. Would you like to proceed?\n\n\tDownload Size: %1$s\n\tSize on Disk: %2$s\n\tAvailable Space: %3$s</string>
-    <string name="epic_game_not_found">Game not found</string>
-    <string name="epic_starting_download">Starting download: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Starting download: %1$s + DLCs</string>
-    <string name="epic_download_failed">Failed to start download: %1$s</string>
-    <string name="epic_download_error">Download error: %1$s</string>
-    <string name="epic_cancel_download_message">Are you sure you want to cancel the download of the app?</string>
-    <string name="epic_delete_download_message">Delete all downloaded data for this game?</string>
-    <string name="epic_uninstall_failed">Uninstall failed: %1$s</string>
-    <string name="epic_uninstall_error">Uninstall error: %1$s</string>
     <string name="steam_never">Never</string>
     <string name="steam_continue">Continue</string>
     <string name="header_img_desc">App header image</string>
@@ -119,8 +91,6 @@
     <string name="downloads_cancel_confirm">Cancel download and delete files for %1$s?</string>
 
     <!-- Library Tabs -->
-    <string name="tab_recommended">Recommended</string>
-    <string name="gog_rec_empty">Add or play some games to get GOG recommendations based on your library.</string>
     <string name="tab_all">All</string>
     <string name="tab_favorites">Favorites</string>
     <string name="favorites_empty_title">No favorites yet</string>
@@ -129,9 +99,6 @@
     <string name="favorites_empty_filtered_title">No favorites to show</string>
     <string name="favorites_empty_filtered_message">No favorite games match the current search or filters, or are available in your library.</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Installed</string>
     <string name="tab_local">Custom</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -256,8 +223,6 @@
     <string name="faster_external_loading_subtitle">Can significantly speed up game boot from external storage, but may cause issues in some games</string>
     <string name="disable_libredirect_title">Disable libredirect</string>
     <string name="disable_libredirect_subtitle">May improve performance but may also cause unexpected issues</string>
-    <string name="disable_epic_overlay_title">Disable Epic Overlay</string>
-    <string name="disable_epic_overlay_subtitle">Disables the EOS overlay and CEF renderer to prevent memory exhaustion crashes in certain games</string>
     <string name="bring_to_front">Bring to Front</string>
     <string name="end_process">End Process</string>
     <string name="new_file">New File</string>
@@ -959,8 +924,6 @@
     <string name="steam_type">Steam Type</string>
 
     <!-- Container Configuration: Epic -->
-    <string name="epic_offline_mode">Epic Offline Mode</string>
-    <string name="epic_offline_mode_description">Launch Epic games in offline mode</string>
 
     <!-- Container Configuration: Graphics -->
     <string name="graphics_driver">Graphics Driver</string>
@@ -1401,12 +1364,6 @@
     <string name="settings_info_privacy_subtitle">Opens a link to GameNative\'s privacy policy</string>
     <string name="settings_hide_ai_title">Hide AI features</string>
     <string name="settings_hide_ai_subtitle">Hides the optional AI debugging help</string>
-    <string name="settings_info_boot_ads_title">Sponsored loading screens</string>
-    <string name="settings_info_boot_ads_subtitle">Keeping this on helps support GameNative\'s development. It never slows down game launches or affects you in any way.</string>
-    <string name="settings_info_boot_recs_title">Game recommendations on loading screens</string>
-    <string name="settings_info_boot_recs_subtitle">Show a game you might like while a game boots, when there is no sponsor card.</string>
-    <string name="settings_info_usage_analytics_title">Usage analytics</string>
-    <string name="settings_info_usage_analytics_subtitle">We never track personal information. Disabling this stops non-essential analytics, however core game performance data is still collected as a legitimate interest to improve compatibility.</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">Interface</string>
@@ -1796,9 +1753,6 @@
     <string name="library_source_custom">Custom Games</string>
     <string name="library_source_title">Source</string>
     <string name="library_source_not_logged_in_steam">Sign in to Steam to see your library</string>
-    <string name="library_source_not_logged_in_gog">Sign in to GOG to see your library</string>
-    <string name="library_source_not_logged_in_epic">Sign in to Epic to see your library</string>
-    <string name="library_source_not_logged_in_amazon">Sign in to Amazon to see your library</string>
     <string name="library_source_no_custom_games">No custom games added yet</string>
     <string name="library_layout_title">Layout</string>
     <string name="library_options">Options</string>
@@ -1962,10 +1916,6 @@
     <string name="auth_webview_title">Authorization</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">GOG Integration (Alpha)</string>
-    <string name="gog_settings_login_title">Sign in to GOG</string>
-    <string name="gog_settings_login_subtitle">Sign in to your GOG account</string>
-    <string name="gog_login_success_title">Login Successful</string>
     <string name="rockstar_login_required_title">Rockstar sign-in required</string>
     <string name="rockstar_login_failed">Rockstar sign-in failed: %1$s</string>
     <string name="rockstar_link_refused">This Rockstar account is linked to a different Steam account.</string>
@@ -1983,45 +1933,10 @@
     <string name="rockstar_preparing">Preparing Rockstar launcher support</string>
     <string name="rockstar_runtime_installing">Installing the Social Club runtime</string>
     <string name="rockstar_installer_missing">The Social Club installer is missing from the game files. Verify the game files in Steam and try again.</string>
-    <string name="gog_login_cancel">Cancel</string>
-    <string name="gog_settings_logout_title">Sign out of GOG</string>
-    <string name="gog_settings_logout_subtitle">Sign out from your GOG account</string>
-    <string name="gog_logout_confirm_title">Logout from GOG?</string>
-    <string name="gog_logout_confirm_message">This will remove your GOG credentials and clear your GOG library from this device. You can sign in again at any time.</string>
-    <string name="gog_logout_confirm">Logout</string>
-    <string name="gog_logout_success">Logged out from GOG successfully</string>
-    <string name="gog_logout_failed">Failed to logout: %s</string>
-    <string name="gog_logout_in_progress">Logging out from GOG…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Epic Games Integration</string>
-    <string name="epic_settings_login_title">Sign in to Epic</string>
-    <string name="epic_settings_login_subtitle">Sign in to your Epic Games account</string>
-    <string name="epic_login_success_title">Login Successful</string>
-    <string name="epic_login_cancel">Cancel</string>
-    <string name="epic_settings_logout_title">Sign out of Epic</string>
-    <string name="epic_settings_logout_subtitle">Sign out from your Epic Games account</string>
-    <string name="epic_logout_confirm_title">Logout from Epic Games?</string>
-    <string name="epic_logout_confirm_message">This will remove your Epic Games credentials and clear your Epic Games library from this device. You can sign in again at any time.</string>
-    <string name="epic_logout_confirm">Logout</string>
-    <string name="epic_logout_success">Logged out from Epic Games successfully</string>
-    <string name="epic_logout_failed">Failed to logout: %s</string>
-    <string name="epic_logout_in_progress">Logging out from Epic Games…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Amazon Games Integration (Alpha)</string>
-    <string name="amazon_settings_login_title">Sign in to Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Sign in to your Amazon Games account</string>
-    <string name="amazon_login_success_title">Login Successful</string>
-    <string name="amazon_login_cancel">Cancel</string>
-    <string name="amazon_settings_logout_title">Sign out of Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Sign out from your Amazon Games account</string>
-    <string name="amazon_logout_confirm_title">Logout from Amazon Games?</string>
-    <string name="amazon_logout_confirm_message">This will remove your Amazon Games credentials and clear your Amazon library from this device. You can sign in again at any time.</string>
-    <string name="amazon_logout_confirm">Logout</string>
-    <string name="amazon_logout_success">Logged out from Amazon Games successfully</string>
-    <string name="amazon_logout_failed">Failed to logout: %s</string>
-    <string name="amazon_logout_in_progress">Logging out from Amazon Games…</string>
     <string name="manifest_downloading_item">Downloading %1$s...</string>
     <string name="manifest_download_failed">Download failed: %1$s</string>
     <string name="manifest_install_failed">Failed to install %1$s</string>
@@ -2612,9 +2527,6 @@
     <string name="nexus_profile_name_duplicate">A profile with that name already exists</string>
     <!-- Recommendations -->
     <string name="recommended_badge">Recommended</string>
-    <string name="recommended_buy_button">Purchase on GOG</string>
-    <string name="rec_buy_with_price">%1$s · Purchase on GOG</string>
-    <string name="recommended_support_message">We earn a commission on purchases made through this link.</string>
     <string name="recommended_about_heading">About This Game</string>
     <string name="recommended_review_count">Based on %1$s reviews</string>
     <string name="library_store_media_page">%1$d of %2$d</string>
@@ -2626,39 +2538,8 @@
     <string name="library_store_about_collapse">Collapse About This Game</string>
 
     <!-- FeaturedItem (server-driven promoted slot) -->
-    <string name="featured_badge">Sponsored</string>
-    <string name="boot_rec_badge">Recommended for you</string>
-    <string name="boot_ad_close_cd">Close this card</string>
-    <string name="boot_ad_sheet_title_sponsored">About sponsor cards</string>
-    <string name="boot_ad_sheet_title_rec">About recommendations</string>
-    <string name="boot_ad_sheet_body_sponsored">Sponsor cards help fund full-time work on GameNative. You can change this any time in Settings.</string>
-    <string name="boot_ad_sheet_body_rec">Recommendations are picked from the games you play. You can change this any time in Settings.</string>
-    <string name="boot_ad_close_one">Close this one</string>
-    <string name="boot_ad_turn_off_sponsored">Turn off sponsor cards</string>
-    <string name="boot_ad_turn_off_rec">Turn off recommendations</string>
-    <string name="boot_ad_not_now">Not now</string>
     <string name="boot_quiz_win_default">Correct!</string>
     <string name="boot_quiz_lose_default">The answer was %1$s</string>
-    <string name="featured_action_wishlist">Wishlist</string>
-    <string name="featured_action_wishlist_on">Wishlist on %1$s</string>
-    <string name="featured_action_wishlisted">Wishlisted</string>
-    <string name="featured_action_get_demo">Get the Demo</string>
-    <string name="featured_action_in_library">In Library</string>
-    <string name="featured_action_failed">Couldn\'t finish in the app — opening the store page</string>
-    <string name="featured_action_preorder">Pre-order</string>
-    <string name="featured_action_preorder_on">Pre-order on %1$s</string>
-    <string name="featured_action_buy">Buy</string>
-    <string name="featured_action_buy_on">Buy on %1$s</string>
-    <string name="featured_action_notify">Notify me</string>
-    <string name="featured_action_visit">Learn more</string>
-    <string name="featured_status_coming_soon_title">Coming Soon</string>
-    <string name="featured_status_coming_soon_body">Wishlist now to get notified the moment it launches</string>
-    <string name="featured_status_early_access_title">Early Access</string>
-    <string name="featured_status_early_access_body">Available now in Early Access</string>
-    <string name="featured_status_preorder_title">Pre-order Now</string>
-    <string name="featured_status_preorder_body">Pre-order to be ready at launch</string>
-    <string name="featured_status_out_now_title">Out Now</string>
-    <string name="featured_status_out_now_body">Available now</string>
     <string name="review_overwhelmingly_positive">Overwhelmingly Positive</string>
     <string name="review_very_positive">Very Positive</string>
     <string name="review_mostly_positive">Mostly Positive</string>
@@ -2697,14 +2578,6 @@
     <string name="steam_invite_joined">In your game</string>
     <string name="steam_invite_online">Online</string>
     <string name="steam_invite_offline">Offline</string>
-    <string name="rec_disclosure_title">Game recommendations</string>
-    <string name="rec_disclosure_body">For personalized recommendations, we share the games you play with GOG. Turn off anytime in Settings.</string>
-    <string name="rec_disclosure_allow">Allow</string>
-    <string name="rec_disclosure_not_now">Not now</string>
-    <string name="rec_teaser_title">Discover games for your device</string>
-    <string name="rec_teaser_subtitle">Tap to take a look</string>
-    <string name="settings_interface_show_recommendations_title">Show game recommendations</string>
-    <string name="settings_interface_show_recommendations_subtitle">Show personalized recommendations. Keeping this on helps support GameNative.</string>
     <string name="settings_interface_show_hidden_games_title">Show hidden games by default</string>
     <string name="settings_interface_show_hidden_games_subtitle">Hidden Steam and GOG games stay visible unless you turn this off. Selecting the Hidden Steam collection always shows hidden Steam games.</string>
 
@@ -2722,9 +2595,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Auto-export installed games for game library frontends</string>
     <string name="frontend_sync_dialog_title">Frontend Sync</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Custom Games</string>
     <string name="frontend_sync_not_set">Not set</string>
     <string name="frontend_sync_clear_confirm_title">Remove old export files?</string>

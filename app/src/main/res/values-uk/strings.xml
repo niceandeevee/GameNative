@@ -41,17 +41,6 @@
     <string name="steam_uninstall_success">%1$s деінстальовано</string>
     <string name="steam_uninstall_failed">Помилка деінсталяції гри</string>
     <string name="deleting">Видалення…</string>
-    <string name="amazon_uninstall_game_title">Деінсталювати гру</string>
-    <string name="amazon_uninstall_confirmation_message">Ви впевнені, що хочете деінсталювати %1$s? Цю дію не можна скасувати.</string>
-    <string name="amazon_install_game_title">Завантажити гру</string>
-    <string name="amazon_install_confirmation_message">Гра має наступні вимоги до простору. Бажаєте продовжити?\n\n\tРозмір завантаження: %1$s\n\tДоступний простір: %2$s</string>
-    <string name="amazon_verify_files_title">Перевірити файли</string>
-    <string name="amazon_verify_files_message">Буде перевірено всі встановлені файли за маніфестом завантаження для виявлення відсутніх або пошкоджених файлів.\n\nЦе може зайняти деякий час для великих ігор.</string>
-    <string name="amazon_verify_confirm">Перевірити</string>
-    <string name="amazon_verify_in_progress">Перевірка файлів… Це може зайняти деякий час.</string>
-    <string name="amazon_verify_success">Всі файли успішно перевірено.\n\n%1$d / %2$d файлів OK.</string>
-    <string name="amazon_verify_failed_detail">Перевірка виявила проблеми.\n\n%1$d / %2$d файлів OK\n%3$d відсутніх\n%4$d невідповідність розміру\n%5$d невідповідність хешу\n\nПеревстановіть гру, щоб виправити пошкоджені файли.</string>
-    <string name="amazon_verify_error">Перевірка не вдалася: %1$s</string>
     <string name="steam_never">Ніколи</string>
     <string name="steam_continue">Продовжити</string>
     <string name="header_img_desc">Зображення заголовка застосунку</string>
@@ -80,10 +69,6 @@
     <string name="private_branch_password_success">Гілку розблоковано!</string>
     <string name="private_branch_password_invalid">Невірний код доступу</string>
     <string name="run_app">Грати</string>
-    <string name="gog_uninstall_game_title">Деінсталювати гру</string>
-    <string name="gog_uninstall_confirmation_message">Ви впевнені, що хочете деінсталювати %1$s? Цю дію не можна скасувати.</string>
-    <string name="gog_install_game_title">Завантажити гру</string>
-    <string name="gog_install_confirmation_message">Гра має наступні вимоги до простору. Бажаєте продовжити?\n\n\tРозмір завантаження: %1$s\n\tДоступний простір: %2$s</string>
     <string name="download_prompt_title">Інсталювати застосунок</string>
     <string name="calculating_space_requirements">Розрахунок необхідного місця...</string>
     <string name="delete_prompt_title">Деінсталювати застосунок</string>
@@ -157,9 +142,6 @@
     <string name="settings_storage_manage_subtitle">Переглядайте встановлення, переміщуйте їх між місцями зберігання та очищайте контейнери</string>
     <string name="tab_all">Усі</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Встановлено</string>
     <string name="tab_local">Власні</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -765,8 +747,6 @@
     <string name="launch_steam_client_beta">Запустити клієнт Steam</string>
     <string name="steam_offline_mode">Режим Офлайн Steam</string>
     <string name="steam_offline_mode_description">Запускати ігри Steam в офлайн режимі</string>
-    <string name="epic_offline_mode">Режим Офлайн Epic</string>
-    <string name="epic_offline_mode_description">Запускати ігри Epic в офлайн режимі</string>
     <string name="achievement_unlocked">Досягнення розблоковано</string>
     <string name="settings_achievement_notification_position">Позиція сповіщення про досягнення</string>
     <string name="achievement_position_top_left">Лівий верхній</string>
@@ -1222,8 +1202,6 @@
     <string name="settings_info_libraries_subtitle">Дізнайтеся, завдяки яким технологіям працює GameNative</string>
     <string name="settings_info_privacy_title">Політика конфіденційності</string>
     <string name="settings_info_privacy_subtitle">Відкриває посилання на Політику конфіденційності GameNative</string>
-    <string name="settings_info_usage_analytics_title">Аналітика використання</string>
-    <string name="settings_info_usage_analytics_subtitle">Ми ніколи не відстежуємо особисту інформацію. Вимкнення зупиняє несуттєву аналітику, однак основні дані про продуктивність ігор все одно збираються як законний інтерес для покращення сумісності.</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">Інтерфейс</string>
@@ -1694,10 +1672,6 @@
     <string name="auth_webview_title">Авторизація</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">Інтеграція GOG (Альфа)</string>
-    <string name="gog_settings_login_title">Увійти в GOG</string>
-    <string name="gog_settings_login_subtitle">Увійдіть у свій обліковий запис GOG</string>
-    <string name="gog_login_success_title">Вхід успішний</string>
     <string name="rockstar_login_required_title">Потрібен вхід у Rockstar</string>
     <string name="rockstar_login_failed">Не вдалося увійти в Rockstar: %1$s</string>
     <string name="rockstar_link_refused">Цей обліковий запис Rockstar прив’язано до іншого облікового запису Steam.</string>
@@ -1715,56 +1689,12 @@
     <string name="rockstar_preparing">Підготовка підтримки лаунчера Rockstar</string>
     <string name="rockstar_runtime_installing">Встановлення середовища Social Club</string>
     <string name="rockstar_installer_missing">У файлах гри відсутній інсталятор Social Club. Перевірте файли гри в Steam і спробуйте ще раз.</string>
-    <string name="gog_login_cancel">Скасувати</string>
-    <string name="gog_settings_logout_title">Вийти з GOG</string>
-    <string name="gog_settings_logout_subtitle">Вийти з облікового запису GOG</string>
-    <string name="gog_logout_confirm_title">Вийти з GOG?</string>
-    <string name="gog_logout_confirm_message">Це видалить ваші облікові дані GOG та очистить бібліотеку GOG на цьому пристрої. Ви можете увійти знову в будь-який час.</string>
-    <string name="gog_logout_confirm">Вийти</string>
-    <string name="gog_logout_success">Успішно вийшли з GOG</string>
-    <string name="gog_logout_failed">Не вдалося вийти: %s</string>
-    <string name="gog_logout_in_progress">Вихід з GOG…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Інтеграція Epic Games</string>
-    <string name="epic_settings_login_title">Увійти в Epic</string>
-    <string name="epic_settings_login_subtitle">Увійдіть у свій обліковий запис Epic Games</string>
-    <string name="epic_login_success_title">Вхід успішний</string>
-    <string name="epic_login_cancel">Скасувати</string>
-    <string name="epic_settings_logout_title">Вийти з Epic</string>
-    <string name="epic_settings_logout_subtitle">Відключіть свій обліковий запис Epic Games</string>
-    <string name="epic_logout_confirm_title">Вийти з Epic Games?</string>
-    <string name="epic_logout_confirm_message">Це видалить ваші облікові дані Epic Games та очистить бібліотеку Epic Games на цьому пристрої. Ви можете увійти знову в будь-який час.</string>
-    <string name="epic_logout_confirm">Вийти</string>
-    <string name="epic_logout_success">Успішно вийшли з Epic Games</string>
-    <string name="epic_logout_failed">Не вдалося вийти: %s</string>
-    <string name="epic_logout_in_progress">Вихід з Epic Games…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Інтеграція Amazon Games (Alpha)</string>
-    <string name="amazon_settings_login_title">Увійти в Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Увійдіть у свій обліковий запис Amazon Games</string>
-    <string name="amazon_login_success_title">Вхід успішний</string>
-    <string name="amazon_login_cancel">Скасувати</string>
-    <string name="amazon_settings_logout_title">Вийти з Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Вийти з облікового запису Amazon Games</string>
-    <string name="amazon_logout_confirm_title">Вийти з Amazon Games?</string>
-    <string name="amazon_logout_confirm_message">Це видалить ваші облікові дані Amazon Games та очистить вашу бібліотеку Amazon на цьому пристрої. Ви можете увійти знову будь-коли.</string>
-    <string name="amazon_logout_confirm">Вийти</string>
-    <string name="amazon_logout_success">Успішно вийшли з Amazon Games</string>
-    <string name="amazon_logout_failed">Не вдалося вийти: %s</string>
-    <string name="amazon_logout_in_progress">Вихід з Amazon Games…</string>
 
     <!-- Epic Install/Uninstall -->
-    <string name="epic_uninstall_game_title">Деінсталювати гру</string>
-    <string name="epic_uninstall_game_message">Ви впевнені, що хочете деінсталювати %1$s? Цю дію не можна скасувати.</string>
-    <string name="epic_install_game_title">Завантажити гру</string>
-    <string name="epic_install_game_message">Гра має наступні вимоги до простору. Бажаєте продовжити?\n\n\tРозмір завантаження: %1$s\n\tРозмір на диску: %2$s\n\tДоступний простір: %3$s</string>
-    <string name="epic_game_not_found">Гру не знайдено</string>
-    <string name="epic_starting_download">Початок завантаження: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Початок завантаження: %1$s + DLC</string>
-    <string name="epic_download_failed">Не вдалося розпочати завантаження: %1$s</string>
-    <string name="epic_download_error">Помилка завантаження: %1$s</string>
     <string name="manifest_downloading_item">Завантаження %1$s...</string>
     <string name="manifest_download_failed">Помилка завантаження: %1$s</string>
     <string name="manifest_install_failed">Не вдалося інсталювати %1$s</string>
@@ -1774,9 +1704,6 @@
     <string name="manifest_glibc_not_supported">Збірки GLIBC не підтримуються.</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Увійдіть, щоб отримати доступ до бібліотеки Steam.</string>
-    <string name="library_source_not_logged_in_gog">Увійдіть, щоб отримати доступ до бібліотеки GOG.</string>
-    <string name="library_source_not_logged_in_epic">Увійдіть, щоб отримати доступ до бібліотеки Epic.</string>
-    <string name="library_source_not_logged_in_amazon">Увійдіть, щоб отримати доступ до бібліотеки Amazon.</string>
     <string name="library_source_no_custom_games">Ви не додали жодної власної гри.</string>
     <string name="download_failed_title">Помилка завантаження</string>
     <string name="download_failed_message">Не вдалося завантажити необхідний файл. Перевірте підключення до мережі та спробуйте ще раз.</string>
@@ -1809,9 +1736,6 @@
 
     <!-- Recommendations -->
     <string name="recommended_badge">Рекомендовано</string>
-    <string name="recommended_buy_button">Купити в GOG</string>
-    <string name="rec_buy_with_price">%1$s · Купити в GOG</string>
-    <string name="recommended_support_message">Ми отримуємо комісію з покупок, здійснених за цим посиланням.</string>
     <string name="recommended_about_heading">Про цю гру</string>
     <string name="recommended_review_count">На основі %1$s відгуків</string>
     <string name="library_store_media_page">%1$d з %2$d</string>
@@ -1827,8 +1751,6 @@
     <string name="review_mixed">Змішані</string>
     <string name="review_mostly_negative">Переважно негативні</string>
     <string name="review_overwhelmingly_negative">Надзвичайно негативні</string>
-    <string name="settings_interface_show_recommendations_title">Показувати рекомендації ігор</string>
-    <string name="settings_interface_show_recommendations_subtitle">Показує персональні рекомендації. Залишивши це ввімкненим, ви допомагаєте підтримати GameNative.</string>
     <string name="settings_interface_library_tabs_title">Вкладки бібліотеки</string>
     <string name="settings_interface_library_tabs_subtitle">Виберіть, які вкладки магазинів показувати в бібліотеці.</string>
     <string name="settings_interface_library_tabs_none">Немає вкладок магазинів</string>
@@ -1914,9 +1836,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Автоматично експортувати встановлені ігри для фронтендів бібліотеки</string>
     <string name="frontend_sync_dialog_title">Синхронізація frontend</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Власні ігри</string>
     <string name="frontend_sync_not_set">Не задано</string>
     <string name="frontend_sync_clear_confirm_title">Видалити старі файли експорту?</string>
@@ -2520,37 +2439,8 @@
     <string name="toast_no_buttons_to_copy_appearance">Немає інших елементів для копіювання вигляду</string>
     <string name="toast_copied_button_appearance">Вигляд елемента скопійовано</string>
     <string name="toast_applied_button_appearance">Вигляд застосовано до всіх елементів</string>
-    <string name="rec_disclosure_title">Рекомендації ігор</string>
-    <string name="rec_disclosure_body">Для персональних рекомендацій ми надаємо ігри, у які ви граєте, сервісу GOG. Вимкнути можна будь-коли в Налаштуваннях.</string>
-    <string name="rec_disclosure_allow">Дозволити</string>
-    <string name="rec_disclosure_not_now">Не зараз</string>
-    <string name="rec_teaser_title">Відкрийте ігри для вашого пристрою</string>
-    <string name="rec_teaser_subtitle">Торкніться, щоб переглянути</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Спонсовано</string>
-    <string name="featured_action_wishlist">Список бажань</string>
-    <string name="featured_action_wishlist_on">До списку бажань у %1$s</string>
-    <string name="featured_action_wishlisted">У списку бажаного</string>
-    <string name="featured_action_get_demo">Отримати демо</string>
-    <string name="featured_action_in_library">У бібліотеці</string>
-    <string name="featured_action_failed">Не вдалося виконати в застосунку — відкривається сторінка крамниці</string>
-    <string name="featured_action_preorder">Передзамовити</string>
-    <string name="featured_action_preorder_on">Передзамовити у %1$s</string>
-    <string name="featured_action_buy">Придбати</string>
-    <string name="featured_action_buy_on">Придбати у %1$s</string>
-    <string name="featured_action_notify">Сповістити мене</string>
-    <string name="featured_action_visit">Докладніше</string>
-    <string name="featured_status_coming_soon_title">Незабаром</string>
-    <string name="featured_status_coming_soon_body">Додайте до списку бажань, щоб отримати сповіщення про вихід</string>
-    <string name="featured_status_early_access_title">Ранній доступ</string>
-    <string name="featured_status_early_access_body">Уже доступно в ранньому доступі</string>
-    <string name="featured_status_preorder_title">Передзамовити зараз</string>
-    <string name="featured_status_preorder_body">Передзамовте, щоб бути готовим до виходу</string>
-    <string name="featured_status_out_now_title">Уже вийшло</string>
-    <string name="featured_status_out_now_body">Доступно зараз</string>
-    <string name="tab_recommended">Рекомендовані</string>
-    <string name="gog_rec_empty">Додайте або пограйте в ігри, щоб отримати рекомендації GOG на основі вашої бібліотеки.</string>
     <!-- Steam achievements -->
     <string name="achievements">Досягнення</string>
     <string name="achievements_all_title">Всі досягнення</string>
@@ -2823,8 +2713,6 @@
     <string name="faster_external_loading_subtitle">Може значно пришвидшити запуск ігор із зовнішнього накопичувача, але може спричиняти проблеми в деяких іграх</string>
     <string name="disable_libredirect_title">Вимкнути libredirect</string>
     <string name="disable_libredirect_subtitle">Може підвищити продуктивність, але також може спричинити неочікувані проблеми</string>
-    <string name="disable_epic_overlay_title">Вимкнути оверлей Epic</string>
-    <string name="disable_epic_overlay_subtitle">Вимикає оверлей EOS і рендерер CEF, щоб запобігти вильотам через вичерпання пам\'яті в деяких іграх</string>
     <string name="binding_mode_simultaneous">Одночасно</string>
     <string name="binding_mode_sequence">Послідовно</string>
     <string name="binding_sequence_delay_ms">Затримка послідовності (мс)</string>
@@ -2842,20 +2730,6 @@
     <string name="xr_render_scale">Масштаб рендерингу VR</string>
     <string name="settings_hide_ai_title">Приховати функції ШІ</string>
     <string name="settings_hide_ai_subtitle">Приховує необов\'язкову допомогу ШІ у налагодженні</string>
-    <string name="settings_info_boot_ads_title">Спонсорські екрани завантаження</string>
-    <string name="settings_info_boot_ads_subtitle">Якщо залишити це увімкненим, ви підтримаєте розробку GameNative. Це ніколи не сповільнює запуск ігор і жодним чином на вас не впливає.</string>
-    <string name="settings_info_boot_recs_title">Рекомендації ігор на екранах завантаження</string>
-    <string name="settings_info_boot_recs_subtitle">Показувати гру, яка може вам сподобатися, під час запуску, якщо немає картки спонсора.</string>
-    <string name="boot_rec_badge">Рекомендовано для вас</string>
-    <string name="boot_ad_close_cd">Закрити цю картку</string>
-    <string name="boot_ad_sheet_title_sponsored">Про спонсорські картки</string>
-    <string name="boot_ad_sheet_title_rec">Про рекомендації</string>
-    <string name="boot_ad_sheet_body_sponsored">Спонсорські картки допомагають фінансувати роботу над GameNative на повну ставку. Це можна змінити будь-коли в Налаштуваннях.</string>
-    <string name="boot_ad_sheet_body_rec">Рекомендації добираються за іграми, у які ви граєте. Це можна змінити будь-коли в Налаштуваннях.</string>
-    <string name="boot_ad_close_one">Закрити цю</string>
-    <string name="boot_ad_turn_off_sponsored">Вимкнути спонсорські картки</string>
-    <string name="boot_ad_turn_off_rec">Вимкнути рекомендації</string>
-    <string name="boot_ad_not_now">Не зараз</string>
     <string name="boot_quiz_win_default">Правильно!</string>
     <string name="boot_quiz_lose_default">Правильна відповідь: %1$s</string>
     <string name="gyro_aiming">Гіроскопічне прицілювання</string>

@@ -41,26 +41,7 @@
     <string name="steam_uninstall_success">%1$s a fost dezinstalat</string>
     <string name="steam_uninstall_failed">Dezinstalarea jocului a eșuat</string>
     <string name="deleting">Ștergere…</string>
-    <string name="amazon_uninstall_game_title">Dezinstalare joc</string>
-    <string name="amazon_uninstall_confirmation_message">Sigur vrei să dezinstalezi %1$s? Această acțiune nu poate fi anulată.</string>
-    <string name="amazon_install_game_title">Descărcare joc</string>
-    <string name="amazon_install_confirmation_message">Aplicația ce urmează să fie instalată are următoarele cerințe de spațiu. Vrei să continui?\n\n\tDimensiune descărcare: %1$s\n\tSpațiu disponibil: %2$s</string>
-    <string name="amazon_verify_files_title">Verificare fișiere</string>
-    <string name="amazon_verify_files_message">Se vor verifica toate fișierele instalate în raport cu manifestul de descărcare pentru a detecta fișiere lipsă sau corupte.\n\nAcest lucru poate dura ceva timp pentru jocuri mari.</string>
-    <string name="amazon_verify_confirm">Verificare</string>
-    <string name="amazon_verify_in_progress">Se verifică fișierele… Poate dura ceva timp.</string>
-    <string name="amazon_verify_success">Toate fișierele au fost verificate cu succes.\n\n%1$d / %2$d fișiere OK.</string>
-    <string name="amazon_verify_failed_detail">Verificarea a găsit probleme.\n\n%1$d / %2$d fișiere OK\n%3$d lipsă\n%4$d dimensiune incorectă\n%5$d hash incorect\n\nReinstalează jocul pentru a repara fișierele corupte.</string>
-    <string name="amazon_verify_error">Verificarea a eșuat: %1$s</string>
-    <string name="gog_uninstall_game_title">Dezinstalare joc</string>
-    <string name="gog_uninstall_confirmation_message">Sigur vrei să dezinstalezi %1$s? Această acțiune nu poate fi anulată.</string>
-    <string name="gog_install_game_title">Descărcare joc</string>
-    <string name="gog_install_confirmation_message">Aplicația ce urmează să fie instalată are următoarele cerințe de spațiu. Vrei să continui?\n\n\tDimensiune descărcare: %1$s\n\tSpațiu disponibil: %2$s</string>
     <string name="steam_never">Niciodată</string>
-    <string name="epic_cancel_download_message">Sigur doriți să anulați descărcarea aplicației?</string>
-    <string name="epic_delete_download_message">Ștergeți toate datele descărcate pentru acest joc?</string>
-    <string name="epic_uninstall_failed">Dezinstalarea a eșuat: %1$s</string>
-    <string name="epic_uninstall_error">Eroare la dezinstalare: %1$s</string>
     <string name="steam_continue">Continuă</string>
     <string name="header_img_desc">Imagine antet aplicație</string>
     <string name="download">Descărcare</string>
@@ -162,9 +143,6 @@
     <!-- Library Tabs -->
     <string name="tab_all">Toate</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Instalate</string>
     <string name="tab_local">Personalizat</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -771,8 +749,6 @@
 	<string name="launch_steam_client_beta">Pornește Steam Client</string>
 	<string name="steam_offline_mode">Mod Offline Steam</string>
 	<string name="steam_offline_mode_description">Pornește jocurile Steam în mod offline</string>
-	<string name="epic_offline_mode">Mod Offline Epic</string>
-	<string name="epic_offline_mode_description">Pornește jocurile Epic în mod offline</string>
 	<string name="achievement_unlocked">Realizare deblocată</string>
 	<string name="settings_achievement_notification_position">Poziția notificării realizării</string>
 	<string name="achievement_position_top_left">Stânga sus</string>
@@ -1227,8 +1203,6 @@
 	<string name="settings_info_libraries_subtitle">Vezi tehnologiile care fac GameNative posibil</string>
 	<string name="settings_info_privacy_title">Politica de confidențialitate</string>
 	<string name="settings_info_privacy_subtitle">Deschide linkul către politica de confidențialitate GameNative</string>
-	<string name="settings_info_usage_analytics_title">Analiză utilizare</string>
-	<string name="settings_info_usage_analytics_subtitle">Nu urmărim niciodată informații personale. Dezactivarea oprește analizele neesențiale, însă datele de bază privind performanța jocurilor sunt în continuare colectate ca interes legitim pentru a îmbunătăți compatibilitatea.</string>
 
 	<!-- Settings: Interface Group -->
 	<string name="settings_interface_title">Interfață</string>
@@ -1692,60 +1666,12 @@
 	<string name="auth_webview_title">Autorizare</string>
 
 	<!-- GOG Integration -->
-	<string name="gog_integration_title">Integrare GOG (Alpha)</string>
-	<string name="gog_settings_login_title">Autentificare la GOG</string>
-	<string name="gog_settings_login_subtitle">Autentifică-te în contul tău GOG</string>
-	<string name="gog_login_success_title">Autentificare reușită</string>
-	<string name="gog_login_cancel">Anulează</string>
-	<string name="gog_settings_logout_title">Deconectare de la GOG</string>
-	<string name="gog_settings_logout_subtitle">Deconectează-te din contul tău GOG</string>
-	<string name="gog_logout_confirm_title">Te deconectezi de la GOG?</string>
-	<string name="gog_logout_confirm_message">Aceasta va elimina datele tale GOG și va șterge biblioteca GOG de pe acest dispozitiv. Te poți autentifica din nou oricând.</string>
-	<string name="gog_logout_confirm">Deconectare</string>
-	<string name="gog_logout_success">Deconectare reușită de la GOG</string>
-	<string name="gog_logout_failed">Deconectare eșuată: %s</string>
-	<string name="gog_logout_in_progress">Se deconectează de la GOG…</string>
 
 	<!-- Epic Games Integration -->
-	<string name="epic_integration_title">Integrare Epic Games</string>
-	<string name="epic_settings_login_title">Autentificare la Epic</string>
-	<string name="epic_settings_login_subtitle">Autentifică-te în contul tău Epic Games</string>
-	<string name="epic_login_success_title">Autentificare reușită</string>
-	<string name="epic_login_cancel">Anulează</string>
-	<string name="epic_settings_logout_title">Deconectare de la Epic</string>
-	<string name="epic_settings_logout_subtitle">Deconectează-te din contul tău Epic Games</string>
-	<string name="epic_logout_confirm_title">Te deconectezi de la Epic Games?</string>
-	<string name="epic_logout_confirm_message">Aceasta va elimina datele tale Epic Games și va șterge biblioteca Epic Games de pe acest dispozitiv. Te poți autentifica din nou oricând.</string>
-	<string name="epic_logout_confirm">Deconectare</string>
-	<string name="epic_logout_success">Deconectat de la Epic Games cu succes</string>
-	<string name="epic_logout_failed">Deconectare eșuată: %s</string>
-	<string name="epic_logout_in_progress">Se deconectează de la Epic Games…</string>
 
 	<!-- Amazon Games Integration -->
-	<string name="amazon_integration_title">Integrare Amazon Games (Alpha)</string>
-	<string name="amazon_settings_login_title">Autentificare</string>
-	<string name="amazon_settings_login_subtitle">Autentifică-te în contul tău Amazon Games</string>
-	<string name="amazon_login_success_title">Autentificare reușită</string>
-	<string name="amazon_login_cancel">Anulare</string>
-	<string name="amazon_settings_logout_title">Deconectare de la Amazon Games</string>
-	<string name="amazon_settings_logout_subtitle">Deconectează-te din contul tău Amazon Games</string>
-	<string name="amazon_logout_confirm_title">Deconectare de la Amazon Games?</string>
-	<string name="amazon_logout_confirm_message">Acest lucru va șterge datele de autentificare Amazon Games și va curăța biblioteca Amazon de pe acest dispozitiv. Te poți autentifica din nou oricând.</string>
-	<string name="amazon_logout_confirm">Deconectare</string>
-	<string name="amazon_logout_success">Deconectat de la Amazon Games cu succes</string>
-	<string name="amazon_logout_failed">Deconectare eșuată: %s</string>
-	<string name="amazon_logout_in_progress">Se deconectează de la Amazon Games…</string>
 
 	<!-- Epic Install/Uninstall -->
-	<string name="epic_uninstall_game_title">Dezinstalare joc</string>
-	<string name="epic_uninstall_game_message">Sigur vrei să dezinstalezi %1$s? Această acțiune nu poate fi anulată.</string>
-	<string name="epic_install_game_title">Descărcare joc</string>
-	<string name="epic_install_game_message">Aplicația ce urmează să fie instalată are următoarele cerințe de spațiu. Vrei să continui?\n\n\tDimensiune descărcare: %1$s\n\tDimensiune pe disc: %2$s\n\tSpațiu disponibil: %3$s</string>
-	<string name="epic_game_not_found">Joc negăsit</string>
-	<string name="epic_starting_download">Se pornește descărcarea: %1$s</string>
-	<string name="epic_starting_download_with_dlcs">Se pornește descărcarea: %1$s + DLC-uri</string>
-	<string name="epic_download_failed">Descărcarea nu a putut fi pornită: %1$s</string>
-	<string name="epic_download_error">Eroare la descărcare: %1$s</string>
     <string name="manifest_downloading_item">Se descarcă %1$s…</string>
     <string name="manifest_download_failed">Descărcarea a eșuat: %1$s</string>
     <string name="manifest_install_failed">Instalarea %1$s a eșuat</string>
@@ -1755,9 +1681,6 @@
     <string name="manifest_glibc_not_supported">Build-urile GLIBC nu sunt acceptate.</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Conectează-te pentru a accesa biblioteca ta Steam.</string>
-    <string name="library_source_not_logged_in_gog">Conectează-te pentru a accesa biblioteca ta GOG.</string>
-    <string name="library_source_not_logged_in_epic">Conectează-te pentru a accesa biblioteca ta Epic.</string>
-    <string name="library_source_not_logged_in_amazon">Conectează-te pentru a accesa biblioteca ta Amazon.</string>
     <string name="library_source_no_custom_games">Nu ai adăugat niciun joc personalizat.</string>
     <string name="download_failed_title">Descărcarea a eșuat</string>
     <string name="download_failed_message">Un fișier necesar nu a putut fi descărcat. Verifică conexiunea la rețea și încearcă din nou.</string>
@@ -1790,9 +1713,6 @@
 
     <!-- Recommendations -->
     <string name="recommended_badge">Recomandat</string>
-    <string name="recommended_buy_button">Cumpără pe GOG</string>
-    <string name="rec_buy_with_price">%1$s · Cumpără pe GOG</string>
-    <string name="recommended_support_message">Primim un comision pentru achizițiile efectuate prin acest link.</string>
     <string name="recommended_about_heading">Despre acest joc</string>
     <string name="recommended_review_count">Pe baza a %1$s recenzii</string>
     <string name="library_store_media_page">%1$d din %2$d</string>
@@ -1808,8 +1728,6 @@
     <string name="review_mixed">Mixt</string>
     <string name="review_mostly_negative">Majoritar negativ</string>
     <string name="review_overwhelmingly_negative">Copleșitor de negativ</string>
-    <string name="settings_interface_show_recommendations_title">Afișează recomandări de jocuri</string>
-    <string name="settings_interface_show_recommendations_subtitle">Afișează recomandări personalizate. Menținerea activă ajută la susținerea GameNative.</string>
     <string name="settings_interface_library_tabs_title">File bibliotecă</string>
     <string name="settings_interface_library_tabs_subtitle">Alege ce file de magazine apar în bibliotecă.</string>
     <string name="settings_interface_library_tabs_none">Fără file de magazine</string>
@@ -1895,9 +1813,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Exportați automat jocurile instalate pentru frontend-uri de bibliotecă</string>
     <string name="frontend_sync_dialog_title">Sincronizare frontend</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Jocuri personalizate</string>
     <string name="frontend_sync_not_set">Nesetat</string>
     <string name="frontend_sync_clear_confirm_title">Eliminați fișierele de export vechi?</string>
@@ -2501,37 +2416,8 @@
     <string name="toast_no_buttons_to_copy_appearance">Nu există alte controale de la care să copiezi aspectul</string>
     <string name="toast_copied_button_appearance">Aspectul controlului a fost copiat</string>
     <string name="toast_applied_button_appearance">Aspectul a fost aplicat tuturor controalelor</string>
-    <string name="rec_disclosure_title">Recomandări de jocuri</string>
-    <string name="rec_disclosure_body">Pentru recomandări personalizate, partajăm jocurile pe care le joci cu GOG. Poți dezactiva oricând din Setări.</string>
-    <string name="rec_disclosure_allow">Permite</string>
-    <string name="rec_disclosure_not_now">Nu acum</string>
-    <string name="rec_teaser_title">Descoperă jocuri pentru dispozitivul tău</string>
-    <string name="rec_teaser_subtitle">Atinge pentru a arunca o privire</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Sponsorizat</string>
-    <string name="featured_action_wishlist">Listă de dorințe</string>
-    <string name="featured_action_wishlist_on">Adaugă în listă pe %1$s</string>
-    <string name="featured_action_wishlisted">În lista de dorințe</string>
-    <string name="featured_action_get_demo">Obține demo-ul</string>
-    <string name="featured_action_in_library">În bibliotecă</string>
-    <string name="featured_action_failed">Nu s-a putut finaliza în aplicație – se deschide pagina magazinului</string>
-    <string name="featured_action_preorder">Precomandă</string>
-    <string name="featured_action_preorder_on">Precomandă pe %1$s</string>
-    <string name="featured_action_buy">Cumpără</string>
-    <string name="featured_action_buy_on">Cumpără pe %1$s</string>
-    <string name="featured_action_notify">Anunță-mă</string>
-    <string name="featured_action_visit">Află mai multe</string>
-    <string name="featured_status_coming_soon_title">În curând</string>
-    <string name="featured_status_coming_soon_body">Adaugă în lista de dorințe ca să fii anunțat la lansare</string>
-    <string name="featured_status_early_access_title">Acces timpuriu</string>
-    <string name="featured_status_early_access_body">Disponibil acum în acces timpuriu</string>
-    <string name="featured_status_preorder_title">Precomandă acum</string>
-    <string name="featured_status_preorder_body">Precomandă ca să fii pregătit la lansare</string>
-    <string name="featured_status_out_now_title">Disponibil acum</string>
-    <string name="featured_status_out_now_body">Acum disponibil</string>
-    <string name="tab_recommended">Recomandate</string>
-    <string name="gog_rec_empty">Adaugă sau joacă câteva jocuri pentru a primi recomandări GOG pe baza bibliotecii tale.</string>
     <!-- Steam achievements -->
 	<string name="achievements">Realizări</string>
 	<string name="achievements_all_title">Toate realizările</string>
@@ -2801,8 +2687,6 @@
     <string name="faster_external_loading_subtitle">Poate accelera semnificativ pornirea jocurilor de pe stocarea externă, dar poate cauza probleme în unele jocuri</string>
     <string name="disable_libredirect_title">Dezactivează libredirect</string>
     <string name="disable_libredirect_subtitle">Poate îmbunătăți performanța, dar poate cauza și probleme neașteptate</string>
-    <string name="disable_epic_overlay_title">Dezactivează overlay-ul Epic</string>
-    <string name="disable_epic_overlay_subtitle">Dezactivează overlay-ul EOS și motorul de randare CEF pentru a preveni blocările cauzate de epuizarea memoriei în anumite jocuri</string>
     <string name="binding_mode_simultaneous">Simultan</string>
     <string name="binding_mode_sequence">Secvență</string>
     <string name="binding_sequence_delay_ms">Întârziere secvență (ms)</string>
@@ -2820,20 +2704,6 @@
     <string name="xr_render_scale">Scară de randare VR</string>
     <string name="settings_hide_ai_title">Ascunde funcțiile AI</string>
     <string name="settings_hide_ai_subtitle">Ascunde ajutorul opțional de depanare cu AI</string>
-    <string name="settings_info_boot_ads_title">Ecrane de încărcare sponsorizate</string>
-    <string name="settings_info_boot_ads_subtitle">Păstrarea acestei opțiuni activate ajută la susținerea dezvoltării GameNative. Nu încetinește niciodată pornirea jocurilor și nu te afectează în niciun fel.</string>
-    <string name="settings_info_boot_recs_title">Recomandări de jocuri pe ecranele de încărcare</string>
-    <string name="settings_info_boot_recs_subtitle">Afișează un joc care ți-ar putea plăcea în timp ce un joc pornește, când nu există un card sponsor.</string>
-    <string name="boot_rec_badge">Recomandat pentru tine</string>
-    <string name="boot_ad_close_cd">Închide acest card</string>
-    <string name="boot_ad_sheet_title_sponsored">Despre cardurile sponsorizate</string>
-    <string name="boot_ad_sheet_title_rec">Despre recomandări</string>
-    <string name="boot_ad_sheet_body_sponsored">Cardurile sponsorizate ajută la finanțarea muncii cu normă întreagă la GameNative. Poți schimba asta oricând din Setări.</string>
-    <string name="boot_ad_sheet_body_rec">Recomandările sunt alese în funcție de jocurile pe care le joci. Poți schimba asta oricând din Setări.</string>
-    <string name="boot_ad_close_one">Închide acesta</string>
-    <string name="boot_ad_turn_off_sponsored">Dezactivează cardurile sponsorizate</string>
-    <string name="boot_ad_turn_off_rec">Dezactivează recomandările</string>
-    <string name="boot_ad_not_now">Nu acum</string>
     <string name="boot_quiz_win_default">Corect!</string>
     <string name="boot_quiz_lose_default">Răspunsul era %1$s</string>
     <string name="gyro_aiming">Țintire giroscopică</string>

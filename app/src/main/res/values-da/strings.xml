@@ -36,14 +36,6 @@
     <string name="private_branch_password_success">Gren låst op!</string>
     <string name="private_branch_password_invalid">Ugyldig adgangskode</string>
     <string name="run_app">Spil</string>
-    <string name="gog_uninstall_game_title">Afinstallér spil</string>
-    <string name="gog_uninstall_confirmation_message">Er du sikker på, at du vil afinstallere %1$s? Denne handling kan ikke fortrydes.</string>
-    <string name="gog_install_game_title">Download spil</string>
-    <string name="gog_install_confirmation_message">Appen der installeres har følgende pladskrav. Vil du fortsætte?\n\n\tDownload-størrelse: %1$s\n\tTilgængelig plads: %2$s</string>
-    <string name="epic_cancel_download_message">Er du sikker på, at du vil annullere download af appen?</string>
-    <string name="epic_delete_download_message">Slet alle downloadede data for dette spil?</string>
-    <string name="epic_uninstall_failed">Afinstallation mislykkedes: %1$s</string>
-    <string name="epic_uninstall_error">Afinstallationsfejl: %1$s</string>
     <string name="download_prompt_title">Installér app</string>
     <string name="delete_prompt_title">Slet app</string>
     <string name="cancel_download_prompt_title">Annullér download</string>
@@ -118,9 +110,6 @@
     <!-- Library Tabs -->
     <string name="tab_all">Alle</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Installeret</string>
     <string name="tab_local">Tilpasset</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -599,8 +588,6 @@
     <string name="launch_steam_client_beta">Start Steam-klient</string>
     <string name="steam_offline_mode">Steam Offline-tilstand</string>
     <string name="steam_offline_mode_description">Start Steam-spil i offline-tilstand</string>
-    <string name="epic_offline_mode">Epic Offline-tilstand</string>
-    <string name="epic_offline_mode_description">Start Epic-spil i offline-tilstand</string>
     <string name="achievement_unlocked">Præstation låst op</string>
     <string name="settings_achievement_notification_position">Placering af præstationsnotifikation</string>
     <string name="achievement_position_top_left">Øverst til venstre</string>
@@ -1039,8 +1026,6 @@
     <string name="settings_info_libraries_subtitle">Se hvilke teknologier der gør GameNative mulig</string>
     <string name="settings_info_privacy_title">Privatlivspolitik</string>
     <string name="settings_info_privacy_subtitle">Åbner et link til GameNatives privatlivspolitik</string>
-    <string name="settings_info_usage_analytics_title">Brugsanalyse</string>
-    <string name="settings_info_usage_analytics_subtitle">Vi sporer aldrig personlige oplysninger. Deaktivering stopper ikke-essentiel analyse, men grundlæggende spilydelsesdata indsamles stadig som en berettiget interesse for at forbedre kompatibilitet.</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">Grænseflade</string>
@@ -1497,17 +1482,6 @@
     <string name="steam_imagefs_install_failed">Kunne ikke installere ImageFS: %s</string>
     <string name="steam_uninstall_game_title">Afinstallér spil</string>
     <string name="deleting">Sletter…</string>
-    <string name="amazon_uninstall_game_title">Afinstallér spil</string>
-    <string name="amazon_uninstall_confirmation_message">Er du sikker på, at du vil afinstallere %1$s? Denne handling kan ikke fortrydes.</string>
-    <string name="amazon_install_game_title">Download spil</string>
-    <string name="amazon_install_confirmation_message">Appen der installeres har følgende pladskrav. Vil du fortsætte?\n\n\tDownloadstørrelse: %1$s\n\tTilgængelig plads: %2$s</string>
-    <string name="amazon_verify_files_title">Bekræft filer</string>
-    <string name="amazon_verify_files_message">Dette vil kontrollere alle installerede filer mod downloadmanifestet for at opdage manglende eller beskadigede filer.\n\nDette kan tage et stykke tid for store spil.</string>
-    <string name="amazon_verify_confirm">Bekræft</string>
-    <string name="amazon_verify_in_progress">Bekræfter filer… Dette kan tage et stykke tid.</string>
-    <string name="amazon_verify_success">Alle filer bekræftet.\n\n%1$d / %2$d filer OK.</string>
-    <string name="amazon_verify_failed_detail">Bekræftelse fandt problemer.\n\n%1$d / %2$d filer OK\n%3$d mangler\n%4$d størrelsesmismatch\n%5$d hash-mismatch\n\nGeninstaller spillet for at rette beskadigede filer.</string>
-    <string name="amazon_verify_error">Bekræftelse mislykkedes: %1$s</string>
 
     <!-- Custom Games -->
     <string name="custom_games_title">Tilpassede spil</string>
@@ -1566,10 +1540,6 @@
     <string name="auth_webview_title">Godkendelse</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">GOG Integration (Alpha)</string>
-    <string name="gog_settings_login_title">Log ind på GOG</string>
-    <string name="gog_settings_login_subtitle">Log ind på din GOG-konto</string>
-    <string name="gog_login_success_title">Login lykkedes</string>
     <string name="rockstar_login_required_title">Rockstar-login påkrævet</string>
     <string name="rockstar_login_failed">Rockstar-login mislykkedes: %1$s</string>
     <string name="rockstar_link_refused">Denne Rockstar-konto er knyttet til en anden Steam-konto.</string>
@@ -1587,56 +1557,12 @@
     <string name="rockstar_preparing">Forbereder understøttelse af Rockstar-launcheren</string>
     <string name="rockstar_runtime_installing">Installerer Social Club-runtime</string>
     <string name="rockstar_installer_missing">Social Club-installationsprogrammet mangler i spilfilerne. Verificer spilfilerne i Steam, og prøv igen.</string>
-    <string name="gog_login_cancel">Annuller</string>
-    <string name="gog_settings_logout_title">Log ud af GOG</string>
-    <string name="gog_settings_logout_subtitle">Log ud fra din GOG-konto</string>
-    <string name="gog_logout_confirm_title">Log ud fra GOG?</string>
-    <string name="gog_logout_confirm_message">Dette vil fjerne dine GOG-legitimationsoplysninger og rydde dit GOG-bibliotek fra denne enhed. Du kan logge ind igen når som helst.</string>
-    <string name="gog_logout_confirm">Log ud</string>
-    <string name="gog_logout_success">Logget ud fra GOG</string>
-    <string name="gog_logout_failed">Kunne ikke logge ud: %s</string>
-    <string name="gog_logout_in_progress">Logger ud fra GOG…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Epic Games Integration</string>
-    <string name="epic_settings_login_title">Log ind på Epic</string>
-    <string name="epic_settings_login_subtitle">Log ind på din Epic Games-konto</string>
-    <string name="epic_login_success_title">Login lykkedes</string>
-    <string name="epic_login_cancel">Annuller</string>
-    <string name="epic_settings_logout_title">Log ud</string>
-    <string name="epic_settings_logout_subtitle">Log ud fra din Epic Games-konto</string>
-    <string name="epic_logout_confirm_title">Log ud fra Epic Games?</string>
-    <string name="epic_logout_confirm_message">Dette vil fjerne dine Epic Games-legitimationsoplysninger og rydde dit Epic Games-bibliotek på denne enhed. Du kan logge ind igen når som helst.</string>
-    <string name="epic_logout_confirm">Log ud</string>
-    <string name="epic_logout_success">Logget ud fra Epic Games</string>
-    <string name="epic_logout_failed">Kunne ikke logge ud: %s</string>
-    <string name="epic_logout_in_progress">Logger ud fra Epic Games…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Amazon Games Integration (Alpha)</string>
-    <string name="amazon_settings_login_title">Log ind på Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Log ind på din Amazon Games-konto</string>
-    <string name="amazon_login_success_title">Login lykkedes</string>
-    <string name="amazon_login_cancel">Annuller</string>
-    <string name="amazon_settings_logout_title">Log ud af Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Log ud fra din Amazon Games-konto</string>
-    <string name="amazon_logout_confirm_title">Log ud fra Amazon Games?</string>
-    <string name="amazon_logout_confirm_message">Dette vil fjerne dine Amazon Games-legitimationsoplysninger og rydde dit Amazon-bibliotek fra denne enhed. Du kan logge ind igen når som helst.</string>
-    <string name="amazon_logout_confirm">Log ud</string>
-    <string name="amazon_logout_success">Logget ud fra Amazon Games</string>
-    <string name="amazon_logout_failed">Kunne ikke logge ud: %s</string>
-    <string name="amazon_logout_in_progress">Logger ud fra Amazon Games…</string>
 
     <!-- Epic Install/Uninstall -->
-    <string name="epic_uninstall_game_title">Afinstallér spil</string>
-    <string name="epic_uninstall_game_message">Er du sikker på, at du vil afinstallere %1$s? Denne handling kan ikke fortrydes.</string>
-    <string name="epic_install_game_title">Download spil</string>
-    <string name="epic_install_game_message">Appen der installeres har følgende pladskrav. Vil du fortsætte?\n\n\tDownload-størrelse: %1$s\n\tStørrelse på disk: %2$s\n\tTilgængelig plads: %3$s</string>
-    <string name="epic_game_not_found">Spil ikke fundet</string>
-    <string name="epic_starting_download">Starter download: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Starter download: %1$s + DLC</string>
-    <string name="epic_download_failed">Kunne ikke starte download: %1$s</string>
-    <string name="epic_download_error">Download-fejl: %1$s</string>
     <string name="manifest_downloading_item">Henter %1$s...</string>
     <string name="manifest_download_failed">Download mislykkedes: %1$s</string>
     <string name="manifest_install_failed">Kunne ikke installere %1$s</string>
@@ -1646,9 +1572,6 @@
     <string name="manifest_glibc_not_supported">GLIBC-builds understøttes ikke.</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Log ind for at få adgang til din Steam-bibliotek.</string>
-    <string name="library_source_not_logged_in_gog">Log ind for at få adgang til din GOG-bibliotek.</string>
-    <string name="library_source_not_logged_in_epic">Log ind for at få adgang til din Epic-bibliotek.</string>
-    <string name="library_source_not_logged_in_amazon">Log ind for at få adgang til din Amazon-bibliotek.</string>
     <string name="library_source_no_custom_games">Du har ikke tilføjet nogen brugerdefinerede spil.</string>
     <string name="download_failed_title">Download mislykkedes</string>
     <string name="download_failed_message">En nødvendig fil kunne ikke downloades. Kontrollér din netværksforbindelse, og prøv igen.</string>
@@ -1681,9 +1604,6 @@
 
     <!-- Recommendations -->
     <string name="recommended_badge">Anbefalet</string>
-    <string name="recommended_buy_button">Køb på GOG</string>
-    <string name="rec_buy_with_price">%1$s · Køb på GOG</string>
-    <string name="recommended_support_message">Vi modtager en provision af køb foretaget via dette link.</string>
     <string name="recommended_about_heading">Om dette spil</string>
     <string name="recommended_review_count">Baseret på %1$s anmeldelser</string>
     <string name="library_store_media_page">%1$d af %2$d</string>
@@ -1699,8 +1619,6 @@
     <string name="review_mixed">Blandet</string>
     <string name="review_mostly_negative">Overvejende negativ</string>
     <string name="review_overwhelmingly_negative">Overvældende negativ</string>
-    <string name="settings_interface_show_recommendations_title">Vis spilanbefalinger</string>
-    <string name="settings_interface_show_recommendations_subtitle">Vis personlige anbefalinger. At holde dette slået til hjælper med at støtte GameNative.</string>
     <string name="settings_interface_library_tabs_title">Bibliotekfaner</string>
     <string name="settings_interface_library_tabs_subtitle">Vælg, hvilke butiksfaner der vises i biblioteket.</string>
     <string name="settings_interface_library_tabs_none">Ingen butiksfaner</string>
@@ -1786,9 +1704,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Eksporter automatisk installerede spil til frontend-programmer</string>
     <string name="frontend_sync_dialog_title">Frontend-synkronisering</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Brugerdefinerede spil</string>
     <string name="frontend_sync_not_set">Ikke angivet</string>
     <string name="frontend_sync_clear_confirm_title">Fjern gamle eksportfiler?</string>
@@ -2392,37 +2307,8 @@
     <string name="toast_no_buttons_to_copy_appearance">Ingen andre kontroller at kopiere udseende fra</string>
     <string name="toast_copied_button_appearance">Kontroludseende kopieret</string>
     <string name="toast_applied_button_appearance">Udseende anvendt på alle kontroller</string>
-    <string name="rec_disclosure_title">Spilanbefalinger</string>
-    <string name="rec_disclosure_body">For personlige anbefalinger deler vi de spil, du spiller, med GOG. Slå fra når som helst i Indstillinger.</string>
-    <string name="rec_disclosure_allow">Tillad</string>
-    <string name="rec_disclosure_not_now">Ikke nu</string>
-    <string name="rec_teaser_title">Opdag spil til din enhed</string>
-    <string name="rec_teaser_subtitle">Tryk for at kigge</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Sponsoreret</string>
-    <string name="featured_action_wishlist">Ønskeliste</string>
-    <string name="featured_action_wishlist_on">Føj til ønskeliste på %1$s</string>
-    <string name="featured_action_wishlisted">På ønskelisten</string>
-    <string name="featured_action_get_demo">Hent demoen</string>
-    <string name="featured_action_in_library">I biblioteket</string>
-    <string name="featured_action_failed">Kunne ikke fuldføres i appen – åbner butikssiden</string>
-    <string name="featured_action_preorder">Forudbestil</string>
-    <string name="featured_action_preorder_on">Forudbestil på %1$s</string>
-    <string name="featured_action_buy">Køb</string>
-    <string name="featured_action_buy_on">Køb på %1$s</string>
-    <string name="featured_action_notify">Giv mig besked</string>
-    <string name="featured_action_visit">Læs mere</string>
-    <string name="featured_status_coming_soon_title">Kommer snart</string>
-    <string name="featured_status_coming_soon_body">Føj til ønskelisten nu for at få besked, så snart det udkommer</string>
-    <string name="featured_status_early_access_title">Early Access</string>
-    <string name="featured_status_early_access_body">Tilgængelig nu i Early Access</string>
-    <string name="featured_status_preorder_title">Forudbestil nu</string>
-    <string name="featured_status_preorder_body">Forudbestil for at være klar ved lanceringen</string>
-    <string name="featured_status_out_now_title">Ude nu</string>
-    <string name="featured_status_out_now_body">Tilgængelig nu</string>
-    <string name="tab_recommended">Anbefalet</string>
-    <string name="gog_rec_empty">Tilføj eller spil nogle spil for at få GOG-anbefalinger baseret på dit bibliotek.</string>
     <!-- Steam achievements -->
     <string name="achievements">Præstationer</string>
     <string name="achievements_all_title">Alle præstationer</string>
@@ -2689,8 +2575,6 @@
     <string name="faster_external_loading_subtitle">Kan gøre spilstart fra eksternt lager markant hurtigere, men kan give problemer i nogle spil</string>
     <string name="disable_libredirect_title">Deaktiver libredirect</string>
     <string name="disable_libredirect_subtitle">Kan forbedre ydeevnen, men kan også give uventede problemer</string>
-    <string name="disable_epic_overlay_title">Deaktiver Epic-overlay</string>
-    <string name="disable_epic_overlay_subtitle">Deaktiverer EOS-overlayet og CEF-rendereren for at forhindre nedbrud pga. hukommelsesmangel i visse spil</string>
     <string name="binding_mode_simultaneous">Samtidig</string>
     <string name="binding_mode_sequence">Sekvens</string>
     <string name="binding_sequence_delay_ms">Sekvensforsinkelse (ms)</string>
@@ -2708,20 +2592,6 @@
     <string name="xr_render_scale">VR-gengivelsesskala</string>
     <string name="settings_hide_ai_title">Skjul AI-funktioner</string>
     <string name="settings_hide_ai_subtitle">Skjuler den valgfrie AI-fejlfindingshjælp</string>
-    <string name="settings_info_boot_ads_title">Sponsorerede indlæsningsskærme</string>
-    <string name="settings_info_boot_ads_subtitle">At lade dette være slået til hjælper med at støtte udviklingen af GameNative. Det gør aldrig spilstart langsommere og påvirker dig ikke på nogen måde.</string>
-    <string name="settings_info_boot_recs_title">Spilanbefalinger på indlæsningsskærme</string>
-    <string name="settings_info_boot_recs_subtitle">Vis et spil, du måske kan lide, mens et spil starter, når der ikke er et sponsorkort.</string>
-    <string name="boot_rec_badge">Anbefalet til dig</string>
-    <string name="boot_ad_close_cd">Luk dette kort</string>
-    <string name="boot_ad_sheet_title_sponsored">Om sponsorkort</string>
-    <string name="boot_ad_sheet_title_rec">Om anbefalinger</string>
-    <string name="boot_ad_sheet_body_sponsored">Sponsorkort er med til at finansiere fuldtidsarbejdet på GameNative. Du kan altid ændre dette i Indstillinger.</string>
-    <string name="boot_ad_sheet_body_rec">Anbefalinger vælges ud fra de spil, du spiller. Du kan altid ændre dette i Indstillinger.</string>
-    <string name="boot_ad_close_one">Luk dette</string>
-    <string name="boot_ad_turn_off_sponsored">Slå sponsorkort fra</string>
-    <string name="boot_ad_turn_off_rec">Slå anbefalinger fra</string>
-    <string name="boot_ad_not_now">Ikke nu</string>
     <string name="boot_quiz_win_default">Korrekt!</string>
     <string name="boot_quiz_lose_default">Svaret var %1$s</string>
     <string name="gyro_aiming">Gyrosigte</string>

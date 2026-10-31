@@ -41,26 +41,7 @@
     <string name="steam_uninstall_success">%1$s è stato disinstallato</string>
     <string name="steam_uninstall_failed">Impossibile disinstallare il gioco</string>
     <string name="deleting">Eliminazione…</string>
-    <string name="amazon_uninstall_game_title">Disinstalla gioco</string>
-    <string name="amazon_uninstall_confirmation_message">Sei sicuro di voler disinstallare %1$s? Questa azione non può essere annullata.</string>
-    <string name="amazon_install_game_title">Scarica gioco</string>
-    <string name="amazon_install_confirmation_message">L\'app che stai installando ha i seguenti requisiti di spazio. Vuoi procedere?\n\n\tDimensione Download: %1$s\n\tSpazio Disponibile: %2$s</string>
-    <string name="amazon_verify_files_title">Verifica file</string>
-    <string name="amazon_verify_files_message">Verrà controllata la corrispondenza di tutti i file installati con il manifesto di download per individuare file mancanti o corrotti.\n\nPotrebbe richiedere del tempo per giochi di grandi dimensioni.</string>
-    <string name="amazon_verify_confirm">Verifica</string>
-    <string name="amazon_verify_in_progress">Verifica dei file in corso… Potrebbe richiedere del tempo.</string>
-    <string name="amazon_verify_success">Tutti i file verificati con successo.\n\n%1$d / %2$d file OK.</string>
-    <string name="amazon_verify_failed_detail">La verifica ha riscontrato problemi.\n\n%1$d / %2$d file OK\n%3$d mancanti\n%4$d dimensione errata\n%5$d hash errato\n\nReinstalla il gioco per riparare i file corrotti.</string>
-    <string name="amazon_verify_error">Verifica fallita: %1$s</string>
-    <string name="gog_uninstall_game_title">Disinstalla Gioco</string>
-    <string name="gog_uninstall_confirmation_message">Sei sicuro di voler disinstallare %1$s? Questa azione non può essere annullata.</string>
-    <string name="gog_install_game_title">Scarica Gioco</string>
-    <string name="gog_install_confirmation_message">L\'app che stai installando ha i seguenti requisiti di spazio. Vuoi procedere?\n\n\tDimensione Download: %1$s\n\tSpazio Disponibile: %2$s</string>
     <string name="steam_never">Mai</string>
-    <string name="epic_cancel_download_message">Sei sicuro di voler annullare il download dell\'app?</string>
-    <string name="epic_delete_download_message">Eliminare tutti i dati scaricati per questo gioco?</string>
-    <string name="epic_uninstall_failed">Disinstallazione non riuscita: %1$s</string>
-    <string name="epic_uninstall_error">Errore di disinstallazione: %1$s</string>
     <string name="steam_continue">Continua</string>
     <string name="header_img_desc">Immagine intestazione app</string>
     <string name="download">Scarica</string>
@@ -162,9 +143,6 @@
     <!-- Library Tabs -->
     <string name="tab_all">Tutti</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Installati</string>
     <string name="tab_local">Personalizzato</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -770,8 +748,6 @@
     <string name="launch_steam_client_beta">Avvia Client Steam</string>
     <string name="steam_offline_mode">Modalità Offline Steam</string>
     <string name="steam_offline_mode_description">Avvia i giochi Steam in modalità offline</string>
-    <string name="epic_offline_mode">Modalità Offline Epic</string>
-    <string name="epic_offline_mode_description">Avvia i giochi Epic in modalità offline</string>
     <string name="achievement_unlocked">Obiettivo sbloccato</string>
     <string name="settings_achievement_notification_position">Posizione notifica obiettivo</string>
     <string name="achievement_position_top_left">In alto a sinistra</string>
@@ -1217,8 +1193,6 @@
     <string name="settings_info_libraries_subtitle">Vedi quali tecnologie rendono possibile GameNative</string>
     <string name="settings_info_privacy_title">Informativa sulla Privacy</string>
     <string name="settings_info_privacy_subtitle">Apre un link all\'informativa sulla privacy di GameNative</string>
-    <string name="settings_info_usage_analytics_title">Analisi di utilizzo</string>
-    <string name="settings_info_usage_analytics_subtitle">Non raccogliamo mai informazioni personali. Disabilitando questa opzione si interrompono le analisi non essenziali, tuttavia i dati sulle prestazioni di gioco vengono comunque raccolti come interesse legittimo per migliorare la compatibilità.</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">Interfaccia</string>
@@ -1687,10 +1661,6 @@
     <string name="auth_webview_title">Autorizzazione</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">Integrazione GOG (Alpha)</string>
-    <string name="gog_settings_login_title">Accedi a GOG</string>
-    <string name="gog_settings_login_subtitle">Accedi al tuo account GOG</string>
-    <string name="gog_login_success_title">Login Riuscito</string>
     <string name="rockstar_login_required_title">Accesso Rockstar richiesto</string>
     <string name="rockstar_login_failed">Accesso Rockstar non riuscito: %1$s</string>
     <string name="rockstar_link_refused">Questo account Rockstar è collegato a un altro account Steam.</string>
@@ -1708,56 +1678,12 @@
     <string name="rockstar_preparing">Preparazione del supporto per il launcher Rockstar</string>
     <string name="rockstar_runtime_installing">Installazione del runtime Social Club</string>
     <string name="rockstar_installer_missing">L\'installer di Social Club manca nei file del gioco. Verifica i file del gioco in Steam e riprova.</string>
-    <string name="gog_login_cancel">Annulla</string>
-    <string name="gog_settings_logout_title">Esci da GOG</string>
-    <string name="gog_settings_logout_subtitle">Disconnettiti dal tuo account GOG</string>
-    <string name="gog_logout_confirm_title">Logout da GOG?</string>
-    <string name="gog_logout_confirm_message">Questo rimuoverà le tue credenziali GOG e cancellerà la tua libreria GOG da questo dispositivo. Puoi accedere nuovamente in qualsiasi momento.</string>
-    <string name="gog_logout_confirm">Logout</string>
-    <string name="gog_logout_success">Disconnesso da GOG con successo</string>
-    <string name="gog_logout_failed">Impossibile disconnettersi: %s</string>
-    <string name="gog_logout_in_progress">Disconnessione da GOG…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Integrazione Epic Games</string>
-    <string name="epic_settings_login_title">Accedi</string>
-    <string name="epic_settings_login_subtitle">Accedi al tuo account Epic Games</string>
-    <string name="epic_login_success_title">Accesso riuscito</string>
-    <string name="epic_login_cancel">Annulla</string>
-    <string name="epic_settings_logout_title">Esci da Epic</string>
-    <string name="epic_settings_logout_subtitle">Disconnetti il tuo account Epic Games</string>
-    <string name="epic_logout_confirm_title">Uscire da Epic Games?</string>
-    <string name="epic_logout_confirm_message">Questo rimuoverà le tue credenziali Epic Games e cancellerà la tua libreria Epic Games da questo dispositivo. Puoi accedere nuovamente in qualsiasi momento.</string>
-    <string name="epic_logout_confirm">Esci</string>
-    <string name="epic_logout_success">Disconnesso da Epic Games con successo</string>
-    <string name="epic_logout_failed">Disconnessione fallita: %s</string>
-    <string name="epic_logout_in_progress">Uscita da Epic Games…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Integrazione Amazon Games (Alpha)</string>
-    <string name="amazon_settings_login_title">Accedi ad Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Accedi al tuo account Amazon Games</string>
-    <string name="amazon_login_success_title">Accesso riuscito</string>
-    <string name="amazon_login_cancel">Annulla</string>
-    <string name="amazon_settings_logout_title">Esci da Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Esci dal tuo account Amazon Games</string>
-    <string name="amazon_logout_confirm_title">Disconnettersi da Amazon Games?</string>
-    <string name="amazon_logout_confirm_message">Questo rimuoverà le tue credenziali Amazon Games e cancellerà la tua libreria Amazon da questo dispositivo. Puoi accedere nuovamente in qualsiasi momento.</string>
-    <string name="amazon_logout_confirm">Esci</string>
-    <string name="amazon_logout_success">Disconnesso da Amazon Games con successo</string>
-    <string name="amazon_logout_failed">Disconnessione fallita: %s</string>
-    <string name="amazon_logout_in_progress">Uscita da Amazon Games…</string>
 
     <!-- Epic Install/Uninstall -->
-    <string name="epic_uninstall_game_title">Disinstalla gioco</string>
-    <string name="epic_uninstall_game_message">Sei sicuro di voler disinstallare %1$s? Questa azione non può essere annullata.</string>
-    <string name="epic_install_game_title">Scarica gioco</string>
-    <string name="epic_install_game_message">L\'app in fase di installazione ha i seguenti requisiti di spazio. Vuoi procedere?\n\n\tDimensione download: %1$s\n\tDimensione su disco: %2$s\n\tSpazio disponibile: %3$s</string>
-    <string name="epic_game_not_found">Gioco non trovato</string>
-    <string name="epic_starting_download">Avvio download: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Avvio download: %1$s + DLC</string>
-    <string name="epic_download_failed">Impossibile avviare il download: %1$s</string>
-    <string name="epic_download_error">Errore download: %1$s</string>
     <string name="manifest_downloading_item">Download di %1$s…</string>
     <string name="manifest_download_failed">Download failed: %1$s</string>
     <string name="manifest_install_failed">Failed to install %1$s</string>
@@ -1767,9 +1693,6 @@
     <string name="manifest_glibc_not_supported">GLIBC builds are not supported.</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Accedi per accedere alla tua libreria Steam.</string>
-    <string name="library_source_not_logged_in_gog">Accedi per accedere alla tua libreria GOG.</string>
-    <string name="library_source_not_logged_in_epic">Accedi per accedere alla tua libreria Epic.</string>
-    <string name="library_source_not_logged_in_amazon">Accedi per accedere alla tua libreria Amazon.</string>
     <string name="library_source_no_custom_games">Non hai aggiunto nessun gioco personalizzato.</string>
     <string name="download_failed_title">Download non riuscito</string>
     <string name="download_failed_message">Non è stato possibile scaricare un file necessario. Controlla la connessione di rete e riprova.</string>
@@ -1802,9 +1725,6 @@
 
     <!-- Recommendations -->
     <string name="recommended_badge">Consigliato</string>
-    <string name="recommended_buy_button">Acquista su GOG</string>
-    <string name="rec_buy_with_price">%1$s · Acquista su GOG</string>
-    <string name="recommended_support_message">Riceviamo una commissione sugli acquisti effettuati tramite questo link.</string>
     <string name="recommended_about_heading">Informazioni sul gioco</string>
     <string name="recommended_review_count">Basato su %1$s recensioni</string>
     <string name="library_store_media_page">%1$d di %2$d</string>
@@ -1820,8 +1740,6 @@
     <string name="review_mixed">Nella media</string>
     <string name="review_mostly_negative">Perlopiù negativo</string>
     <string name="review_overwhelmingly_negative">Estremamente negativo</string>
-    <string name="settings_interface_show_recommendations_title">Mostra consigli di gioco</string>
-    <string name="settings_interface_show_recommendations_subtitle">Mostra consigli personalizzati. Tenerlo attivo aiuta a supportare GameNative.</string>
     <string name="settings_interface_library_tabs_title">Schede della libreria</string>
     <string name="settings_interface_library_tabs_subtitle">Scegli quali schede degli store mostrare nella libreria.</string>
     <string name="settings_interface_library_tabs_none">Nessuna scheda store</string>
@@ -1907,9 +1825,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Esporta automaticamente i giochi installati per i frontend di libreria</string>
     <string name="frontend_sync_dialog_title">Sincronizzazione frontend</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Giochi personalizzati</string>
     <string name="frontend_sync_not_set">Non impostato</string>
     <string name="frontend_sync_clear_confirm_title">Rimuovere i vecchi file di esportazione?</string>
@@ -2513,37 +2428,8 @@
     <string name="toast_no_buttons_to_copy_appearance">Nessun altro controllo disponibile da cui copiare aspetto</string>
     <string name="toast_copied_button_appearance">Aspetto del controllo copiato</string>
     <string name="toast_applied_button_appearance">Aspetto applicato a tutti i controlli</string>
-    <string name="rec_disclosure_title">Consigli sui giochi</string>
-    <string name="rec_disclosure_body">Per consigli personalizzati, condividiamo i giochi a cui giochi con GOG. Puoi disattivarlo in qualsiasi momento nelle Impostazioni.</string>
-    <string name="rec_disclosure_allow">Consenti</string>
-    <string name="rec_disclosure_not_now">Non ora</string>
-    <string name="rec_teaser_title">Scopri giochi per il tuo dispositivo</string>
-    <string name="rec_teaser_subtitle">Tocca per dare un\'occhiata</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Sponsorizzato</string>
-    <string name="featured_action_wishlist">Lista dei desideri</string>
-    <string name="featured_action_wishlist_on">Aggiungi ai desideri su %1$s</string>
-    <string name="featured_action_wishlisted">Nella lista dei desideri</string>
-    <string name="featured_action_get_demo">Ottieni la demo</string>
-    <string name="featured_action_in_library">Nella libreria</string>
-    <string name="featured_action_failed">Impossibile completare nell\'app: apertura della pagina del negozio</string>
-    <string name="featured_action_preorder">Preordina</string>
-    <string name="featured_action_preorder_on">Preordina su %1$s</string>
-    <string name="featured_action_buy">Acquista</string>
-    <string name="featured_action_buy_on">Acquista su %1$s</string>
-    <string name="featured_action_notify">Avvisami</string>
-    <string name="featured_action_visit">Scopri di più</string>
-    <string name="featured_status_coming_soon_title">In arrivo</string>
-    <string name="featured_status_coming_soon_body">Aggiungilo ai desideri per ricevere una notifica al lancio</string>
-    <string name="featured_status_early_access_title">Accesso anticipato</string>
-    <string name="featured_status_early_access_body">Disponibile ora in accesso anticipato</string>
-    <string name="featured_status_preorder_title">Preordina ora</string>
-    <string name="featured_status_preorder_body">Preordina per essere pronto al lancio</string>
-    <string name="featured_status_out_now_title">Disponibile ora</string>
-    <string name="featured_status_out_now_body">Ora disponibile</string>
-    <string name="tab_recommended">Consigliati</string>
-    <string name="gog_rec_empty">Aggiungi o gioca ad alcuni giochi per ricevere consigli GOG basati sulla tua libreria.</string>
     <!-- Steam achievements -->
     <string name="achievements">Obiettivi</string>
     <string name="achievements_all_title">Tutti gli obiettivi</string>
@@ -2810,8 +2696,6 @@
     <string name="faster_external_loading_subtitle">Può velocizzare notevolmente l\'avvio dei giochi dalla memoria esterna, ma può causare problemi in alcuni giochi</string>
     <string name="disable_libredirect_title">Disattiva libredirect</string>
     <string name="disable_libredirect_subtitle">Può migliorare le prestazioni, ma può anche causare problemi imprevisti</string>
-    <string name="disable_epic_overlay_title">Disattiva overlay Epic</string>
-    <string name="disable_epic_overlay_subtitle">Disattiva l\'overlay EOS e il renderer CEF per evitare crash per esaurimento della memoria in alcuni giochi</string>
     <string name="binding_mode_simultaneous">Simultaneo</string>
     <string name="binding_mode_sequence">Sequenza</string>
     <string name="binding_sequence_delay_ms">Ritardo sequenza (ms)</string>
@@ -2829,20 +2713,6 @@
     <string name="xr_render_scale">Scala di rendering VR</string>
     <string name="settings_hide_ai_title">Nascondi funzioni IA</string>
     <string name="settings_hide_ai_subtitle">Nasconde l\'aiuto al debug con IA opzionale</string>
-    <string name="settings_info_boot_ads_title">Schermate di caricamento sponsorizzate</string>
-    <string name="settings_info_boot_ads_subtitle">Lasciare questa opzione attiva aiuta a sostenere lo sviluppo di GameNative. Non rallenta mai l\'avvio dei giochi e non ti influenza in alcun modo.</string>
-    <string name="settings_info_boot_recs_title">Giochi consigliati nelle schermate di caricamento</string>
-    <string name="settings_info_boot_recs_subtitle">Mostra un gioco che potrebbe piacerti durante l\'avvio, quando non c\'è una scheda sponsor.</string>
-    <string name="boot_rec_badge">Consigliato per te</string>
-    <string name="boot_ad_close_cd">Chiudi questa scheda</string>
-    <string name="boot_ad_sheet_title_sponsored">Informazioni sulle schede sponsorizzate</string>
-    <string name="boot_ad_sheet_title_rec">Informazioni sui consigli</string>
-    <string name="boot_ad_sheet_body_sponsored">Le schede sponsorizzate aiutano a finanziare il lavoro a tempo pieno su GameNative. Puoi cambiare questa scelta in qualsiasi momento nelle Impostazioni.</string>
-    <string name="boot_ad_sheet_body_rec">I consigli sono scelti in base ai giochi a cui giochi. Puoi cambiare questa scelta in qualsiasi momento nelle Impostazioni.</string>
-    <string name="boot_ad_close_one">Chiudi questa</string>
-    <string name="boot_ad_turn_off_sponsored">Disattiva le schede sponsorizzate</string>
-    <string name="boot_ad_turn_off_rec">Disattiva i consigli</string>
-    <string name="boot_ad_not_now">Non ora</string>
     <string name="boot_quiz_win_default">Corretto!</string>
     <string name="boot_quiz_lose_default">La risposta era %1$s</string>
     <string name="gyro_aiming">Mira giroscopica</string>

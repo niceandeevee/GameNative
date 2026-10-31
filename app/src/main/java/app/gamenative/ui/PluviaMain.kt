@@ -145,7 +145,6 @@ import app.gamenative.utils.UpdateInstaller
 import app.gamenative.utils.LaunchDependencies
 import app.gamenative.workshop.WorkshopManager
 import app.gamenative.workshop.compatibility.SlayTheSpireModTheSpireCompatibility
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.winlator.container.Container
 import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
@@ -2310,9 +2309,6 @@ fun preLaunchApp(
         // Check if this is a Custom Game and validate executable selection before installing components
         // Skip the check if booting to container (Open Container menu option)
         val isCustomGame = gameSource == GameSource.CUSTOM_GAME
-
-        // set up Ubuntu file system — download required files and install
-        SplitCompat.install(context)
 
         try {
             LaunchDependencies().ensureLaunchDependencies(

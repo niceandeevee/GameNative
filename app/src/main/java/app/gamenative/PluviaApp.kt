@@ -27,7 +27,7 @@ import app.gamenative.utils.downloader.ContainerFilesDownloader
 import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
-import com.google.android.play.core.splitcompat.SplitCompatApplication
+import android.app.Application
 
 import app.gamenative.billing.PlayBilling
 import com.winlator.container.Container
@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 typealias NavChangedListener = NavController.OnDestinationChangedListener
 
 @HiltAndroidApp
-class PluviaApp : SplitCompatApplication() {
+class PluviaApp : Application() {
 
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
