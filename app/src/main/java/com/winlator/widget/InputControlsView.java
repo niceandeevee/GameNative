@@ -655,10 +655,20 @@ public class InputControlsView extends View {
         gyroInputPriority.setManualMouseMoving(mouseMoveOffset, false);
     }
 
+    private static final int[] JOYSTICK_AXES = {MotionEvent.AXIS_X, MotionEvent.AXIS_Y, MotionEvent.AXIS_Z, MotionEvent.AXIS_RZ, MotionEvent.AXIS_HAT_X, MotionEvent.AXIS_HAT_Y};
+    // Reused on every stick event (only touched on the UI thread), instead of two arrays per event
+    private final float[] joystickValues = new float[JOYSTICK_AXES.length];
+
     private void processJoystickInput(ExternalController controller) {
         ExternalControllerBinding controllerBinding;
-        final int[] axes = {MotionEvent.AXIS_X, MotionEvent.AXIS_Y, MotionEvent.AXIS_Z, MotionEvent.AXIS_RZ, MotionEvent.AXIS_HAT_X, MotionEvent.AXIS_HAT_Y};
-        final float[] values = {controller.state.thumbLX, controller.state.thumbLY, controller.state.thumbRX, controller.state.thumbRY, controller.state.getDPadX(), controller.state.getDPadY()};
+        final int[] axes = JOYSTICK_AXES;
+        final float[] values = joystickValues;
+        values[0] = controller.state.thumbLX;
+        values[1] = controller.state.thumbLY;
+        values[2] = controller.state.thumbRX;
+        values[3] = controller.state.thumbRY;
+        values[4] = controller.state.getDPadX();
+        values[5] = controller.state.getDPadY();
 
         for (byte i = 0; i < axes.length; i++) {
             // Tuned analog-stick values already include the user's chosen deadzone, so anything
