@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import app.gamenative.R
 import app.gamenative.data.GameSource
-import app.gamenative.utils.launchdependencies.GogScriptInterpreterDependency
 import app.gamenative.utils.launchdependencies.LaunchDependency
 import app.gamenative.utils.launchdependencies.LaunchDependencyCallbacks
 import com.winlator.container.Container
@@ -13,7 +12,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.unmockkAll
 import kotlinx.coroutines.runBlocking
@@ -31,13 +29,14 @@ class LaunchDependenciesTest {
     private lateinit var context: Context
     private lateinit var container: Container
     private lateinit var sut: LaunchDependencies
+    private lateinit var dep: LaunchDependency
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         container = mockk(relaxed = true)
         sut = LaunchDependencies()
-        mockkObject(GogScriptInterpreterDependency)
+        dep = mockk()
     }
 
     @After
@@ -70,16 +69,16 @@ class LaunchDependenciesTest {
 
     @Test
     fun ensureLaunchDependencies_installsWhenUnsatisfied_andAlwaysResetsLoadingUi() = runBlocking {
-        sut.setDependenciesProviderForTests { listOf(GogScriptInterpreterDependency) }
-        every { GogScriptInterpreterDependency.appliesTo(container, GameSource.GOG, 7) } returns true
-        every { GogScriptInterpreterDependency.isSatisfied(context, container, GameSource.GOG, 7) } returns false
-        every { GogScriptInterpreterDependency.getLoadingMessage(context, container, GameSource.GOG, 7) } returns "Downloading dep"
+        sut.setDependenciesProviderForTests { listOf(dep) }
+        every { dep.appliesTo(container, GameSource.STEAM, 7) } returns true
+        every { dep.isSatisfied(context, container, GameSource.STEAM, 7) } returns false
+        every { dep.getLoadingMessage(context, container, GameSource.STEAM, 7) } returns "Downloading dep"
         coEvery {
-            GogScriptInterpreterDependency.install(
+            dep.install(
                 context,
                 container,
                 any<LaunchDependencyCallbacks>(),
-                GameSource.GOG,
+                GameSource.STEAM,
                 7,
             )
         } just runs
@@ -90,18 +89,18 @@ class LaunchDependenciesTest {
         sut.ensureLaunchDependencies(
             context = context,
             container = container,
-            gameSource = GameSource.GOG,
+            gameSource = GameSource.STEAM,
             gameId = 7,
             setLoadingMessage = { messages += it },
             setLoadingProgress = { progress += it },
         )
 
         coVerify(exactly = 1) {
-            GogScriptInterpreterDependency.install(
+            dep.install(
                 context,
                 container,
                 any<LaunchDependencyCallbacks>(),
-                GameSource.GOG,
+                GameSource.STEAM,
                 7,
             )
         }
@@ -112,9 +111,9 @@ class LaunchDependenciesTest {
 
     @Test
     fun ensureLaunchDependencies_skipsInstallWhenAlreadySatisfied_andStillResetsLoadingUi() = runBlocking {
-        sut.setDependenciesProviderForTests { listOf(GogScriptInterpreterDependency) }
-        every { GogScriptInterpreterDependency.appliesTo(container, GameSource.GOG, 8) } returns true
-        every { GogScriptInterpreterDependency.isSatisfied(context, container, GameSource.GOG, 8) } returns true
+        sut.setDependenciesProviderForTests { listOf(dep) }
+        every { dep.appliesTo(container, GameSource.STEAM, 8) } returns true
+        every { dep.isSatisfied(context, container, GameSource.STEAM, 8) } returns true
 
         val messages = mutableListOf<String>()
         val progress = mutableListOf<Float>()
@@ -122,14 +121,14 @@ class LaunchDependenciesTest {
         sut.ensureLaunchDependencies(
             context = context,
             container = container,
-            gameSource = GameSource.GOG,
+            gameSource = GameSource.STEAM,
             gameId = 8,
             setLoadingMessage = { messages += it },
             setLoadingProgress = { progress += it },
         )
 
         coVerify(exactly = 0) {
-            GogScriptInterpreterDependency.install(
+            dep.install(
                 any(),
                 any(),
                 any<LaunchDependencyCallbacks>(),
@@ -143,16 +142,16 @@ class LaunchDependenciesTest {
 
     @Test
     fun ensureLaunchDependencies_resetsLoadingUi_evenIfInstallFails() = runBlocking {
-        sut.setDependenciesProviderForTests { listOf(GogScriptInterpreterDependency) }
-        every { GogScriptInterpreterDependency.appliesTo(container, GameSource.GOG, 9) } returns true
-        every { GogScriptInterpreterDependency.isSatisfied(context, container, GameSource.GOG, 9) } returns false
-        every { GogScriptInterpreterDependency.getLoadingMessage(context, container, GameSource.GOG, 9) } returns "Downloading dep"
+        sut.setDependenciesProviderForTests { listOf(dep) }
+        every { dep.appliesTo(container, GameSource.STEAM, 9) } returns true
+        every { dep.isSatisfied(context, container, GameSource.STEAM, 9) } returns false
+        every { dep.getLoadingMessage(context, container, GameSource.STEAM, 9) } returns "Downloading dep"
         coEvery {
-            GogScriptInterpreterDependency.install(
+            dep.install(
                 context,
                 container,
                 any<LaunchDependencyCallbacks>(),
-                GameSource.GOG,
+                GameSource.STEAM,
                 9,
             )
         } throws IllegalStateException("install failed")
@@ -165,7 +164,7 @@ class LaunchDependenciesTest {
             sut.ensureLaunchDependencies(
                 context = context,
                 container = container,
-                gameSource = GameSource.GOG,
+                gameSource = GameSource.STEAM,
                 gameId = 9,
                 setLoadingMessage = { messages += it },
                 setLoadingProgress = { progress += it },

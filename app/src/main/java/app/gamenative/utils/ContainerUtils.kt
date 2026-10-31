@@ -11,9 +11,6 @@ import app.gamenative.display.GamescopeSettings
 import app.gamenative.enums.Marker
 import app.gamenative.inputcontrols.ControlProfileService
 import app.gamenative.service.SteamService
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
 import com.winlator.container.Container
 import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
@@ -157,7 +154,6 @@ object ContainerUtils {
             localSavesOnly = PrefManager.localSavesOnly,
             steamOfflineMode = PrefManager.steamOfflineMode,
             loadMods = PrefManager.loadMods,
-            epicOfflineMode = PrefManager.epicOfflineMode,
             useLegacyDRM = PrefManager.useLegacyDRM,
             unpackFiles = PrefManager.unpackFiles,
             suspendPolicy = PrefManager.suspendPolicy,
@@ -257,7 +253,6 @@ object ContainerUtils {
         PrefManager.localSavesOnly = containerData.localSavesOnly
         PrefManager.steamOfflineMode = containerData.steamOfflineMode
         PrefManager.loadMods = containerData.loadMods
-        PrefManager.epicOfflineMode = containerData.epicOfflineMode
         PrefManager.useLegacyDRM = containerData.useLegacyDRM
         PrefManager.unpackFiles = containerData.unpackFiles
         PrefManager.suspendPolicy = containerData.suspendPolicy
@@ -373,8 +368,6 @@ object ContainerUtils {
             localSavesOnly = container.isLocalSavesOnly,
             steamOfflineMode = container.isSteamOfflineMode(),
             loadMods = container.isLoadMods(),
-            epicOfflineMode = container.isEpicOfflineMode(),
-            disableEpicOverlay = container.isDisableEpicOverlay,
             useLegacyDRM = container.isUseLegacyDRM(),
             unpackFiles = container.isUnpackFiles(),
             suspendPolicy = container.suspendPolicy,
@@ -474,7 +467,6 @@ object ContainerUtils {
                 "useLegacyDRM" -> value?.let { updatedData.copy(useLegacyDRM = it as? Boolean ?: updatedData.useLegacyDRM) } ?: updatedData
                 "steamOfflineMode" -> value?.let { updatedData.copy(steamOfflineMode = it as? Boolean ?: updatedData.steamOfflineMode) } ?: updatedData
                 "loadMods" -> value?.let { updatedData.copy(loadMods = it as? Boolean ?: updatedData.loadMods) } ?: updatedData
-                "epicOfflineMode" -> value?.let { updatedData.copy(epicOfflineMode = it as? Boolean ?: updatedData.epicOfflineMode) } ?: updatedData
                 "unpackFiles" -> value?.let { updatedData.copy(unpackFiles = it as? Boolean ?: updatedData.unpackFiles) } ?: updatedData
                 "suspendPolicy" -> value?.let { updatedData.copy(suspendPolicy = it as? String ?: updatedData.suspendPolicy) } ?: updatedData
                 "envVars" -> value?.let { updatedData.copy(envVars = it as? String ?: updatedData.envVars) } ?: updatedData
@@ -601,8 +593,6 @@ object ContainerUtils {
         container.setLocalSavesOnly(containerData.localSavesOnly)
         container.setSteamOfflineMode(containerData.steamOfflineMode)
         container.setLoadMods(containerData.loadMods)
-        container.setEpicOfflineMode(containerData.epicOfflineMode)
-        container.setDisableEpicOverlay(containerData.disableEpicOverlay)
         container.setUseLegacyDRM(containerData.useLegacyDRM)
         container.setUnpackFiles(containerData.unpackFiles)
         container.setSuspendPolicy(containerData.suspendPolicy)
@@ -763,69 +753,8 @@ object ContainerUtils {
                 }
             }
 
-            GameSource.GOG -> {
-                // For GOG games, map the specific game directory to A: drive
-                val gameId = extractGameIdFromContainerId(appId)
-                val game = GOGService.getGOGGameOf(gameId.toString())
-                if (game != null && game.installPath.isNotEmpty()) {
-                    val gameInstallPath = game.installPath
-                    val drive: Char = if (defaultDrives.contains("A:")) {
-                        Container.getNextAvailableDriveLetter(defaultDrives)
-                    } else {
-                        'A'
-                    }
-                    "$defaultDrives$drive:$gameInstallPath"
-                } else {
-                    Timber.w("Could not find GOG game info for: $gameId, using default drives")
-                    defaultDrives
-                }
-            }
 
-            GameSource.EPIC -> {
-                // For Epic games, map the specific game directory to A: drive
-                val gameId = extractGameIdFromContainerId(appId)
-                val game = EpicService.getEpicGameOf(gameId)
 
-                if (game != null && game.installPath.isNotEmpty()) {
-                    val gameInstallPath = game.installPath
-                    Timber.tag("Epic").d("EPIC GAME FOUND FOR DRIVE: $gameId")
-                    Timber.tag("Epic").d("EPIC INSTALL PATH FOUND FOR DRIVE: $gameInstallPath")
-
-                    val drive: Char = if (defaultDrives.contains("A:")) {
-                        Container.getNextAvailableDriveLetter(defaultDrives)
-                    } else {
-                        'A'
-                    }
-                    "$defaultDrives$drive:$gameInstallPath"
-                } else {
-                    if (game == null) {
-                        Timber.tag("Epic").w("Could not find Epic game info for: $gameId, using default drives")
-                    } else {
-                        Timber.tag("Epic").w("Epic game $gameId has empty install path, using default drives")
-                    }
-                    defaultDrives
-                }
-            }
-
-            GameSource.AMAZON -> {
-                // For Amazon games, map the specific game directory to A: drive
-                val appIdInt = runCatching { extractGameIdFromContainerId(appId) }.getOrNull()
-                val installPath = if (appIdInt != null) {
-                    AmazonService.getInstallPathByAppId(appIdInt)
-                } else null
-
-                if (installPath != null && installPath.isNotEmpty()) {
-                    val drive: Char = if (defaultDrives.contains("A:")) {
-                        Container.getNextAvailableDriveLetter(defaultDrives)
-                    } else {
-                        'A'
-                    }
-                    "$defaultDrives$drive:$installPath"
-                } else {
-                    Timber.w("Could not find Amazon game install path for appId: $appIdInt, using default drives")
-                    defaultDrives
-                }
-            }
         }
         Timber.d("Prepared container drives: $drives")
 
@@ -996,7 +925,6 @@ object ContainerUtils {
                 forceDlc = PrefManager.forceDlc,
                 steamOfflineMode = PrefManager.steamOfflineMode,
                 loadMods = PrefManager.loadMods,
-                epicOfflineMode = PrefManager.epicOfflineMode,
                 useLegacyDRM = PrefManager.useLegacyDRM,
                 unpackFiles = PrefManager.unpackFiles,
                 suspendPolicy = PrefManager.suspendPolicy,
@@ -1050,7 +978,7 @@ object ContainerUtils {
         }
 
         // No custom config, so determine the DX wrapper synchronously (only for Steam games)
-        // For GOG and Custom Games, use the default DX wrapper from preferences
+        // For Custom Games, use the default DX wrapper from preferences
         if (gameSource == GameSource.STEAM) {
             runBlocking {
                 try {
@@ -1117,52 +1045,22 @@ object ContainerUtils {
         }
 
         // Ensure Custom Games have the A: drive mapped to the game folder
-        // and GOG games have a drive mapped to the GOG games directory
-        // and Epic games have a drive mapped to the Epic game directory
         val gameSource = extractGameSourceFromContainerId(appId)
         val gameFolderPath: String? = when (gameSource) {
             GameSource.STEAM -> {
                 val gameId = extractGameIdFromContainerId(appId)
                 SteamService.getAppDirPath(gameId)
             }
-
-            GameSource.GOG -> {
-                val gameId = extractGameIdFromContainerId(appId)
-                GOGService.getInstallPath(gameId.toString())
-            }
-
-            GameSource.EPIC -> {
-                val gameId = extractGameIdFromContainerId(appId)
-                EpicService.getInstallPath(gameId)
-            }
-
             GameSource.CUSTOM_GAME -> {
                 CustomGameScanner.getFolderPathFromAppId(appId)
             }
 
-            GameSource.AMAZON -> {
-                val appIdInt = runCatching { extractGameIdFromContainerId(appId) }.getOrNull()
-                if (appIdInt != null) AmazonService.getInstallPathByAppId(appIdInt) else null
-            }
         }
 
         val resolvedGameFolderPath = if (gameSource == GameSource.CUSTOM_GAME) {
             CustomGameScanner.migrateToInternalStorage(gameFolderPath)
         } else {
             StorageUtils.resolveLegacyGameDir(gameFolderPath)
-        }
-
-        if (resolvedGameFolderPath != null && resolvedGameFolderPath != gameFolderPath) {
-            when (gameSource) {
-                GameSource.GOG ->
-                    GOGService.updateInstallPath(extractGameIdFromContainerId(appId).toString(), resolvedGameFolderPath)
-                GameSource.EPIC ->
-                    EpicService.updateInstallPath(extractGameIdFromContainerId(appId), resolvedGameFolderPath)
-                GameSource.AMAZON ->
-                    runCatching { extractGameIdFromContainerId(appId) }.getOrNull()
-                        ?.let { AmazonService.updateInstallPath(it, resolvedGameFolderPath) }
-                else -> {}
-            }
         }
 
         if (resolvedGameFolderPath != null) {
@@ -1288,11 +1186,8 @@ object ContainerUtils {
      * Extracts the game ID from a container ID string
      * Handles formats like:
      * - STEAM_123456 -> 123456
-     * - EPIC_2938123
      * - CUSTOM_GAME_571969840 -> 571969840
-     * - GOG_19283103 -> 19283103
      * - STEAM_123456(1) -> 123456
-     * - 19283103 -> 19283103 (legacy GOG format)
      */
     fun extractGameIdFromContainerId(containerId: String): Int {
         // Remove duplicate suffix like (1), (2) if present
@@ -1321,9 +1216,6 @@ object ContainerUtils {
         return when {
             containerId.startsWith("STEAM_") -> GameSource.STEAM
             containerId.startsWith("CUSTOM_GAME_") -> GameSource.CUSTOM_GAME
-            containerId.startsWith("GOG_") -> GameSource.GOG
-            containerId.startsWith("EPIC_") -> GameSource.EPIC
-            containerId.startsWith("AMAZON_") -> GameSource.AMAZON
             // Add other platforms here..
             else -> GameSource.STEAM // default fallback
         }
@@ -1337,9 +1229,6 @@ object ContainerUtils {
 
     fun supportsKnownConfigAutoApply(gameSource: GameSource): Boolean = when (gameSource) {
         GameSource.STEAM,
-        GameSource.GOG,
-        GameSource.EPIC,
-        GameSource.AMAZON,
         GameSource.CUSTOM_GAME,
         -> true
     }
@@ -1353,9 +1242,6 @@ object ContainerUtils {
         val gameId = extractGameIdFromContainerId(containerId)
         return when (gameSource) {
             GameSource.STEAM -> SteamService.getAppInfoOf(gameId)?.name
-            GameSource.GOG -> GOGService.getGOGGameOf(gameId.toString())?.title
-            GameSource.EPIC -> EpicService.getEpicGameOf(gameId)?.title
-            GameSource.AMAZON -> AmazonService.getAmazonGameByAppId(gameId)?.title
             GameSource.CUSTOM_GAME -> {
                 val customAppId = "${GameSource.CUSTOM_GAME.name}_$gameId"
                 CustomGameScanner.getFolderPathFromAppId(customAppId)
@@ -1403,7 +1289,7 @@ object ContainerUtils {
             Timber.d("Scanning for executables in A: drive: $aDrivePath")
 
             // Recursively scan for .exe/.bat files using listFiles with depth limit.
-            // Symlinked directories are skipped to avoid cycles (e.g. GOG ISI rootdir -> game root).
+            // Symlinked directories are skipped to avoid cycles (a link back to a parent folder).
             fun scanRecursive(dir: File, baseDir: File, depth: Int = 0, maxDepth: Int = 10) {
                 if (depth > maxDepth) return
 

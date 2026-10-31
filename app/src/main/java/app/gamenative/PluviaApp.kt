@@ -9,8 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-import app.gamenative.db.dao.AmazonGameDao
-import app.gamenative.db.dao.GOGGameDao
 import app.gamenative.display.GamescopeCommandQueue
 import app.gamenative.events.EventDispatcher
 import app.gamenative.mods.NexusAuthManager
@@ -52,8 +50,6 @@ typealias NavChangedListener = NavController.OnDestinationChangedListener
 @HiltAndroidApp
 class PluviaApp : SplitCompatApplication() {
 
-    @Inject lateinit var gogGameDao: GOGGameDao
-    @Inject lateinit var amazonGameDao: AmazonGameDao
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -99,12 +95,7 @@ class PluviaApp : SplitCompatApplication() {
         NexusAuthManager.initialize(this)
         FrontendSyncManager.init(this)
 
-        // Initialize GOGConstants
-        app.gamenative.service.gog.GOGConstants.init(this)
-
         DownloadService.populateDownloadService(this)
-
-        migrateGogAmazonPaths()
 
         appScope.launch {
             ContainerMigrator.migrateLegacyContainersIfNeeded(
@@ -131,79 +122,11 @@ class PluviaApp : SplitCompatApplication() {
             Timber.e(e, "[PluviaApp]: Failed to clear temporary config overrides")
         }
 
-        // No analytics in this build: the PostHog SDK and the device / GPU / power probes that
-        // only fed it are gone (see app.gamenative.analytics.PostHog).
-
         PlayIntegrity.warmUp(this)
 
         Thread {
             PowerManager.initialize(this)
         }.start()
-    }
-
-    /**
-     * One-time migration: moves GOG/Amazon game directories from
-     * {filesDir}/ to {dataDir}/ to match Steam/Epic, and updates DB paths.
-     */
-    private fun migrateGogAmazonPaths() {
-        if (PrefManager.gogAmazonPathMigrated) return
-
-        val dataDir = dataDir.path
-        val filesDir = filesDir.absolutePath
-        Timber.i("[Migration] Migrating GOG/Amazon install paths from $filesDir to $dataDir")
-
-        val migrations = listOf(
-            File(filesDir, "GOG") to File(dataDir, "GOG"),
-            File(filesDir, "Amazon") to File(dataDir, "Amazon"),
-        )
-
-        for ((oldDir, newDir) in migrations) {
-            if (!oldDir.exists()) continue
-            if (newDir.exists()) {
-                Timber.w("[Migration] Target already exists, skipping rename: ${newDir.path}")
-                continue
-            }
-            val renamed = oldDir.renameTo(newDir)
-            if (renamed) {
-                Timber.i("[Migration] Renamed ${oldDir.path} -> ${newDir.path}")
-            } else {
-                Timber.w("[Migration] Failed to rename ${oldDir.path} -> ${newDir.path}")
-            }
-        }
-
-        val oldPrefix = "$filesDir/"
-        val newPrefix = "$dataDir/"
-
-        runBlocking(Dispatchers.IO) {
-            try {
-                val gogGames = gogGameDao.getAllAsList()
-                for (game in gogGames) {
-                    if (game.installPath.isNotEmpty() && game.installPath.contains(oldPrefix)) {
-                        val updated = game.copy(installPath = game.installPath.replace(oldPrefix, newPrefix))
-                        gogGameDao.update(updated)
-                    }
-                }
-                Timber.i("[Migration] Updated ${gogGames.count { it.installPath.contains(oldPrefix) }} GOG install paths")
-            } catch (e: Exception) {
-                Timber.e(e, "[Migration] Failed to update GOG DB paths")
-            }
-
-            try {
-                val amazonGames = amazonGameDao.getAllAsList()
-                for (game in amazonGames) {
-                    if (game.installPath.isNotEmpty() && game.installPath.contains(oldPrefix)) {
-                        val newPath = game.installPath.replace(oldPrefix, newPrefix)
-                        amazonGameDao.markAsInstalled(game.productId, newPath, game.installSize, game.versionId)
-                    }
-                }
-                Timber.i("[Migration] Updated ${amazonGames.count { it.installPath.contains(oldPrefix) }} Amazon install paths")
-            } catch (e: Exception) {
-                Timber.e(e, "[Migration] Failed to update Amazon DB paths")
-            }
-        }
-
-        PrefManager.gogAmazonPathMigrated = true
-        Timber.i("[Migration] GOG/Amazon path migration complete")
     }
 
     companion object {

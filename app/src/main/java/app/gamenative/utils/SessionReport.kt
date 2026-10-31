@@ -18,95 +18,12 @@ import app.gamenative.powercontrol.metrics.PowerTelemetry
 import com.winlator.container.Container
 import java.io.File
 import org.json.JSONObject
-import app.gamenative.analytics.PostHog
 import com.winlator.core.GPUHelper
 import com.winlator.core.GPUInformation
 import com.winlator.widget.FrameRating
 import com.winlator.xserver.Window
 import kotlin.math.roundToInt
 import timber.log.Timber
-
-object DeviceInfo {
-
-    fun registerSuperProperties(context: Context) {
-        try {
-            registerAll(deviceProperties(context))
-        } catch (e: Exception) {
-            Timber.w(e, "DeviceInfo: device properties failed")
-        }
-    }
-
-    fun registerGpuSuperProperties(context: Context) {
-        try {
-            registerAll(gpuProperties(context))
-        } catch (e: Exception) {
-            Timber.w(e, "DeviceInfo: gpu properties failed")
-        }
-    }
-
-    fun registerPowerSuperProperties() {
-        try {
-            registerAll(PowerTelemetry.capabilityProperties())
-        } catch (e: Exception) {
-            Timber.w(e, "DeviceInfo: power properties failed")
-        }
-    }
-
-    private fun registerAll(props: Map<String, Any>) {
-        props.forEach { (key, value) -> PostHog.register(key, value) }
-    }
-
-    private fun systemProperty(name: String): String? = runCatching {
-        val cls = Class.forName("android.os.SystemProperties")
-        cls.getMethod("get", String::class.java).invoke(null, name) as? String
-    }.getOrNull()?.takeIf { it.isNotBlank() }
-
-    private fun deviceProperties(context: Context): Map<String, Any> = buildMap {
-        put("modern_build", BuildConfig.MODERN_ANDROID)
-        put("device_codename", Build.DEVICE)
-        put("board", Build.BOARD)
-        put("hardware", Build.HARDWARE)
-        put("build_fingerprint", Build.FINGERPRINT)
-        put("build_id", Build.ID)
-        put("build_incremental", Build.VERSION.INCREMENTAL)
-        put("security_patch", Build.VERSION.SECURITY_PATCH)
-        put("firmware_build_time", java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date(Build.TIME)))
-        systemProperty("ro.product.first_api_level")?.toIntOrNull()?.let { put("first_api_level", it) }
-        put("kernel_version", System.getProperty("os.version") ?: "")
-        put("cpu_abi", Build.SUPPORTED_ABIS.firstOrNull() ?: "")
-        put("cpu_cores", Runtime.getRuntime().availableProcessors())
-        HardwareUtils.getSOCName()?.let { put("soc_model", it) }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Build.SOC_MANUFACTURER?.takeIf { it.isNotBlank() }?.let { put("soc_manufacturer", it) }
-        }
-
-        val memInfo = ActivityManager.MemoryInfo()
-        (context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager)?.getMemoryInfo(memInfo)
-        if (memInfo.totalMem > 0) put("ram_total_mb", memInfo.totalMem / (1024L * 1024L))
-
-        runCatching { StatFs(context.dataDir.path).totalBytes }
-            .getOrNull()?.let { put("storage_total_gb", it / (1024L * 1024L * 1024L)) }
-
-        val display = (context.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager)
-            ?.getDisplay(Display.DEFAULT_DISPLAY)
-        display?.let { d ->
-            val mode = d.mode
-            put("screen_width_px", mode.physicalWidth)
-            put("screen_height_px", mode.physicalHeight)
-            put("screen_refresh_hz", d.supportedModes.maxOfOrNull { it.refreshRate }?.toInt() ?: mode.refreshRate.toInt())
-        }
-        put("screen_density_dpi", context.resources.displayMetrics.densityDpi)
-    }
-
-    private fun gpuProperties(context: Context): Map<String, Any> = buildMap {
-        GPUInformation.getRenderer(context)?.takeIf { it.isNotBlank() }?.let { put("gpu_name", it) }
-        GPUInformation.getVendor(context)?.takeIf { it.isNotBlank() }?.let { put("gpu_vendor", it) }
-        GPUInformation.getVersion(context)?.takeIf { it.isNotBlank() }?.let { put("gpu_driver_version", it) }
-        runCatching { GPUHelper.vkGetApiVersion() }.getOrNull()?.let { api ->
-            put("vulkan_api_version", "${GPUHelper.vkVersionMajor(api)}.${GPUHelper.vkVersionMinor(api)}.${api and 0xFFF}")
-        }
-    }
-}
 
 object SessionReport {
 

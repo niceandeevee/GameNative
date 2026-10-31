@@ -8,10 +8,7 @@ import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryItem
 import app.gamenative.data.SteamApp
 import app.gamenative.data.AppInfo
-import app.gamenative.db.dao.AmazonGameDao
 import app.gamenative.db.dao.AppInfoDao
-import app.gamenative.db.dao.EpicGameDao
-import app.gamenative.db.dao.GOGGameDao
 import app.gamenative.db.dao.SteamAppDao
 import app.gamenative.enums.AppType
 import app.gamenative.enums.OSArch
@@ -19,12 +16,6 @@ import app.gamenative.events.AndroidEvent
 import app.gamenative.inputcontrols.ControlProfileService
 import app.gamenative.service.DownloadService
 import app.gamenative.service.SteamService
-import app.gamenative.service.amazon.AmazonConstants
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.service.epic.EpicConstants
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGConstants
-import app.gamenative.service.gog.GOGService
 import com.winlator.core.FileUtils
 import com.winlator.xenvironment.ImageFs
 import dagger.hilt.EntryPoint
@@ -51,9 +42,6 @@ object ContainerStorageManager {
     interface StorageManagerDaoEntryPoint {
         fun steamAppDao(): SteamAppDao
         fun appInfoDao(): AppInfoDao
-        fun gogGameDao(): GOGGameDao
-        fun epicGameDao(): EpicGameDao
-        fun amazonGameDao(): AmazonGameDao
     }
 
     enum class Status {
@@ -280,31 +268,6 @@ object ContainerStorageManager {
         } else {
             null
         }
-        val gogGame = if (gameSource == GameSource.GOG) {
-            val gameId = extractGameId(normalizedContainerId)?.toString()
-                ?: return@withContext Result.failure(IllegalArgumentException("Invalid GOG game id"))
-            entryPoint.gogGameDao().getById(gameId)
-                ?: return@withContext Result.failure(IllegalStateException("GOG game not found in database"))
-        } else {
-            null
-        }
-        val epicGame = if (gameSource == GameSource.EPIC) {
-            val gameId = extractGameId(normalizedContainerId)
-                ?: return@withContext Result.failure(IllegalArgumentException("Invalid Epic game id"))
-            entryPoint.epicGameDao().getById(gameId)
-                ?: return@withContext Result.failure(IllegalStateException("Epic game not found in database"))
-        } else {
-            null
-        }
-        val amazonGame = if (gameSource == GameSource.AMAZON) {
-            val gameId = extractGameId(normalizedContainerId)
-                ?: return@withContext Result.failure(IllegalArgumentException("Invalid Amazon game id"))
-            entryPoint.amazonGameDao().getByAppId(gameId)
-                ?: return@withContext Result.failure(IllegalStateException("Amazon game not found in database"))
-        } else {
-            null
-        }
-
         Timber.tag("ContainerStorageManager").i(
             "Moving game %s from %s to %s",
             entry.containerId,
@@ -327,23 +290,8 @@ object ContainerStorageManager {
                 steamGameId?.let { PluviaApp.events.emitJava(AndroidEvent.LibraryInstallStatusChanged(it, GameSource.STEAM)) }
             }
 
-            GameSource.GOG -> {
-                gogGame?.let {
-                    entryPoint.gogGameDao().update(it.copy(installPath = targetDir.absolutePath, installSize = installSize))
-                }
-            }
 
-            GameSource.EPIC -> {
-                epicGame?.let {
-                    entryPoint.epicGameDao().update(it.copy(installPath = targetDir.absolutePath, installSize = installSize))
-                }
-            }
 
-            GameSource.AMAZON -> {
-                amazonGame?.let {
-                    entryPoint.amazonGameDao().markAsInstalled(it.productId, targetDir.absolutePath, installSize, it.versionId)
-                }
-            }
 
             GameSource.CUSTOM_GAME -> {
                 return@withContext Result.failure(UnsupportedOperationException("Custom games are not supported"))
@@ -424,32 +372,8 @@ object ContainerStorageManager {
                     }
                 }
 
-                GameSource.GOG -> {
-                    val result = GOGService.deleteGame(
-                        context,
-                        LibraryItem(
-                            appId = normalizedContainerId,
-                            name = entry.displayName,
-                            gameSource = GameSource.GOG,
-                        ),
-                    )
-                    if (result.isSuccess && entry.hasContainer) removeContainer(context, entry.containerId)
-                    result
-                }
 
-                GameSource.EPIC -> {
-                    val result = EpicService.deleteGame(context, gameId)
-                    if (result.isSuccess && entry.hasContainer) removeContainer(context, entry.containerId)
-                    result
-                }
 
-                GameSource.AMAZON -> {
-                    val productId = AmazonService.getProductIdByAppId(gameId)
-                        ?: return@withContext Result.failure(Exception("Amazon product id not found"))
-                    val result = AmazonService.deleteGame(context, productId)
-                    if (result.isSuccess && entry.hasContainer) removeContainer(context, entry.containerId)
-                    result
-                }
 
                 GameSource.CUSTOM_GAME -> Result.failure(UnsupportedOperationException("Custom games are not supported"))
             }
@@ -483,75 +407,6 @@ object ContainerStorageManager {
             games.forEach { installedGames[it.appId] = it }
         }.onFailure { e ->
             Timber.tag("ContainerStorageManager").w(e, "Failed to load installed Steam games")
-        }
-
-        runCatching {
-            entryPoint.gogGameDao().getAllAsList()
-                .asSequence()
-                .filter { it.isInstalled && it.installPath.isNotBlank() }
-                .mapNotNull { game ->
-                    val installDir = File(game.installPath)
-                    if (!installDir.exists()) return@mapNotNull null
-                    InstalledGame(
-                        appId = "${GameSource.GOG.name}_${game.id}",
-                        displayName = game.title.ifBlank { game.id },
-                        gameSource = GameSource.GOG,
-                        installPath = installDir.absolutePath,
-                        iconUrl = game.iconUrl.ifEmpty { game.imageUrl },
-                        installSizeBytes = game.installSize.takeIf { it > 0L },
-                    )
-                }
-                .toList()
-        }.onSuccess { games ->
-            games.forEach { installedGames[it.appId] = it }
-        }.onFailure { e ->
-            Timber.tag("ContainerStorageManager").w(e, "Failed to load installed GOG games")
-        }
-
-        runCatching {
-            entryPoint.epicGameDao().getAllAsList()
-                .asSequence()
-                .filter { it.isInstalled && it.installPath.isNotBlank() }
-                .mapNotNull { game ->
-                    val installDir = File(game.installPath)
-                    if (!installDir.exists()) return@mapNotNull null
-                    InstalledGame(
-                        appId = "${GameSource.EPIC.name}_${game.id}",
-                        displayName = game.title.ifBlank { game.appName.ifBlank { game.id.toString() } },
-                        gameSource = GameSource.EPIC,
-                        installPath = installDir.absolutePath,
-                        iconUrl = game.iconUrl,
-                        installSizeBytes = game.installSize.takeIf { it > 0L },
-                    )
-                }
-                .toList()
-        }.onSuccess { games ->
-            games.forEach { installedGames[it.appId] = it }
-        }.onFailure { e ->
-            Timber.tag("ContainerStorageManager").w(e, "Failed to load installed Epic games")
-        }
-
-        runCatching {
-            entryPoint.amazonGameDao().getAllAsList()
-                .asSequence()
-                .filter { it.isInstalled && it.installPath.isNotBlank() }
-                .mapNotNull { game ->
-                    val installDir = File(game.installPath)
-                    if (!installDir.exists()) return@mapNotNull null
-                    InstalledGame(
-                        appId = "${GameSource.AMAZON.name}_${game.appId}",
-                        displayName = game.title.ifBlank { game.productId },
-                        gameSource = GameSource.AMAZON,
-                        installPath = installDir.absolutePath,
-                        iconUrl = game.artUrl,
-                        installSizeBytes = game.installSize.takeIf { it > 0L },
-                    )
-                }
-                .toList()
-        }.onSuccess { games ->
-            games.forEach { installedGames[it.appId] = it }
-        }.onFailure { e ->
-            Timber.tag("ContainerStorageManager").w(e, "Failed to load installed Amazon games")
         }
 
         runCatching {
@@ -764,20 +619,8 @@ object ContainerStorageManager {
                 MoveTarget.EXTERNAL -> SteamService.externalAppInstallPath
             }
 
-            GameSource.GOG -> when (target) {
-                MoveTarget.INTERNAL -> GOGConstants.internalGOGGamesPath
-                MoveTarget.EXTERNAL -> GOGConstants.externalGOGGamesPath
-            }
 
-            GameSource.EPIC -> when (target) {
-                MoveTarget.INTERNAL -> EpicConstants.internalEpicGamesPath(context)
-                MoveTarget.EXTERNAL -> EpicConstants.externalEpicGamesPath()
-            }
 
-            GameSource.AMAZON -> when (target) {
-                MoveTarget.INTERNAL -> AmazonConstants.internalAmazonGamesPath(context)
-                MoveTarget.EXTERNAL -> AmazonConstants.externalAmazonGamesPath()
-            }
 
             GameSource.CUSTOM_GAME -> null
         }
@@ -796,9 +639,6 @@ object ContainerStorageManager {
 
         val internalRoots = when (gameSource) {
             GameSource.STEAM -> listOf(SteamService.internalAppInstallPath)
-            GameSource.GOG -> listOf(GOGConstants.internalGOGGamesPath)
-            GameSource.EPIC -> listOf(EpicConstants.internalEpicGamesPath(context))
-            GameSource.AMAZON -> listOf(AmazonConstants.internalAmazonGamesPath(context))
             GameSource.CUSTOM_GAME -> emptyList()
         }
 
@@ -819,9 +659,6 @@ object ContainerStorageManager {
                     )
                 }
 
-                GameSource.GOG -> if (PrefManager.externalStoragePath.isNotBlank()) add(GOGConstants.externalGOGGamesPath)
-                GameSource.EPIC -> if (PrefManager.externalStoragePath.isNotBlank()) add(EpicConstants.externalEpicGamesPath())
-                GameSource.AMAZON -> if (PrefManager.externalStoragePath.isNotBlank()) add(AmazonConstants.externalAmazonGamesPath())
                 GameSource.CUSTOM_GAME -> Unit
             }
 
@@ -840,9 +677,6 @@ object ContainerStorageManager {
     private fun inferExternalInstallRoot(gameSource: GameSource, installPath: String): String? {
         val expectedRootSegments = when (gameSource) {
             GameSource.STEAM -> listOf("Steam", "steamapps", "common")
-            GameSource.GOG -> listOf("GOG", "games", "common")
-            GameSource.EPIC -> listOf("Epic", "games")
-            GameSource.AMAZON -> listOf("Amazon", "games")
             GameSource.CUSTOM_GAME -> emptyList()
         }
         if (expectedRootSegments.isEmpty()) return null
@@ -961,9 +795,6 @@ object ContainerStorageManager {
     internal fun detectGameSource(containerId: String): GameSource? = when {
         containerId.startsWith("STEAM_") -> GameSource.STEAM
         containerId.startsWith("CUSTOM_GAME_") -> GameSource.CUSTOM_GAME
-        containerId.startsWith("GOG_") -> GameSource.GOG
-        containerId.startsWith("EPIC_") -> GameSource.EPIC
-        containerId.startsWith("AMAZON_") -> GameSource.AMAZON
         else -> null
     }
 
@@ -1000,36 +831,8 @@ object ContainerStorageManager {
                 )
             }
 
-            GameSource.GOG -> {
-                val game = GOGService.getGOGGameOf(gameId.toString())
-                ResolvedGame(
-                    name = game?.title,
-                    installPath = game?.installPath,
-                    iconUrl = game?.iconUrl?.ifEmpty { game.imageUrl }.orEmpty(),
-                    known = game != null,
-                )
-            }
 
-            GameSource.EPIC -> {
-                val game = EpicService.getEpicGameOf(gameId)
-                ResolvedGame(
-                    name = game?.title,
-                    installPath = game?.installPath,
-                    iconUrl = game?.iconUrl.orEmpty(),
-                    known = game != null,
-                )
-            }
 
-            GameSource.AMAZON -> {
-                val productId = AmazonService.getProductIdByAppId(gameId)
-                val game = productId?.let { AmazonService.getAmazonGameOf(it) }
-                ResolvedGame(
-                    name = game?.title,
-                    installPath = game?.installPath,
-                    iconUrl = game?.artUrl.orEmpty(),
-                    known = game != null,
-                )
-            }
         }
     }
 

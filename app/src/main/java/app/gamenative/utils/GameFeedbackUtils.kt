@@ -7,9 +7,6 @@ import app.gamenative.api.ApiResult
 import app.gamenative.api.GameRunApi
 import app.gamenative.data.GameSource
 import app.gamenative.service.SteamService
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
 import com.winlator.core.GPUInformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,22 +41,6 @@ object GameFeedbackUtils {
                     } else {
                         ""
                     }
-                }
-                GameSource.AMAZON -> {
-                    val productId = AmazonService.getProductIdByAppId(gameId)
-                    if (!productId.isNullOrBlank()) {
-                        AmazonService.getAmazonGameOf(productId)?.title ?: ""
-                    } else {
-                        ""
-                    }
-                }
-                GameSource.EPIC -> {
-                    val game = EpicService.getEpicGameOf(gameId)
-                    game?.title ?: ""
-                }
-                GameSource.GOG -> {
-                    val game = GOGService.getGOGGameOf(gameId.toString())
-                    game?.title ?: ""
                 }
                 GameSource.STEAM -> {
                     val appInfo = SteamService.getAppInfoOf(gameId)

@@ -82,12 +82,12 @@ class KeyedCompositeGameFixTest {
     @Test
     fun keyedComposite_keyedProperties_matchConstructorValues() {
         val fix = KeyedCompositeGameFix(
-            gameSource = GameSource.GOG,
+            gameSource = GameSource.STEAM,
             gameId = "1635627436",
             fixes = emptyList(),
         )
 
-        assertEquals(GameSource.GOG, fix.gameSource)
+        assertEquals(GameSource.STEAM, fix.gameSource)
         assertEquals("1635627436", fix.gameId)
     }
 

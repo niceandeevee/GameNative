@@ -17,8 +17,6 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import app.gamenative.ui.screen.auth.EpicOAuthActivity;
-
 public class WineRequestComponent extends EnvironmentComponent {
     abstract class RequestCodes {
         static final int OPEN_URL = 1;
@@ -91,30 +89,12 @@ public class WineRequestComponent extends EnvironmentComponent {
         inputStream.readFully(data);
         String url = new String(data, "UTF-8");
 
-        if (isEpicAccountUrl(url)) {
-            // handled, start EpicOAuthActivity here, pass the url to EpicOAuthActivity
-            Intent intent = new Intent();
-            intent.setClass(context, EpicOAuthActivity.class);
-            intent.putExtra(EpicOAuthActivity.EXTRA_GAME_AUTH_URL, url);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-            return;
-        }
-
         if (openWithAndroidBrowser) {
             Log.d("WineRequestComponent", "Received request code OPEN_URL with url " + url.substring(0, Math.min(url.length(), 20)));
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
-    }
-
-    private static boolean isEpicAccountUrl(String url) {
-        Uri uri = Uri.parse(url);
-        String host = uri.getHost();
-        String path = uri.getPath();
-        return host != null && (host.equals("epicgames.com") || host.equals("www.epicgames.com"))
-            && path != null && path.startsWith("/id/");
     }
 
 }

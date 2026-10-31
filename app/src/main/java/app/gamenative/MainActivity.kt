@@ -43,10 +43,7 @@ import app.gamenative.mods.NexusNxmSubmission
 import app.gamenative.mods.NexusPendingDownloadStore
 import app.gamenative.ui.screen.library.appscreen.BaseAppScreen
 import app.gamenative.service.SteamService
-import app.gamenative.service.gog.GOGService
-import app.gamenative.service.epic.EpicService
 import app.gamenative.ui.PluviaMain
-import app.gamenative.ui.trackAiDebug
 import app.gamenative.ui.enums.Orientation
 import app.gamenative.ui.screen.support.SupportSession
 import app.gamenative.ui.util.LocalSnackbarHostController
@@ -60,7 +57,6 @@ import app.gamenative.utils.IntentLaunchManager
 import app.gamenative.utils.LauncherOrientation
 import app.gamenative.utils.LocaleHelper
 import app.gamenative.ui.util.SnackbarManager
-import app.gamenative.analytics.PostHog
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import com.winlator.core.AppUtils
 import com.winlator.inputcontrols.ControllerManager
@@ -364,7 +360,6 @@ class MainActivity : ComponentActivity() {
                 PrefManager.discordRelayToken = token
                 PrefManager.discordLinkedName = intent.data?.getQueryParameter("name").orEmpty()
                 PrefManager.discordMergePending = true
-                trackAiDebug("ai_debug_discord_linked")
                 SnackbarManager.show(getString(R.string.debug_report_discord_linked))
             } else if (token.isNotEmpty()) {
                 Timber.w("[IntentLaunch]: Rejecting discord-linked token with mismatched state")
@@ -524,16 +519,7 @@ class MainActivity : ComponentActivity() {
             SteamService.stop()
         }
 
-        if (GOGService.isRunning && !isChangingConfigurations) {
-            Timber.i("Stopping GOG Service")
-            GOGService.stop()
-        }
 
-        // Stop EpicService when app is destroyed (unless config change)
-        if (EpicService.isRunning && !isChangingConfigurations) {
-            Timber.i("Stopping EpicService - app destroyed")
-            EpicService.stop()
-        }
     }
 
     private fun hasReadyGameLifecycleState(action: String): Boolean {
@@ -587,22 +573,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Restart GOG service if it went down
-        if (GOGService.hasStoredCredentials(this) && !GOGService.isRunning) {
-            Timber.i("GOG service was down on resume - restarting")
-            GOGService.start(this)
-        }
 
-        // Restart EpicService if it went down and user is authenticated
-        if (EpicService.hasStoredCredentials(this) &&
-            !EpicService.isRunning) {
-            Timber.i("EpicService was down on resume - restarting")
-            EpicService.start(this)
-        }
 
-        if (PrefManager.usageAnalyticsEnabled) {
-            PostHog.capture(event = "app_foregrounded")
-        }
     }
 
     override fun onPause() {
@@ -628,9 +600,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-        if (PrefManager.usageAnalyticsEnabled) {
-            PostHog.capture(event = "app_backgrounded")
         }
         super.onPause()
     }
@@ -681,23 +650,7 @@ class MainActivity : ComponentActivity() {
             SteamService.stop()
         }
 
-        // Stop GOGService if running and no downloads in progress
-        if (GOGService.isRunning && !isChangingConfigurations) {
-            if(!GOGService.hasActiveOperations()) {
-                Timber.i("Stopping GOG Service - no active operations")
-                GOGService.stop()
-            }
-        }
 
-        // Stop EpicService if running, unless there are active downloads or sync operations
-        if (EpicService.isRunning && !isChangingConfigurations) {
-            if (!EpicService.hasActiveOperations()) {
-                Timber.i("Stopping EpicService - no active operations")
-                EpicService.stop()
-            } else {
-                Timber.d("EpicService kept running - has active operations")
-            }
-        }
     }
 
     // override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

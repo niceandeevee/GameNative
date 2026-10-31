@@ -827,7 +827,6 @@ private val communityConfigAllowedKeys = setOf(
     "launchRealSteam",
     "launchBionicSteam",
     "steamOfflineMode",
-    "epicOfflineMode",
     "unpackFiles",
     "suspendPolicy",
     "executablePath",

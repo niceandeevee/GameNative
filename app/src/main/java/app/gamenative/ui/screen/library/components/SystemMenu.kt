@@ -263,15 +263,6 @@ fun SystemMenu(
     onLogout: () -> Unit,
     onGoOnline: () -> Unit,
     isOffline: Boolean = false,
-    gogLoggedIn: Boolean,
-    epicLoggedIn: Boolean,
-    amazonLoggedIn: Boolean,
-    onGogLoginClick: () -> Unit,
-    onGogLogoutClick: () -> Unit,
-    onEpicLoginClick: () -> Unit,
-    onEpicLogoutClick: () -> Unit,
-    onAmazonLoginClick: () -> Unit,
-    onAmazonLogoutClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
@@ -702,72 +693,6 @@ fun SystemMenu(
                                 isDestructive = true,
                             )
                         }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        if (app.gamenative.StoreSupport.GOG_ENABLED) {
-                            // GOG
-                            SystemMenuItem(
-                                text = stringResource(
-                                    if (gogLoggedIn) R.string.gog_settings_logout_title
-                                    else R.string.gog_settings_login_title,
-                                ),
-                                icon = if (gogLoggedIn) {
-                                    Icons.AutoMirrored.Filled.Logout
-                                } else {
-                                    Icons.AutoMirrored.Filled.Login
-                                },
-                                onClick = {
-                                    if (gogLoggedIn) onGogLogoutClick() else onGogLoginClick()
-                                    onDismiss()
-                                },
-                                isDestructive = gogLoggedIn,
-                            )
-                        }
-
-                        if (app.gamenative.StoreSupport.EPIC_ENABLED) {
-                            // Epic
-                            SystemMenuItem(
-                                text = stringResource(
-                                    if (epicLoggedIn) R.string.epic_settings_logout_title
-                                    else R.string.epic_settings_login_title,
-                                ),
-                                icon = if (epicLoggedIn) {
-                                    Icons.AutoMirrored.Filled.Logout
-                                } else {
-                                    Icons.AutoMirrored.Filled.Login
-                                },
-                                onClick = {
-                                    if (epicLoggedIn) onEpicLogoutClick() else onEpicLoginClick()
-                                    onDismiss()
-                                },
-                                isDestructive = epicLoggedIn,
-                            )
-                        }
-
-                        // Amazon
-                        SystemMenuItem(
-                            text = stringResource(
-                                if (amazonLoggedIn) R.string.amazon_settings_logout_title
-                                else R.string.amazon_settings_login_title,
-                            ),
-                            icon = if (amazonLoggedIn) {
-                                Icons.AutoMirrored.Filled.Logout
-                            } else {
-                                Icons.AutoMirrored.Filled.Login
-                            },
-                            onClick = {
-                                if (amazonLoggedIn) onAmazonLogoutClick() else onAmazonLoginClick()
-                                onDismiss()
-                            },
-                            isDestructive = amazonLoggedIn,
-                        )
                     }
 
                     // Gamepad hint at bottom (only on expanded screens)
@@ -836,15 +761,6 @@ private fun Preview_SystemMenu() {
                     onLogout = { },
                     onGoOnline = { },
                     isOffline = false,
-                    gogLoggedIn = false,
-                    epicLoggedIn = false,
-                    amazonLoggedIn = false,
-                    onGogLoginClick = { },
-                    onGogLogoutClick = { },
-                    onEpicLoginClick = { },
-                    onEpicLogoutClick = { },
-                    onAmazonLoginClick = { },
-                    onAmazonLogoutClick = { },
                 )
             }
         }

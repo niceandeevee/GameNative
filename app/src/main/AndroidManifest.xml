@@ -142,12 +142,6 @@
             </intent-filter>
         </activity>
 
-        <!-- GOG OAuth (in-app WebView; intercepts redirect for automatic code capture) -->
-        <activity
-            android:name=".ui.screen.auth.GOGOAuthActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Pluvia" />
-
         <!-- EA OAuth (in-app WebView; intercepts the qrc:// redirect for automatic code capture) -->
         <activity
             android:name=".ui.screen.auth.EaOAuthActivity"
@@ -164,18 +158,6 @@
         <!-- EA account connections page, for linking Steam before a first launch -->
         <activity
             android:name=".ui.screen.auth.EaSteamLinkActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Pluvia" />
-
-        <!-- Epic OAuth (in-app WebView; intercepts redirect for automatic code capture) -->
-        <activity
-            android:name=".ui.screen.auth.EpicOAuthActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Pluvia" />
-
-        <!-- Amazon OAuth (in-app WebView; PKCE flow for Amazon Games auth) -->
-        <activity
-            android:name=".ui.screen.auth.AmazonOAuthActivity"
             android:exported="false"
             android:theme="@style/Theme.Pluvia" />
 
@@ -206,24 +188,6 @@
         </activity-alias>
         <service
             android:name=".service.SteamService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
-
-        <service
-            android:name=".service.gog.GOGService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
-
-        <service
-            android:name=".service.epic.EpicService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
-
-        <service
-            android:name=".service.amazon.AmazonService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />

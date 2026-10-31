@@ -27,7 +27,6 @@ object SuggestionConfigKeys {
         "useLegacyDRM" to ConfigValueType.BOOLEAN,
         "steamOfflineMode" to ConfigValueType.BOOLEAN,
         "loadMods" to ConfigValueType.BOOLEAN,
-        "epicOfflineMode" to ConfigValueType.BOOLEAN,
         "unpackFiles" to ConfigValueType.BOOLEAN,
         "suspendPolicy" to ConfigValueType.STRING,
         "envVars" to ConfigValueType.STRING,
@@ -65,7 +64,6 @@ object SuggestionConfigKeys {
         "useLegacyDRM" -> data.useLegacyDRM.toString()
         "steamOfflineMode" -> data.steamOfflineMode.toString()
         "loadMods" -> data.loadMods.toString()
-        "epicOfflineMode" -> data.epicOfflineMode.toString()
         "unpackFiles" -> data.unpackFiles.toString()
         "suspendPolicy" -> data.suspendPolicy
         "envVars" -> data.envVars

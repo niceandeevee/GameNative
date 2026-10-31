@@ -120,13 +120,8 @@ import app.gamenative.service.AchievementWatcher
 import app.gamenative.service.SteamHostAchievementPoller
 import app.gamenative.service.SteamService
 import app.gamenative.service.ea.EaLaunchSupport
-import app.gamenative.service.epic.EpicConstants
 import app.gamenative.service.rockstar.RockstarHelperDeployment
 import app.gamenative.service.rockstar.RockstarLaunchSupport
-import app.gamenative.service.epic.EpicOverlayManager
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
-import app.gamenative.service.gog.GogGalaxyService
 import app.gamenative.ui.component.LsfgQuickMenuState
 import app.gamenative.ui.component.PerformanceQuickMenuState
 import app.gamenative.ui.component.QuickMenu
@@ -179,7 +174,6 @@ import app.gamenative.utils.WineMono
 import app.gamenative.utils.WineMsiCache
 import app.gamenative.utils.downloader.WinComponentDownloader
 import app.gamenative.utils.WineProcessSnapshotHelper
-import app.gamenative.analytics.PostHog
 import com.winlator.alsaserver.ALSAClient
 import com.winlator.container.Container
 import com.winlator.container.ContainerFiles
@@ -1209,7 +1203,6 @@ fun XServerScreen(
         anchor.post {
             if (anchor.windowToken != null) {
                 val show = {
-                    if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = analyticsEvent)
                     val isExternalDisplaySession =
                         (anchor.display?.displayId ?: Display.DEFAULT_DISPLAY) != Display.DEFAULT_DISPLAY
 
@@ -1238,10 +1231,8 @@ fun XServerScreen(
 
             QuickMenuAction.INPUT_CONTROLS -> {
                 if (ui.areControlsVisible) {
-                    if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = "onscreen_controller_disabled")
                     hideInputControls()
                 } else {
-                    if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = "onscreen_controller_enabled")
                     val manager = PluviaApp.inputControlsManager
                     val profiles = manager?.getProfiles(false) ?: listOf()
                     if (profiles.isNotEmpty()) {
@@ -1325,7 +1316,6 @@ fun XServerScreen(
             }
 
             QuickMenuAction.EDIT_CONTROLS -> {
-                if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = "edit_controls_in_game")
                 ui.keepPausedForEditor = true
 
                 // Get or create profile for this container
@@ -1442,7 +1432,6 @@ fun XServerScreen(
             }
 
             QuickMenuAction.EDIT_PHYSICAL_CONTROLLER -> {
-                if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = "edit_physical_controller_from_menu")
                 ui.keepPausedForEditor = true
                 ui.physicalControllerDialogMode = PHYSICAL_CONTROLLER_DIALOG_BINDINGS
                 true
@@ -1460,7 +1449,6 @@ fun XServerScreen(
             QuickMenuAction.SC_LAYOUT -> { ui.keepPausedForEditor = true; sc.showLayout = true; true }
 
             QuickMenuAction.RADIAL_MENU -> {
-                if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = "edit_radial_menu_from_menu")
                 PluviaApp.radialMenuCoordinator?.showSettingsDialog() == true
             }
 
@@ -1469,27 +1457,10 @@ fun XServerScreen(
                 ui.isPerformanceHudEnabled = enabled
                 PrefManager.showFps = enabled
                 updatePerformanceHud(enabled)
-                if (PrefManager.usageAnalyticsEnabled) {
-                    PostHog.capture(
-                        event = "performance_hud_toggled",
-                        properties = mapOf("enabled" to enabled),
-                    )
-                }
                 false
             }
 
             QuickMenuAction.EXIT_GAME -> {
-                PostHog.capture(
-                    event = "game_closed",
-                    properties = buildMap {
-                        put("game_name", ContainerUtils.resolveGameName(appId))
-                        put("game_store", ContainerUtils.extractGameSourceFromContainerId(appId).name)
-                        if (PrefManager.usageAnalyticsEnabled) {
-                            put("max_controllers", ControllerManager.getInstance().sessionUsedControllerCount)
-                            put("external_controller_used", ControllerManager.getInstance().sessionUsedExternalController)
-                        }
-                    },
-                )
                 ui.imeInputReceiver?.hideKeyboard()
                 // Resume processes before exiting so they can receive SIGTERM cleanly.
                 // Don't resume audio to avoid resume->suspend race condition causing ANR.
@@ -1510,7 +1481,6 @@ fun XServerScreen(
             ?.isVisible(WindowInsetsCompat.Type.ime()) == true
 
         if (imeVisible) {
-            if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = "onscreen_keyboard_disabled")
             ui.imeInputReceiver?.hideKeyboard()
             view.post {
                 if (Build.VERSION.SDK_INT >= 30) {
@@ -4438,10 +4408,6 @@ private fun setupXEnvironment(
                 container.startupSelection = Container.STARTUP_SELECTION_ESSENTIAL
                 container.putExtra("startupSelection", java.lang.String.valueOf(Container.STARTUP_SELECTION_ESSENTIAL))
                 container.saveData()
-            } else if (!container.isDisableEpicOverlay && EpicOverlayManager.isOverlayInstalled(container)) {
-                // The EOS overlay needs RpcSs/BITS; services were forced to normal
-                // in setupWineSystemFiles, so don't kill services.exe here.
-                Timber.d("Keeping services.exe alive for EOS overlay despite aggressive startup selection")
             } else {
                 xServer.winHandler.killProcess("services.exe");
             }
@@ -4656,7 +4622,7 @@ private fun setupXEnvironment(
 
     fun chainPreInstallSteps(remaining: List<PreInstallSteps.PreInstallCommand>) {
         (guestProgramLauncherComponent as? BionicProgramLauncherComponent)?.setFEXCorePreset(
-            if (remaining.firstOrNull()?.marker == Marker.GOG_SCRIPT_INSTALLED) FEXCorePreset.STABILITY else container.fexCorePreset,
+            container.fexCorePreset,
         )
         if (remaining.isEmpty()) {
             guestProgramLauncherComponent.setGuestExecutable(gameExecutable)
@@ -4864,8 +4830,6 @@ private fun getWineStartCommand(
     Timber.tag("XServerScreen").d("appLaunchInfo is $appLaunchInfo")
 
     val isCustomGame = gameSource == GameSource.CUSTOM_GAME
-    val isGOGGame = gameSource == GameSource.GOG
-    val isEpicGame = gameSource == GameSource.EPIC
     val isSteamGame = gameSource == GameSource.STEAM
     val gameId = ContainerUtils.extractGameIdFromContainerId(appId)
 
@@ -4892,296 +4856,6 @@ private fun getWineStartCommand(
         "\"Z:/opt/apps/TestD3D.exe\""
     } else if (bootToContainer) {
         "\"wfm.exe\""
-    } else if (isGOGGame) {
-        // For GOG games, use GOGService to get the launch command
-        Timber.tag("XServerScreen").i("Launching GOG game: $gameId")
-
-        // Create a LibraryItem from the appId
-        val libraryItem = LibraryItem(
-            appId = appId,
-            name = "", // Name not needed for launch command
-            gameSource = GameSource.GOG
-        )
-
-        if (GogGalaxyService.isActive(context, offline)) {
-            GogGalaxyService.preparePrefix(context, container)
-            GogGalaxyService.start(context)
-        } else {
-            GogGalaxyService.stop()
-        }
-
-        val gogCommand = GOGService.getGogWineStartCommand(
-            libraryItem = libraryItem,
-            container = container,
-            bootToContainer = bootToContainer,
-            appLaunchInfo = appLaunchInfo,
-            envVars = envVars,
-            guestProgramLauncherComponent = guestProgramLauncherComponent,
-            gameId = gameId,
-        )
-
-        Timber.tag("XServerScreen").i("GOG launch command: $gogCommand")
-        return "winhandler.exe $gogCommand"
-    } else if (isEpicGame) {
-        // For Epic games, get the launch command
-        Timber.tag("XServerScreen").i("Launching Epic game: $gameId")
-        val game = runBlocking {
-            EpicService.getInstance()?.epicManager?.getGameById(gameId)
-        }
-
-        if (game == null || !game.isInstalled || game.installPath.isEmpty()) {
-            Timber.tag("XServerScreen").e("Cannot launch: Epic game not installed")
-            return "\"explorer.exe\""
-        }
-
-        // Use container's configured executable path if available, otherwise auto-detect and persist
-        val exePath = if (container.executablePath.isNotEmpty()) {
-            container.executablePath
-        } else {
-            val detectedPath = runBlocking {
-                EpicService.getInstance()?.epicManager?.getInstalledExe(game.id) ?: ""
-            }
-            if (detectedPath.isNotEmpty()) {
-                container.executablePath = detectedPath
-                container.saveData()
-            }
-            detectedPath
-        }
-
-        if (exePath.isEmpty()) {
-            Timber.tag("XServerScreen").e("Cannot launch: executable not found for Epic game")
-            return "\"explorer.exe\""
-        }
-
-        // Convert to relative path from install directory
-        val relativePath = exePath.removePrefix(game.installPath).removePrefix("/")
-
-        // Use A: drive (or the mapped drive letter) instead of Z:
-        // The container setup in ContainerUtils maps the game install path to A: drive
-        val isAbsoluteExe = ContainerUtils.isAbsoluteWindowsPath(exePath)
-        val epicCommand = if (isAbsoluteExe) exePath else "A:\\$relativePath".replace("/", "\\")
-
-        // Get Epic launch parameters
-        Timber.tag("XServerScreen").d("Building Epic launch parameters for ${game.appName}...")
-        val runArguments: List<String> = runBlocking {
-            val epicLocale = EpicConstants.containerLanguageToEpicLocale(container.language)
-            val result = EpicService.buildLaunchParameters(
-                context,
-                container,
-                game,
-                container.isEpicOfflineMode,
-                epicLocale,
-            )
-            if (result.isFailure) {
-                Timber.tag("XServerScreen").e(result.exceptionOrNull(), "Failed to build Epic launch parameters")
-            }
-            val params = result.getOrNull() ?: listOf()
-            Timber.tag("XServerScreen").i("Got ${params.size} Epic launch parameters")
-            params
-        }
-        // Set working directory to the folder containing the executable
-        if (!isAbsoluteExe) {
-            val executableDir = game.installPath + "/" + relativePath.substringBeforeLast("/", "")
-            guestProgramLauncherComponent.workingDir = File(executableDir)
-        }
-
-        Timber.tag("XServerScreen").i("Epic launch command: \"$epicCommand\"")
-
-        val launchCommand = if (runArguments.isNotEmpty()) {
-            // Quote each argument to handle spaces in paths (e.g., ownership token paths)
-            val args = runArguments.joinToString(" ") { arg ->
-                // If argument contains '=' and the value part might have spaces, quote the whole arg
-                if (arg.contains("=") && arg.substringAfter("=").contains(" ")) {
-                    val (key, value) = arg.split("=", limit = 2)
-                    "$key=\"$value\""
-                } else if (arg.contains(" ")) {
-                    // Quote standalone arguments with spaces
-                    "\"$arg\""
-                } else {
-                    arg
-                }
-            }
-            "winhandler.exe \"$epicCommand\" $args"
-        } else {
-            Timber.tag("XServerScreen").w("No Epic launch parameters available, launching without authentication")
-            "winhandler.exe \"$epicCommand\""
-        }
-
-        // Log command with sensitive auth tokens redacted
-        // Handle both quoted values (with spaces) and unquoted values
-        val redactedCommand = launchCommand
-            .replace(Regex("-AUTH_PASSWORD=(\"[^\"]*\"|[^ ]+)"), "-AUTH_PASSWORD=[REDACTED]")
-            .replace(Regex("-epicovt=(\"[^\"]*\"|[^ ]+)"), "-epicovt=[REDACTED]")
-        Timber.tag("XServerScreen").i("Epic launch command: $redactedCommand")
-
-        return launchCommand
-    } else if (gameSource == GameSource.AMAZON) {
-        // For Amazon games, convert appId (integer) to productId (Amazon UUID string)
-        val appIdInt = runCatching { ContainerUtils.extractGameIdFromContainerId(appId) }.getOrNull()
-        val productId = if (appIdInt != null) {
-            app.gamenative.service.amazon.AmazonService.getProductIdByAppId(appIdInt)
-        } else null
-        Timber.tag("XServerScreen").i("Launching Amazon game: appId=$appIdInt, productId=$productId")
-
-        val installPath = if (appIdInt != null) {
-            app.gamenative.service.amazon.AmazonService.getInstallPathByAppId(appIdInt)
-        } else null
-
-        if (installPath.isNullOrEmpty()) {
-            Timber.tag("XServerScreen").e("Cannot launch: Amazon game not installed")
-            return "\"explorer.exe\""
-        }
-
-        // ── Try fuel.json first (Amazon's launch manifest) ──────────────
-        val fuelFile = File(installPath, "fuel.json")
-        var fuelCommand: String? = null
-        var fuelArgs: List<String> = emptyList()
-        var fuelWorkingDir: String? = null
-
-        if (fuelFile.exists()) {
-            try {
-                val json = org.json.JSONObject(fuelFile.readText())
-                val main = json.optJSONObject("Main")
-                if (main != null) {
-                    fuelCommand = main.optString("Command", "").takeIf { it.isNotEmpty() }
-                    fuelWorkingDir = main.optString("WorkingSubdirOverride", "").takeIf { it.isNotEmpty() }
-                    val argsArray = main.optJSONArray("Args")
-                    if (argsArray != null) {
-                        fuelArgs = (0 until argsArray.length()).mapNotNull { argsArray.optString(it) }
-                    }
-                }
-                Timber.tag("XServerScreen").i(
-                    "fuel.json parsed: command=$fuelCommand, args=$fuelArgs, workingDir=$fuelWorkingDir"
-                )
-            } catch (e: Exception) {
-                Timber.tag("XServerScreen").w(e, "Failed to parse fuel.json, falling back to heuristic")
-            }
-        } else {
-            Timber.tag("XServerScreen").d("No fuel.json found at ${fuelFile.path}, using heuristic")
-        }
-
-        // Resolve executable path (fuel.json command, or fallback to largest .exe heuristic)
-        if (fuelCommand != null) {
-            val exeFile = File(installPath, fuelCommand.replace("\\", "/"))
-            if (!exeFile.exists()) {
-                Timber.tag("XServerScreen").w(
-                    "fuel.json executable not found: ${exeFile.path}, falling back to heuristic"
-                )
-                fuelCommand = null
-            }
-        }
-
-        var resolvedRelativePath = container.executablePath
-        if (resolvedRelativePath.isEmpty()) {
-            // Steam-style caching: resolve only once, then persist on the container.
-            resolvedRelativePath = if (fuelCommand != null) {
-                fuelCommand.replace("\\", "/")
-            } else {
-                val exeFile = ExecutableSelectionUtils.choosePrimaryExeFromDisk(
-                    installDir = File(installPath),
-                    gameName = File(installPath).name,
-                )
-
-                if (exeFile == null) {
-                    Timber.tag("XServerScreen").e("Cannot find executable for Amazon game")
-                    return "\"explorer.exe\""
-                }
-                Timber.tag("XServerScreen").d("Heuristic selected exe: ${exeFile.path}")
-                exeFile.relativeTo(File(installPath)).path
-            }
-            container.executablePath = resolvedRelativePath
-            container.saveData()
-        } else {
-            Timber.tag("XServerScreen").i("Using cached Amazon executablePath: $resolvedRelativePath")
-        }
-
-        val isAbsoluteExe = ContainerUtils.isAbsoluteWindowsPath(resolvedRelativePath)
-        val winPath = resolvedRelativePath.replace("/", "\\")
-        val amazonCommand = if (isAbsoluteExe) resolvedRelativePath else "A:\\$winPath"
-
-        if (!isAbsoluteExe) {
-            val workDir = if (fuelCommand != null && fuelWorkingDir != null && resolvedRelativePath.replace("\\", "/") == fuelCommand.replace("\\", "/")) {
-                installPath + "/" + fuelWorkingDir.replace("\\", "/")
-            } else {
-                val exeDir = resolvedRelativePath.substringBeforeLast("/", "")
-                if (exeDir.isNotEmpty()) installPath + "/" + exeDir else installPath
-            }
-            guestProgramLauncherComponent.workingDir = File(workDir)
-        }
-
-        // ── Set FuelPump environment variables (P3-2) ────────────────
-        // Nile reference: nile/utils/launch.py — sets these for Amazon Games SDK / FuelPump DRM.
-        // The CONFIG_PATH maps to C:\ProgramData inside the Wine prefix.
-        val configPath = "C:\\ProgramData"
-        envVars.put("FUEL_DIR", "$configPath\\Amazon Games Services\\Legacy")
-        envVars.put("AMAZON_GAMES_SDK_PATH", "$configPath\\Amazon Games Services\\AmazonGamesSDK")
-
-        // Fetch game metadata for per-game env vars
-        val amazonGame = if (productId != null) {
-            kotlinx.coroutines.runBlocking(Dispatchers.IO) {
-                app.gamenative.service.amazon.AmazonService.getAmazonGameOf(productId)
-            }
-        } else null
-        if (amazonGame != null) {
-            envVars.put("AMAZON_GAMES_FUEL_ENTITLEMENT_ID", amazonGame.entitlementId)
-            if (amazonGame.productSku.isNotEmpty()) {
-                envVars.put("AMAZON_GAMES_FUEL_PRODUCT_SKU", amazonGame.productSku)
-            }
-            Timber.tag("XServerScreen").i(
-                "FuelPump env: entitlementId=${amazonGame.entitlementId}, sku=${amazonGame.productSku}"
-            )
-        } else {
-            Timber.tag("XServerScreen").w("Could not load AmazonGame for appId=$appIdInt — FuelPump env vars incomplete")
-        }
-        // Display name — Amazon doesn't expose the user's name in our auth flow;
-        // use "Player" as a safe fallback (same as Nile when user info is unavailable).
-        envVars.put("AMAZON_GAMES_FUEL_DISPLAY_NAME", "Player")
-
-        // ── Deploy Amazon Games SDK files to Wine prefix (P3-1) ─────────
-        // Downloads the FuelSDK + AmazonGamesSDK DLLs from Amazon's launcher
-        // channel (once, cached on disk), then copies them into the Wine
-        // prefix at C:\ProgramData\Amazon Games Services\{Legacy,AmazonGamesSDK}.
-        val prefixProgramData = File(container.getRootDir(), ".wine/drive_c/ProgramData")
-        try {
-            File(prefixProgramData, "Amazon Games Services/Legacy").mkdirs()
-            File(prefixProgramData, "Amazon Games Services/AmazonGamesSDK").mkdirs()
-
-            // Ensure SDK files are downloaded (first launch downloads, subsequent are no-op)
-            val sdkToken = kotlinx.coroutines.runBlocking(Dispatchers.IO) {
-                app.gamenative.service.amazon.AmazonService.getInstance()
-                    ?.amazonManager?.getBearerToken()
-            }
-            if (sdkToken != null) {
-                val cached = kotlinx.coroutines.runBlocking(Dispatchers.IO) {
-                    app.gamenative.service.amazon.AmazonSdkManager.ensureSdkFiles(context, sdkToken)
-                }
-                if (cached) {
-                    val deployed = app.gamenative.service.amazon.AmazonSdkManager
-                        .deploySdkToPrefix(context, prefixProgramData)
-                    Timber.tag("XServerScreen").i("SDK deployed: $deployed file(s) to Wine prefix")
-                } else {
-                    Timber.tag("XServerScreen").w("SDK download failed — game may not authenticate (non-fatal)")
-                }
-            } else {
-                Timber.tag("XServerScreen").w("No Amazon bearer token — SDK files not deployed (non-fatal)")
-            }
-        } catch (e: Exception) {
-            Timber.tag("XServerScreen").w(e, "Failed to deploy SDK files (non-fatal)")
-        }
-
-        // Build launch command with optional args
-        val launchCommand = if (fuelArgs.isNotEmpty()) {
-            val argsStr = fuelArgs.joinToString(" ") { arg ->
-                if (arg.contains(" ")) "\"$arg\"" else arg
-            }
-            Timber.tag("XServerScreen").i("Amazon launch command: \"$amazonCommand\" $argsStr")
-            "winhandler.exe \"$amazonCommand\" $argsStr"
-        } else {
-            Timber.tag("XServerScreen").i("Amazon launch command: \"$amazonCommand\"")
-            "winhandler.exe \"$amazonCommand\""
-        }
-
-        return launchCommand
     } else if (isCustomGame) {
         // For Custom Games, we can launch even without appLaunchInfo
         // Use the executable path from container config. If missing, try to auto-detect
@@ -5402,10 +5076,6 @@ private fun exit(
     }.getOrElse { emptyMap() } + runCatching {
         GameCompatibilityService.badgeProperties(ContainerUtils.resolveGameName(appId))
     }.getOrElse { emptyMap() }
-    PostHog.capture(
-        event = "game_exited",
-        properties = exitProperties,
-    )
     CoroutineScope(Dispatchers.IO).launch { SessionReport.recordRun(container, exitProperties) }
     runCatching { windowActivity.stop() }
 
@@ -5428,7 +5098,6 @@ private fun exit(
     GameNativeDrm.nativeStop()
     PluviaApp.shutdownEnvironment()
     EaLaunchSupport.stop()
-    GogGalaxyService.stop(blocking = false)
 
     // Bionic-Steam mode brought up libsteamclient.so inside this Android process
     // (see BionicProgramLauncherComponent.bootstrapNativeSteamClient). Tear it
@@ -5972,20 +5641,7 @@ private suspend fun setupWineSystemFiles(
     WineStartMenuCreator.create(context, container)
     WineUtils.createDosdevicesSymlinks(context, container)
 
-    // The EOS overlay's CEF browser needs RpcSs and BITS: without them it
-    // crash-loops and EOS login fails. Force normal services only for containers
-    // that actually have the overlay installed.
-    val overlayInstalled = EpicOverlayManager.isOverlayInstalled(container)
-    val needsOverlayServices = overlayInstalled && !container.isDisableEpicOverlay
-    if (overlayInstalled && container.isDisableEpicOverlay) {
-        EpicOverlayManager.removeRegistryPath(container)
-    }
-    if (needsOverlayServices) {
-        // Prefix re-provisioning above (wine/proton version change) replaces user.reg,
-        // so the overlay registry entries must be repaired here, not just at install time.
-        EpicOverlayManager.ensureRegistryEntries(container)
-    }
-    val effectiveStartupSelection = if (needsOverlayServices) Container.STARTUP_SELECTION_NORMAL else container.startupSelection
+    val effectiveStartupSelection = container.startupSelection
     val startupSelection = effectiveStartupSelection.toString()
     if (startupSelection != container.getExtra("startupSelection")) {
         WineUtils.changeServicesStatus(container, effectiveStartupSelection != Container.STARTUP_SELECTION_NORMAL)

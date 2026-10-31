@@ -46,7 +46,6 @@ class CommunityConfigApplicationTest {
           "launchBionicSteam": true,
           "steamType": "normal",
           "steamOfflineMode": true,
-          "epicOfflineMode": true,
           "unpackFiles": true,
           "suspendPolicy": "never",
           "executablePath": "bin/Game.exe",
@@ -83,7 +82,6 @@ class CommunityConfigApplicationTest {
         "launchRealSteam",
         "launchBionicSteam",
         "steamOfflineMode",
-        "epicOfflineMode",
         "unpackFiles",
         "suspendPolicy",
         "executablePath",
@@ -159,7 +157,6 @@ class CommunityConfigApplicationTest {
         assertTrue(updated.launchBionicSteam)
         assertEquals("headless", updated.steamType)
         assertTrue(updated.steamOfflineMode)
-        assertTrue(updated.epicOfflineMode)
         assertTrue(updated.unpackFiles)
         assertEquals("never", updated.suspendPolicy)
         assertEquals("bin/Game.exe", updated.executablePath)

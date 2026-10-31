@@ -172,8 +172,6 @@ class CloseSyncTrackerTest {
     @Test
     fun keyOfBuildsTheCanonicalContainerId() {
         assertEquals("STEAM_440", CloseSyncTracker.keyOf(GameSource.STEAM, 440))
-        assertEquals("GOG_1252295864", CloseSyncTracker.keyOf(GameSource.GOG, 1252295864))
-        assertEquals("EPIC_12", CloseSyncTracker.keyOf(GameSource.EPIC, 12))
     }
 
     @Test

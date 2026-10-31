@@ -74,7 +74,6 @@ private val TOP_LEVEL_LABELS: Map<String, Int> = mapOf(
     "useLegacyDRM" to R.string.use_legacy_drm,
     "steamOfflineMode" to R.string.steam_offline_mode,
     "loadMods" to R.string.load_mods,
-    "epicOfflineMode" to R.string.epic_offline_mode,
     "unpackFiles" to R.string.unpack_files,
     "suspendPolicy" to R.string.suspend_behavior,
     "cpuList" to R.string.processor_affinity,

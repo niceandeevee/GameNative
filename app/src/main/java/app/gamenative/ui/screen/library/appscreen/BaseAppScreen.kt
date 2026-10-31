@@ -1227,9 +1227,7 @@ abstract class BaseAppScreen {
         }
 
         // Always available options
-        if (!libraryItem.isRecommended) {
-            menuOptions.add(getFavoriteOption(libraryItem))
-        }
+        menuOptions.add(getFavoriteOption(libraryItem))
         menuOptions.add(getSubmitFeedbackOption(context, libraryItem))
         menuOptions.add(getGetSupportOption(context))
 
@@ -1787,10 +1785,7 @@ abstract class BaseAppScreen {
         // Get download info based on game source for progress tracking
         val downloadInfo = when (libraryItem.gameSource) {
             app.gamenative.data.GameSource.STEAM -> app.gamenative.service.SteamService.getAppDownloadInfo(displayInfo.gameId)
-            app.gamenative.data.GameSource.EPIC -> app.gamenative.service.epic.EpicService.getDownloadInfo(displayInfo.gameId)
-            app.gamenative.data.GameSource.GOG -> app.gamenative.service.gog.GOGService.getDownloadInfo(displayInfo.gameId.toString())
             app.gamenative.data.GameSource.CUSTOM_GAME -> null // Custom games don't support downloads yet
-            app.gamenative.data.GameSource.AMAZON -> app.gamenative.service.amazon.AmazonService.getDownloadInfoByAppId(libraryItem.gameId)
         }
 
         DisposableEffect(libraryItem.appId) {
@@ -1818,7 +1813,6 @@ abstract class BaseAppScreen {
         // Render the common UI
         app.gamenative.ui.screen.library.AppScreenContent(
             displayInfo = displayInfo,
-            resetHeroOnFirstArtworkChange = libraryItem.gameSource == GameSource.AMAZON,
             downloadDisplayDetails = app.gamenative.ui.data.DownloadDisplayDetails(
                 isInstalled = isInstalledState,
                 isValidToDownload = isValidToDownloadState,

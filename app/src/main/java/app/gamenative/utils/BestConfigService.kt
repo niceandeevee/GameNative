@@ -1016,9 +1016,6 @@ object BestConfigService {
                 if (filteredJson.has("loadMods") && !filteredJson.isNull("loadMods")) {
                     resultMap["loadMods"] = filteredJson.optBoolean("loadMods", PrefManager.loadMods)
                 }
-                if (filteredJson.has("epicOfflineMode") && !filteredJson.isNull("epicOfflineMode")) {
-                    resultMap["epicOfflineMode"] = filteredJson.optBoolean("epicOfflineMode", false)
-                }
                 if (filteredJson.has("unpackFiles") && !filteredJson.isNull("unpackFiles")) {
                     resultMap["unpackFiles"] = filteredJson.optBoolean("unpackFiles", false)
                 }

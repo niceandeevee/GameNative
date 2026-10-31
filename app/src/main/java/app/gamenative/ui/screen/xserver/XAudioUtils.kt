@@ -5,9 +5,6 @@ import app.gamenative.PluviaApp
 import app.gamenative.data.GameSource
 import app.gamenative.events.AndroidEvent
 import app.gamenative.service.SteamService
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.utils.FileUtils
@@ -32,12 +29,6 @@ object XAudioUtils {
                     val gameId = ContainerUtils.extractGameIdFromContainerId(appId)
                     SteamService.getAppDirPath(gameId)
                 }
-                GameSource.GOG -> GOGService.getInstallPath(appId)
-                GameSource.EPIC -> {
-                    val gameId = ContainerUtils.extractGameIdFromContainerId(appId)
-                    EpicService.getInstallPath(gameId)
-                }
-                GameSource.AMAZON -> AmazonService.getInstallPath(appId)
                 GameSource.CUSTOM_GAME -> CustomGameScanner.getFolderPathFromAppId(appId)
             }
         } catch (e: Exception) {

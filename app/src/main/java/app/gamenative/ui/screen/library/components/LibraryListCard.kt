@@ -85,22 +85,15 @@ internal fun ListViewCard(
         if (isItemFocused) onFocus()
     }
 
-    val favoriteIndicator = rememberFavoriteCardIndicator(
-        appId = appInfo.appId,
-        isRecommended = appInfo.isRecommended,
+    val favoriteIndicator = rememberFavoriteCardIndicator(appId = appInfo.appId)
+    val favoriteActionLabel: String? = stringResource(
+        if (favoriteIndicator.isFavorite) {
+            R.string.favorite_remove_named
+        } else {
+            R.string.favorite_add_named
+        },
+        appInfo.name,
     )
-    val favoriteActionLabel = if (!appInfo.isRecommended) {
-        stringResource(
-            if (favoriteIndicator.isFavorite) {
-                R.string.favorite_remove_named
-            } else {
-                R.string.favorite_add_named
-            },
-            appInfo.name,
-        )
-    } else {
-        null
-    }
     val favoriteState = if (favoriteIndicator.isFavorite) stringResource(R.string.favorite_added) else null
     val favoriteSemantics = if (favoriteActionLabel != null) {
         Modifier.semantics(mergeDescendants = true) {
@@ -147,13 +140,6 @@ internal fun ListViewCard(
                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.15f)
             },
         ),
-        border = when {
-            appInfo.isRecommended -> BorderStroke(
-                1.dp,
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-            )
-            else -> null
-        },
     ) {
         Row(
             modifier = Modifier
@@ -180,20 +166,11 @@ internal fun ListViewCard(
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
-                if (appInfo.isRecTeaser) {
-                    Icon(
-                        imageVector = Icons.Rounded.AutoAwesome,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp),
-                    )
-                } else {
-                    ListItemImage(
-                        modifier = Modifier.fillMaxSize(),
-                        imageModifier = Modifier.clip(RoundedCornerShape(10.dp)),
-                        image = { iconUrl },
-                    )
-                }
+                ListItemImage(
+                    modifier = Modifier.fillMaxSize(),
+                    imageModifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                    image = { iconUrl },
+                )
             }
 
             // Game info
@@ -202,11 +179,7 @@ internal fun ListViewCard(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = if (appInfo.isRecTeaser) {
-                        stringResource(R.string.rec_teaser_title)
-                    } else {
-                        appInfo.name
-                    },
+                    text = appInfo.name,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -215,7 +188,7 @@ internal fun ListViewCard(
                 )
 
                 // Status row with compact badges
-                if (!appInfo.isRecTeaser) Row(
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -248,7 +221,7 @@ internal fun ListViewCard(
                 )
             }
 
-            if (!appInfo.isRecommended && communityCompatibility != null) {
+            if (communityCompatibility != null) {
                 CommunityCompatibilityBadge(
                     verdict = communityCompatibility.verdict,
                     verdictLoaded = communityCompatibility.verdictLoaded,
@@ -257,12 +230,7 @@ internal fun ListViewCard(
                     showLabel = true,
                 )
             } else {
-                val badgeStatus = if (appInfo.isRecommended) {
-                    GameCompatibilityStatus.RECOMMENDED
-                } else {
-                    compatibilityStatus
-                }
-                badgeStatus?.let { status ->
+                compatibilityStatus?.let { status ->
                     CompatibilityBadge(
                         status = status,
                         showLabel = true,
@@ -345,7 +313,6 @@ private fun InstallStatusBadge(
  * Gets the icon URL for a game in list view.
  */
 private fun getListIconUrl(context: Context, appInfo: LibraryItem): String {
-    if (appInfo.isRecommended) return appInfo.iconHash
     return if (appInfo.gameSource == GameSource.CUSTOM_GAME) {
         val path = CustomGameScanner.findIconFileForCustomGame(context, appInfo.appId)
         if (!path.isNullOrEmpty()) {

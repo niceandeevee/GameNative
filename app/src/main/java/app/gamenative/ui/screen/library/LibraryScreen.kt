@@ -101,26 +101,15 @@ import app.gamenative.ui.screen.library.components.LibraryCarouselPane
 import app.gamenative.ui.screen.library.components.LibraryDetailPane
 import app.gamenative.ui.screen.library.components.LibraryListPane
 import app.gamenative.ui.screen.library.components.LibraryFavoritesEmptyState
-import app.gamenative.ui.screen.library.components.RecommendationDisclosureDialog
 import app.gamenative.ui.screen.library.components.LibraryOptionsPanel
 import app.gamenative.ui.screen.library.components.LibrarySearchBar
 import app.gamenative.ui.screen.library.components.LibrarySourceNotLoggedInSplash
 import app.gamenative.ui.screen.library.components.LibraryTabBar
 import app.gamenative.ui.screen.library.components.toggleFavorite
-import app.gamenative.ui.screen.auth.AmazonOAuthActivity
-import app.gamenative.ui.screen.auth.EpicOAuthActivity
-import app.gamenative.ui.screen.auth.GOGOAuthActivity
 import app.gamenative.ui.screen.library.components.SystemMenu
 import app.gamenative.ui.theme.PluviaTheme
-import app.gamenative.ui.util.PlatformAuthUiHelpers
-import app.gamenative.ui.util.PlatformLogoutCallbacks
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
 import app.gamenative.utils.CustomGameScanner
-import app.gamenative.utils.PlatformOAuthHandlers
 import app.gamenative.utils.SteamUtils
-import app.gamenative.analytics.PostHog
 import kotlinx.coroutines.launch
 import android.os.SystemClock
 
@@ -226,128 +215,13 @@ private fun LibraryScreenContent(
     val context = LocalContext.current
     val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
 
-    val gogOAuthLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        if (result.resultCode != android.app.Activity.RESULT_OK) {
-            val message = result.data?.getStringExtra(GOGOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.gog_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        val code = result.data?.getStringExtra(GOGOAuthActivity.EXTRA_AUTH_CODE)
-        if (code == null) {
-            val message = result.data?.getStringExtra(GOGOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.gog_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        lifecycleScope.launch {
-            PlatformOAuthHandlers.handleGogAuthentication(
-                context = context,
-                authCode = code,
-                coroutineScope = lifecycleScope,
-                onLoadingChange = { },
-                onError = { msg ->
-                    if (msg != null) {
-                        SnackbarManager.show(msg)
-                    }
-                },
-                onSuccess = {
-                    SnackbarManager.show(context.getString(R.string.gog_login_success_title))
-                },
-                onDialogClose = { },
-            )
-        }
-    }
 
-    val epicOAuthLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        if (result.resultCode != android.app.Activity.RESULT_OK) {
-            val message = result.data?.getStringExtra(EpicOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.epic_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        val code = result.data?.getStringExtra(EpicOAuthActivity.EXTRA_AUTH_CODE)
-        if (code == null) {
-            val message = result.data?.getStringExtra(EpicOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.epic_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        lifecycleScope.launch {
-            PlatformOAuthHandlers.handleEpicAuthentication(
-                context = context,
-                authCode = code,
-                coroutineScope = lifecycleScope,
-                onLoadingChange = { },
-                onError = { msg ->
-                    if (msg != null) {
-                        SnackbarManager.show(msg)
-                    }
-                },
-                onSuccess = {
-                    SnackbarManager.show(context.getString(R.string.epic_login_success_title))
-                },
-                onDialogClose = { },
-            )
-        }
-    }
 
-    val amazonOAuthLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        if (result.resultCode != android.app.Activity.RESULT_OK) {
-            val message = result.data?.getStringExtra(AmazonOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.amazon_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        val code = result.data?.getStringExtra(AmazonOAuthActivity.EXTRA_AUTH_CODE)
-        if (code == null) {
-            val message = result.data?.getStringExtra(AmazonOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.amazon_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        lifecycleScope.launch {
-            PlatformOAuthHandlers.handleAmazonAuthentication(
-                context = context,
-                authCode = code,
-                coroutineScope = lifecycleScope,
-                onLoadingChange = { },
-                onError = { msg ->
-                    if (msg != null) {
-                        SnackbarManager.show(msg)
-                    }
-                },
-                onSuccess = {
-                    SnackbarManager.show(context.getString(R.string.amazon_login_success_title))
-                },
-                onDialogClose = { },
-            )
-        }
-    }
 
     var selectedAppId by remember { mutableStateOf<String?>(null) }
     val carouselListState = rememberLazyListState()
     val isViewWide = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     var currentPaneType by remember { mutableStateOf(PrefManager.libraryLayout) }
-    var recDisclosureShown by remember { mutableStateOf(PrefManager.recDisclosureShown) }
-    var showRecTeaserDialog by remember { mutableStateOf(false) }
-    val onRecTeaserTapped = {
-        if (PrefManager.usageAnalyticsEnabled) PostHog.capture(event = "rec_teaser_tapped")
-        showRecTeaserDialog = true
-    }
-    val recTeaserVisible = state.appInfoList.firstOrNull()?.isRecTeaser == true
-    LaunchedEffect(recTeaserVisible) {
-        if (recTeaserVisible && PrefManager.usageAnalyticsEnabled) {
-            PostHog.capture(event = "rec_teaser_shown")
-        }
-    }
-
     // Initialize layout if undecided
     LaunchedEffect(Unit) {
         if (currentPaneType == PaneType.UNDECIDED) {
@@ -364,7 +238,6 @@ private fun LibraryScreenContent(
     var pendingGridFocusRequest by remember { mutableStateOf(false) }
     var pendingCarouselFocusRequest by remember { mutableStateOf(false) }
 
-    var recommendationItemCount by remember { mutableIntStateOf(0) }
 
     var isSystemMenuOpen by remember { mutableStateOf(false) }
     // Track previous overlay states to detect when they close
@@ -397,11 +270,7 @@ private fun LibraryScreenContent(
     var lastBootstrapAtMs by remember { mutableLongStateOf(0L) }
 
     fun getContentLastIndex(): Int {
-        return if (state.currentTab == LibraryTab.RECOMMENDED) {
-            (recommendationItemCount - 1).coerceAtLeast(0)
-        } else {
-            state.appInfoList.lastIndex.coerceAtLeast(0)
-        }
+        return state.appInfoList.lastIndex.coerceAtLeast(0)
     }
 
     fun firstVisibleContentIndex(): Int {
@@ -435,7 +304,7 @@ private fun LibraryScreenContent(
     }
 
     // Moved all state.appInfoList.isNotEmpty() checking to this function
-    fun isListFocusable(): Boolean = state.appInfoList.isNotEmpty() || state.currentTab == LibraryTab.RECOMMENDED
+    fun isListFocusable(): Boolean = state.appInfoList.isNotEmpty()
 
     fun requestGridFocusOrDefer() {
         if (!isListFocusable()) return
@@ -480,13 +349,12 @@ private fun LibraryScreenContent(
     }
 
     fun focusedLibraryItem(): LibraryItem? {
-        if (state.currentTab == LibraryTab.RECOMMENDED) return null
         val focusedIndex = if (currentPaneType == PaneType.CAROUSEL) {
             currentCarouselFocusTargetIndex()
         } else {
             gridFocusTargetListIndex
         }
-        return state.appInfoList.getOrNull(focusedIndex)?.takeUnless { it.isRecommended }
+        return state.appInfoList.getOrNull(focusedIndex)
     }
 
     fun toggleFocusedFavorite(): Boolean {
@@ -982,54 +850,10 @@ private fun LibraryScreenContent(
         if (selectedAppId == null) {
             // Use Box to allow content to scroll behind the tab bar
             Box(modifier = Modifier.fillMaxSize()) {
-                if (showRecTeaserDialog) {
-                    RecommendationDisclosureDialog(
-                        onContinue = {
-                            PrefManager.recDisclosureShown = true
-                            recDisclosureShown = true
-                            showRecTeaserDialog = false
-                            PluviaApp.events.emit(AndroidEvent.RecommendationToggleChanged)
-                        },
-                        onDismiss = {
-                            PrefManager.recTeaserDismissedDay = System.currentTimeMillis() / (24L * 60 * 60 * 1000)
-                            showRecTeaserDialog = false
-                        },
-                        source = "hero",
-                    )
-                }
-                // When on Steam/GOG/Epic/Amazon tab and not logged in, or LOCAL tab with no custom games, show splash
-                if (state.currentTab == LibraryTab.RECOMMENDED) {
-                    if (recDisclosureShown) {
-                        RecommendedTabPane(
-                            currentPaneType = currentPaneType,
-                            onNavigate = { item ->
-                                selectedAppId = item.appId
-                                selectedLibraryItem = item
-                            },
-                            modifier = Modifier.fillMaxSize(),
-                            firstCarouselItemFocusRequester = carouselFocusRequester,
-                            firstGridItemFocusRequester = gridFirstItemFocusRequester,
-                            focusTargetListIndex = if (currentPaneType == PaneType.CAROUSEL) currentCarouselFocusTargetIndex() else gridFocusTargetListIndex,
-                            onFocusedIndexChanged = { carouselFocusTargetListIndex = it },
-                            onItemCountChanged = { recommendationItemCount = it },
-                        )
-                    } else {
-                        Box(modifier = Modifier.fillMaxSize())
-                        RecommendationDisclosureDialog(
-                            onContinue = {
-                                PrefManager.recDisclosureShown = true
-                                recDisclosureShown = true
-                                PluviaApp.events.emit(AndroidEvent.RecommendationToggleChanged)
-                            },
-                            onDismiss = { onTabChanged(LibraryTab.ALL) },
-                        )
-                    }
-                } else {
+                // When on the Steam tab and not logged in, or LOCAL tab with no custom games, show splash
+                run {
                 val showEmptyStateSplash = when (state.currentTab) {
                     LibraryTab.STEAM -> !SteamUtils.hasStoredCredentials() && !state.isLoading
-                    LibraryTab.GOG -> !GOGService.hasStoredCredentials(context)
-                    LibraryTab.EPIC -> !EpicService.hasStoredCredentials(context)
-                    LibraryTab.AMAZON -> !AmazonService.hasStoredCredentials(context)
                     LibraryTab.LOCAL -> PrefManager.customGamesCount == 0
                     else -> false
                 }
@@ -1045,27 +869,12 @@ private fun LibraryScreenContent(
                             R.string.steam_sign_in,
                             onGoOnline,
                         )
-                        LibraryTab.GOG -> Triple(
-                            R.string.library_source_not_logged_in_gog,
-                            R.string.gog_settings_login_title,
-                            { gogOAuthLauncher.launch(Intent(context, GOGOAuthActivity::class.java)) },
-                        )
-                        LibraryTab.EPIC -> Triple(
-                            R.string.library_source_not_logged_in_epic,
-                            R.string.epic_settings_login_title,
-                            { epicOAuthLauncher.launch(Intent(context, EpicOAuthActivity::class.java)) },
-                        )
-                        LibraryTab.AMAZON -> Triple(
-                            R.string.library_source_not_logged_in_amazon,
-                            R.string.amazon_settings_login_title,
-                            { amazonOAuthLauncher.launch(Intent(context, AmazonOAuthActivity::class.java)) },
-                        )
                         LibraryTab.LOCAL -> Triple(
                             R.string.library_source_no_custom_games,
                             R.string.add_custom_game_dialog_title,
                             onAddCustomGameClick,
                         )
-                        else -> throw IllegalStateException("showEmptyStateSplash is true only for Steam/GOG/Epic/Amazon/LOCAL")
+                        else -> throw IllegalStateException("showEmptyStateSplash is true only for Steam/LOCAL")
                     }
                     LibrarySourceNotLoggedInSplash(
                         messageResId = messageResId,
@@ -1100,14 +909,8 @@ private fun LibraryScreenContent(
                             onPageChange = onPageChange,
                             onNavigate = { appId ->
                                 val item = state.appInfoList.find { it.appId == appId }
-                                if (item?.isRecTeaser == true) {
-                                    if (!item.isRecLoading && !recDisclosureShown) {
-                                        onRecTeaserTapped()
-                                    }
-                                } else {
-                                    selectedAppId = appId
-                                    selectedLibraryItem = item
-                                }
+                                selectedAppId = appId
+                                selectedLibraryItem = item
                             },
                             onRefresh = onRefresh,
                             modifier = Modifier.fillMaxSize(),
@@ -1125,14 +928,8 @@ private fun LibraryScreenContent(
                             onPageChange = onPageChange,
                             onNavigate = { appId ->
                                 val item = state.appInfoList.find { it.appId == appId }
-                                if (item?.isRecTeaser == true) {
-                                    if (!item.isRecLoading && !recDisclosureShown) {
-                                        onRecTeaserTapped()
-                                    }
-                                } else {
-                                    selectedAppId = appId
-                                    selectedLibraryItem = item
-                                }
+                                selectedAppId = appId
+                                selectedLibraryItem = item
                             },
                             onRefresh = onRefresh,
                             modifier = Modifier.fillMaxSize(),
@@ -1173,9 +970,6 @@ private fun LibraryScreenContent(
                             LibraryTab.ALL to state.allCount,
                             LibraryTab.FAVORITES to state.favoritesCount,
                             LibraryTab.STEAM to state.steamCount,
-                            LibraryTab.GOG to state.gogCount,
-                            LibraryTab.EPIC to state.epicCount,
-                            LibraryTab.AMAZON to state.amazonCount,
                             LibraryTab.LOCAL to state.localCount,
                         ),
                         onTabSelected = onTabChanged,
@@ -1326,9 +1120,6 @@ private fun LibraryScreenContent(
 
             // System menu (START) - renders on top of everything
             val context = LocalContext.current
-            val gogLoggedIn = app.gamenative.service.gog.GOGAuthManager.hasStoredCredentials(context)
-            val epicLoggedIn = app.gamenative.service.epic.EpicAuthManager.hasStoredCredentials(context)
-            val amazonLoggedIn = app.gamenative.service.amazon.AmazonAuthManager.hasStoredCredentials(context)
 
             SystemMenu(
                 isOpen = isSystemMenuOpen,
@@ -1338,40 +1129,6 @@ private fun LibraryScreenContent(
                 onLogout = onLogout,
                 onGoOnline = onGoOnline,
                 isOffline = isOffline,
-                gogLoggedIn = gogLoggedIn,
-                epicLoggedIn = epicLoggedIn,
-                amazonLoggedIn = amazonLoggedIn,
-                onGogLoginClick = {
-                    gogOAuthLauncher.launch(Intent(context, GOGOAuthActivity::class.java))
-                },
-                onGogLogoutClick = {
-                    PlatformAuthUiHelpers.logoutGog(
-                        context = context,
-                        scope = lifecycleScope,
-                        callbacks = PlatformLogoutCallbacks(),
-                    )
-                },
-                onEpicLoginClick = {
-                    epicOAuthLauncher.launch(Intent(context, EpicOAuthActivity::class.java))
-                },
-                onEpicLogoutClick = {
-                    PlatformAuthUiHelpers.logoutEpic(
-                        context = context,
-                        scope = lifecycleScope,
-                        callbacks = PlatformLogoutCallbacks(),
-                    )
-                },
-                onAmazonLoginClick = {
-                    amazonOAuthLauncher.launch(Intent(context, AmazonOAuthActivity::class.java))
-                },
-                onAmazonLogoutClick = {
-                    PlatformAuthUiHelpers.logoutAmazon(
-                        context = context,
-                        scope = lifecycleScope,
-                        callbacks = PlatformLogoutCallbacks(),
-                    )
-                },
-            )
 
         }
 

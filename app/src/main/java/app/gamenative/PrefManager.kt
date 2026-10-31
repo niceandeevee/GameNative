@@ -617,14 +617,6 @@ object PrefManager {
             setPref(LOAD_MODS, value)
         }
 
-    private val EPIC_OFFLINE_MODE = booleanPreferencesKey("epic_offline_mode")
-    var epicOfflineMode: Boolean
-        get() = getPref(EPIC_OFFLINE_MODE, false)
-        set(value) {
-            setPref(EPIC_OFFLINE_MODE, value)
-        }
-
-
     private val USE_LEGACY_DRM = booleanPreferencesKey("use_legacy_drm")
     var useLegacyDRM: Boolean
         get() = getPref(USE_LEGACY_DRM, false)
@@ -862,7 +854,6 @@ object PrefManager {
             setPref(EXEC_ARGS, value)
         }
 
-
     /* Recent Crash Flag */
     private val RECENTLY_CRASHED = booleanPreferencesKey("recently_crashed")
     var recentlyCrashed: Boolean
@@ -1033,7 +1024,6 @@ object PrefManager {
 
     private val LIBRARY_TAB_PREFERENCES = stringPreferencesKey("library_tab_preferences")
     var libraryTabs: List<LibraryTab>
-        // visibleEntries: tabs removed from this build (Recommended) never come back from prefs
         get() = LibraryTab.normalizeVisibleTabs(
             getPref(LIBRARY_TAB_PREFERENCES, ""),
             LibraryTab.visibleEntries,
@@ -1349,27 +1339,6 @@ object PrefManager {
             setPref(SHOW_CUSTOM_GAMES_IN_LIBRARY, value)
         }
 
-    private val SHOW_GOG_IN_LIBRARY = booleanPreferencesKey("show_gog_in_library")
-    var showGOGInLibrary: Boolean
-        get() = getPref(SHOW_GOG_IN_LIBRARY, true)
-        set(value) {
-            setPref(SHOW_GOG_IN_LIBRARY, value)
-        }
-
-    private val SHOW_EPIC_IN_LIBRARY = booleanPreferencesKey("show_epic_in_library")
-    var showEpicInLibrary: Boolean
-        get() = getPref(SHOW_EPIC_IN_LIBRARY, true)
-        set(value) {
-            setPref(SHOW_EPIC_IN_LIBRARY, value)
-        }
-
-    private val SHOW_AMAZON_IN_LIBRARY = booleanPreferencesKey("show_amazon_in_library")
-    var showAmazonInLibrary: Boolean
-        get() = getPref(SHOW_AMAZON_IN_LIBRARY, true)
-        set(value) {
-            setPref(SHOW_AMAZON_IN_LIBRARY, value)
-        }
-
     // Game counts for skeleton loaders
     private val CUSTOM_GAMES_COUNT = intPreferencesKey("custom_games_count")
     var customGamesCount: Int
@@ -1403,100 +1372,11 @@ object PrefManager {
             setPref(STEAM_GAMES_COUNT, value)
         }
 
-    private val GOG_GAMES_COUNT = intPreferencesKey("gog_games_count")
-    var gogGamesCount: Int
-        get() = getPref(GOG_GAMES_COUNT, 0)
-        set(value) {
-            setPref(GOG_GAMES_COUNT, value)
-        }
-
-    private val EPIC_GAMES_COUNT = intPreferencesKey("epic_games_count")
-    var epicGamesCount: Int
-        get() = getPref(EPIC_GAMES_COUNT, 0)
-        set(value) {
-            setPref(EPIC_GAMES_COUNT, value)
-        }
-
-    private val GOG_INSTALLED_GAMES_COUNT = intPreferencesKey("gog_installed_games_count")
-    var gogInstalledGamesCount: Int
-        get() = getPref(GOG_INSTALLED_GAMES_COUNT, 0)
-        set(value) {
-            setPref(GOG_INSTALLED_GAMES_COUNT, value)
-        }
-
-    private val EPIC_INSTALLED_GAMES_COUNT = intPreferencesKey("epic_installed_games_count")
-    var epicInstalledGamesCount: Int
-        get() = getPref(EPIC_INSTALLED_GAMES_COUNT, 0)
-        set(value) {
-            setPref(EPIC_INSTALLED_GAMES_COUNT, value)
-        }
-
-    private val AMAZON_INSTALLED_GAMES_COUNT = intPreferencesKey("amazon_installed_games_count")
-    var amazonInstalledGamesCount: Int
-        get() = getPref(AMAZON_INSTALLED_GAMES_COUNT, 0)
-        set(value) {
-            setPref(AMAZON_INSTALLED_GAMES_COUNT, value)
-        }
-
-    // Cached recommendation JSON (single game) and timestamp
-    private val RECOMMENDATION_CACHE_JSON = stringPreferencesKey("recommendation_cache_json")
-    var recommendationCacheJson: String
-        get() = getPref(RECOMMENDATION_CACHE_JSON, "")
-        set(value) {
-            setPref(RECOMMENDATION_CACHE_JSON, value)
-        }
-
-    private val RECOMMENDATION_CACHE_TIMESTAMP = longPreferencesKey("recommendation_cache_timestamp")
-    var recommendationCacheTimestamp: Long
-        get() = getPref(RECOMMENDATION_CACHE_TIMESTAMP, 0L)
-        set(value) {
-            setPref(RECOMMENDATION_CACHE_TIMESTAMP, value)
-        }
-
     private val FILE_DETECTION_RULES_FETCHED_AT = longPreferencesKey("file_detection_rules_fetched_at")
     var fileDetectionRulesFetchedAt: Long
         get() = getPref(FILE_DETECTION_RULES_FETCHED_AT, 0L)
         set(value) {
             setPref(FILE_DETECTION_RULES_FETCHED_AT, value)
-        }
-
-    // Cached boot-screen sponsor payload; boot renders from this, never from network
-    private val BOOT_AD_CACHE_JSON = stringPreferencesKey("boot_ad_cache_json")
-    var bootAdCacheJson: String
-        get() = getPref(BOOT_AD_CACHE_JSON, "")
-        set(value) {
-            setPref(BOOT_AD_CACHE_JSON, value)
-        }
-
-    // campaignId shown on the most recent boot, so rotation never repeats back-to-back
-    private val BOOT_AD_LAST_SHOWN = stringPreferencesKey("boot_ad_last_shown")
-    var bootAdLastShown: String
-        get() = getPref(BOOT_AD_LAST_SHOWN, "")
-        set(value) {
-            setPref(BOOT_AD_LAST_SHOWN, value)
-        }
-
-    // Comma-separated "campaignId:daySeed:count" entries — per-campaign daily frequency caps
-    private val BOOT_AD_SHOW_COUNT = stringPreferencesKey("boot_ad_show_count")
-    var bootAdShowCount: String
-        get() = getPref(BOOT_AD_SHOW_COUNT, "")
-        set(value) {
-            setPref(BOOT_AD_SHOW_COUNT, value)
-        }
-
-    // Show the day's game recommendation on the booting splash when no sponsor card is eligible
-    private val BOOT_SCREEN_RECOMMENDATIONS_ENABLED = booleanPreferencesKey("boot_screen_recommendations_enabled")
-    var bootScreenRecommendationsEnabled: Boolean
-        get() = getPref(BOOT_SCREEN_RECOMMENDATIONS_ENABLED, false)
-        set(value) {
-            setPref(BOOT_SCREEN_RECOMMENDATIONS_ENABLED, value)
-        }
-
-    private val BOOT_SCREEN_ADS_ENABLED = booleanPreferencesKey("boot_screen_ads_enabled")
-    var bootScreenAdsEnabled: Boolean
-        get() = getPref(BOOT_SCREEN_ADS_ENABLED, true)
-        set(value) {
-            setPref(BOOT_SCREEN_ADS_ENABLED, value)
         }
 
     private val HIDE_AI_FEATURES = booleanPreferencesKey("hide_ai_features")
@@ -1506,16 +1386,8 @@ object PrefManager {
             setPref(HIDE_AI_FEATURES, value)
         }
 
-    // Game recommendations are removed from this build: always off, whatever was saved
-    private val SHOW_RECOMMENDATIONS = booleanPreferencesKey("show_recommendations")
-    var showRecommendations: Boolean
-        get() = false
-        set(value) {
-            setPref(SHOW_RECOMMENDATIONS, value)
-        }
-
     /**
-     * Whether games marked hidden on Steam/GOG are shown in the library by default.
+     * Whether games marked hidden on Steam are shown in the library by default.
      * Defaults to true so previously visible games do not disappear after an update; users can
      * turn it off to hide them again.
      */
@@ -1526,42 +1398,6 @@ object PrefManager {
             setPref(SHOW_HIDDEN_GAMES_BY_DEFAULT, value)
         }
 
-    private val REC_DISCLOSURE_SHOWN = booleanPreferencesKey("rec_disclosure_shown")
-
-    // Cached in memory because the DataStore write is async: consumers read this back
-    // immediately after granting consent, before the write lands on disk.
-    @Volatile private var recDisclosureShownCache: Boolean? = null
-    var recDisclosureShown: Boolean
-        get() = recDisclosureShownCache
-            ?: getPref(REC_DISCLOSURE_SHOWN, false).also { recDisclosureShownCache = it }
-        set(value) {
-            recDisclosureShownCache = value
-            setPref(REC_DISCLOSURE_SHOWN, value)
-        }
-
-    // Day seed when the user last dismissed the frosted rec teaser ("Not now")
-    private val RECOMMENDED_TAB_SEEN_DAY = longPreferencesKey("recommended_tab_seen_day")
-    var recommendedTabSeenDay: Long
-        get() = getPref(RECOMMENDED_TAB_SEEN_DAY, 0L)
-        set(value) {
-            setPref(RECOMMENDED_TAB_SEEN_DAY, value)
-        }
-
-    // Recent campaign CTA clicks keyed by app id, attached to later install/launch events
-    private val CAMPAIGN_CLICKS_JSON = stringPreferencesKey("campaign_clicks_json")
-    var campaignClicksJson: String
-        get() = getPref(CAMPAIGN_CLICKS_JSON, "")
-        set(value) {
-            setPref(CAMPAIGN_CLICKS_JSON, value)
-        }
-
-    private val REC_TEASER_DISMISSED_DAY = longPreferencesKey("rec_teaser_dismissed_day")
-    var recTeaserDismissedDay: Long
-        get() = getPref(REC_TEASER_DISMISSED_DAY, 0L)
-        set(value) {
-            setPref(REC_TEASER_DISMISSED_DAY, value)
-        }
-
     // Show dialog when adding custom game folder
     private val SHOW_ADD_CUSTOM_GAME_DIALOG = booleanPreferencesKey("show_add_custom_game_dialog")
     var showAddCustomGameDialog: Boolean
@@ -1569,7 +1405,6 @@ object PrefManager {
         set(value) {
             setPref(SHOW_ADD_CUSTOM_GAME_DIALOG, value)
         }
-
 
     // Import the custom game as a Steam game
     private val IMPORT_CUSTOM_GAME_AS_STEAM_GAME = booleanPreferencesKey("import_custom_game_as_steam_game")
@@ -1618,26 +1453,11 @@ object PrefManager {
         }
 
     private val FRONTEND_SYNC_DIR_STEAM = stringPreferencesKey("frontend_sync_dir_steam")
-    private val FRONTEND_SYNC_DIR_EPIC = stringPreferencesKey("frontend_sync_dir_epic")
-    private val FRONTEND_SYNC_DIR_GOG = stringPreferencesKey("frontend_sync_dir_gog")
-    private val FRONTEND_SYNC_DIR_AMAZON = stringPreferencesKey("frontend_sync_dir_amazon")
     private val FRONTEND_SYNC_DIR_CUSTOM = stringPreferencesKey("frontend_sync_dir_custom")
 
     var frontendSyncDirSteam: String
         get() = getPref(FRONTEND_SYNC_DIR_STEAM, "")
         set(value) { setPref(FRONTEND_SYNC_DIR_STEAM, value) }
-
-    var frontendSyncDirEpic: String
-        get() = getPref(FRONTEND_SYNC_DIR_EPIC, "")
-        set(value) { setPref(FRONTEND_SYNC_DIR_EPIC, value) }
-
-    var frontendSyncDirGog: String
-        get() = getPref(FRONTEND_SYNC_DIR_GOG, "")
-        set(value) { setPref(FRONTEND_SYNC_DIR_GOG, value) }
-
-    var frontendSyncDirAmazon: String
-        get() = getPref(FRONTEND_SYNC_DIR_AMAZON, "")
-        set(value) { setPref(FRONTEND_SYNC_DIR_AMAZON, value) }
 
     var frontendSyncDirCustom: String
         get() = getPref(FRONTEND_SYNC_DIR_CUSTOM, "")
@@ -1646,9 +1466,6 @@ object PrefManager {
     /** Returns the configured export directory for [source], or an empty string if not set. */
     fun getFrontendSyncDir(source: GameSource): String = when (source) {
         GameSource.STEAM -> frontendSyncDirSteam
-        GameSource.EPIC -> frontendSyncDirEpic
-        GameSource.GOG -> frontendSyncDirGog
-        GameSource.AMAZON -> frontendSyncDirAmazon
         GameSource.CUSTOM_GAME -> frontendSyncDirCustom
     }
 
@@ -1656,9 +1473,6 @@ object PrefManager {
     fun setFrontendSyncDir(source: GameSource, path: String) {
         when (source) {
             GameSource.STEAM -> frontendSyncDirSteam = path
-            GameSource.EPIC -> frontendSyncDirEpic = path
-            GameSource.GOG -> frontendSyncDirGog = path
-            GameSource.AMAZON -> frontendSyncDirAmazon = path
             GameSource.CUSTOM_GAME -> frontendSyncDirCustom = path
         }
     }
@@ -1842,11 +1656,6 @@ object PrefManager {
         get() = getPref(PLAY_INTEGRITY_AVAILABLE, false)
         set(value) = setPref(PLAY_INTEGRITY_AVAILABLE, value)
 
-    private val GOG_AMAZON_PATH_MIGRATED = booleanPreferencesKey("gog_amazon_path_migrated")
-    var gogAmazonPathMigrated: Boolean
-        get() = getPref(GOG_AMAZON_PATH_MIGRATED, false)
-        set(value) { setPref(GOG_AMAZON_PATH_MIGRATED, value) }
-
     private val ACHIEVEMENT_SHOW_NOTIFICATION = booleanPreferencesKey("achievement_show_notification")
     var achievementShowNotification: Boolean
         get() = getPref(ACHIEVEMENT_SHOW_NOTIFICATION, true)
@@ -1866,11 +1675,6 @@ object PrefManager {
     var warnBeforeExit: Boolean
         get() = getPref(WARN_BEFORE_EXIT, false)
         set(value) { setPref(WARN_BEFORE_EXIT, value) }
-
-    private val USAGE_ANALYTICS_ENABLED = booleanPreferencesKey("usage_analytics_enabled")
-    var usageAnalyticsEnabled: Boolean
-        get() = getPref(USAGE_ANALYTICS_ENABLED, true)
-        set(value) { setPref(USAGE_ANALYTICS_ENABLED, value) }
 
     private val NEXUS_LAST_PLACEMENT_JSON = stringPreferencesKey("nexus_last_placement_json")
     var nexusLastPlacementJson: String

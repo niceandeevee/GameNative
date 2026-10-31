@@ -67,6 +67,15 @@ internal val ROOM_MIGRATION_V28_to_V29 = object : Migration(28, 29) {
     }
 }
 
+/** Epic, GOG and Amazon support is removed from this build: drop their library tables. */
+internal val ROOM_MIGRATION_V29_to_V30 = object : Migration(29, 30) {
+    override fun migrate(connection: SQLiteConnection) {
+        connection.execSQL("DROP TABLE IF EXISTS `gog_games`")
+        connection.execSQL("DROP TABLE IF EXISTS `epic_games`")
+        connection.execSQL("DROP TABLE IF EXISTS `amazon_games`")
+    }
+}
+
 private fun SQLiteConnection.hasColumn(tableName: String, columnName: String): Boolean {
     prepare("PRAGMA table_info(`$tableName`)").use { statement ->
         while (statement.step()) {

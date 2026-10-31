@@ -410,8 +410,7 @@ internal fun LibraryCarouselPane(
                         items(
                             count = state.appInfoList.size,
                             key = { listIndex ->
-                                val item = state.appInfoList[listIndex]
-                                if (item.recSource == "hero") "HERO_SLOT" else item.appId
+                                state.appInfoList[listIndex].appId
                             },
                         ) { listIndex ->
                             val item = state.appInfoList[listIndex]

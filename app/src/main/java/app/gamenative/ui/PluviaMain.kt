@@ -83,14 +83,9 @@ import app.gamenative.service.rockstar.RockstarConstants
 import app.gamenative.service.rockstar.RockstarLoginGate
 import app.gamenative.service.rockstar.RockstarTitleMetadata
 import app.gamenative.service.rockstar.RockstarRuntime
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.utils.ConversionTracker
-import app.gamenative.analytics.PostHog
 import app.gamenative.ui.component.AchievementOverlay
 import app.gamenative.ui.component.ConnectionStatusBanner
 import app.gamenative.ui.component.GameInviteOverlay
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
 import app.gamenative.api.AccountApi
 import app.gamenative.billing.Membership
 import app.gamenative.api.DebugReportApi
@@ -233,17 +228,8 @@ private fun resolveGameAppId(context: Context, appId: String): GameResolutionRes
             }
         }
 
-        GameSource.GOG -> {
-            GOGService.isGameInstalled(gameId.toString())
-        }
 
-        GameSource.EPIC -> {
-            EpicService.isGameInstalled(context, gameId)
-        }
 
-        GameSource.AMAZON -> {
-            AmazonService.isGameInstalledByAppId(context, gameId)
-        }
 
         GameSource.CUSTOM_GAME -> {
             CustomGameScanner.isGameInstalled(gameId)
@@ -269,7 +255,7 @@ private fun resolveGameAppId(context: Context, appId: String): GameResolutionRes
 }
 
 
-/** Check if launch should be deferred — Steam needs login, GOG/Epic/Amazon need service startup */
+/** Check if launch should be deferred: Steam needs login */
 private fun needsDeferLaunch(context: Context, appId: String): Boolean {
     val gameSource = ContainerUtils.extractGameSourceFromContainerId(appId)
     return when (gameSource) {
@@ -279,9 +265,6 @@ private fun needsDeferLaunch(context: Context, appId: String): Boolean {
             // saved creds + local container exist — Steam can reconnect in background.
             !(SteamUtils.hasStoredCredentials() && ContainerUtils.hasContainer(context, appId))
         }
-        GameSource.GOG -> !GOGService.isRunning
-        GameSource.EPIC -> !EpicService.isRunning
-        GameSource.AMAZON -> !AmazonService.isRunning
         else -> false
     }
 }
@@ -313,54 +296,11 @@ private fun consumePendingSteamLoginError(context: Context) {
 
 private const val LAUNCH_PITCH_COOLDOWN_MS = 5 * 24 * 60 * 60 * 1000L
 
-private fun trackMembershipPrompt(event: String, trigger: String) {
-    if (PrefManager.usageAnalyticsEnabled) {
-        PostHog.capture(
-            event = event,
-            properties = mapOf("trigger" to trigger),
-        )
-    }
-}
 
 private const val SUPPORT_PROMPT_SIGN_IN = "sign_in"
 
-private fun trackAiDebugOffer(event: String, appId: String, trigger: String) {
-    if (PrefManager.usageAnalyticsEnabled) {
-        PostHog.capture(
-            event = event,
-            properties = mapOf(
-                "game_name" to ContainerUtils.resolveGameName(appId),
-                "game_store" to ContainerUtils.extractGameSourceFromContainerId(appId).name,
-                "trigger" to trigger,
-            ),
-        )
-    }
-}
 
-fun trackAiDebug(event: String, properties: Map<String, Any> = emptyMap()) {
-    if (PrefManager.usageAnalyticsEnabled) {
-        PostHog.capture(event = event, properties = properties)
-    }
-}
 
-private fun trackGameLaunched(appId: String) {
-    val gameSource = ContainerUtils.extractGameSourceFromContainerId(appId)
-    val gameName = ContainerUtils.resolveGameName(appId)
-    val attribution = if (gameSource == GameSource.STEAM) {
-        ConversionTracker.campaignAttribution(runCatching { ContainerUtils.extractGameIdFromContainerId(appId) }.getOrNull())
-    } else {
-        emptyMap()
-    }
-    PostHog.capture(
-        event = "game_launched",
-        properties = mapOf(
-            "game_name" to gameName,
-            "game_store" to gameSource.name,
-            "key_attestation_available" to PrefManager.keyAttestationAvailable,
-            "play_integrity_available" to PrefManager.playIntegrityAvailable,
-        ) + attribution,
-    )
-}
 
 private fun CoroutineScope.markAppliedReported(context: Context, state: DebugReportDialogState) {
     if (state.phase != DebugReportDialogState.PHASE_COMPOSE && state.phase != DebugReportDialogState.PHASE_ERROR) return
@@ -375,7 +315,6 @@ private fun startDebugRun(
     setMessageDialogState: (MessageDialogState) -> Unit,
 ) {
     if (appId.isEmpty()) return
-    trackGameLaunched(appId)
     viewModel.setLaunchedAppId(appId)
     viewModel.setBootToContainer(false)
     viewModel.setTestGraphics(false)
@@ -509,7 +448,6 @@ fun PluviaMain(
             }
         } else {
             MainActivity.wasLaunchedViaExternalIntent = true
-            trackGameLaunched(resolvedAppId)
             viewModel.setLaunchedAppId(resolvedAppId)
             viewModel.setBootToContainer(false)
             scope.launch(Dispatchers.IO) {
@@ -596,7 +534,7 @@ fun PluviaMain(
         }
     }
 
-    // shared handler for deferred intent launches (Steam login, GOG/Epic/Amazon service startup)
+    // shared handler for deferred intent launches (Steam login)
     val processPendingLaunch: (String) -> Unit = { reason ->
         MainActivity.consumePendingLaunchRequest()?.let { launchRequest ->
             Timber.tag("IntentLaunch")
@@ -794,7 +732,6 @@ fun PluviaMain(
                     val gameName = ContainerUtils.resolveGameName(event.appId)
                     PrefManager.lastWarmPitchTime = System.currentTimeMillis()
                     membershipPitchTrigger = event.trigger
-                    trackMembershipPrompt("membership_prompt_shown", event.trigger)
                     msgDialogState = MessageDialogState(
                         visible = true,
                         type = DialogType.SUPPORT,
@@ -827,17 +764,12 @@ fun PluviaMain(
                             AccountApi.loadSignedInState()
                             SupportApi.checkAvailability()
                         }
-                        trackAiDebug(
-                            "ai_debug_report_shown",
-                            mapOf("discord_linked" to PrefManager.discordRelayTokenPresent.value),
-                        )
                     }
                 }
 
                 is MainViewModel.MainUiEvent.ShowAiDebugOffer -> {
                     aiDebugOfferAppId = event.appId
                     aiDebugOfferTrigger = event.trigger
-                    trackAiDebugOffer("ai_debug_offer_shown", event.appId, event.trigger)
                     val offerMessage = context.getString(
                         R.string.debug_offer_message,
                         ContainerUtils.resolveGameName(event.appId),
@@ -914,32 +846,6 @@ fun PluviaMain(
                 isConnecting = true
                 viewModel.startConnecting()
                 context.startForegroundService(Intent(context, SteamService::class.java))
-            }
-
-            // Start GOGService if user has GOG
-            if (app.gamenative.service.gog.GOGService.hasStoredCredentials(context) &&
-                !app.gamenative.service.gog.GOGService.isRunning
-            ) {
-                Timber.tag("GOG").d("[PluviaMain]: Starting GOGService for logged-in user")
-                app.gamenative.service.gog.GOGService.start(context)
-            } else {
-                Timber.tag("GOG").d("GOG SERVICE Not going to start: ${app.gamenative.service.gog.GOGService.isRunning}")
-            }
-
-            // Start EpicService if user has Epic credentials
-            if (app.gamenative.service.epic.EpicService.hasStoredCredentials(context) &&
-                !app.gamenative.service.epic.EpicService.isRunning
-            ) {
-                Timber.d("[PluviaMain]: Starting EpicService for logged-in user")
-                app.gamenative.service.epic.EpicService.start(context)
-            }
-
-            // Start AmazonService if user has Amazon credentials
-            if (AmazonService.hasStoredCredentials(context) &&
-                !AmazonService.isRunning
-            ) {
-                Timber.d("[PluviaMain]: Starting AmazonService for logged-in user")
-                AmazonService.start(context)
             }
 
             // Handle navigation when already logged in (e.g., app resumed with active session)
@@ -1022,7 +928,6 @@ fun PluviaMain(
 
         DialogType.SUPPORT -> {
             onConfirmClick = {
-                trackMembershipPrompt("membership_prompt_clicked", membershipPitchTrigger)
                 msgDialogState = MessageDialogState(visible = false)
                 membershipPlansVisible = true
             }
@@ -1403,7 +1308,6 @@ fun PluviaMain(
             onConfirmClick = {
                 setMessageDialogState(MessageDialogState(false))
                 if (aiDebugOfferAppId.isNotEmpty()) {
-                    trackAiDebugOffer("ai_debug_offer_accepted", aiDebugOfferAppId, aiDebugOfferTrigger)
                     SupportSession.clearRun(aiDebugOfferAppId)
                     debugPreRunAppId = aiDebugOfferAppId
                     debugPreRunOffline = viewModel.isOffline.value
@@ -1413,13 +1317,11 @@ fun PluviaMain(
             onDismissClick = {
                 setMessageDialogState(MessageDialogState(false))
                 if (aiDebugOfferAppId.isNotEmpty()) {
-                    trackAiDebugOffer("ai_debug_offer_dismissed", aiDebugOfferAppId, aiDebugOfferTrigger)
                 }
             }
             onDismissRequest = {
                 setMessageDialogState(MessageDialogState(false))
                 if (aiDebugOfferAppId.isNotEmpty()) {
-                    trackAiDebugOffer("ai_debug_offer_dismissed", aiDebugOfferAppId, aiDebugOfferTrigger)
                 }
             }
         }
@@ -1619,10 +1521,6 @@ fun PluviaMain(
                 val nonce = ByteArray(16).also { SecureRandom().nextBytes(it) }
                     .joinToString("") { "%02x".format(it) }
                 PrefManager.discordOauthNonce = nonce
-                trackAiDebug(
-                    "ai_debug_discord_connect_clicked",
-                    mapOf("surface" to if (debugPaywallReason != null) "paywall" else "report"),
-                )
                 CustomTabsIntent.Builder()
                     .setShowTitle(true)
                     .build()
@@ -1681,7 +1579,6 @@ fun PluviaMain(
                     val logcatFile = DebugReportUtils.logcatFile(dir)
                     when (val result = DebugReportApi.submit(header, logFile, PrefManager.discordRelayToken, perfFile, logcatFile)) {
                         is DebugReportApi.SubmitResult.Success -> {
-                            trackAiDebug("ai_debug_report_result", mapOf("result" to "success", "path" to "discord"))
                             withContext(Dispatchers.IO) {
                                 DebugReportUtils.deleteReport(dir)
                                 SupportAppliedRun.recordReportedRun(context, current.appId, header)
@@ -1696,17 +1593,9 @@ fun PluviaMain(
                             debugReportState = debugReportState.copy(visible = false)
                             val reason = result.reason.ifEmpty { "no_subscription" }
                             debugPaywallReason = reason
-                            trackAiDebug(
-                                "ai_debug_report_result",
-                                mapOf("result" to "forbidden", "reason" to reason, "path" to "discord"),
-                            )
                         }
 
                         is DebugReportApi.SubmitResult.Failure -> {
-                            trackAiDebug(
-                                "ai_debug_report_result",
-                                mapOf("result" to "failure", "reason" to result.message, "path" to "discord"),
-                            )
                             debugReportState = debugReportState.copy(phase = DebugReportDialogState.PHASE_ERROR)
                         }
                     }
@@ -1730,7 +1619,6 @@ fun PluviaMain(
                     val composeAgain = { debugReportState = debugReportState.copy(visible = true, phase = DebugReportDialogState.PHASE_COMPOSE) }
                     when (outcome) {
                         is SupportReportSubmitter.Outcome.Sent -> {
-                            trackAiDebug("ai_debug_report_result", mapOf("result" to "success", "path" to "app"))
                             withContext(Dispatchers.IO) {
                                 val dir = File(current.reportDir)
                                 val header = DebugReportUtils.readHeader(dir)
@@ -1750,10 +1638,6 @@ fun PluviaMain(
                             debugAccountPrompt = SUPPORT_PROMPT_SIGN_IN
                         }
                         is SupportReportSubmitter.Outcome.Forbidden -> {
-                            trackAiDebug(
-                                "ai_debug_report_result",
-                                mapOf("result" to "forbidden", "reason" to outcome.reason, "path" to "app"),
-                            )
                             composeAgain()
                             debugAccountPrompt = outcome.reason
                         }
@@ -1762,26 +1646,14 @@ fun PluviaMain(
                             SnackbarManager.show(context.getString(R.string.support_plan_pending))
                         }
                         SupportReportSubmitter.Outcome.LimitReached -> {
-                            trackAiDebug(
-                                "ai_debug_report_result",
-                                mapOf("result" to "failure", "reason" to SupportApi.REASON_FAIR_USE, "path" to "app"),
-                            )
                             composeAgain()
                             SnackbarManager.show(SupportReportSubmitter.limitReachedText(context))
                         }
                         SupportReportSubmitter.Outcome.RateLimited -> {
-                            trackAiDebug(
-                                "ai_debug_report_result",
-                                mapOf("result" to "failure", "reason" to SupportApi.REASON_RATE_LIMITED, "path" to "app"),
-                            )
                             debugReportState = debugReportState.copy(phase = DebugReportDialogState.PHASE_ERROR)
                             SnackbarManager.show(context.getString(R.string.support_problem_rate_limited))
                         }
                         is SupportReportSubmitter.Outcome.Failed -> {
-                            trackAiDebug(
-                                "ai_debug_report_result",
-                                mapOf("result" to "failure", "reason" to outcome.reason, "path" to "app"),
-                            )
                             debugReportState = debugReportState.copy(phase = DebugReportDialogState.PHASE_ERROR)
                         }
                     }
@@ -1920,7 +1792,6 @@ fun PluviaMain(
                         reason = reason,
                         hasDiscordToken = discordTokenPresent,
                         onSubscribe = {
-                            trackAiDebug("ai_debug_paywall_subscribe_clicked", mapOf("store" to "plans", "reason" to reason))
                             debugPaywallReason = null
                             membershipPlansVisible = true
                         },
@@ -1945,9 +1816,7 @@ fun PluviaMain(
                     visible = state.showBootingSplash,
                     text = state.bootingSplashText,
                     heroImageUrl = state.bootingSplashHeroImageUrl,
-                    bootAd = state.bootAd,
                     onAbort = { viewModel.abortBoot() },
-                    onDismissAd = { optOut -> viewModel.dismissBootAd(optOut) },
                 )
             }
 
@@ -1977,10 +1846,7 @@ fun PluviaMain(
                 when {
                     SteamService.isLoggedIn -> PluviaScreen.Home.route + "?offline=false"
                     // skip login screen if any service has stored credentials
-                    SteamUtils.hasStoredCredentials() ||
-                        GOGService.hasStoredCredentials(context) ||
-                        EpicService.hasStoredCredentials(context) ||
-                        AmazonService.hasStoredCredentials(context) ->
+                    SteamUtils.hasStoredCredentials() ->
                         PluviaScreen.Home.route + "?offline=true"
                     else -> PluviaScreen.LoginUser.route
                 }
@@ -2056,7 +1922,6 @@ fun PluviaMain(
                                 viewModel.setAnnoyingDialogShown(true)
                                 PrefManager.lastLaunchPitchTime = System.currentTimeMillis()
                                 membershipPitchTrigger = "launch"
-                                trackMembershipPrompt("membership_prompt_shown", "launch")
                                 msgDialogState = MessageDialogState(
                                     visible = true,
                                     type = DialogType.SUPPORT,
@@ -2071,7 +1936,6 @@ fun PluviaMain(
 
                     HomeScreen(
                         onClickPlay = { appId, asContainer ->
-                            trackGameLaunched(appId)
                             viewModel.setLaunchedAppId(appId)
                             viewModel.setBootToContainer(asContainer)
                             viewModel.setTestGraphics(false)
@@ -2110,7 +1974,6 @@ fun PluviaMain(
                             )
                         },
                         onPlayWithDiagnostics = { appId ->
-                            trackGameLaunched(appId)
                             viewModel.setLaunchedAppId(appId)
                             viewModel.setBootToContainer(false)
                             viewModel.setTestGraphics(false)
@@ -2399,10 +2262,7 @@ fun preLaunchApp(
             // Verify we have a launch executable for all platforms before proceeding (fail fast, avoid black screen)
             val effectiveExe = when (gameSource) {
                 GameSource.STEAM -> SteamService.getLaunchExecutable(appId, container)
-                GameSource.GOG -> GOGService.getLaunchExecutable(appId, container)
-                GameSource.EPIC -> EpicService.getLaunchExecutable(appId)
                 GameSource.CUSTOM_GAME -> CustomGameScanner.getLaunchExecutable(container)
-                GameSource.AMAZON -> AmazonService.getLaunchExecutable(appId)
             }
             if (effectiveExe.isBlank()) {
                 Timber.tag("preLaunchApp").w("Cannot launch $appId: no executable found (game source: $gameSource)")
@@ -2732,107 +2592,6 @@ fun preLaunchApp(
         // For Custom Games, bypass Steam Cloud operations entirely and proceed to launch
         if (isCustomGame) {
             Timber.tag("preLaunchApp").i("Custom Game detected for $appId — skipping Steam Cloud sync and launching container")
-            setLoadingDialogVisible(false)
-            onSuccess(context, appId)
-            return@launch
-        }
-
-        // For GOG Games, sync cloud saves before launch (executable already verified above via GOGService.getLaunchExecutable)
-        val isGOGGame = gameSource == GameSource.GOG
-        if (isGOGGame) {
-            if (isLocalSavesOnly) {
-                Timber.tag("GOG").i("[Cloud Saves] Local saves only enabled for $appId — skipping pre-game cloud sync")
-            } else {
-                Timber.tag("GOG").i("[Cloud Saves] GOG Game detected for $appId — syncing cloud saves before launch")
-
-                // Map an explicit user choice (from the conflict dialog) to a forced sync direction.
-                val gogPreferredAction = when (preferredSave) {
-                    SaveLocation.Local -> "forceupload" // "Keep local" -> force local up, past the conflict guard
-                    SaveLocation.Remote -> "download" // "Keep remote" -> pull cloud down
-                    SaveLocation.None -> null
-                }
-
-                // Initial launch (no choice yet): detect a conflict and prompt before syncing.
-                if (gogPreferredAction == null) {
-                    val conflict = GOGService.detectCloudSaveConflict(context, appId)
-                    if (conflict != null) {
-                        Timber.tag("GOG").i("[Cloud Saves] Conflict detected for $appId — prompting user")
-                        val localDate = Date(conflict.localTimestamp).toString()
-                        val remoteDate = Date(conflict.remoteTimestamp).toString()
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.SYNC_CONFLICT,
-                                title = context.getString(R.string.main_save_conflict_title),
-                                message = context.getString(R.string.main_save_conflict_message, localDate, remoteDate),
-                                dismissBtnText = context.getString(R.string.main_keep_local),
-                                confirmBtnText = context.getString(R.string.main_keep_remote),
-                            ),
-                        )
-                        // Wait for the user; the dialog handlers re-enter preLaunchApp with a SaveLocation.
-                        return@launch
-                    }
-                }
-
-                // No conflict, or the user already chose a side: perform the sync.
-                val action = gogPreferredAction ?: "none"
-                Timber.tag("GOG").d("[Cloud Saves] Starting pre-game sync for $appId (action: $action)")
-                val syncSuccess = GOGService.syncCloudSaves(
-                    context = context,
-                    appId = appId,
-                    preferredAction = action,
-                )
-
-                if (!syncSuccess) {
-                    Timber.tag("GOG").w("[Cloud Saves] Pre-game sync failed for $appId, proceeding with launch anyway")
-                    // Don't block launch on sync failure - log warning and continue
-                } else {
-                    Timber.tag("GOG").i("[Cloud Saves] Pre-game sync completed successfully for $appId")
-                }
-            }
-
-            setLoadingDialogVisible(false)
-            onSuccess(context, appId)
-            return@launch
-        }
-
-        // For Amazon Games, skip cloud sync entirely (Amazon doesn't support cloud saves)
-        val isAmazonGame = gameSource == GameSource.AMAZON
-        if (isAmazonGame) {
-            Timber.tag("preLaunchApp").i("Amazon Game detected for $appId — skipping cloud sync and launching container")
-            setLoadingDialogVisible(false)
-            onSuccess(context, appId)
-            return@launch
-        }
-
-        // For Epic Games, sync cloud saves before launch (executable already verified above via EpicService.getLaunchExecutable)
-        val isEpicGame = gameSource == GameSource.EPIC
-        if (isEpicGame) {
-            if (isLocalSavesOnly) {
-                Timber.tag("Epic").i("[Cloud Saves] Local saves only enabled for $appId — skipping pre-game cloud sync")
-            } else {
-                // Handle Cloud Saves
-                Timber.tag("Epic").i("[Cloud Saves] Epic Game detected for $appId — syncing cloud saves before launch")
-                // Sync cloud saves (download latest saves before playing)
-                Timber.tag("Epic").d("[Cloud Saves] Starting pre-game download sync for $appId")
-                val syncSuccess = app.gamenative.service.epic.EpicCloudSavesManager.syncCloudSaves(
-                    context = context,
-                    appId = gameId,
-                )
-
-                if (!syncSuccess) {
-                    Timber.tag("Epic").w("[Cloud Saves] Download sync failed for $appId, proceeding with launch anyway")
-                    // Don't block launch on sync failure - log warning and continue
-                } else {
-                    Timber.tag("Epic").i("[Cloud Saves] Download sync completed successfully for $appId")
-                }
-            }
-
-            // Delete Ownership Token if exists
-            Timber.tag("Epic").i("[Ownership Tokens] Cleaning up launch tokens for Epic games...")
-            EpicService.cleanupLaunchTokens(context, container)
-
             setLoadingDialogVisible(false)
             onSuccess(context, appId)
             return@launch

@@ -9,7 +9,6 @@ import app.gamenative.BuildConfig
 import app.gamenative.PluviaApp
 import app.gamenative.PrefManager
 import app.gamenative.billing.Membership
-import app.gamenative.data.BootAdRepository
 import app.gamenative.data.GameProcessInfo
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryPlayHistory
@@ -24,12 +23,6 @@ import app.gamenative.ui.enums.Orientation
 import java.util.EnumSet
 import app.gamenative.service.ActiveGameRegistry
 import app.gamenative.service.SteamService
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.service.epic.EpicCloudSavesManager
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
-import app.gamenative.utils.BootAdView
-import app.gamenative.utils.ConversionTracker
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.ui.data.MainState
 import app.gamenative.ui.enums.ConnectionState
@@ -85,17 +78,12 @@ class MainViewModel @Inject constructor(
         private const val BOOT_GAME_SEEN_GRACE_MS = 15_000L
         private const val LOW_RATING_MAX = 3
         private val FAILURE_TAGS = setOf("does_not_open", "no_graphics", "directx_error")
-        private const val BOOT_AD_REUSE_WINDOW_MS = 2 * 60 * 1000L
 
         var gamePlayedThisSession = false
             private set
     }
 
     private var gameSessionStartTime = 0L
-    private var bootAdShownAtMs = 0L
-    private var bootAdHiddenAtMs = 0L
-    private var bootAdDismissedAtMs = 0L
-    private var bootAdDwellReported = false
     private var bootAwaitingGameWindow = false
     private var gameWindowSeen = false
     private var pendingWarmPitch: Pair<String, Boolean>? = null
@@ -405,60 +393,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun setShowBootingSplash(value: Boolean) {
-        val wasShowing = _state.value.showBootingSplash
-        if (value && !wasShowing) {
-            // The splash hides and re-shows between boot phases; a quick re-show is the same
-            // impression. Re-querying here would record extra shows and null the ad mid-boot
-            // once the daily cap is crossed, unmounting the sponsor card while the splash is up.
-            val held = _state.value.bootAd
-            val heldAllowed = held != null &&
-                (if (held.sponsored) PrefManager.bootScreenAdsEnabled else PrefManager.bootScreenRecommendationsEnabled)
-            val reuse = heldAllowed && System.currentTimeMillis() - bootAdHiddenAtMs < BOOT_AD_REUSE_WINDOW_MS
-            val dismissed = System.currentTimeMillis() - bootAdDismissedAtMs < BOOT_AD_REUSE_WINDOW_MS
-            val ad = if (reuse || dismissed) {
-                held
-            } else {
-                BootAdRepository.pickBootCard()?.also {
-                    bootAdShownAtMs = System.currentTimeMillis()
-                    bootAdDwellReported = false
-                    BootAdView.begin(it)
-                    if (it.sponsored) BootAdRepository.recordShown(it.campaignId) else BootAdRepository.noteShown(it.campaignId)
-                }
-            }
-            Timber.tag("BootAdTrace").i("show: wasShowing=false held=%s reuse=%s ad=%s", held != null, reuse, ad?.campaignId)
-            PluviaApp.isBootingSplashShowing = true
-            _state.update { it.copy(showBootingSplash = true, bootAd = ad) }
-            // Resolve after publishing so an instant cache hit can't race the state write.
-            if (ad != null && !ad.sponsored && !reuse) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val upgraded = BootAdRepository.resolveHouseTrailer(ad) ?: return@launch
-                    _state.update { s -> if (s.bootAd?.campaignId == upgraded.campaignId) s.copy(bootAd = upgraded) else s }
-                }
-            }
-        } else if (!value && wasShowing) {
-            Timber.tag("BootAdTrace").i("hide: ad=%s", _state.value.bootAd?.campaignId)
-            bootAdHiddenAtMs = System.currentTimeMillis()
-            _state.value.bootAd?.let { ad ->
-                if (!bootAdDwellReported) {
-                    bootAdDwellReported = true
-                    val dwellSeconds = (System.currentTimeMillis() - bootAdShownAtMs) / 1000L
-                    if (ad.sponsored) {
-                        ConversionTracker.bootAdShown(campaignId = ad.campaignId, dwellSeconds = dwellSeconds)
-                    } else {
-                        ConversionTracker.bootRecShown(campaignId = ad.campaignId, dwellSeconds = dwellSeconds)
-                    }
-                }
-            }
-            // bootAd stays in state so the exit fade keeps rendering it; the next show replaces it.
-            PluviaApp.isBootingSplashShowing = false
-            _state.update { it.copy(showBootingSplash = false, alreadyClearedBootingSplash = true) }
+        PluviaApp.isBootingSplashShowing = value
+        if (value) {
+            _state.update { it.copy(showBootingSplash = true) }
         } else {
-            PluviaApp.isBootingSplashShowing = value
-            if (!value) {
-                _state.update { it.copy(showBootingSplash = false, alreadyClearedBootingSplash = true) }
-            } else {
-                _state.update { it.copy(showBootingSplash = true) }
-            }
+            _state.update { it.copy(showBootingSplash = false, alreadyClearedBootingSplash = true) }
         }
     }
 
@@ -558,7 +497,6 @@ class MainViewModel @Inject constructor(
      * Navigation decisions should be made by the caller based on the current
      * NavController destination, not by tracking internal flags.
      *
-     * TODO: reconsider this approach when merging GOG and Epic
      */
     fun getPersistedRoute(): String? {
         val persistedRoute = savedStateHandle.get<String>(KEY_CURRENT_SCREEN_ROUTE)
@@ -587,8 +525,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun setLaunchedAppId(value: String) {
-        // A dismissed card stays gone for the rest of that boot only.
-        bootAdDismissedAtMs = 0L
         _state.update { it.copy(launchedAppId = value) }
     }
 
@@ -638,12 +574,9 @@ class MainViewModel @Inject constructor(
                 )
             }
 
-            // A new launch is a new impression: never reuse the previous launch's ad.
-            bootAdHiddenAtMs = 0L
             setShowBootingSplash(true)
             setExecArgs(execArgs)
-            bootAwaitingGameWindow = _state.value.bootAd != null
-            if (bootAwaitingGameWindow) startBootGameExitWatch(context, appId)
+            bootAwaitingGameWindow = false
             PluviaApp.events.emit(AndroidEvent.SetAllowedOrientation(PrefManager.allowedOrientation))
 
             val heroUrl = withContext(Dispatchers.IO) {
@@ -653,18 +586,6 @@ class MainViewModel @Inject constructor(
                     GameSource.STEAM -> {
                         val steamApp = SteamService.getAppInfoOf(gameId)
                         steamApp?.getHeroUrl()?.ifEmpty { steamApp.headerUrl } ?: ""
-                    }
-                    GameSource.GOG -> {
-                        val game = GOGService.getGOGGameOf(gameId.toString())
-                        game?.backgroundUrl?.ifEmpty { game.imageUrl } ?: ""
-                    }
-                    GameSource.EPIC -> {
-                        val game = EpicService.getEpicGameOf(gameId)
-                        game?.artPortrait?.ifEmpty { game.artCover.ifEmpty { game.artSquare } } ?: ""
-                    }
-                    GameSource.AMAZON -> {
-                        val game = AmazonService.getAmazonGameByAppId(gameId)
-                        game?.heroUrl?.ifEmpty { game.artUrl } ?: ""
                     }
                     GameSource.CUSTOM_GAME -> {
                         val folderPath = CustomGameScanner.getFolderPathFromAppId(appId) ?: return@withContext ""
@@ -865,7 +786,7 @@ class MainViewModel @Inject constructor(
     private suspend fun handleExitCloudSync(context: Context, appId: String, gameId: Int) {
         val gameSource = ContainerUtils.extractGameSourceFromContainerId(appId)
         // isOffline is derived from Steam's login state (see PluviaMain's startDestination / onClickPlay)
-        // and is meaningless for GOG/Epic, which check their own auth internally — only gate Steam on it.
+        // so only gate Steam on it.
         val isLocalSavesOnly = ContainerUtils.isLocalSavesOnly(context, appId)
         if (isLocalSavesOnly || (gameSource == GameSource.STEAM && isOffline.value)) {
             Timber.tag("Exit").i("Local saves only or offline mode enabled for $appId — skipping cloud sync on exit")
@@ -876,53 +797,7 @@ class MainViewModel @Inject constructor(
             return
         }
 
-        if (gameSource == GameSource.GOG) {
-            Timber.tag("GOG").i("[Cloud Saves] GOG Game detected for $appId — syncing cloud saves after close")
-            withContext(Dispatchers.IO) {
-                try {
-                    Timber.tag("GOG").d("[Cloud Saves] Starting post-game upload sync for $appId")
-                    val syncSuccess = app.gamenative.service.gog.GOGService.syncCloudSaves(
-                        context = context,
-                        appId = appId,
-                        preferredAction = "upload",
-                    )
-                    if (syncSuccess) {
-                        Timber.tag("GOG").i("[Cloud Saves] Upload sync completed successfully for $appId")
-                    } else {
-                        Timber.tag("GOG").w("[Cloud Saves] Upload sync failed for $appId")
-                    }
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Timber.tag("GOG").e(e, "[Cloud Saves] Exception during upload sync for $appId")
-                }
-            }
-            return
-        }
 
-        if (gameSource == GameSource.EPIC) {
-            Timber.tag("Epic").i("[Cloud Saves] Epic Game detected for $appId — syncing cloud saves after close")
-            withContext(Dispatchers.IO) {
-                try {
-                    Timber.tag("Epic").d("[Cloud Saves] Starting post-game upload sync for $gameId")
-                    val syncSuccess = EpicCloudSavesManager.syncCloudSaves(
-                        context = context,
-                        appId = gameId,
-                        preferredAction = "upload",
-                    )
-                    if (syncSuccess) {
-                        Timber.tag("Epic").i("[Cloud Saves] Upload sync completed successfully for $gameId")
-                    } else {
-                        Timber.tag("Epic").w("[Cloud Saves] Upload sync failed for $gameId")
-                    }
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Timber.tag("Epic").e(e, "[Cloud Saves] Exception during upload sync for $gameId")
-                }
-            }
-            return
-        }
 
         if (gameSource == GameSource.STEAM) {
             try {
@@ -996,7 +871,7 @@ class MainViewModel @Inject constructor(
             }
             val windowClass = window.className.trim().lowercase()
             if (bootAwaitingGameWindow && (windowClass.isEmpty() || windowClass == "explorer.exe")) {
-                Timber.tag("BootAdTrace").i("ignoring shell window map: %s", window.className)
+                Timber.tag("BootTrace").i("ignoring shell window map: %s", window.className)
             } else {
                 bootAwaitingGameWindow = false
                 bootingSplashTimeoutJob?.cancel()
@@ -1085,46 +960,6 @@ class MainViewModel @Inject constructor(
             // You could also show an error dialog here if needed
             Timber.tag("MainViewModel").e("Game launch error: $error")
         }
-    }
-
-    /** The card's close control: drop the boot card for this boot, optionally turning the channel off. */
-    fun dismissBootAd(optOut: Boolean) {
-        val ad = _state.value.bootAd ?: return
-        val now = System.currentTimeMillis()
-        val dwellMs = now - bootAdShownAtMs
-        Timber.tag("BootAdTrace").i("dismiss: ad=%s optOut=%s dwellMs=%d", ad.campaignId, optOut, dwellMs)
-        ConversionTracker.track(
-            "boot_ad_dismissed",
-            mapOf(
-                "campaign_id" to ad.campaignId,
-                "sponsored" to ad.sponsored,
-                "template" to ad.template,
-                "opt_out" to optOut,
-                "dwell_ms" to dwellMs,
-            ),
-        )
-        if (optOut) {
-            if (ad.sponsored) PrefManager.bootScreenAdsEnabled = false else PrefManager.bootScreenRecommendationsEnabled = false
-            ConversionTracker.track(
-                "boot_ad_opted_out",
-                mapOf(
-                    "campaign_id" to ad.campaignId,
-                    "sponsored" to ad.sponsored,
-                    "\$set" to mapOf((if (ad.sponsored) "boot_ads_enabled" else "boot_recs_enabled") to false),
-                ),
-            )
-        }
-        if (!bootAdDwellReported) {
-            bootAdDwellReported = true
-            val dwellSeconds = dwellMs / 1000L
-            if (ad.sponsored) {
-                ConversionTracker.bootAdShown(campaignId = ad.campaignId, dwellSeconds = dwellSeconds)
-            } else {
-                ConversionTracker.bootRecShown(campaignId = ad.campaignId, dwellSeconds = dwellSeconds)
-            }
-        }
-        bootAdDismissedAtMs = now
-        _state.update { it.copy(bootAd = null) }
     }
 
     /** The splash's back button: hide the splash and close the guest the way a blocked session does. */

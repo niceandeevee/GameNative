@@ -5,9 +5,6 @@ import app.gamenative.PluviaApp
 import app.gamenative.PrefManager
 import app.gamenative.R
 import app.gamenative.data.GameSource
-import app.gamenative.db.dao.AmazonGameDao
-import app.gamenative.db.dao.EpicGameDao
-import app.gamenative.db.dao.GOGGameDao
 import app.gamenative.db.dao.SteamAppDao
 import app.gamenative.events.AndroidEvent
 import app.gamenative.service.SteamService
@@ -44,18 +41,12 @@ object FrontendSyncManager {
     @InstallIn(SingletonComponent::class)
     interface FrontendSyncEntryPoint {
         fun steamAppDao(): SteamAppDao
-        fun epicGameDao(): EpicGameDao
-        fun gogGameDao(): GOGGameDao
-        fun amazonGameDao(): AmazonGameDao
     }
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private lateinit var appContext: Context
     private lateinit var steamAppDao: SteamAppDao
-    private lateinit var epicGameDao: EpicGameDao
-    private lateinit var gogGameDao: GOGGameDao
-    private lateinit var amazonGameDao: AmazonGameDao
 
     /** True while a [resyncAll] job is in progress. */
     private val _isSyncing = MutableStateFlow(false)
@@ -86,9 +77,6 @@ object FrontendSyncManager {
         appContext = context.applicationContext
         val ep = EntryPointAccessors.fromApplication(context, FrontendSyncEntryPoint::class.java)
         steamAppDao = ep.steamAppDao()
-        epicGameDao = ep.epicGameDao()
-        gogGameDao = ep.gogGameDao()
-        amazonGameDao = ep.amazonGameDao()
 
         PluviaApp.events.on<AndroidEvent.LibraryInstallStatusChanged, Unit>(onInstallStatusChanged)
 
@@ -104,12 +92,9 @@ object FrontendSyncManager {
         }
     }
 
-    /** Returns the export file extension for [source] (e.g. `.steam`, `.epic`). */
+    /** Returns the export file extension for [source] (e.g. `.steam`). */
     fun extensionFor(source: GameSource): String = when (source) {
         GameSource.STEAM -> ".steam"
-        GameSource.EPIC -> ".epic"
-        GameSource.GOG -> ".gog"
-        GameSource.AMAZON -> ".amazon"
         GameSource.CUSTOM_GAME -> ".pcgame"
     }
 
@@ -193,16 +178,6 @@ object FrontendSyncManager {
                 GameSource.STEAM, GameSource.CUSTOM_GAME -> {
                     steamAppDao.getInstalledGames().map { it.id to it.name }
                 }
-                GameSource.EPIC -> {
-                    epicGameDao.getInstalledGames().map { it.id to it.title }
-                }
-                GameSource.GOG -> {
-                    gogGameDao.getInstalledGames()
-                        .map { (it.id.toIntOrNull() ?: 0) to it.title }
-                }
-                GameSource.AMAZON -> {
-                    amazonGameDao.getInstalledGames().map { it.appId to it.title }
-                }
             }
 
             val targetDir = File(dir).also { it.mkdirs() }
@@ -226,16 +201,10 @@ object FrontendSyncManager {
 
     private suspend fun lookupGameName(appId: Int, source: GameSource): String? = when (source) {
         GameSource.STEAM, GameSource.CUSTOM_GAME -> steamAppDao.findApp(appId)?.name
-        GameSource.EPIC -> epicGameDao.getById(appId)?.title
-        GameSource.GOG -> gogGameDao.getById(appId.toString())?.title
-        GameSource.AMAZON -> amazonGameDao.getByAppId(appId)?.title
     }
 
     private suspend fun isGameInstalled(appId: Int, source: GameSource): Boolean = when (source) {
         GameSource.STEAM, GameSource.CUSTOM_GAME -> SteamService.isAppInstalled(appId)
-        GameSource.EPIC -> epicGameDao.getById(appId)?.isInstalled ?: false
-        GameSource.GOG -> gogGameDao.getById(appId.toString())?.isInstalled ?: false
-        GameSource.AMAZON -> amazonGameDao.getByAppId(appId)?.isInstalled ?: false
     }
 
     private val invalidFileChars = Regex("""[\\/:*?"<>|]""")

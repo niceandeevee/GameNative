@@ -1,6 +1,5 @@
 package app.gamenative.data
 
-import app.gamenative.data.gog.GogMapRepository
 import app.gamenative.utils.Net
 import app.gamenative.utils.SteamUtils
 import java.net.URLEncoder
@@ -51,21 +50,13 @@ object StoreDetailsRepository {
         val now = System.currentTimeMillis()
         val localDetails = fallback.withoutTitleOnlyDescription(libraryItem.name)
         val localeKey = when (libraryItem.gameSource) {
-            GameSource.GOG -> gogLocaleForAppLocale(locale)
-            GameSource.STEAM,
-            GameSource.EPIC,
-            GameSource.AMAZON,
-            -> SteamUtils.steamLanguageForAppLocale(locale)
+            GameSource.STEAM -> SteamUtils.steamLanguageForAppLocale(locale)
             GameSource.CUSTOM_GAME -> "none"
         }
         val cacheKey = buildString {
             append(libraryItem.appId)
             append(':')
             append(localeKey)
-            if (libraryItem.gameSource == GameSource.EPIC || libraryItem.gameSource == GameSource.AMAZON) {
-                append(':')
-                append(GogMapRepository.normalizeTitle(libraryItem.name))
-            }
         }
         cache[cacheKey]
             ?.takeIf { now - it.loadedAt in 0..CACHE_TTL_MS }
@@ -84,15 +75,6 @@ object StoreDetailsRepository {
         val fetched = try {
             when (libraryItem.gameSource) {
                 GameSource.STEAM -> fetchSteam(libraryItem.gameId, locale)
-                GameSource.GOG -> fetchGog(
-                    productId = libraryItem.gameId,
-                    title = libraryItem.name,
-                    locale = locale,
-                    localeTag = localeKey,
-                )
-                GameSource.EPIC,
-                GameSource.AMAZON,
-                -> fetchSteamSupplement(libraryItem.name, locale)
                 GameSource.CUSTOM_GAME -> StoreGameDetails()
             }
         } catch (e: CancellationException) {
@@ -135,131 +117,6 @@ object StoreDetailsRepository {
         )
     }
 
-    private suspend fun fetchGog(
-        productId: Int,
-        title: String,
-        locale: Locale,
-        localeTag: String,
-    ): StoreGameDetails = coroutineScope {
-        if (productId <= 0) return@coroutineScope StoreGameDetails()
-        val detailsRequest = async {
-            getBody("https://api.gog.com/products/$productId?expand=description,videos&locale=$localeTag")
-        }
-        val reviewsRequest = async {
-            getBody("https://reviews.gog.com/v1/products/$productId/averageRating")
-        }
-        val tagsRequest = async {
-            getBody("https://api.gog.com/v2/games/$productId?locale=$localeTag")
-        }
-        val detailsJson = detailsRequest.await()
-        val reviewsJson = reviewsRequest.await()
-        val tagsJson = tagsRequest.await()
-        var details = parseGogStoreDetails(
-            detailsJson = detailsJson,
-            reviewsJson = reviewsJson,
-            tagsJson = tagsJson,
-        )
-        var descriptionProductId = productId
-
-        // Some retired/hidden GOG SKUs expose untranslated resource keys and point to the
-        // current parent product. Use that product only to fill gaps in the owned SKU's data.
-        val includedInProductId = parseGogIncludedInProductId(productId, tagsJson)
-        if (includedInProductId != null) {
-            val parentDetailsRequest = async {
-                getBody(
-                    "https://api.gog.com/products/$includedInProductId" +
-                        "?expand=description,videos&locale=$localeTag",
-                )
-            }
-            val parentTagsRequest = async {
-                getBody("https://api.gog.com/v2/games/$includedInProductId?locale=$localeTag")
-            }
-            val parentReviewsRequest = async {
-                getBody("https://reviews.gog.com/v1/products/$includedInProductId/averageRating")
-            }
-            val parentDetails = parseGogStoreDetails(
-                detailsJson = parentDetailsRequest.await(),
-                reviewsJson = parentReviewsRequest.await(),
-                tagsJson = parentTagsRequest.await(),
-            )
-            if (details.description.isBlank() && parentDetails.description.isNotBlank()) {
-                descriptionProductId = includedInProductId
-            }
-            details = details.mergedWith(parentDetails)
-        }
-
-        if (locale.language.equals("en", ignoreCase = true)) {
-            return@coroutineScope details
-        }
-
-        // GOG localizes its storefront chrome and tags into more languages than the publisher
-        // descriptions themselves. Detect that English fallback before consulting another store.
-        val englishDescription = parseGogStoreDetails(
-            detailsJson = getBody(
-                "https://api.gog.com/products/$descriptionProductId" +
-                    "?expand=description&locale=en-US",
-            ),
-            reviewsJson = null,
-            tagsJson = null,
-        ).description
-        if (!shouldUseGogDescriptionFallback(details.description, englishDescription)) {
-            return@coroutineScope details
-        }
-
-        val localizedSupplement = fetchSteamSupplement(
-            title = title,
-            locale = locale,
-            allowReplacementBundleMatch = includedInProductId != null,
-        )
-        details.copy(
-            description = localizedSupplement.description.ifBlank { details.description },
-        )
-    }
-
-    /**
-     * Epic and Amazon catalogs expose very limited gallery data. Resolve an exact title match on
-     * Steam and use its public description, tags, trailers, and screenshots only as supplemental
-     * presentation metadata. Reviews and links are intentionally omitted because they belong to a
-     * different storefront.
-     */
-    private suspend fun fetchSteamSupplement(
-        title: String,
-        locale: Locale,
-        allowReplacementBundleMatch: Boolean = false,
-    ): StoreGameDetails {
-        val language = SteamUtils.steamLanguageForAppLocale(locale)
-        val appId = searchSteamAppId(title, language, allowReplacementBundleMatch)
-            ?: return StoreGameDetails()
-        val details = parseSteamStoreDetails(
-            appId = appId,
-            detailsJson = getBody(
-                "https://store.steampowered.com/api/appdetails?appids=$appId&cc=us&l=$language",
-            ),
-            reviewsJson = null,
-        )
-        return details.copy(
-            reviewPercentage = null,
-            reviewCount = null,
-            reviewSummary = null,
-        )
-    }
-
-    private fun searchSteamAppId(
-        title: String,
-        language: String,
-        allowReplacementBundleMatch: Boolean = false,
-    ): Int? {
-        if (title.isBlank()) return null
-        val encodedTitle = URLEncoder.encode(title, Charsets.UTF_8.name())
-        return parseSteamSearchAppId(
-            title = title,
-            searchJson = getBody(
-                "https://store.steampowered.com/api/storesearch/" +
-                    "?term=$encodedTitle&cc=us&l=$language",
-            ),
-            allowReplacementBundleMatch = allowReplacementBundleMatch,
-        )
-    }
 
     private fun getBody(url: String): String? {
         val request = Request.Builder()
@@ -282,76 +139,23 @@ object StoreDetailsRepository {
     }
 }
 
-private fun storeLocaleTag(locale: Locale): String = locale.stripExtensions()
-    .toLanguageTag()
-    .takeUnless { it.isBlank() || it == "und" }
-    ?: "en-US"
 
-/** GOG requires one of its canonical regional locale tags; language-only tags fall back to English. */
-internal fun gogLocaleForAppLocale(locale: Locale): String = when (locale.language.lowercase(Locale.ROOT)) {
-    "da" -> "da-DK"
-    "de" -> "de-DE"
-    "en" -> "en-US"
-    "es" -> "es-ES"
-    "fr" -> "fr-FR"
-    "it" -> "it-IT"
-    "ja" -> "ja-JP"
-    "ko" -> "ko-KR"
-    "pl" -> "pl-PL"
-    "pt" -> "pt-BR"
-    "ro" -> "ro-RO"
-    "ru" -> "ru-RU"
-    "uk" -> "uk-UA"
-    "zh" -> if (
-        locale.script.equals("Hant", ignoreCase = true) ||
-        locale.country.uppercase(Locale.ROOT) in setOf("HK", "MO", "TW")
-    ) {
-        "zh-Hant"
-    } else {
-        "zh-Hans"
-    }
-    else -> storeLocaleTag(locale)
-}
 
 private fun mergeStoreDetails(
     source: GameSource,
     fetched: StoreGameDetails,
     local: StoreGameDetails,
-): StoreGameDetails = when (source) {
-    GameSource.EPIC,
-    GameSource.AMAZON,
-    -> local.mergedWith(fetched)
-    else -> fetched.mergedWith(local)
-}
+): StoreGameDetails = fetched.mergedWith(local)
 
-internal fun parseSteamSearchAppId(
-    title: String,
-    searchJson: String?,
-    allowReplacementBundleMatch: Boolean = false,
-): Int? {
-    val normalizedTitle = GogMapRepository.normalizeTitle(title)
-    if (normalizedTitle.isBlank()) return null
-    val items = parseObject(searchJson)
-        ?.optJSONArray("items")
-        .objects()
-    items.firstOrNull {
-        GogMapRepository.normalizeTitle(it.optString("name")) == normalizedTitle
-    }?.let { return it.optInt("id", 0).takeIf { appId -> appId > 0 } }
 
-    if (!allowReplacementBundleMatch) return null
-    val firstWord = normalizedTitle.substringBefore(' ')
-    return items.firstOrNull {
-        val candidate = GogMapRepository.normalizeTitle(it.optString("name"))
-        candidate.startsWith("$firstWord ") && candidate.endsWith(" $normalizedTitle")
-    }
-        ?.optInt("id", 0)
-        ?.takeIf { it > 0 }
-}
+/** Lowercase letters and digits only, single-spaced: enough to tell a description that just repeats the title. */
+private fun normalizeStoreTitle(text: String): String =
+    text.lowercase().replace(Regex("[^a-z0-9]+"), " ").trim()
 
 internal fun StoreGameDetails.withoutTitleOnlyDescription(title: String): StoreGameDetails {
     if (description.isBlank()) return this
-    val normalizedDescription = GogMapRepository.normalizeTitle(description)
-    val normalizedTitle = GogMapRepository.normalizeTitle(title)
+    val normalizedDescription = normalizeStoreTitle(description)
+    val normalizedTitle = normalizeStoreTitle(title)
     return if (normalizedDescription.isNotBlank() && normalizedDescription == normalizedTitle) {
         copy(description = "")
     } else {
@@ -359,36 +163,9 @@ internal fun StoreGameDetails.withoutTitleOnlyDescription(title: String): StoreG
     }
 }
 
-private val GOG_LOCALIZATION_KEY = Regex(
-    pattern = "\\bproduct_(?:description|feature)_\\d+\\b",
-    option = RegexOption.IGNORE_CASE,
-)
 
-internal fun sanitizeGogDescription(description: String): String = stripStoreHtml(description)
-    .replace(GOG_LOCALIZATION_KEY, "")
-    .replace(Regex(" *\\n+ *"), "\n")
-    .trim()
 
-internal fun shouldUseGogDescriptionFallback(
-    localizedDescription: String,
-    englishDescription: String,
-): Boolean {
-    if (localizedDescription.isBlank()) return true
-    if (englishDescription.isBlank()) return false
-    return localizedDescription.replace(Regex("\\s+"), " ").trim().equals(
-        englishDescription.replace(Regex("\\s+"), " ").trim(),
-        ignoreCase = true,
-    )
-}
 
-internal fun parseGogIncludedInProductId(productId: Int, gameJson: String?): Int? =
-    parseObject(gameJson)
-        ?.optJSONObject("_links")
-        ?.optJSONArray("isIncludedInGames")
-        .objects()
-        .asSequence()
-        .map { it.optInt("id", 0) }
-        .firstOrNull { it > 0 && it != productId }
 
 internal fun parseSteamStoreDetails(
     appId: Int,
@@ -438,113 +215,7 @@ internal fun parseSteamStoreDetails(
     )
 }
 
-internal fun parseGogStoreDetails(
-    detailsJson: String?,
-    reviewsJson: String?,
-    tagsJson: String?,
-): StoreGameDetails {
-    val details = parseObject(detailsJson)
-    val game = parseObject(tagsJson)
-    val descriptionObject = details?.optJSONObject("description")
-    val description = sequenceOf(
-        descriptionObject?.optString("full"),
-        descriptionObject?.optString("lead"),
-    ).filterNotNull().map(::sanitizeGogDescription).firstOrNull(String::isNotBlank).orEmpty()
 
-    val screenshots = buildList<Pair<String, String>> {
-        addAll(details?.optJSONArray("screenshots").objects().mapNotNull { screenshot ->
-            screenshot.optString("formatter_template_url")
-                .normalizeProtocolUrl()
-                ?.let { it to "ggvgl_2x" }
-        })
-        addAll(
-            game?.optJSONObject("_embedded")
-                ?.optJSONArray("screenshots")
-                .objects()
-                .mapNotNull { screenshot ->
-                    screenshot.optJSONObject("_links")
-                        ?.optJSONObject("self")
-                        ?.optString("href")
-                        ?.normalizeProtocolUrl()
-                        ?.let { it to "1600" }
-                },
-        )
-    }.distinctBy { it.first.lowercase(Locale.ROOT) }
-        .map { (template, formatter) -> template.replace("{formatter}", formatter) }
-        .ifEmpty {
-            listOfNotNull(
-                details?.optJSONObject("images")
-                    ?.optString("background")
-                    ?.normalizeProtocolUrl(),
-            )
-        }
-    val videos = details?.optJSONArray("videos").objects()
-        .mapNotNull { it.optString("video_url").normalizeProtocolUrl() }
-
-    val rating = parseObject(reviewsJson)
-    val ratingCount = rating?.optInt("count", 0)?.takeIf { it > 0 }
-    val ratingValue = ratingCount?.let {
-        rating.optDouble("value", Double.NaN)
-            .takeUnless(Double::isNaN)
-            ?.let { value -> (value * 20.0).roundToInt().coerceIn(0, 100) }
-    }
-
-    val tags = game
-        ?.optJSONObject("_embedded")
-        ?.optJSONArray("tags")
-        .objects()
-        .map { it.optString("name") }
-
-    return StoreGameDetails(
-        description = description,
-        reviewPercentage = ratingValue,
-        reviewCount = ratingCount,
-        tags = tags.cleanStoreList(16),
-        screenshots = screenshots.cleanStoreList(12),
-        videos = videos.cleanStoreList(4),
-    )
-}
-
-/** Extracts any rich catalog fields present in Amazon's already-synced product payload. */
-internal fun parseAmazonStoreDetails(productJson: String?): StoreGameDetails {
-    val product = parseObject(productJson) ?: return StoreGameDetails()
-    val details = product.optJSONObject("productDetail")?.optJSONObject("details")
-
-    val description = sequenceOf(
-        details?.optString("description"),
-        details?.optString("longDescription"),
-        details?.optString("shortDescription"),
-        product.optString("description"),
-    ).filterNotNull().map(::stripStoreHtml).firstOrNull(String::isNotBlank).orEmpty()
-
-    val tags = buildList {
-        listOf("genres", "categories", "features").forEach { key ->
-            addAll(details?.optJSONArray(key).labels())
-            addAll(product.optJSONArray(key).labels())
-        }
-    }
-    val screenshots = buildList {
-        listOf("screenshots", "images").forEach { key ->
-            addAll(details?.optJSONArray(key).urls())
-            addAll(product.optJSONArray(key).urls())
-        }
-        details?.optString("backgroundUrl1").asHttpUrl()?.let(::add)
-        details?.optString("backgroundUrl2").asHttpUrl()?.let(::add)
-    }
-    val videos = buildList {
-        listOf("videos", "trailers").forEach { key ->
-            addAll(details?.optJSONArray(key).urls())
-            addAll(product.optJSONArray(key).urls())
-        }
-    }
-
-    return StoreGameDetails(
-        description = description,
-        tags = tags.cleanStoreList(16),
-        screenshots = screenshots.cleanStoreList(12),
-        videos = videos.cleanStoreList(4),
-    )
-}
 
 private fun parseObject(value: String?): JSONObject? = value
     ?.takeIf(String::isNotBlank)

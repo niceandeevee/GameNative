@@ -89,12 +89,7 @@ fun LibraryTabBar(
 ) {
     val widthClass = rememberWindowWidthClass()
 
-    val today = System.currentTimeMillis() / (24L * 60 * 60 * 1000)
-    var recommendedSeenDay by remember { mutableLongStateOf(PrefManager.recommendedTabSeenDay) }
-    LaunchedEffect(currentTab) {
-        recommendedSeenDay = PrefManager.recommendedTabSeenDay
-    }
-    val showRecommendedDot = recommendedSeenDay != today
+    val showRecommendedDot = false
 
     when (widthClass) {
         WindowWidthClass.COMPACT -> CompactLibraryTabBar(
@@ -740,16 +735,6 @@ private fun TabIcon(
             tint = tint,
             modifier = Modifier.size(size),
         )
-        if (tab == LibraryTab.RECOMMENDED && !isSelected && showDot) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = 3.dp, y = (-2).dp)
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.tertiary),
-            )
-        }
     }
 }
 
@@ -768,8 +753,6 @@ private fun Preview_LibraryTabBar() {
                 tabCounts = mapOf(
                     LibraryTab.ALL to 42,
                     LibraryTab.STEAM to 30,
-                    LibraryTab.GOG to 8,
-                    LibraryTab.EPIC to 4,
                     LibraryTab.LOCAL to 3,
                 ),
                 onTabSelected = {},
@@ -798,8 +781,6 @@ private fun Preview_LibraryTabBar_Steam() {
                 tabCounts = mapOf(
                     LibraryTab.ALL to 42,
                     LibraryTab.STEAM to 30,
-                    LibraryTab.GOG to 8,
-                    LibraryTab.EPIC to 4,
                     LibraryTab.LOCAL to 3,
                 ),
                 onTabSelected = {},

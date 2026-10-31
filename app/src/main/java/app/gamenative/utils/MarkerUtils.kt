@@ -9,8 +9,6 @@ object MarkerUtils {
     private const val BYTES_DOWNLOADED_FILE = "bytes_downloaded.txt"
     private val VERIFY_PREREQUISITE_MARKERS = listOf(
         Marker.VCREDIST_INSTALLED,
-        Marker.GOG_SCRIPT_INSTALLED,
-        Marker.GOG_SUPPORT_INSTALLED,
         Marker.PHYSX_INSTALLED,
         Marker.OPENAL_INSTALLED,
         Marker.XNA_INSTALLED,

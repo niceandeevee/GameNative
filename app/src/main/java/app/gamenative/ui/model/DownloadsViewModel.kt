@@ -8,19 +8,10 @@ import app.gamenative.R
 import app.gamenative.data.DownloadInfo
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryItem
-import app.gamenative.db.dao.AmazonGameDao
-import app.gamenative.db.dao.EpicGameDao
-import app.gamenative.db.dao.GOGGameDao
 import app.gamenative.db.dao.SteamAppDao
 import app.gamenative.events.AndroidEvent
 import app.gamenative.service.SteamService
-import app.gamenative.service.amazon.AmazonConstants
-import app.gamenative.service.amazon.AmazonService
 import app.gamenative.service.download.GameDownloadService
-import app.gamenative.service.epic.EpicConstants
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGConstants
-import app.gamenative.service.gog.GOGService
 import app.gamenative.ui.data.CancelConfirmation
 import app.gamenative.ui.data.DownloadItemState
 import app.gamenative.ui.data.DownloadItemStatus
@@ -48,9 +39,6 @@ import timber.log.Timber
 class DownloadsViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val steamAppDao: SteamAppDao,
-    private val epicGameDao: EpicGameDao,
-    private val gogGameDao: GOGGameDao,
-    private val amazonGameDao: AmazonGameDao,
 ) : ViewModel() {
 
     private data class ActiveDownloadBinding(
@@ -172,44 +160,8 @@ class DownloadsViewModel @Inject constructor(
         return Pair(name, icon)
     }
 
-    private suspend fun getEpicMetadata(appId: Int): Pair<String, String> {
-        val key = downloadKey(GameSource.EPIC, appId.toString())
-        val cachedName = gameNameCache[key]
-        val cachedIcon = gameIconCache[key]
-        if (cachedName != null && cachedIcon != null) return Pair(cachedName, cachedIcon)
 
-        val game = epicGameDao.getById(appId)
-        val name = cachedName ?: (game?.title ?: "Epic Game $appId").also { gameNameCache[key] = it }
-        val icon = cachedIcon ?: (game?.artCover ?: "").also { gameIconCache[key] = it }
 
-        return Pair(name, icon)
-    }
-
-    private suspend fun getGOGMetadata(gameId: String): Pair<String, String> {
-        val key = downloadKey(GameSource.GOG, gameId)
-        val cachedName = gameNameCache[key]
-        val cachedIcon = gameIconCache[key]
-        if (cachedName != null && cachedIcon != null) return Pair(cachedName, cachedIcon)
-
-        val game = gogGameDao.getById(gameId)
-        val name = cachedName ?: (game?.title ?: "GOG Game $gameId").also { gameNameCache[key] = it }
-        val icon = cachedIcon ?: (game?.imageUrl?.ifEmpty { game.iconUrl } ?: "").also { gameIconCache[key] = it }
-
-        return Pair(name, icon)
-    }
-
-    private suspend fun getAmazonMetadata(productId: String): Pair<String, String> {
-        val key = downloadKey(GameSource.AMAZON, productId)
-        val cachedName = gameNameCache[key]
-        val cachedIcon = gameIconCache[key]
-        if (cachedName != null && cachedIcon != null) return Pair(cachedName, cachedIcon)
-
-        val game = amazonGameDao.getByProductId(productId)
-        val name = cachedName ?: (game?.title ?: "Amazon Game").also { gameNameCache[key] = it }
-        val icon = cachedIcon ?: (game?.artUrl ?: "").also { gameIconCache[key] = it }
-
-        return Pair(name, icon)
-    }
 
     suspend fun resolveLibraryItem(gameSource: GameSource, appId: String): LibraryItem? {
         val libraryAppId = "${gameSource.name}_$appId"
@@ -231,50 +183,8 @@ class DownloadsViewModel @Inject constructor(
                 }
             }
 
-            GameSource.GOG -> {
-                gogGameDao.getById(appId)?.let { game ->
-                    LibraryItem(
-                        appId = libraryAppId,
-                        name = game.title,
-                        iconHash = game.iconUrl.ifEmpty { game.imageUrl },
-                        capsuleImageUrl = game.verticalCoverUrl.ifEmpty { game.iconUrl.ifEmpty { game.imageUrl } },
-                        headerImageUrl = game.imageUrl.ifEmpty { game.iconUrl },
-                        heroImageUrl = game.imageUrl.ifEmpty { game.iconUrl },
-                        gameSource = GameSource.GOG,
-                    )
-                }
-            }
 
-            GameSource.EPIC -> {
-                val numericAppId = appId.toIntOrNull() ?: return null
-                epicGameDao.getById(numericAppId)?.let { game ->
-                    LibraryItem(
-                        appId = libraryAppId,
-                        name = game.title,
-                        iconHash = game.artSquare.ifEmpty { game.artCover },
-                        capsuleImageUrl = game.artCover.ifEmpty { game.artSquare },
-                        headerImageUrl = game.artPortrait.ifEmpty { game.artSquare.ifEmpty { game.artCover } },
-                        heroImageUrl = game.artPortrait.ifEmpty { game.artSquare.ifEmpty { game.artCover } },
-                        gameSource = GameSource.EPIC,
-                    )
-                }
-            }
 
-            GameSource.AMAZON -> {
-                val game = amazonGameDao.getByProductId(appId)
-                    ?: appId.toIntOrNull()?.let { amazonGameDao.getByAppId(it) }
-                game?.let {
-                    LibraryItem(
-                        appId = "${GameSource.AMAZON.name}_${it.appId}",
-                        name = it.title,
-                        iconHash = it.artUrl,
-                        capsuleImageUrl = it.artUrl,
-                        headerImageUrl = it.heroUrl.ifEmpty { it.artUrl },
-                        heroImageUrl = it.heroUrl.ifEmpty { it.artUrl },
-                        gameSource = GameSource.AMAZON,
-                    )
-                }
-            }
 
             GameSource.CUSTOM_GAME -> {
                 CustomGameScanner.scanAsLibraryItems(query = "")
@@ -362,9 +272,6 @@ class DownloadsViewModel @Inject constructor(
     private suspend fun isInstalled(gameSource: GameSource, appId: String): Boolean {
         return when (gameSource) {
             GameSource.STEAM -> appId.toIntOrNull()?.let { SteamService.isAppInstalled(it) } ?: false
-            GameSource.EPIC -> appId.toIntOrNull()?.let { epicGameDao.getById(it)?.isInstalled == true } ?: false
-            GameSource.GOG -> gogGameDao.getById(appId)?.isInstalled == true
-            GameSource.AMAZON -> amazonGameDao.getByProductId(appId)?.isInstalled == true
             GameSource.CUSTOM_GAME -> false
         }
     }
@@ -483,49 +390,11 @@ class DownloadsViewModel @Inject constructor(
                 liveDownloads[key] = buildPartialDownloadItem(appIdString, GameSource.STEAM, name, icon)
             }
 
-            for ((appId, info) in EpicService.getActiveDownloads()) {
-                val appIdString = appId.toString()
-                val (name, icon) = getEpicMetadata(appId)
-                val item = buildActiveDownloadItem(appIdString, GameSource.EPIC, name, icon, info)
-                liveDownloads[item.uniqueId] = item
-                activeBindings[item.uniqueId] = ActiveDownloadBinding(appIdString, GameSource.EPIC, name, icon, info)
-            }
 
-            for (appId in EpicService.getPartialDownloads()) {
-                val appIdString = appId.toString()
-                val key = downloadKey(GameSource.EPIC, appIdString)
-                if (liveDownloads.containsKey(key)) continue
-                val (name, icon) = getEpicMetadata(appId)
-                liveDownloads[key] = buildPartialDownloadItem(appIdString, GameSource.EPIC, name, icon)
-            }
 
-            for ((gameId, info) in GOGService.getActiveDownloads()) {
-                val (name, icon) = getGOGMetadata(gameId)
-                val item = buildActiveDownloadItem(gameId, GameSource.GOG, name, icon, info)
-                liveDownloads[item.uniqueId] = item
-                activeBindings[item.uniqueId] = ActiveDownloadBinding(gameId, GameSource.GOG, name, icon, info)
-            }
 
-            for (gameId in GOGService.getPartialDownloads()) {
-                val key = downloadKey(GameSource.GOG, gameId)
-                if (liveDownloads.containsKey(key)) continue
-                val (name, icon) = getGOGMetadata(gameId)
-                liveDownloads[key] = buildPartialDownloadItem(gameId, GameSource.GOG, name, icon)
-            }
 
-            for ((productId, info) in AmazonService.getActiveDownloads()) {
-                val (name, icon) = getAmazonMetadata(productId)
-                val item = buildActiveDownloadItem(productId, GameSource.AMAZON, name, icon, info)
-                liveDownloads[item.uniqueId] = item
-                activeBindings[item.uniqueId] = ActiveDownloadBinding(productId, GameSource.AMAZON, name, icon, info)
-            }
 
-            for (productId in AmazonService.getPartialDownloads(appContext)) {
-                val key = downloadKey(GameSource.AMAZON, productId)
-                if (liveDownloads.containsKey(key)) continue
-                val (name, icon) = getAmazonMetadata(productId)
-                liveDownloads[key] = buildPartialDownloadItem(productId, GameSource.AMAZON, name, icon)
-            }
 
             val disappearedKeys = lastTrackedDownloads.keys - liveDownloads.keys
             for (key in disappearedKeys) {
@@ -601,13 +470,7 @@ class DownloadsViewModel @Inject constructor(
                 SteamService.getAppDownloadInfo(id)?.cancel()
             }
 
-            GameSource.EPIC -> {
-                val id = item.appId.toIntOrNull() ?: return
-                EpicService.cancelDownload(id)
-            }
 
-            GameSource.GOG -> GOGService.cancelDownload(item.appId)
-            GameSource.AMAZON -> AmazonService.cancelDownload(item.appId)
             GameSource.CUSTOM_GAME -> Unit
         }
     }
@@ -636,35 +499,8 @@ class DownloadsViewModel @Inject constructor(
                 SteamService.downloadApp(id, SteamService.resumeModeFor(id))
             }
 
-            GameSource.GOG -> {
-                val game = gogGameDao.getById(item.appId) ?: return
-                val installPath = game.installPath.ifBlank { GOGConstants.getGameInstallPath(game.title) }
-                val container = ContainerUtils.getOrCreateContainer(appContext, "${GameSource.GOG.name}_${item.appId}")
-                val language = ContainerUtils.toContainerData(container).language
-                val result = GOGService.downloadGame(localizedContext, item.appId, installPath, language)
-                result.exceptionOrNull()?.message?.let { recentFailureMessages[key] = it }
-            }
 
-            GameSource.EPIC -> {
-                val id = item.appId.toIntOrNull() ?: return
-                val game = epicGameDao.getById(id) ?: return
-                val installPath = game.installPath.ifBlank {
-                    EpicConstants.getGameInstallPath(appContext, game.appName)
-                }
-                val container = ContainerUtils.getOrCreateContainer(appContext, "${GameSource.EPIC.name}_${item.appId}")
-                val language = ContainerUtils.toContainerData(container).language
-                val result = EpicService.downloadGame(localizedContext, id, emptyList(), installPath, language)
-                result.exceptionOrNull()?.message?.let { recentFailureMessages[key] = it }
-            }
 
-            GameSource.AMAZON -> {
-                val game = amazonGameDao.getByProductId(item.appId) ?: return
-                val installPath = game.installPath.ifBlank {
-                    AmazonConstants.getGameInstallPath(appContext, game.title)
-                }
-                val result = AmazonService.downloadGame(localizedContext, item.appId, installPath)
-                result.exceptionOrNull()?.message?.let { recentFailureMessages[key] = it }
-            }
 
             GameSource.CUSTOM_GAME -> Unit
         }
@@ -687,32 +523,8 @@ class DownloadsViewModel @Inject constructor(
                 GameDownloadService.enqueueDownload(GameSource.STEAM, id.toString())
             }
 
-            GameSource.GOG -> {
-                val game = gogGameDao.getById(item.appId) ?: return
-                val installPath = game.installPath.ifBlank { GOGConstants.getGameInstallPath(game.title) }
-                val container = ContainerUtils.getOrCreateContainer(appContext, "${GameSource.GOG.name}_${item.appId}")
-                val language = ContainerUtils.toContainerData(container).language
-                GameDownloadService.enqueueDownload(GameSource.GOG, item.appId, installPath = installPath, containerLanguage = language)
-            }
 
-            GameSource.EPIC -> {
-                val id = item.appId.toIntOrNull() ?: return
-                val game = epicGameDao.getById(id) ?: return
-                val installPath = game.installPath.ifBlank {
-                    EpicConstants.getGameInstallPath(appContext, game.appName)
-                }
-                val container = ContainerUtils.getOrCreateContainer(appContext, "${GameSource.EPIC.name}_${item.appId}")
-                val language = ContainerUtils.toContainerData(container).language
-                GameDownloadService.enqueueDownload(GameSource.EPIC, item.appId, dlcGameIds = emptyList(), installPath = installPath, containerLanguage = language)
-            }
 
-            GameSource.AMAZON -> {
-                val game = amazonGameDao.getByProductId(item.appId) ?: return
-                val installPath = game.installPath.ifBlank {
-                    AmazonConstants.getGameInstallPath(appContext, game.title)
-                }
-                GameDownloadService.enqueueDownload(GameSource.AMAZON, item.appId, installPath = installPath)
-            }
 
             GameSource.CUSTOM_GAME -> Unit
         }
@@ -808,34 +620,8 @@ class DownloadsViewModel @Inject constructor(
                 scheduleRefreshDownloads()
             }
 
-            GameSource.EPIC -> {
-                val id = appId.toIntOrNull() ?: return
-                EpicService.cancelDownload(id)
-                EpicService.deleteGame(appContext, id)
-                scheduleRefreshDownloads()
-            }
 
-            GameSource.GOG -> {
-                GOGService.cancelDownload(appId)
-                val game = gogGameDao.getById(appId)
-                if (game != null) {
-                    GOGService.deleteGame(
-                        appContext,
-                        LibraryItem(
-                            appId = appId,
-                            name = game.title.ifBlank { gameName },
-                            gameSource = GameSource.GOG,
-                        ),
-                    )
-                }
-                scheduleRefreshDownloads()
-            }
 
-            GameSource.AMAZON -> {
-                AmazonService.cancelDownload(appId)
-                AmazonService.deleteGame(appContext, appId)
-                scheduleRefreshDownloads()
-            }
 
             GameSource.CUSTOM_GAME -> Unit
         }

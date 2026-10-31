@@ -27,12 +27,9 @@ data class LibraryState(
     val isSearching: Boolean = false,
     val searchQuery: String = "",
 
-    // App Source filters (Steam / Custom Games / GOG / Epic / Amazon)
+    // App Source filters (Steam / Custom Games)
     val showSteamInLibrary: Boolean = PrefManager.showSteamInLibrary,
     val showCustomGamesInLibrary: Boolean = PrefManager.showCustomGamesInLibrary,
-    val showGOGInLibrary: Boolean = PrefManager.showGOGInLibrary,
-    val showEpicInLibrary: Boolean = PrefManager.showEpicInLibrary,
-    val showAmazonInLibrary: Boolean = PrefManager.showAmazonInLibrary,
 
     // Steam collections filter
     val selectedSteamCollectionIds: Set<String> = PrefManager.librarySteamCollections,
@@ -74,9 +71,6 @@ data class LibraryState(
     // Per-source game counts for tab badges
     val allCount: Int = 0,
     val steamCount: Int = 0,
-    val gogCount: Int = 0,
-    val epicCount: Int = 0,
-    val amazonCount: Int = 0,
     val localCount: Int = 0,
     val favoritesCount: Int = 0,
 )

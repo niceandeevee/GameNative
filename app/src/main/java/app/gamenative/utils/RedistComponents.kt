@@ -1,8 +1,6 @@
 package app.gamenative.utils
 
 import app.gamenative.data.GameSource
-import app.gamenative.service.epic.EpicInstallState
-import app.gamenative.service.gog.GOGManifestUtils
 import com.winlator.container.Container
 import com.winlator.core.envvars.EnvVars
 import java.io.File
@@ -136,8 +134,6 @@ object RedistComponents {
 
     fun planFor(source: GameSource, gameDir: File): RedistPlan? {
         val plan = when (source) {
-            GameSource.GOG -> gogPlan(gameDir)
-            GameSource.EPIC -> epicPlan(gameDir)
             GameSource.CUSTOM_GAME -> CustomGameRedist.resolve(gameDir)
             else -> return null
         }
@@ -148,15 +144,5 @@ object RedistComponents {
         return plan.copy(installers = unreal)
     }
 
-    private fun gogPlan(gameDir: File): RedistPlan {
-        val ids = GOGManifestUtils.readDependencies(gameDir)
-            ?: RedistPaths.child(gameDir, "_CommonRedist")?.listFiles()?.filter { it.isDirectory }?.map { it.name }
-            ?: return RedistPlan.EMPTY
-        return GogRedistDependencies.plan(gameDir, ids)
-    }
 
-    private fun epicPlan(gameDir: File): RedistPlan {
-        val state = EpicInstallState.read(gameDir.absolutePath) ?: return RedistPlan.EMPTY
-        return EpicRedistPrereqs.plan(gameDir, state.prereqIds, state.prereqName, state.prereqPath)
-    }
 }

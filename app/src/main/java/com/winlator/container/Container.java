@@ -134,7 +134,6 @@ public class Container {
     private boolean sdlControllerAPI;
     private boolean fasterExternalLoading;
     private boolean disableLibredirect;
-    private boolean disableEpicOverlay;
 
     // Preferred game language for Goldberg force_language.txt
     private String language = "english";
@@ -174,7 +173,6 @@ public class Container {
 
     private boolean loadMods = false;
 
-    private boolean epicOfflineMode = false;
 
     private boolean useLegacyDRM = false;
 
@@ -461,13 +459,6 @@ public class Container {
         this.disableLibredirect = disableLibredirect;
     }
 
-    public boolean isDisableEpicOverlay() {
-        return disableEpicOverlay;
-    }
-
-    public void setDisableEpicOverlay(boolean disableEpicOverlay) {
-        this.disableEpicOverlay = disableEpicOverlay;
-    }
 
     public String getLanguage() {
         return language != null ? language : "english";
@@ -836,7 +827,6 @@ public class Container {
             data.put("sdlControllerAPI", sdlControllerAPI);
             data.put("fasterExternalLoading", fasterExternalLoading);
             data.put("disableLibredirect", disableLibredirect);
-            data.put("disableEpicOverlay", disableEpicOverlay);
             // Disable mouse input flag
             data.put("disableMouseInput", disableMouseInput);
             // Touchscreen mode flag
@@ -874,7 +864,6 @@ public class Container {
             data.put("loadMods", loadMods);
 
             // Steam offline mode setting
-            data.put("epicOfflineMode", epicOfflineMode);
 
             // Use Legacy DRM setting
             data.put("useLegacyDRM", useLegacyDRM);
@@ -1078,9 +1067,6 @@ public class Container {
                 case "disableLibredirect" :
                     setDisableLibredirect(data.getBoolean(key));
                     break;
-                case "disableEpicOverlay" :
-                    setDisableEpicOverlay(data.getBoolean(key));
-                    break;
                 case "disableMouseInput" :
                     setDisableMouseInput(data.getBoolean(key));
                     break;
@@ -1125,9 +1111,6 @@ public class Container {
                     break;
                 case "loadMods":
                     this.loadMods = data.getBoolean(key);
-                    break;
-                case "epicOfflineMode":
-                    this.epicOfflineMode = data.getBoolean(key);
                     break;
                 case "useLegacyDRM":
                     this.useLegacyDRM = data.getBoolean(key);
@@ -1239,9 +1222,6 @@ public class Container {
         return steamOfflineMode;
     }
 
-    public boolean isEpicOfflineMode() {
-        return epicOfflineMode;
-    }
 
     public void setSteamOfflineMode(boolean steamOfflineMode) {
         this.steamOfflineMode = steamOfflineMode;
@@ -1255,9 +1235,6 @@ public class Container {
         this.loadMods = loadMods;
     }
 
-    public void setEpicOfflineMode(boolean epicOfflineMode) {
-        this.epicOfflineMode = epicOfflineMode;
-    }
 
     public boolean isUseLegacyDRM() {
         return useLegacyDRM;
