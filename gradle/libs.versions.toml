@@ -56,7 +56,6 @@ androidx-material3-adaptive-nav-suite = { module = "androidx.compose.material3:m
 androidx-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "material3Adaptive" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-runtime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }
-androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room-runtime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room-runtime" }
 
@@ -142,7 +141,6 @@ ksp = [
 ]
 room = [
     "androidx-room-ktx",
-    "androidx-room-paging",
     "androidx-room-runtime",
 ]
 compose = [

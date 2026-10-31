@@ -3,35 +3,15 @@ package app.gamenative.billing
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.os.Build
 import androidx.compose.runtime.mutableStateOf
-import app.gamenative.BuildConfig
-import app.gamenative.api.AccountApi
-import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.LogLevel
-import com.revenuecat.purchases.Package
-import com.revenuecat.purchases.PurchaseParams
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesConfiguration
-import com.revenuecat.purchases.PurchasesTransactionException
-import com.revenuecat.purchases.awaitCustomerInfo
-import com.revenuecat.purchases.awaitLogIn
-import com.revenuecat.purchases.awaitLogOut
-import com.revenuecat.purchases.awaitOfferings
-import com.revenuecat.purchases.awaitPurchase
-import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
-import kotlinx.coroutines.CancellationException
-import timber.log.Timber
 
+/**
+ * Google Play subscriptions are not part of this build (it is sideloaded, never installed from
+ * Play), so the RevenueCat SDK is gone. This keeps the call shape so membership checks and the
+ * upgrade dialog fall through to the non-Play path.
+ */
 object PlayBilling {
-    private const val TAG = "PlayBilling"
-    private const val PLAY_STORE_PACKAGE = "com.android.vending"
-    private val PRODUCT_TIERS = mapOf(
-        "gn_basic_monthly" to "basic",
-        "gn_pro_monthly" to "pro",
-    )
-
-    data class Plan(val tier: String, val price: String, val pkg: Package)
+    data class Plan(val tier: String, val price: String)
 
     sealed class PurchaseOutcome {
         data object Success : PurchaseOutcome()
@@ -42,114 +22,22 @@ object PlayBilling {
     val hasActivePlan = mutableStateOf(false)
     val cachedPlans = mutableStateOf<List<Plan>>(emptyList())
 
-    private var playInstall: Boolean? = null
+    @Suppress("UNUSED_PARAMETER")
+    fun enabled(context: Context): Boolean = false
 
-    @Volatile
-    private var configured = false
+    @Suppress("UNUSED_PARAMETER")
+    fun init(app: Application) = Unit
 
-    fun isPlayInstall(context: Context): Boolean {
-        playInstall?.let { return it }
-        val installer = try {
-            val pm = context.packageManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                pm.getInstallSourceInfo(context.packageName).installingPackageName
-            } else {
-                @Suppress("DEPRECATION")
-                pm.getInstallerPackageName(context.packageName)
-            }
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "Could not read the installer package")
-            null
-        }
-        return (installer == PLAY_STORE_PACKAGE).also { playInstall = it }
-    }
+    suspend fun refresh() = Unit
 
-    fun enabled(context: Context): Boolean =
-        !BuildConfig.XR_BUILD && BuildConfig.REVENUECAT_API_KEY.isNotEmpty() && isPlayInstall(context)
+    suspend fun plans(): List<Plan> = emptyList()
 
-    fun init(app: Application) {
-        if (!enabled(app)) return
-        try {
-            Purchases.logLevel = if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.WARN
-            Purchases.configure(PurchasesConfiguration.Builder(app, BuildConfig.REVENUECAT_API_KEY).build())
-            Purchases.sharedInstance.updatedCustomerInfoListener = UpdatedCustomerInfoListener { onCustomerInfo(it) }
-            configured = true
-        } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "RevenueCat setup failed")
-        }
-    }
+    @Suppress("UNUSED_PARAMETER")
+    suspend fun purchase(activity: Activity, plan: Plan): PurchaseOutcome =
+        PurchaseOutcome.Failed("Google Play billing is not available in this build")
 
-    private fun onCustomerInfo(info: CustomerInfo) {
-        hasActivePlan.value = info.activeSubscriptions.isNotEmpty()
-    }
+    @Suppress("UNUSED_PARAMETER")
+    suspend fun linkAccount(accountId: String) = Unit
 
-    suspend fun refresh() {
-        if (!configured) return
-        try {
-            onCustomerInfo(Purchases.sharedInstance.awaitCustomerInfo())
-            plans()
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "Customer info refresh failed")
-        }
-    }
-
-    suspend fun plans(): List<Plan> {
-        if (!configured) return emptyList()
-        val offerings = Purchases.sharedInstance.awaitOfferings()
-        return offerings.all.values
-            .flatMap { it.availablePackages }
-            .mapNotNull { pkg ->
-                val tier = PRODUCT_TIERS[pkg.product.id.substringBefore(':')] ?: return@mapNotNull null
-                Plan(tier = tier, price = pkg.product.price.formatted, pkg = pkg)
-            }
-            .distinctBy { it.tier }
-            .also { cachedPlans.value = it }
-    }
-
-    suspend fun purchase(activity: Activity, plan: Plan): PurchaseOutcome {
-        if (!configured) return PurchaseOutcome.Failed("Play billing is not available")
-        return try {
-            val result = Purchases.sharedInstance.awaitPurchase(PurchaseParams.Builder(activity, plan.pkg).build())
-            onCustomerInfo(result.customerInfo)
-            PurchaseOutcome.Success
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: PurchasesTransactionException) {
-            if (e.userCancelled) {
-                PurchaseOutcome.Cancelled
-            } else {
-                Timber.tag(TAG).w(e, "Purchase failed")
-                PurchaseOutcome.Failed(e.message ?: "Purchase failed")
-            }
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "Purchase failed")
-            PurchaseOutcome.Failed(e.message ?: "Purchase failed")
-        }
-    }
-
-    suspend fun linkAccount(accountId: String) {
-        if (!configured || accountId.isEmpty()) return
-        try {
-            onCustomerInfo(Purchases.sharedInstance.awaitLogIn(accountId).customerInfo)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "RevenueCat login failed")
-            return
-        }
-        if (hasActivePlan.value) AccountApi.syncPlay()
-    }
-
-    suspend fun unlinkAccount() {
-        if (!configured) return
-        try {
-            onCustomerInfo(Purchases.sharedInstance.awaitLogOut())
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "RevenueCat logout failed")
-        }
-    }
+    suspend fun unlinkAccount() = Unit
 }
