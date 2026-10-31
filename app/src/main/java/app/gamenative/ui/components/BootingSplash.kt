@@ -38,11 +38,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.ui.text.font.FontFamily
 import app.gamenative.PrefManager
-import app.gamenative.data.BootQuizQuestion
-import app.gamenative.data.localizedPrompt
-import app.gamenative.data.localizedWinBody
-import app.gamenative.data.localizedLoseBody
-import app.gamenative.data.isPlayable
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -80,9 +75,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.gamenative.R
-import app.gamenative.data.localizedBody
-import app.gamenative.data.localizedLabel
-import app.gamenative.data.localizedTitle
 import app.gamenative.ui.theme.BrandGradient
 import app.gamenative.ui.theme.PluviaTheme
 import com.skydoves.landscapist.ImageOptions
