@@ -3055,6 +3055,39 @@ class SteamService : Service(), IChallengeUrlChanged {
 
         // parentScope is intentionally the download job's own CoroutineScope: cancelling the
         // download (e.g. user taps Cancel) also cancels the post-install cloud save sync.
+        /**
+         * Some games split one DLC across two apps that install into the same folder: Black Ops'
+         * map packs each have a Zombies depot under 42700 and a Multiplayer depot under 42710, and
+         * the Zombies maps need files from both (main/iw_26-35.iwd). After [appId] finishes
+         * installing, download the depots that every owned app sharing its install folder has for
+         * the DLC just installed. That sibling's own completion finds nothing new to fetch back,
+         * since this app already has the DLC recorded.
+         */
+        private suspend fun downloadSiblingDlcDepots(appId: Int, branch: String) {
+            val installedDlc = getInstalledApp(appId)?.dlcDepots.orEmpty().toSet()
+            if (installedDlc.isEmpty()) return
+            val dirName = getAppDirName(getAppInfoOf(appId))
+            if (dirName.isEmpty()) return
+
+            val siblings = instance?.appDao?.getAllAsList().orEmpty().filter {
+                it.id != appId && getAppDirName(it).equals(dirName, ignoreCase = true)
+            }
+            for (sibling in siblings) {
+                if (downloadJobs.containsKey(sibling.id)) continue
+                val siblingDlc = sibling.depots.values
+                    .map { it.dlcAppId }
+                    .filter { it != INVALID_APP_ID && it in installedDlc }
+                    .distinct()
+                if (siblingDlc.isEmpty()) continue
+                val alreadyInstalled = getInstalledApp(sibling.id)?.dlcDepots.orEmpty()
+                if (alreadyInstalled.containsAll(siblingDlc)) continue
+                if (!isAppInLibrary(sibling.id)) continue
+
+                Timber.i("Downloading ${sibling.id}'s depots for DLC $siblingDlc installed with $appId (shared folder '$dirName')")
+                downloadApp(sibling.id, siblingDlc, branch = branch, mode = SteamDownloadMode.INSTALL)
+            }
+        }
+
         private suspend fun completeAppDownload(
             downloadInfo: DownloadInfo,
             downloadingAppId: Int,
@@ -3110,6 +3143,16 @@ class SteamService : Service(), IChallengeUrlChanged {
                 // clean up DB record BEFORE notifying UI to avoid stale "Resume" button
                 instance?.downloadingAppInfoDao?.deleteApp(downloadInfo.gameId)
                 PrefManager.clearSteamDownloadMode(downloadInfo.gameId)
+
+                // Started only now, once this app's files and markers are in place: the sibling
+                // installs into the same folder.
+                try {
+                    downloadSiblingDlcDepots(downloadInfo.gameId, branch)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Timber.w(e, "Could not start the sibling DLC downloads for app ${downloadInfo.gameId}")
+                }
 
                 // Clear persisted bytes now — depot install is committed. Post-install sync is
                 // best-effort and may be cancelled, so this must not be deferred past the sync block.
