@@ -21,6 +21,10 @@ on:
           - release
           - debug
         default: release
+      expected_signer:
+        description: "Signer SHA-256 the APK must have (empty = the installed app's; 'any' = skip the check)"
+        type: string
+        default: ""
 
 permissions:
   # write: publish the APK as a GitHub Release asset (a direct .apk link, no zip to unpack)
@@ -90,6 +94,9 @@ jobs:
               -keyalg RSA -keysize 2048 -validity 10000 \
               -dname "CN=Android Debug,O=Android,C=US"
           fi
+          # The certificate this build will be signed with (compare with EXPECTED_SIGNER_SHA256)
+          keytool -list -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey \
+            | grep -E "SHA256:" | sed 's/^/Keystore certificate /'
 
       - name: Write local.properties
         env:
@@ -128,7 +135,15 @@ jobs:
       - name: Build APK
         # A strictly increasing versionCode (24000 + run number) so each build installs over the
         # previous one as an ordinary update.
-        run: ./gradlew -Pkotlin.daemon.jvmargs=-Xmx3g -PversionCodeOverride=$((24000 + GITHUB_RUN_NUMBER)) ${{ steps.meta.outputs.task }}
+        # Sign with the keystore prepared above explicitly: AGP's default debug signing does not
+        # read ~/.android/debug.keystore on these runners and minted a new key on every build.
+        run: |
+          ./gradlew -Pkotlin.daemon.jvmargs=-Xmx3g -PversionCodeOverride=$((24000 + GITHUB_RUN_NUMBER)) \
+            -Pandroid.injected.signing.store.file="$HOME/.android/debug.keystore" \
+            -Pandroid.injected.signing.store.password=android \
+            -Pandroid.injected.signing.key.alias=androiddebugkey \
+            -Pandroid.injected.signing.key.password=android \
+            ${{ steps.meta.outputs.task }}
 
       - name: Collect APK
         run: |
@@ -145,7 +160,7 @@ jobs:
         env:
           # The certificate of the installed build; override with the EXPECTED_SIGNER_SHA256 repo
           # variable when the signing key is intentionally changed.
-          EXPECTED_SIGNER_SHA256: ${{ vars.EXPECTED_SIGNER_SHA256 || 'b36f992b21e522acd7de9bc63ab087711881c73b68e530d9a9b5e83fa4da451b' }}
+          EXPECTED_SIGNER_SHA256: ${{ inputs.expected_signer || vars.EXPECTED_SIGNER_SHA256 || '616d1d631b26b7fa267788a2dd43c606e808ceceabd38f631538e02e21879645' }}
         run: |
           BT="$ANDROID_HOME/build-tools/34.0.0"
           [ -d "$BT" ] || BT="$ANDROID_SDK_ROOT/build-tools/34.0.0"
@@ -155,7 +170,7 @@ jobs:
           "$BT/apksigner" verify --verbose --print-certs "$apk" | grep -E "Verifies|Verified using|Signer #1 certificate (DN|SHA-256)"
           # Refuse to publish an APK that can't update the installed app (different signing key).
           signer="$("$BT/apksigner" verify --print-certs "$apk" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')"
-          if [ -n "$EXPECTED_SIGNER_SHA256" ] && [ "$signer" != "$EXPECTED_SIGNER_SHA256" ]; then
+          if [ -n "$EXPECTED_SIGNER_SHA256" ] && [ "$EXPECTED_SIGNER_SHA256" != "any" ] && [ "$signer" != "$EXPECTED_SIGNER_SHA256" ]; then
             echo "::error::APK is signed with $signer, expected $EXPECTED_SIGNER_SHA256: it would not install over the existing app."
             exit 1
           fi

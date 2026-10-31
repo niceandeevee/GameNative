@@ -111,6 +111,8 @@ object BootAdRepository {
      * opt-in recommendation card.
      */
     fun pickBootCard(): BootAdItem? {
+        // No sponsor or recommendation cards on the boot screen in this build
+        if (!PrefManager.showRecommendations) return null
         val sponsor = eligibleSponsor()
         if (sponsor != null) return sponsor.takeIf { passesShowRate(it) }
         return recommendationCard()

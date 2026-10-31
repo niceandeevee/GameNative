@@ -11,7 +11,7 @@ import app.gamenative.events.SteamEvent
 import app.gamenative.service.SteamService
 import app.gamenative.ui.data.UserLoginState
 import app.gamenative.PrefManager
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import `in`.dragonbra.javasteam.steam.authentication.IAuthenticator
 import java.util.concurrent.CompletableFuture
 import kotlinx.coroutines.channels.Channel

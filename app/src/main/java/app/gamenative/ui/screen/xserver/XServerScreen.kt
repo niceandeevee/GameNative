@@ -179,7 +179,7 @@ import app.gamenative.utils.WineMono
 import app.gamenative.utils.WineMsiCache
 import app.gamenative.utils.downloader.WinComponentDownloader
 import app.gamenative.utils.WineProcessSnapshotHelper
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import com.winlator.alsaserver.ALSAClient
 import com.winlator.container.Container
 import com.winlator.container.ContainerFiles

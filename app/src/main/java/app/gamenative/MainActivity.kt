@@ -60,7 +60,7 @@ import app.gamenative.utils.IntentLaunchManager
 import app.gamenative.utils.LauncherOrientation
 import app.gamenative.utils.LocaleHelper
 import app.gamenative.ui.util.SnackbarManager
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import com.winlator.core.AppUtils
 import com.winlator.inputcontrols.ControllerManager

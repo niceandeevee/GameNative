@@ -63,6 +63,7 @@ class EpicService : Service() {
             get() = instance != null
 
         fun start(context: Context) {
+            if (!app.gamenative.StoreSupport.EPIC_ENABLED) return
 
             Timber.tag("EPIC").d("Starting service...")
             // If already running, do nothing
@@ -97,6 +98,7 @@ class EpicService : Service() {
         }
 
         fun triggerLibrarySync(context: Context) {
+            if (!app.gamenative.StoreSupport.EPIC_ENABLED) return
             Timber.tag("EPIC").i("Triggering manual library sync (bypasses throttle)")
             val intent = Intent(context, EpicService::class.java)
             intent.action = ACTION_MANUAL_SYNC

@@ -11,6 +11,12 @@ class GameInputCompatibilityTest {
     }
 
     @Test
+    fun `Black Ops enables mouse drag compatibility in Bionic`() {
+        assertTrue(GameInputCompatibility.needsMouseDragCompatibility("STEAM_42700", false))
+        assertTrue(GameInputCompatibility.needsMouseDragCompatibility("STEAM_42710", false))
+    }
+
+    @Test
     fun `mouse drag compatibility remains disabled for other games`() {
         assertFalse(GameInputCompatibility.needsMouseDragCompatibility("STEAM_3858651", false))
         assertFalse(GameInputCompatibility.needsMouseDragCompatibility("GOG_3858650", false))

@@ -94,11 +94,15 @@ class InputControlsViewMouseSpeedTest {
         val xServer = mock<XServer>()
         val tasks = mutableListOf<TimerTask>()
         view.setXServer(xServer)
+        // Every clock read is 1/60 s after the previous one: each task run then moves the pointer
+        // by one 1/60 s step, the unit the stick speed is defined in
+        var nanos = 0L
+        view.mouseMoveClock = java.util.function.LongSupplier { nanos += 1_000_000_000L / 60; nanos }
         mockConstruction(Timer::class.java) { timer, _ ->
             doAnswer { invocation ->
                 tasks.add(invocation.getArgument(0))
                 null
-            }.`when`(timer).schedule(any<TimerTask>(), eq(0L), eq((1000 / 60).toLong()))
+            }.`when`(timer).scheduleAtFixedRate(any<TimerTask>(), eq(0L), eq(4L))
         }.use {
             try {
                 view.setProfile(profile)

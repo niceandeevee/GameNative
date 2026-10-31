@@ -101,7 +101,12 @@ enum class LibraryTab(
          * in place via all-files access, modern imports them into app-owned storage.
          */
         val visibleEntries: List<LibraryTab>
-            get() = entries.toList()
+            // Recommended is removed from this build, and Epic / GOG are switched off
+            get() = entries.filter {
+                it != RECOMMENDED &&
+                    (it != EPIC || app.gamenative.StoreSupport.EPIC_ENABLED) &&
+                    (it != GOG || app.gamenative.StoreSupport.GOG_ENABLED)
+            }
 
         fun normalizeVisibleTabs(
             serialized: String,

@@ -1336,12 +1336,10 @@ public class WinHandler {
             if (isEventFromController(controller, event.getDeviceId())) {
                 if (event.getRepeatCount() > 0) return true;
                 handled = controller.updateStateFromKeyEvent(event); // or motion variant
-                Log.d(TAG, "Key routed deviceId=" + event.getDeviceId()
-                        + " keyCode=" + event.getKeyCode()
-                        + " action=" + event.getAction()
-                        + " -> P" + (slot + 1)
-                        + " handled=" + handled
-                        + " buffer=" + (getGamepadBuffer(slot) != null));
+                // Every gamepad button press passes here: Timber drops it in release builds (and
+                // formats lazily), where android.util.Log.d still built and wrote the line each time.
+                Timber.d("Key routed deviceId=%d keyCode=%d action=%d -> P%d handled=%b",
+                        event.getDeviceId(), event.getKeyCode(), event.getAction(), slot + 1, handled);
                 sendMemoryFileState(controller, getGamepadBuffer(slot), slot);
                 if (handled) sendGamepadState();
                 return handled;

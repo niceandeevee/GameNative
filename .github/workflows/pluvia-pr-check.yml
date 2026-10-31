@@ -15,7 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [Legacy, Modern]
+        # Only the Modern flavor is built and installed from this fork
+        variant: [Modern]
     runs-on: ubuntu-latest
     name: build (${{ matrix.variant }})
 
@@ -48,7 +49,8 @@ jobs:
           : > gradle.log
           tail -n +1 -F gradle.log &
           tail_pid=$!
-          ./gradlew :app:test${{ matrix.variant }}DebugUnitTest > gradle.log 2>&1 &
+          # Two test JVMs (3 GB each) share the runner's 4 cores / 16 GB: roughly halves the test time
+          ./gradlew -PtestForks=2 -PtestHeap=3g :app:test${{ matrix.variant }}DebugUnitTest > gradle.log 2>&1 &
           gradle_pid=$!
           last_size=0
           stalled_for=0

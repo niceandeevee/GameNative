@@ -4,7 +4,7 @@ import android.os.SystemClock
 import app.gamenative.PrefManager
 import app.gamenative.data.BootAdItem
 import app.gamenative.data.BootAdRepository
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import java.util.UUID
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString

@@ -233,7 +233,9 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all {
-                it.maxHeapSize = "4g"
+                // CI passes -PtestForks=2 -PtestHeap=3g to split the suite over two test JVMs
+                it.maxParallelForks = (project.findProperty("testForks") as String?)?.toIntOrNull() ?: 1
+                it.maxHeapSize = (project.findProperty("testHeap") as String?) ?: "4g"
                 it.testLogging { events("started", "failed") }
             }
         }
@@ -506,9 +508,6 @@ dependencies {
     testImplementation(libs.zstd.jni)
     testImplementation(libs.orgJson)
     testImplementation(libs.mockwebserver)
-
-    // Add PostHog Android SDK dependency
-    implementation("com.posthog:posthog-android:3.8.0")
 
     implementation("com.auth0.android:jwtdecode:2.0.2")
 

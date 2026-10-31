@@ -18,7 +18,7 @@ import app.gamenative.powercontrol.metrics.PowerTelemetry
 import com.winlator.container.Container
 import java.io.File
 import org.json.JSONObject
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import com.winlator.core.GPUHelper
 import com.winlator.core.GPUInformation
 import com.winlator.widget.FrameRating

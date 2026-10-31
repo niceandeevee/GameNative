@@ -21,7 +21,7 @@ import app.gamenative.ui.enums.AppFilter
 import app.gamenative.ui.screen.library.AppScreen
 import app.gamenative.ui.screen.library.RecommendedGameScreen
 import app.gamenative.ui.theme.PluviaTheme
-import com.posthog.PostHog
+import app.gamenative.analytics.PostHog
 import java.util.EnumSet
 
 @Composable

@@ -154,7 +154,6 @@ fun SettingsGroupInterface(
 
     // Controller/gamepad hints visibility
     var showGamepadHints by rememberSaveable { mutableStateOf(PrefManager.showGamepadHints) }
-    var showRecommendations by rememberSaveable { mutableStateOf(PrefManager.showRecommendations) }
     var libraryTabs by remember { mutableStateOf(PrefManager.libraryTabs) }
 
     // Achievements
@@ -417,26 +416,6 @@ fun SettingsGroupInterface(
             },
         )
 
-        SettingsSwitch(
-            colors = settingsTileColorsAlt(),
-            title = { Text(text = stringResource(R.string.settings_interface_show_recommendations_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_interface_show_recommendations_subtitle)) },
-            state = showRecommendations,
-            onCheckedChange = { enabled ->
-                showRecommendations = enabled
-                PrefManager.showRecommendations = enabled
-                PluviaApp.events.emit(AndroidEvent.RecommendationToggleChanged)
-                if (PrefManager.usageAnalyticsEnabled) {
-                    com.posthog.PostHog.capture(
-                        event = "\$set",
-                        properties = mapOf("\$set" to mapOf("recommendation_enabled" to enabled)),
-                    )
-                    if (!enabled) {
-                        com.posthog.PostHog.capture("recommendation_disabled")
-                    }
-                }
-            },
-        )
 
         var showHiddenGamesByDefault by rememberSaveable { mutableStateOf(PrefManager.showHiddenGamesByDefault) }
         SettingsSwitch(
@@ -487,7 +466,7 @@ fun SettingsGroupInterface(
             },
         )
 
-        val configurableLibraryTabs = LibraryTab.configurableEntries
+        val configurableLibraryTabs = LibraryTab.configurableEntries.filter { it in LibraryTab.visibleEntries }
         val selectedLibraryTabIndices = configurableLibraryTabs.mapIndexedNotNull { index, tab ->
             index.takeIf { tab in libraryTabs }
         }
@@ -500,7 +479,7 @@ fun SettingsGroupInterface(
                 val selectedTab = configurableLibraryTabs[index]
                 val selectedTabs = libraryTabs.toMutableSet()
                 if (!selectedTabs.add(selectedTab)) selectedTabs.remove(selectedTab)
-                libraryTabs = LibraryTab.entries.filter {
+                libraryTabs = LibraryTab.visibleEntries.filter {
                     it !in LibraryTab.configurableEntries || it in selectedTabs
                 }
                 PrefManager.libraryTabs = libraryTabs

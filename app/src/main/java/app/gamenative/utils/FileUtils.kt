@@ -97,12 +97,8 @@ object FileUtils {
         createPathIfNotExist(path)
 
         try {
-            val fOut = FileOutputStream(path)
-            val myOutWriter = OutputStreamWriter(fOut)
-            myOutWriter.append(data)
-            myOutWriter.close()
-            fOut.flush()
-            fOut.close()
+            // use{} closes the file on a failed write too
+            OutputStreamWriter(FileOutputStream(path)).use { it.append(data) }
         } catch (e: Exception) {
             Timber.e("%s encounted an issue in writeStringToFile()", errorTag)
             Timber.e(errorMsg?.invoke(e) ?: "Error writing to file: $e")
