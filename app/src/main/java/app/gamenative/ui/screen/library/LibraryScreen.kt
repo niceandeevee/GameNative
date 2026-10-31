@@ -1129,7 +1129,7 @@ private fun LibraryScreenContent(
                 onLogout = onLogout,
                 onGoOnline = onGoOnline,
                 isOffline = isOffline,
-
+            )
         }
 
         // Pre-import dialog (modern add path)

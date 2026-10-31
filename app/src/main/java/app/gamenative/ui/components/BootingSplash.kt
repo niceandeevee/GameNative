@@ -212,7 +212,7 @@ fun BootingSplash(
 
             AmbientParticles(phase = particlePhase)
 
-            if (useHeroBackdrop) {            } else if (useHeroBackdrop) {
+            if (useHeroBackdrop) {
                 val desaturate = remember {
                     ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
                 }
@@ -257,7 +257,7 @@ fun BootingSplash(
             }
 
             // Main content
-            Column(            } else Column(
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(horizontal = 32.dp),
             ) {
