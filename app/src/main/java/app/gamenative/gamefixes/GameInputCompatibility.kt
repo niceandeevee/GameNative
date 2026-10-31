@@ -4,6 +4,12 @@ package app.gamenative.gamefixes
 object GameInputCompatibility {
     private val mouseDragCompatibilityGames = setOf(
         "STEAM_3858650", // Crushed in Time
+        // Call of Duty: Black Ops (Zombies / Multiplayer). Mouselook from a stick bound to mouse
+        // movement was jerky: without XGE, Wine's XInput2 can't receive raw motion, so it rebuilds
+        // the camera delta from absolute pointer positions and its own cursor warps. With XGE the
+        // exact deltas reach it as XI_RawMotion events.
+        "STEAM_42700",
+        "STEAM_42710",
     )
 
     /**
