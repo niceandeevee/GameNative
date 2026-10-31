@@ -212,20 +212,25 @@ public abstract class FileUtils {
             File parent = dstFile.getParentFile();
             if (!srcFile.exists() || (parent != null && !parent.exists() && !parent.mkdirs())) return false;
 
-            try {
-                if (dstFile.exists() && !dstFile.isDirectory()) dstFile.delete();
-                FileChannel inChannel = (new FileInputStream(srcFile)).getChannel();
-                FileChannel outChannel = (new FileOutputStream(dstFile)).getChannel();
-                inChannel.transferTo(0, inChannel.size(), outChannel);
-                inChannel.close();
-                outChannel.close();
-
-                if (callback != null) callback.call(dstFile);
-                return dstFile.exists();
+            if (dstFile.exists() && !dstFile.isDirectory()) dstFile.delete();
+            // transferTo may move fewer bytes than asked (on Android at most ~2 GB per call), so
+            // loop until the whole file is copied; a single call silently truncated large files.
+            try (FileChannel inChannel = new FileInputStream(srcFile).getChannel();
+                 FileChannel outChannel = new FileOutputStream(dstFile).getChannel()) {
+                long size = inChannel.size();
+                long position = 0;
+                while (position < size) {
+                    long moved = inChannel.transferTo(position, size - position, outChannel);
+                    if (moved <= 0) break;
+                    position += moved;
+                }
+                if (position < size) return false;
             }
             catch (IOException e) {
                 return false;
             }
+            if (callback != null) callback.call(dstFile);
+            return dstFile.exists();
         }
         return true;
     }
