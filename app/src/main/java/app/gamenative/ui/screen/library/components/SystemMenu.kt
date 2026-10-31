@@ -711,41 +711,45 @@ fun SystemMenu(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        // GOG
-                        SystemMenuItem(
-                            text = stringResource(
-                                if (gogLoggedIn) R.string.gog_settings_logout_title
-                                else R.string.gog_settings_login_title,
-                            ),
-                            icon = if (gogLoggedIn) {
-                                Icons.AutoMirrored.Filled.Logout
-                            } else {
-                                Icons.AutoMirrored.Filled.Login
-                            },
-                            onClick = {
-                                if (gogLoggedIn) onGogLogoutClick() else onGogLoginClick()
-                                onDismiss()
-                            },
-                            isDestructive = gogLoggedIn,
-                        )
+                        if (app.gamenative.StoreSupport.GOG_ENABLED) {
+                            // GOG
+                            SystemMenuItem(
+                                text = stringResource(
+                                    if (gogLoggedIn) R.string.gog_settings_logout_title
+                                    else R.string.gog_settings_login_title,
+                                ),
+                                icon = if (gogLoggedIn) {
+                                    Icons.AutoMirrored.Filled.Logout
+                                } else {
+                                    Icons.AutoMirrored.Filled.Login
+                                },
+                                onClick = {
+                                    if (gogLoggedIn) onGogLogoutClick() else onGogLoginClick()
+                                    onDismiss()
+                                },
+                                isDestructive = gogLoggedIn,
+                            )
+                        }
 
-                        // Epic
-                        SystemMenuItem(
-                            text = stringResource(
-                                if (epicLoggedIn) R.string.epic_settings_logout_title
-                                else R.string.epic_settings_login_title,
-                            ),
-                            icon = if (epicLoggedIn) {
-                                Icons.AutoMirrored.Filled.Logout
-                            } else {
-                                Icons.AutoMirrored.Filled.Login
-                            },
-                            onClick = {
-                                if (epicLoggedIn) onEpicLogoutClick() else onEpicLoginClick()
-                                onDismiss()
-                            },
-                            isDestructive = epicLoggedIn,
-                        )
+                        if (app.gamenative.StoreSupport.EPIC_ENABLED) {
+                            // Epic
+                            SystemMenuItem(
+                                text = stringResource(
+                                    if (epicLoggedIn) R.string.epic_settings_logout_title
+                                    else R.string.epic_settings_login_title,
+                                ),
+                                icon = if (epicLoggedIn) {
+                                    Icons.AutoMirrored.Filled.Logout
+                                } else {
+                                    Icons.AutoMirrored.Filled.Login
+                                },
+                                onClick = {
+                                    if (epicLoggedIn) onEpicLogoutClick() else onEpicLoginClick()
+                                    onDismiss()
+                                },
+                                isDestructive = epicLoggedIn,
+                            )
+                        }
 
                         // Amazon
                         SystemMenuItem(
