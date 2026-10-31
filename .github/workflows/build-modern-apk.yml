@@ -160,7 +160,7 @@ jobs:
         env:
           # The certificate of the installed build; override with the EXPECTED_SIGNER_SHA256 repo
           # variable when the signing key is intentionally changed.
-          EXPECTED_SIGNER_SHA256: ${{ inputs.expected_signer || vars.EXPECTED_SIGNER_SHA256 || 'b36f992b21e522acd7de9bc63ab087711881c73b68e530d9a9b5e83fa4da451b' }}
+          EXPECTED_SIGNER_SHA256: ${{ inputs.expected_signer || vars.EXPECTED_SIGNER_SHA256 || '616d1d631b26b7fa267788a2dd43c606e808ceceabd38f631538e02e21879645' }}
         run: |
           BT="$ANDROID_HOME/build-tools/34.0.0"
           [ -d "$BT" ] || BT="$ANDROID_SDK_ROOT/build-tools/34.0.0"
