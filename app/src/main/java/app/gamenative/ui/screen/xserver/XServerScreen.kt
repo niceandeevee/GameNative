@@ -2385,6 +2385,14 @@ fun XServerScreen(
                             val envVars = EnvVars()
                             immersiveHooks?.windowsVr?.beforeWineSystemSetup(container)
                             RedistInstallerExtractor.clearCache()
+                            // Game fixes first, on this session's container: launch prep applied them to a
+                            // copy loaded earlier, and merging into or saving this older copy would drop
+                            // what they set (e.g. Black Ops' native "xaudio" component) before it is installed.
+                            try {
+                                GameFixesRegistry.applyFor(context, appId, container)
+                            } catch (e: Exception) {
+                                Timber.tag("GameFixes").w(e, "Game fixes failed before wine setup")
+                            }
                             RedistComponents.applyForLaunch(container, appId)
 
                             runBlocking {

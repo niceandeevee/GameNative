@@ -11,10 +11,9 @@ class GameInputCompatibilityTest {
     }
 
     @Test
-    fun `Black Ops sends mouse movement as Win32 relative input`() {
-        assertTrue(GameInputCompatibility.needsWin32RelativeMouse("STEAM_42700"))
-        assertTrue(GameInputCompatibility.needsWin32RelativeMouse("STEAM_42710"))
-        assertFalse(GameInputCompatibility.needsWin32RelativeMouse("STEAM_3858650"))
+    fun `Black Ops uses the regular X pointer path`() {
+        assertFalse(GameInputCompatibility.needsWin32RelativeMouse("STEAM_42700"))
+        assertFalse(GameInputCompatibility.needsWin32RelativeMouse("STEAM_42710"))
         assertFalse(GameInputCompatibility.needsMouseDragCompatibility("STEAM_42700", false))
     }
 
