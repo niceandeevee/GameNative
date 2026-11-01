@@ -148,9 +148,25 @@ private fun mergeStoreDetails(
 ): StoreGameDetails = fetched.mergedWith(local)
 
 
-/** Lowercase letters and digits only, single-spaced: enough to tell a description that just repeats the title. */
-private fun normalizeStoreTitle(text: String): String =
-    text.lowercase().replace(Regex("[^a-z0-9]+"), " ").trim()
+private val ROMAN_NUMERALS = mapOf(
+    "ii" to "2", "iii" to "3", "iv" to "4", "vi" to "6", "vii" to "7",
+    "viii" to "8", "ix" to "9", "xi" to "11", "xii" to "12", "xiii" to "13",
+)
+
+/** Title key that ignores case, punctuation, edition words and roman numerals. */
+private fun normalizeStoreTitle(text: String): String {
+    var s = text.lowercase()
+    s = s.replace(Regex("[™®©]"), "")
+    s = s.replace("&", " and ")
+    s = s.replace(Regex("[^a-z0-9]+"), " ")
+    s = s.replace(
+        Regex("\\b(goty|game of the year|complete|definitive|enhanced|deluxe|ultimate|remastered|collection|bundle)\\b"),
+        "",
+    )
+    s = s.replace(Regex("\\bedition\\b"), "")
+    s = s.split(" ").joinToString(" ") { ROMAN_NUMERALS[it] ?: it }
+    return s.replace(Regex("\\s+"), " ").trim()
+}
 
 internal fun StoreGameDetails.withoutTitleOnlyDescription(title: String): StoreGameDetails {
     if (description.isBlank()) return this
