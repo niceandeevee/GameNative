@@ -40,6 +40,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import app.gamenative.ui.component.dialog.WineDebugChannelsDialog
 import app.gamenative.utils.AppExitRecorder
+import app.gamenative.utils.NativeXAudioRepair
 
 private const val EXIT_TRACE_WINDOW_MS = 48L * 60 * 60 * 1000
 private const val WINE_LOG_TAIL_BYTES = 8L * 1024 * 1024
@@ -139,6 +140,10 @@ fun SettingsGroupDebug() {
                 context.contentResolver.openOutputStream(resultUri)?.use { outputStream ->
                     outputStream.write(logs.toByteArray())
                     exitTrace?.let { outputStream.write(it.toByteArray()) }
+                    NativeXAudioRepair.logFile(context).takeIf { it.isFile }?.let { setup ->
+                        outputStream.write("\n\n===== Last launch setup =====\n".toByteArray())
+                        outputStream.write(setup.readBytes())
+                    }
                     wineLog?.let { file ->
                         outputStream.write("\n\n===== Last Wine log (${file.length()} bytes) =====\n".toByteArray())
                         java.io.RandomAccessFile(file, "r").use { raf ->

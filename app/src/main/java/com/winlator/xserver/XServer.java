@@ -46,6 +46,8 @@ public class XServer {
     private WinHandler winHandler;
     private final EnumMap<Lockable, ReentrantLock> locks = new EnumMap<>(Lockable.class);
     private volatile boolean relativeMouseMovement = false;
+    // Per-game: relative Win32 input regardless of what the touch shooter mode selects
+    private volatile boolean forceRelativeMouseMovement = false;
     private volatile ScreenInfo effectiveScreenInfo;
     private final boolean mouseDragCompatibilityEnabled;
     private boolean simulateTouchScreen = false;
@@ -97,7 +99,11 @@ public class XServer {
     }
 
     public boolean isRelativeMouseMovement() {
-        return relativeMouseMovement;
+        return relativeMouseMovement || forceRelativeMouseMovement;
+    }
+
+    public void setForceRelativeMouseMovement(boolean force) {
+        this.forceRelativeMouseMovement = force;
     }
 
     public void setRelativeMouseMovement(boolean relativeMouseMovement) {
@@ -248,7 +254,7 @@ public class XServer {
         }
 
         WinHandler handler = winHandler;
-        if (relativeMouseMovement && handler != null) {
+        if (isRelativeMouseMovement() && handler != null) {
             handler.mouseEvent(MouseEventFlags.MOVE, dx, dy, 0);
             return;
         }

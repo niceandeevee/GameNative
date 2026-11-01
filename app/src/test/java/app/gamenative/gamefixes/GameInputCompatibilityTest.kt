@@ -11,9 +11,11 @@ class GameInputCompatibilityTest {
     }
 
     @Test
-    fun `Black Ops enables mouse drag compatibility in Bionic`() {
-        assertTrue(GameInputCompatibility.needsMouseDragCompatibility("STEAM_42700", false))
-        assertTrue(GameInputCompatibility.needsMouseDragCompatibility("STEAM_42710", false))
+    fun `Black Ops sends mouse movement as Win32 relative input`() {
+        assertTrue(GameInputCompatibility.needsWin32RelativeMouse("STEAM_42700"))
+        assertTrue(GameInputCompatibility.needsWin32RelativeMouse("STEAM_42710"))
+        assertFalse(GameInputCompatibility.needsWin32RelativeMouse("STEAM_3858650"))
+        assertFalse(GameInputCompatibility.needsMouseDragCompatibility("STEAM_42700", false))
     }
 
     @Test

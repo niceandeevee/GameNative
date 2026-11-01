@@ -150,6 +150,7 @@ import app.gamenative.utils.ModDllOverrides
 import app.gamenative.utils.launchdependencies.BionicSteamAssetsDependency
 import app.gamenative.utils.downloader.DXWrapperDownloader
 import app.gamenative.utils.downloader.GraphicsDriverDownloader
+import app.gamenative.utils.NativeXAudioRepair
 import app.gamenative.utils.PreInstallSteps
 import app.gamenative.utils.SteamHostAuth
 import app.gamenative.utils.SteamInstallScriptRegistry
@@ -2024,6 +2025,7 @@ fun XServerScreen(
                 usrGlibc,
                 mouseDragCompatibility,
             )
+            xServerToUse.setForceRelativeMouseMovement(GameInputCompatibility.needsWin32RelativeMouse(appId))
 
             // VirGL containers always need GL (shared EGL context for the
             // VirGL passthrough). Default to the legacy GL renderer for all
@@ -5532,6 +5534,32 @@ private suspend fun setupWineSystemFiles(
         container.putExtra("wincomponents", WinComponentInstall.appliedValue(wincomponents, previousWinComponents, failedWinComponents))
         containerDataChanged = true
     }
+    // Native XAudio only helps if Microsoft's DLLs really are in the prefix: verify them each launch,
+    // repair from DirectX cabinets on disk, and re-assert the DLL overrides and COM registration.
+    NativeXAudioRepair.beginLog(context, container.id)
+    runCatching {
+        val prefix = File(imageFs.rootDir, ImageFs.WINEPREFIX)
+        NativeXAudioRepair.log(context, "prefix ${prefix.absolutePath} -> ${prefix.canonicalPath}")
+        NativeXAudioRepair.log(context, "wincomponents $wincomponents")
+        NativeXAudioRepair.log(context, "WINEDLLOVERRIDES=${envVars.get("WINEDLLOVERRIDES")} container env: ${container.envVars}")
+        if (KeyValueSet(wincomponents).firstOrNull { it[0] == "xaudio" }?.get(1) == "1") {
+            val gameDir = PreInstallSteps.getGameDir(container)
+            val roots = listOfNotNull(gameDir, gameDir?.parentFile?.let { File(it, "Steamworks Shared") })
+            val windows = File(prefix, "drive_c/windows")
+            if (!NativeXAudioRepair.ensure(context, windows, roots)) {
+                // No usable cabinet: lay the hosted component archive down again (cached after the first download)
+                val archive = WinComponentDownloader.ensureWinComponentAvailable(context, "xaudio") { }
+                NativeXAudioRepair.log(context, "re-extracting xaudio component archive: ${archive?.absolutePath ?: "unavailable"}")
+                if (archive != null) {
+                    TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, archive, windows, null)
+                    NativeXAudioRepair.ensure(context, windows, emptyList())
+                }
+            }
+            WineUtils.overrideWinComponentDlls(context, container, "xaudio", true)
+            WineUtils.setWinComponentRegistryKeys(File(prefix, "system.reg"), "xaudio", true, hasBuiltinWmDecoderDlls(imageFs))
+        }
+    }.onFailure { NativeXAudioRepair.log(context, "XAudio check failed: $it") }
+
     // every launch, not only on a wincomponents change: containers made before the Wine 10 CLSID fix still
     // carry the winegstreamer.dll value, and a Wine version change moves the right DLL under the same toggle
     WineUtils.setWinComponentRegistryKeys(
