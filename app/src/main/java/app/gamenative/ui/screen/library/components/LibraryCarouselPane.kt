@@ -57,8 +57,6 @@ import app.gamenative.PrefManager
 import app.gamenative.R
 import app.gamenative.data.LibraryItem
 import app.gamenative.ui.data.LibraryState
-import app.gamenative.ui.data.statsFor
-import app.gamenative.ui.data.communityCompatibilityFor
 import app.gamenative.ui.enums.PaneType
 import app.gamenative.ui.util.AdaptivePadding
 import app.gamenative.ui.util.shouldShowGamepadUI
@@ -531,12 +529,8 @@ internal fun LibraryCarouselPane(
                                             },
                                             paneType = PaneType.GRID_CAPSULE,
                                             imageRefreshCounter = state.imageRefreshCounter,
-                                            compatibilityStatus = state.compatibilityMap[item.name],
-                                            communityCompatibility = state.communityCompatibilityFor(item),
-                                            gameStats = state.statsFor(item),
                                             showFocusGlow = false,
                                             enableFocusScale = false,
-                                            animateStats = item.appId == settledBackdropItem?.appId,
                                         )
                                     }
                                 }

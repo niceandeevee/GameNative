@@ -623,14 +623,6 @@ fun SystemMenu(
                             focusRequester = firstItemFocusRequester,
                         )
 
-                        SystemMenuItem(
-                            text = stringResource(R.string.help_and_support),
-                            icon = Icons.AutoMirrored.Filled.Help,
-                            onClick = {
-                                uriHandler.openUri("https://discord.gg/2hKv4VfZfE")
-                            },
-                        )
-
                         Spacer(modifier = Modifier.height(16.dp))
 
                         HorizontalDivider(

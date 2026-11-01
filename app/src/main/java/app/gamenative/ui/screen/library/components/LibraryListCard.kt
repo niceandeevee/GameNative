@@ -45,16 +45,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.gamenative.R
-import app.gamenative.data.GameCompatibilityStatus
-import app.gamenative.data.CommunityCompatibilitySummary
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryItem
 import app.gamenative.service.SteamService
-import app.gamenative.ui.component.CompatibilityBadge
-import app.gamenative.ui.component.CommunityCompatibilityBadge
-import app.gamenative.ui.component.GameStatsRow
 import app.gamenative.ui.component.focusRing
-import app.gamenative.ui.data.GameCardStats
 import app.gamenative.ui.util.ListItemImage
 import app.gamenative.utils.CustomGameScanner
 import kotlinx.coroutines.Dispatchers
@@ -72,9 +66,6 @@ internal fun ListViewCard(
     isFocused: Boolean,
     onFocusChanged: (Boolean) -> Unit,
     isRefreshing: Boolean,
-    compatibilityStatus: GameCompatibilityStatus?,
-    communityCompatibility: CommunityCompatibilitySummary?,
-    gameStats: GameCardStats?,
     context: Context,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -215,28 +206,8 @@ internal fun ListViewCard(
                     }
                 }
 
-                GameStatsRow(
-                    stats = gameStats,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f),
-                )
             }
 
-            if (communityCompatibility != null) {
-                CommunityCompatibilityBadge(
-                    verdict = communityCompatibility.verdict,
-                    verdictLoaded = communityCompatibility.verdictLoaded,
-                    loadFailed = communityCompatibility.loadFailed,
-                    checking = communityCompatibility.isChecking,
-                    showLabel = true,
-                )
-            } else {
-                compatibilityStatus?.let { status ->
-                    CompatibilityBadge(
-                        status = status,
-                        showLabel = true,
-                    )
-                }
-            }
         }
     }
     }

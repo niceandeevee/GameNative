@@ -361,9 +361,7 @@
     <string name="performance_hud">效能 HUD</string>
     <string name="performance_hud_description">顯示或隱藏遊戲內疊加層。</string>
     <string name="performance_hud_fps_limiter">FPS 限制器</string>
-    <string name="performance_hud_fps_limiter_description">限制遊戲內幀率。最高：%1$d Hz。</string>
     <string name="performance_hud_fps_limiter_target">目標 FPS</string>
-    <string name="performance_hud_fps_limiter_off">無限制</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">限制基礎幀率。螢幕幀率為上限乘以 LSFG 倍數。</string>
     <string name="performance_hud_presets">預設</string>
@@ -681,12 +679,9 @@
     <string name="connection_retry">重試</string>
 
     <!--Game Feedback Dialog -->
-    <string name="game_feedback_game_run">遊戲的運行狀況如何?</string>
-    <string name="game_feedback_issues_question">選擇您遇到的任何問題:</string>
 
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">幫助 &amp; 支援</string>
     <string name="go_online">進入在線模式</string>
     <string name="go_offline">進入離線模式</string>
     <string name="log_out">登出</string>
@@ -718,7 +713,6 @@
     <string name="pulseaudio_low_latency">PulseAudio 低延遲模式</string>
     <string name="microphone_input">麥克風輸入</string>
     <string name="microphone_input_description">將裝置麥克風作為錄音裝置提供給 Wine/Proton。需要麥克風權限。</string>
-    <string name="show_fps">顯示幀率</string>
     <string name="portrait_mode">直向模式</string>
     <string name="portrait_mode_description">適用於 8BitDo FlipPad/GameSir Pocket Taco 類型控制器</string>
     <string name="portrait_below_cutout">顯示在相機孔下方</string>
@@ -748,8 +742,6 @@
     <string name="steam_connecting">正在連線至 Steam 伺服器… 網路較慢時可能需要一分鐘</string>
     <string name="steam_retrying_login">正在重試登入 Steam…</string>
     <string name="launch_bionic_steam">啟用實驗性 Bionic Steam</string>
-    <string name="allow_steam_updates">允許 Steam 更新</string>
-    <string name="allow_steam_updates_description">將 Steam 更新至最新版本, 會顯著降低效能</string>
     <string name="steam_type">Steam 類型</string>
 
     <!-- Container Configuration: Graphics -->
@@ -962,7 +954,6 @@
     <string name="select_wine_debug_channels">選擇 Wine 偵錯通道</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">描述發生了什麼</string>
-    <string name="get_support_on_discord">在 Discord 上獲取支援</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">驅動程式管理</string>
@@ -1007,8 +998,6 @@
     <string name="settings_emulation_default_config_title">修改預設配置</string>
     <string name="settings_emulation_default_config_subtitle">每款遊戲的初始容器設定 (不影響已安裝遊戲)</string>
     <string name="settings_emulation_default_config_dialog_title">預設容器設定</string>
-    <string name="settings_emulation_auto_apply_known_config_title">自動套用預設配置</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">首次執行 Steam 遊戲時，自動載入並套用社群推薦的最佳設定</string>
     <string name="settings_emulation_box64_presets_title">Box64 預設集</string>
     <string name="settings_emulation_box64_presets_subtitle">檢視、修改及建立 Box64 預設集</string>
     <string name="settings_emulation_driver_manager_title">驅動程式管理員</string>
@@ -1113,8 +1102,6 @@
     <string name="library_reset_container_message">此操作將您的容器重設為預設配置</string>
     <string name="library_verify_files_title">驗證檔案</string>
     <string name="library_verify_files_message">請確保您的存檔已上傳至雲端或完成備份後再進行驗證, 否則存檔可能會被覆寫</string>
-    <string name="library_update_title">更新</string>
-    <string name="library_update_message">請確保您的存檔已上傳至雲端或完成備份後再進行驗證, 否則存檔可能會被覆寫</string>
     <string name="library_config_title">%s 設定檔</string>
 
     <!-- LibraryAppScreen: Toast Messages -->
@@ -1136,12 +1123,8 @@
     <string name="library_file_count">檔案 %1$d / %2$d 個</string>
 
     <!-- PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">可用更新</string>
-    <string name="main_update_available_message">新版本 (%1$s) 已推出! %2$s</string>
     <string name="main_update_button">更新</string>
     <string name="main_later_button">稍後更新</string>
-    <string name="main_update_failed_title">更新失敗</string>
-    <string name="main_update_failed_message">更新下載或安裝失敗, 請稍後再試</string>
     <string name="launch_dependency_failed_title">下載啟動依賴失敗</string>
     <string name="launch_dependency_failed_message">無法下載所需元件，請稍後再試。</string>
 
@@ -1152,9 +1135,6 @@
     <string name="main_thank_you_message">立即成為會員。會員可享有：\n\n• AI 幫你解決遊戲執行問題\n• 新版本搶先體驗\n• Discord 進階身分組與專屬頻道\n• …還有更多\n\n每月 $5 起</string>
     <string name="main_share">分享</string>
     <string name="main_share_text">試試 GameNative - 在 Android 上暢玩您的 PC Steam 遊戲，完整支援雲端存檔！\nhttps://gamenative.app\n加入社群：https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">遊戲運作正常嗎?</string>
-    <string name="main_discord_support_message">加入 Discord 社群, 獲取遊戲修復與效能優化的支援</string>
-    <string name="main_open_discord">開啟 Discord</string>
 
     <!-- PluviaMain: Game Launch -->
     <string name="main_downloading_steam">正在下載 Steam...</string>
@@ -1235,82 +1215,17 @@
     <string name="library_not_installed">未安裝</string>
     <string name="library_family_shared">家庭共享</string>
     <string name="library_shared_short">共享</string>
-    <string name="library_compatible">相容</string>
-    <string name="library_gpu_compatible">GPU 相容</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">已知配置可在您的裝置上運作</string>
-    <string name="best_config_gpu_family_match">已知配置應該可在您的裝置上運作</string>
-    <string name="best_config_fallback_match">已知配置可能可在您的裝置上運作</string>
-    <string name="best_config_compatibility_unknown">沒有已知配置</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">配置已成功套用</string>
     <string name="best_config_missing_components_title">設定未套用</string>
     <string name="best_config_missing_components_message">此裝置上以下必要元件無法使用：\n\n%1$s\n\n請安裝缺少的元件後重試。</string>
     <string name="best_config_known_config_invalid">已知配置無效</string>
-    <string name="best_config_no_config_available">此遊戲沒有可用的最佳配置</string>
-    <string name="best_config_fetch_failed">無法取得配置，請檢查網路連線。</string>
     <string name="best_config_apply_anyway">仍然套用</string>
     <string name="best_config_applied_with_defaults">設定已套用，缺少的元件已替換為預設值</string>
     <string name="best_config_apply_failed">套用配置失敗: %s</string>
-    <string name="community_config_title">社群設定</string>
-    <string name="community_config_close">關閉社群設定</string>
-    <string name="community_config_refresh">重新整理社群設定</string>
-    <string name="community_config_retry">重試</string>
-    <string name="community_config_unknown_error">未知錯誤</string>
-    <string name="community_config_unknown">未知</string>
-    <string name="community_config_load_failed">無法載入社群設定：%1$s</string>
-    <string name="community_config_game_not_found">找不到 %1$s 的相容性項目</string>
-    <string name="community_config_gpu_unknown">GPU 無法使用</string>
-    <plurals name="community_config_result_count">
-        <item quantity="other">%1$d 個設定</item>
-    </plurals>
-    <string name="community_config_highest_rated">評分最高</string>
-    <string name="community_config_newest">最新</string>
-    <string name="community_config_same_device">相同裝置</string>
-    <string name="community_config_this_gpu">相同 GPU</string>
-    <string name="community_config_compatible_gpus">相容</string>
-    <string name="community_config_load_more">載入更多</string>
-    <string name="community_config_no_device_results">找不到適用於此裝置的設定。</string>
-    <string name="community_config_no_gpu_results">找不到適用於此 GPU 的設定。</string>
-    <string name="community_config_no_compatible_results">找不到適用於相容 GPU 的設定。</string>
-    <string name="community_config_show_this_gpu">顯示此 GPU</string>
-    <string name="community_config_show_compatible_gpus">顯示相容 GPU</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">設定詳細資料</string>
-    <string name="community_config_other_gpu_warning">此結果使用其他 GPU。不會套用 GPU 專用的驅動程式和封裝器設定。</string>
-    <string name="community_config_run_details">測試執行</string>
-    <string name="community_config_rating">評分</string>
-    <string name="community_config_average_fps">平均 FPS</string>
-    <string name="community_config_device">裝置</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">GameNative 版本</string>
-    <string name="community_config_submitted">提交時間</string>
-    <string name="community_config_session_length">遊戲時長</string>
-    <string name="community_config_game_store">遊戲商店</string>
-    <string name="community_config_custom_game">自訂遊戲</string>
-    <string name="community_config_settings">設定</string>
-    <string name="community_config_additional_launch_settings">其他啟動設定</string>
-    <string name="community_config_apply_launch_arguments">套用啟動參數</string>
-    <string name="community_config_apply_environment_variables">套用環境變數</string>
-    <string name="community_config_replaces_existing_value">取代目前的值</string>
-    <string name="community_config_dependencies">相依性</string>
-    <string name="community_config_dependencies_apply_check">套用設定時將檢查相依性。</string>
-    <string name="community_config_no_downloads">目前不需要從資訊清單下載任何內容。</string>
-    <string name="community_config_downloads_required">將自動下載以下元件：\n%1$s</string>
-    <string name="community_config_tags">標籤</string>
-    <string name="community_config_notes">備註</string>
-    <string name="community_config_apply">套用設定</string>
-    <string name="community_config_container">容器</string>
-    <string name="community_config_wine">Wine 或 Proton</string>
-    <string name="community_config_emulator">模擬器</string>
-    <string name="community_config_wrapper">DirectX 封裝器</string>
-    <string name="community_config_box64_preset">Box64 預設</string>
-    <string name="community_config_driver">圖形驅動程式</string>
     <string name="import_config">匯入設定</string>
     <string name="export_config">匯出設定</string>
 
@@ -1395,7 +1310,6 @@
     <string name="contents_all_trusted">所有檔案均受信任, 已準備好安裝</string>
     <string name="contents_no_installed">此類型無已安裝內容</string>
     <string name="contents_delete">刪除</string>
-    <string name="contents_review_confirm">此內容包含可信文件外的檔案, 請確認後再繼續操作</string>
     <string name="contents_removed">已移除 %1$s</string>
 
     <!-- Driver Manager -->
@@ -1571,8 +1485,6 @@
     <string name="option_open_container">開啟容器</string>
     <string name="option_edit_container">編輯容器</string>
     <string name="option_reset_to_defaults">重置容器</string>
-    <string name="option_get_support">取得支援</string>
-    <string name="option_submit_feedback">提交意見回饋</string>
     <string name="option_test_graphics">測試繪圖渲染</string>
     <string name="option_fetch_game_images">取得遊戲封面</string>
 
@@ -1586,7 +1498,6 @@
     <string name="download_paused_wifi">下載已暫停 – 等待 Wi-Fi/LAN 連接</string>
 
     <string name="library_compatibility_unknown">未知</string>
-    <string name="library_not_compatible">不相容</string>
 
     <string name="local_saves_only">僅限本地存檔</string>
     <string name="local_saves_only_description">停用此遊戲的雲端存檔同步，僅將存檔儲存在本地裝置上</string>
@@ -1604,8 +1515,6 @@
     <string name="option_move_to_internal_storage">移至內部儲存空間</string>
     <string name="option_reset_drm">重置 DRM</string>
     <string name="option_update">更新</string>
-    <string name="option_use_known_config">使用已知配置</string>
-    <string name="option_browse_community_configs">瀏覽社群設定</string>
     <string name="option_verify_files">驗證檔案完整性</string>
 
     <string name="performance_hud_battery_temperature">電池溫度</string>
@@ -1650,13 +1559,6 @@
 
     <string name="tools_wine_processes_empty">未偵測到正在執行的 EXE。</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">主線劇情</string>
-    <string name="hltb_main_plus_extras">主線 + 支線</string>
-    <string name="hltb_completionist">完美主義者</string>
-    <string name="hltb_all_styles">所有風格</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">顯示劇透</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1721,19 +1623,7 @@
     <string name="frontend_sync_resync_complete">前端同步完成</string>
     <string name="frontend_sync_pick_directory_cd">為 %1$s 選擇目錄</string>
     <string name="frontend_sync_clear_directory_cd">清除 %1$s 的目錄</string>
-    <string name="stats_key_runs">在您的GPU上成功執行的次數</string>
-    <string name="stats_key_reviews">五星評論（您的GPU / 您的裝置）</string>
-    <string name="stats_key_fps">預計FPS</string>
-    <string name="stats_key_session">在您裝置上的最長遊戲時長</string>
-    <string name="sort_fps">預計FPS</string>
-    <string name="sort_runs">成功執行次數</string>
-    <string name="sort_reviews">五星評論（裝置）</string>
-    <string name="sort_reviews_gpu">五星評論（GPU）</string>
     <string name="filter_expired">已過期</string>
-    <string name="filter_playable">可流暢執行（30+ FPS）</string>
-    <string name="filter_five_star_device">裝置上的五星評論</string>
-    <string name="filter_five_star_gpu">GPU上的五星評論</string>
-    <string name="filter_proven_gpu">已在您的GPU上驗證</string>
     <string name="vibration_intensity">震動強度</string>
     <string name="option_import_files">匯入檔案</string>
     <string name="option_export_files">匯出檔案</string>
@@ -2433,7 +2323,6 @@
     <string name="nexus_plan_ambiguous_case">已存在大小寫不明確的變體</string>
     <string name="nexus_plan_blocked">在每個可安裝檔案都有明確目的地之前，自動套用將被封鎖。</string>
     <string name="nexus_plan_export">分享診斷資訊</string>
-    <string name="nexus_reconfiguration_preview">重新設定預覽</string>
     <string name="nexus_reconfiguration_summary">新增 %1$d • 變更 %2$d • 移動 %3$d • 過期 %4$d</string>
     <string name="nexus_choose_package_variant">選擇軟體包變體</string>
     <string name="nexus_confirm_risky_game_root_files">我已檢查這些遊戲目錄檔案</string>
@@ -2616,50 +2505,4 @@
     <string name="control_profile_failed">控制設定檔操作失敗：%1$s</string>
     <string name="control_profile_delete_title">刪除控制設定檔？</string>
     <string name="control_profile_delete_message">要從媒體庫移除「%1$s」嗎？已使用此設定檔的遊戲將保留其控制設定。</string>
-    <string name="sort_compatibility">相容性</string>
-    <string name="community_compatibility_details">詳細資訊</string>
-    <string name="community_compatibility_expanded">已展開</string>
-    <string name="community_compatibility_collapsed">已收合</string>
-    <string name="community_compatibility_short_disclaimer">社群結果並不保證實際表現。</string>
-    <string name="community_compatibility_unreliable_short">結果不穩定；尚未確認能正常遊玩。</string>
-    <string name="community_compatibility_performance_caution">回報的效能可能有限。</string>
-    <string name="community_compatibility_checking_short">檢查中…</string>
-    <string name="community_compatibility_unavailable_short">無法使用</string>
-    <string name="community_compatibility_unavailable">無法載入相容性資訊</string>
-    <string name="community_compatibility_missing_tier">回應缺少必要的硬體資料，無法將結果套用至您的裝置。</string>
-    <string name="community_compatibility_works">運行良好</string>
-    <string name="community_compatibility_should">可執行</string>
-    <string name="community_compatibility_may">可能可執行</string>
-    <string name="community_compatibility_mixed">不穩定</string>
-    <string name="community_compatibility_wont">無法執行</string>
-    <string name="community_compatibility_unknown">未測試</string>
-    <string name="community_compatibility_checking">正在檢查相容性…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="other">來自此裝置型號的 %1$d 個已評分共享設定</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="other">使用您的 GPU 的 %1$d 個已評分共享設定</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">找不到適用於您硬體的共享設定</string>
-    <string name="community_compatibility_configs_unavailable">部分相容性資料無法載入，正在顯示可用資訊。</string>
-    <string name="community_compatibility_retry">重試</string>
-    <string name="community_compatibility_fps_median">回報的影格率中位數：%1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s（您的裝置型號）。</string>
-    <string name="community_compatibility_fps_soc">%1$s（相同晶片組）。</string>
-    <string name="community_compatibility_fps_gpu">%1$s（您的 GPU）。</string>
-    <string name="community_compatibility_fps_family">%1$s（相容的 GPU）。</string>
-    <string name="community_compatibility_view_reports">瀏覽設定</string>
-    <string name="community_config_install_before_apply">請先安裝此遊戲，再套用社群設定。</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="other">根據在您的裝置型號上記錄的 %1$d 次工作階段。</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="other">根據使用相同晶片組記錄的 %1$d 次工作階段。</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="other">根據使用您的 GPU 記錄的 %1$d 次工作階段。</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="other">根據您的 GPU 系列中記錄的 %1$d 次工作階段。</item>
-    </plurals>
 </resources>

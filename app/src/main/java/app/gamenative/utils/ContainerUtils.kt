@@ -655,8 +655,6 @@ object ContainerUtils {
         Timber.d("Container set: preferredInputApi=%s, dinputMapperType=0x%02x", api, containerData.dinputMapperType)
 
         if (saveToDisk) {
-            // Mark that config has been changed, so we can show feedback dialog after next game run
-            container.putExtra("config_changed", "true")
             container.saveData()
         }
         Timber.d("Set container.execArgs to '${containerData.execArgs}'")
@@ -815,50 +813,6 @@ object ContainerUtils {
             }
         }
 
-        // Check for cached best config (store-backed games only, only if no custom config provided)
-        var bestConfigMap: Map<String, Any?>? = null
-
-        if (supportsKnownConfigAutoApply(gameSource) && customConfig == null && PrefManager.autoApplyKnownConfig) {
-            try {
-                val gameName = resolveGameName(appId)
-                if (gameName != "Unknown" && gameName.isNotBlank()) {
-                    val gpuName = GPUInformation.getRenderer(context)
-
-                    // Check cache first (synchronous, fast)
-                    // If not cached, make request on background thread (not UI thread)
-                    runBlocking(Dispatchers.IO) {
-                        try {
-                            val bestConfig = BestConfigService.fetchBestConfig(
-                                context = context,
-                                gameName = gameName,
-                                gpuName = gpuName,
-                                gameStore = gameSource.name,
-                            )
-                            if (bestConfig != null && bestConfig.matchType != "no_match") {
-                                Timber.i("Applying best config for $gameName (matchType: ${bestConfig.matchType})")
-                                val parsedConfig = BestConfigService.parseConfigToContainerData(
-                                    context,
-                                    bestConfig.bestConfig,
-                                    bestConfig.matchType,
-                                    true,
-                                    bestConfig.matchedStore.equals(gameSource.name, ignoreCase = true),
-                                    forceApply = true,
-                                    matchedGpu = bestConfig.matchedGpu,
-                                )
-                                if (parsedConfig != null && parsedConfig.isNotEmpty()) {
-                                    bestConfigMap = parsedConfig
-                                }
-                            }
-                        } catch (e: Exception) {
-                            Timber.w(e, "Failed to get best config for container creation: ${e.message}")
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Timber.w(e, "Error checking for best config: ${e.message}")
-            }
-        }
-
         // Initialize container with default/custom config or best config
         var containerData = if (customConfig != null) {
             // Use custom config, but ensure drives are set if not specified
@@ -936,13 +890,6 @@ object ContainerUtils {
                 externalDisplaySwap = PrefManager.externalDisplaySwap,
                 vibrationIntensity = PrefManager.vibrationIntensity,
             )
-        }
-
-        // Apply best config map to containerData if available (full validated config on first run when components exist)
-        containerData = if (bestConfigMap != null && bestConfigMap.isNotEmpty()) {
-            applyBestConfigMapToContainerData(containerData, bestConfigMap)
-        } else {
-            containerData
         }
 
         if (BuildConfig.XR_BUILD && MainActivity.isMetaQuest()) {
@@ -1223,12 +1170,6 @@ object ContainerUtils {
         if (!hasContainer(context, appId)) return false
         val container = getContainer(context, appId)
         return container.isLocalSavesOnly
-    }
-
-    fun supportsKnownConfigAutoApply(gameSource: GameSource): Boolean = when (gameSource) {
-        GameSource.STEAM,
-        GameSource.CUSTOM_GAME,
-        -> true
     }
 
     /**

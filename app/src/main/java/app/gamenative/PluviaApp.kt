@@ -21,7 +21,6 @@ import app.gamenative.ui.screen.xserver.RadialMenuCoordinator
 import app.gamenative.utils.AppExitRecorder
 import app.gamenative.utils.ContainerMigrator
 import app.gamenative.utils.IntentLaunchManager
-import app.gamenative.utils.PlayIntegrity
 import app.gamenative.utils.downloader.ContainerFilesDownloader
 import java.io.File
 import javax.inject.Inject
@@ -116,8 +115,6 @@ class PluviaApp : Application() {
         } catch (e: Exception) {
             Timber.e(e, "[PluviaApp]: Failed to clear temporary config overrides")
         }
-
-        PlayIntegrity.warmUp(this)
 
         Thread {
             PowerManager.initialize(this)

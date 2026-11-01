@@ -308,9 +308,7 @@
     <string name="performance_hud">Ydelses-HUD</string>
     <string name="performance_hud_description">Vis eller skjul overlayet i spillet.</string>
     <string name="performance_hud_fps_limiter">FPS-begrænser</string>
-    <string name="performance_hud_fps_limiter_description">Begrænser billedhastigheden i spillet. Maks.: %1$d Hz.</string>
     <string name="performance_hud_fps_limiter_target">Mål-FPS</string>
-    <string name="performance_hud_fps_limiter_off">Ubegrænset</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Begrænser basisframeraten. Skærmraten er grænsen gange LSFG-multiplikatoren.</string>
     <string name="performance_hud_presets">Forudindstillinger</string>
@@ -540,7 +538,6 @@
     <string name="connection_retry">Prøv igen</string>
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">Hjælp &amp; support</string>
     <string name="go_online">Gå online</string>
     <string name="go_offline">Gå offline</string>
     <string name="log_out">Log ud</string>
@@ -572,7 +569,6 @@
     <string name="pulseaudio_low_latency">PulseAudio lav latenstilstand</string>
     <string name="microphone_input">Mikrofoninput</string>
     <string name="microphone_input_description">Gør enhedens mikrofon tilgængelig for Wine/Proton som en optageenhed. Kræver mikrofontilladelse.</string>
-    <string name="show_fps">Vis FPS</string>
     <string name="portrait_mode">Portrættilstand</string>
     <string name="portrait_mode_description">Til 8BitDo FlipPad/GameSir Pocket Taco-type controllere</string>
     <string name="portrait_below_cutout">Hold under kamerahullet</string>
@@ -599,8 +595,6 @@
     <string name="steam_connecting">Forbinder til Steam-servere… dette kan tage et minut på et langsomt netværk</string>
     <string name="steam_retrying_login">Prøver Steam-login igen…</string>
     <string name="launch_bionic_steam">Aktivér eksperimentel Bionic Steam</string>
-    <string name="allow_steam_updates">Tillad Steam-opdateringer</string>
-    <string name="allow_steam_updates_description">Opdaterer Steam til nyeste version. Reducerer ydelsen markant.</string>
     <string name="steam_type">Steam-type</string>
 
     <!-- Container Configuration: Graphics -->
@@ -801,7 +795,6 @@
     <string name="select_wine_debug_channels">Vælg Wine debug-kanaler</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">Beskriv hvad der skete</string>
-    <string name="get_support_on_discord">Få support på Discord</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">Driverhåndtering</string>
@@ -846,8 +839,6 @@
     <string name="settings_emulation_default_config_title">Redigér standardkonfiguration</string>
     <string name="settings_emulation_default_config_subtitle">De indledende containerindstillinger for hvert spil (påvirker ikke allerede installerede spil)</string>
     <string name="settings_emulation_default_config_dialog_title">Standard containerkonfiguration</string>
-    <string name="settings_emulation_auto_apply_known_config_title">Anvend kendt konfiguration automatisk</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">Anvend automatisk anbefalede indstillinger for Steam-spil ved første start</string>
     <string name="settings_emulation_box64_presets_title">Box64-forudindstillinger</string>
     <string name="settings_emulation_box64_presets_subtitle">Vis, redigér og opret Box64-forudindstillinger</string>
     <string name="settings_emulation_driver_manager_title">Driverhåndtering</string>
@@ -956,8 +947,6 @@
     <string name="library_reset_container_message">Dette vil nulstille din container til standardkonfigurationen.</string>
     <string name="library_verify_files_title">Verificér filer</string>
     <string name="library_verify_files_message">Sørg venligst for, at dine gemfiler er uploadet til skyen eller sikkerhedskopieret før verificering, da de ellers kan blive overskrevet.</string>
-    <string name="library_update_title">Opdatering</string>
-    <string name="library_update_message">Sørg venligst for, at dine gemfiler er uploadet til skyen eller sikkerhedskopieret før opdatering, da de ellers kan blive overskrevet.</string>
     <string name="library_config_title">%s-konfiguration</string>
 
     <!-- TODO: Manual review - LibraryAppScreen: Toast Messages -->
@@ -981,12 +970,8 @@
     <string name="download_paused_wifi">Download sat på pause – venter på Wi-Fi/LAN</string>
 
     <!-- TODO: Manual review - PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">Opdatering tilgængelig</string>
-    <string name="main_update_available_message">En ny version (%1$s) er tilgængelig!%2$s</string>
     <string name="main_update_button">Opdatér</string>
     <string name="main_later_button">Senere</string>
-    <string name="main_update_failed_title">Opdatering fejlede</string>
-    <string name="main_update_failed_message">Kunne ikke downloade eller installere opdateringen. Prøv venligst igen senere.</string>
     <string name="launch_dependency_failed_title">Download af opstartsafhængighed fejlede</string>
     <string name="launch_dependency_failed_message">Kunne ikke downloade en påkrævet komponent. Prøv venligst igen senere.</string>
 
@@ -997,9 +982,6 @@
     <string name="main_thank_you_message">Bliv medlem i dag. Medlemmer får:\n\n• AI-hjælp til at få dine spil til at køre\n• Tidlig adgang til nye udgivelser\n• Premium-roller og eksklusive kanaler på Discord\n• …og mere\n\nFra $5/måned</string>
     <string name="main_share">Del</string>
     <string name="main_share_text">Prøv GameNative - spil dine PC Steam-spil på Android med fuld understøttelse af cloud-gemmer!\nhttps://gamenative.app\nTilmeld dig fællesskabet: https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">Virkede spillet?</string>
-    <string name="main_discord_support_message">Tilmeld dig Discord for at få support til at rette dit spil eller forbedre ydelsen.</string>
-    <string name="main_open_discord">Åbn Discord</string>
     <string name="main_downloading_entry">Downloader %s</string>
 
     <!-- TODO: Manual review - PluviaMain: Game Launch -->
@@ -1081,85 +1063,18 @@
     <string name="library_not_installed">Ikke installeret</string>
     <string name="library_family_shared">Familiedelt</string>
     <string name="library_shared_short">Delt</string>
-    <string name="library_compatible">Kompatibel</string>
-    <string name="library_gpu_compatible">GPU-kompatibel</string>
     <string name="library_compatibility_unknown">Kompatibilitet ukendt</string>
-    <string name="library_not_compatible">Ikke kompatibel</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">Kendt konfiguration virker på din enhed</string>
-    <string name="best_config_gpu_family_match">Kendt konfiguration bør virke på din enhed</string>
-    <string name="best_config_fallback_match">Kendt konfiguration kan virke på din enhed</string>
-    <string name="best_config_compatibility_unknown">Ingen kendt konfiguration</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">Konfiguration anvendt med succes</string>
     <string name="best_config_missing_components_title">Konfiguration ikke anvendt</string>
     <string name="best_config_missing_components_message">Følgende nødvendige komponenter er ikke tilgængelige på denne enhed:\n\n%1$s\n\nInstaller de manglende komponenter og prøv igen.</string>
     <string name="best_config_known_config_invalid">Kendt konfiguration ugyldig</string>
-    <string name="best_config_no_config_available">Ingen bedste konfiguration tilgængelig for dette spil</string>
-    <string name="best_config_fetch_failed">Kunne ikke hente konfiguration. Kontrollér din netværksforbindelse.</string>
     <string name="best_config_apply_anyway">Anvend alligevel</string>
     <string name="best_config_applied_with_defaults">Konfiguration anvendt, manglende komponenter erstattet med standardværdier</string>
     <string name="best_config_apply_failed">Kunne ikke anvende konfiguration: %s</string>
-    <string name="community_config_title">Fællesskabskonfigurationer</string>
-    <string name="community_config_close">Luk fællesskabskonfigurationer</string>
-    <string name="community_config_refresh">Opdater fællesskabskonfigurationer</string>
-    <string name="community_config_retry">Prøv igen</string>
-    <string name="community_config_unknown_error">Ukendt fejl</string>
-    <string name="community_config_unknown">Ukendt</string>
-    <string name="community_config_load_failed">Fællesskabskonfigurationerne kunne ikke indlæses: %1$s</string>
-    <string name="community_config_game_not_found">Der blev ikke fundet en kompatibilitetspost for %1$s</string>
-    <string name="community_config_gpu_unknown">GPU er ikke tilgængelig</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d konfiguration</item>
-        <item quantity="other">%1$d konfigurationer</item>
-    </plurals>
-    <string name="community_config_highest_rated">Bedst bedømte</string>
-    <string name="community_config_newest">Nyeste</string>
-    <string name="community_config_same_device">Samme enhed</string>
-    <string name="community_config_this_gpu">Samme GPU</string>
-    <string name="community_config_compatible_gpus">Kompatible</string>
-    <string name="community_config_load_more">Indlæs flere</string>
-    <string name="community_config_no_device_results">Der blev ikke fundet konfigurationer til denne enhed.</string>
-    <string name="community_config_no_gpu_results">Der blev ikke fundet konfigurationer til denne GPU.</string>
-    <string name="community_config_no_compatible_results">Der blev ikke fundet konfigurationer til kompatible GPU’er.</string>
-    <string name="community_config_show_this_gpu">Vis denne GPU</string>
-    <string name="community_config_show_compatible_gpus">Vis kompatible GPU’er</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Konfigurationsdetaljer</string>
-    <string name="community_config_other_gpu_warning">Dette resultat bruger en anden GPU. GPU-specifikke driver- og wrapperindstillinger anvendes ikke.</string>
-    <string name="community_config_run_details">Testkørsel</string>
-    <string name="community_config_rating">Bedømmelse</string>
-    <string name="community_config_average_fps">Gennemsnitlig FPS</string>
-    <string name="community_config_device">Enhed</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">GameNative-version</string>
-    <string name="community_config_submitted">Indsendt</string>
-    <string name="community_config_session_length">Sessionslængde</string>
-    <string name="community_config_game_store">Spilbutik</string>
-    <string name="community_config_custom_game">Brugerdefineret spil</string>
-    <string name="community_config_settings">Indstillinger</string>
-    <string name="community_config_additional_launch_settings">Yderligere startindstillinger</string>
-    <string name="community_config_apply_launch_arguments">Anvend startargumenter</string>
-    <string name="community_config_apply_environment_variables">Anvend miljøvariabler</string>
-    <string name="community_config_replaces_existing_value">Erstatter den aktuelle værdi</string>
-    <string name="community_config_dependencies">Afhængigheder</string>
-    <string name="community_config_dependencies_apply_check">Afhængighederne kontrolleres, når konfigurationen anvendes.</string>
-    <string name="community_config_no_downloads">Der kræves i øjeblikket ingen downloads fra manifestet.</string>
-    <string name="community_config_downloads_required">Disse komponenter downloades automatisk:\n%1$s</string>
-    <string name="community_config_tags">Mærker</string>
-    <string name="community_config_notes">Noter</string>
-    <string name="community_config_apply">Anvend konfiguration</string>
-    <string name="community_config_container">Container</string>
-    <string name="community_config_wine">Wine eller Proton</string>
-    <string name="community_config_emulator">Emulator</string>
-    <string name="community_config_wrapper">DirectX-wrapper</string>
-    <string name="community_config_box64_preset">Box64-forudindstilling</string>
-    <string name="community_config_driver">Grafikdriver</string>
     <string name="import_config">Importér konfiguration</string>
     <string name="export_config">Eksportér konfiguration</string>
 
@@ -1244,7 +1159,6 @@
     <string name="contents_all_trusted">Alle filer er pålidelige. Klar til installation.</string>
     <string name="contents_no_installed">Intet installeret indhold for denne type.</string>
     <string name="contents_delete">Slet</string>
-    <string name="contents_review_confirm">Dette indhold inkluderer filer uden for det pålidelige sæt. Gennemgå og bekræft for at fortsætte.</string>
     <string name="contents_removed">Fjernede %1$s</string>
 
     <!-- TODO: Manual review - Driver Manager -->
@@ -1284,8 +1198,6 @@
     <string name="app_filter_family">Familie</string>
 
     <!-- TODO: Manual review - Game Feedback Dialog -->
-    <string name="game_feedback_game_run">Hvordan kørte spillet?</string>
-    <string name="game_feedback_issues_question">Vælg eventuelle problemer du stødte på:</string>
 
     <!-- TODO: Manual review - Container Configuration: Steam Integration (missing) -->
     <string name="use_legacy_drm">Brug ældre DRM</string>
@@ -1434,11 +1346,7 @@
     <string name="option_open_container">Åbn container</string>
     <string name="option_edit_container">Redigér container</string>
     <string name="option_reset_to_defaults">Nulstil container</string>
-    <string name="option_get_support">Få support</string>
-    <string name="option_submit_feedback">Send feedback</string>
     <string name="option_reset_drm">Nulstil DRM</string>
-    <string name="option_use_known_config">Brug kendt konfiguration</string>
-    <string name="option_browse_community_configs">Gennemse fællesskabskonfigurationer</string>
 
     <!-- Recommendations -->
     <string name="recommended_badge">Anbefalet</string>
@@ -1480,13 +1388,6 @@
     <string name="option_manage_dlc">Administrér DLC</string>
     <string name="option_manage_workshop">Administrér Workshop</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Hovedhistorie</string>
-    <string name="hltb_main_plus_extras">Hoved + Ekstra</string>
-    <string name="hltb_completionist">Perfektionist</string>
-    <string name="hltb_all_styles">Alle stilarter</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">Vis spoilere</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1583,19 +1484,7 @@
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
     <string name="screen_effects_launch_sharpness">Skarphed ved opstart</string>
     <string name="screen_effects_launch_sharpness_note">CAS og DLS anvendes via vkBasalt og træder i kraft næste gang du starter spillet.</string>
-    <string name="stats_key_runs">Vellykkede kørsler på din GPU</string>
-    <string name="stats_key_reviews">5-stjernede anmeldelser (din GPU / din enhed)</string>
-    <string name="stats_key_fps">Forventet FPS</string>
-    <string name="stats_key_session">Længste session på din enhed</string>
-    <string name="sort_fps">Forventet FPS</string>
-    <string name="sort_runs">Vellykkede kørsler</string>
-    <string name="sort_reviews">5-stjernede anmeldelser (enhed)</string>
-    <string name="sort_reviews_gpu">5-stjernede anmeldelser (GPU)</string>
     <string name="filter_expired">Udløbet</string>
-    <string name="filter_playable">Spilbar (30+ FPS)</string>
-    <string name="filter_five_star_device">5-stjernede anmeldelser på enhed</string>
-    <string name="filter_five_star_gpu">5-stjernede anmeldelser på GPU</string>
-    <string name="filter_proven_gpu">Afprøvet på din GPU</string>
     <string name="vibration_intensity">Vibrationsintensitet</string>
     <string name="option_import_files">Importér filer</string>
     <string name="option_export_files">Eksportér filer</string>
@@ -2298,7 +2187,6 @@
     <string name="nexus_plan_ambiguous_case">tvetydige varianter med store/små bogstaver findes allerede</string>
     <string name="nexus_plan_blocked">Automatisk anvendelse er blokeret, indtil alle installerbare filer har en sikker destination.</string>
     <string name="nexus_plan_export">Del diagnosticering</string>
-    <string name="nexus_reconfiguration_preview">Forhåndsvisning af omkonfiguration</string>
     <string name="nexus_reconfiguration_summary">%1$d tilføjet • %2$d ændret • %3$d flyttet • %4$d forældet</string>
     <string name="nexus_choose_package_variant">Vælg en pakkevariant</string>
     <string name="nexus_confirm_risky_game_root_files">Jeg har gennemgået disse filer i spilmappen</string>
@@ -2481,56 +2369,4 @@
     <string name="control_profile_failed">Handlingen for styringsprofilen mislykkedes: %1$s</string>
     <string name="control_profile_delete_title">Slet styringsprofil?</string>
     <string name="control_profile_delete_message">Fjern “%1$s” fra biblioteket? Spil, der allerede er konfigureret med profilen, beholder deres styring.</string>
-    <string name="sort_compatibility">Kompatibilitet</string>
-    <string name="community_compatibility_details">Detaljer</string>
-    <string name="community_compatibility_expanded">Udvidet</string>
-    <string name="community_compatibility_collapsed">Sammenfoldet</string>
-    <string name="community_compatibility_short_disclaimer">Fællesskabets resultater er ingen garanti.</string>
-    <string name="community_compatibility_unreliable_short">Upålidelige resultater; det er ikke bekræftet, at spillet kan spilles.</string>
-    <string name="community_compatibility_performance_caution">Den rapporterede ydeevne kan være begrænset.</string>
-    <string name="community_compatibility_checking_short">Tjekker…</string>
-    <string name="community_compatibility_unavailable_short">Utilgængelig</string>
-    <string name="community_compatibility_unavailable">Kompatibilitet kunne ikke indlæses</string>
-    <string name="community_compatibility_missing_tier">Svaret mangler de hardwaredata, der er nødvendige for at anvende resultatet på din enhed.</string>
-    <string name="community_compatibility_works">Kører godt</string>
-    <string name="community_compatibility_should">Virker</string>
-    <string name="community_compatibility_may">Virker måske</string>
-    <string name="community_compatibility_mixed">Upålidelig</string>
-    <string name="community_compatibility_wont">Virker ikke</string>
-    <string name="community_compatibility_unknown">Ikke testet</string>
-    <string name="community_compatibility_checking">Tjekker kompatibilitet…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d bedømt delt konfiguration fra denne enhedsmodel</item>
-        <item quantity="other">%1$d bedømte delte konfigurationer fra denne enhedsmodel</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d bedømt delt konfiguration med din GPU</item>
-        <item quantity="other">%1$d bedømte delte konfigurationer med din GPU</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">Ingen delte konfigurationer fundet til din hardware</string>
-    <string name="community_compatibility_configs_unavailable">Nogle kompatibilitetsdata kunne ikke indlæses. Viser tilgængelige data.</string>
-    <string name="community_compatibility_retry">Prøv igen</string>
-    <string name="community_compatibility_fps_median">Rapporteret median: %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s på din enhedsmodel.</string>
-    <string name="community_compatibility_fps_soc">%1$s med samme chipsæt.</string>
-    <string name="community_compatibility_fps_gpu">%1$s med din GPU.</string>
-    <string name="community_compatibility_fps_family">%1$s med kompatible GPU’er.</string>
-    <string name="community_compatibility_view_reports">Konfigurationer</string>
-    <string name="community_config_install_before_apply">Installer dette spil, før du anvender en fællesskabskonfiguration.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">Baseret på %1$d registreret session på din enhedsmodel.</item>
-        <item quantity="other">Baseret på %1$d registrerede sessioner på din enhedsmodel.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">Baseret på %1$d registreret session med samme chipsæt.</item>
-        <item quantity="other">Baseret på %1$d registrerede sessioner med samme chipsæt.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">Baseret på %1$d registreret session med din GPU.</item>
-        <item quantity="other">Baseret på %1$d registrerede sessioner med din GPU.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">Baseret på %1$d registreret session i din GPU-familie.</item>
-        <item quantity="other">Baseret på %1$d registrerede sessioner i din GPU-familie.</item>
-    </plurals>
 </resources>

@@ -9,11 +9,6 @@ import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.InstallMobile
 import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.VideogameAsset
-import androidx.compose.material.icons.rounded.Speed
-import androidx.compose.material.icons.rounded.SportsEsports
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.Stars
-import androidx.compose.material.icons.rounded.Verified
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.annotation.StringRes
 import app.gamenative.enums.AppType
@@ -61,35 +56,10 @@ enum class AppFilter(
         displayTextRes = R.string.library_family_shared,
         icon = Icons.Default.Diversity3,
     ),
-    COMPATIBLE(
-        code = 0x40,
-        displayTextRes = R.string.library_compatible,
-        icon = Icons.Rounded.Verified,
-    ),
     EXPIRED(
         code = 0x80,
         displayTextRes = R.string.filter_expired,
         icon = Icons.Default.HourglassEmpty,
-    ),
-    PLAYABLE(
-        code = 0x100,
-        displayTextRes = R.string.filter_playable,
-        icon = Icons.Rounded.Speed,
-    ),
-    FIVE_STAR(
-        code = 0x200,
-        displayTextRes = R.string.filter_five_star_device,
-        icon = Icons.Rounded.Star,
-    ),
-    FIVE_STAR_GPU(
-        code = 0x800,
-        displayTextRes = R.string.filter_five_star_gpu,
-        icon = Icons.Rounded.Stars,
-    ),
-    PROVEN_GPU(
-        code = 0x400,
-        displayTextRes = R.string.filter_proven_gpu,
-        icon = Icons.Rounded.SportsEsports,
     ),
 
     VR(

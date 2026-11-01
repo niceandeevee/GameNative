@@ -9,7 +9,6 @@ coroutines = "1.10.2" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx
 dagger-hilt = "2.55" # https://mvnrepository.com/artifact/com.google.dagger/hilt-android
 dataStore = "1.1.2" # https://mvnrepository.com/artifact/androidx.datastore/datastore-preferences
 espressoCore = "3.7.0" # https://mvnrepository.com/artifact/androidx.test.espresso/espresso-core
-play-integrity = "1.6.0" # https://mvnrepository.com/artifact/com.google.android.play/integrity
 hiltNavigationCompose = "1.2.0" # https://mvnrepository.com/artifact/androidx.hilt/hilt-navigation-compose
 javasteam = "1.8.0.1-26-SNAPSHOT" # https://github.com/joshuatam/JavaSteam/tree/gamenative-latest
 json = "1.8.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
@@ -71,7 +70,6 @@ apng = { group = "com.github.penfeizhou.android.animation", name = "apng", versi
 compose-settings-ui = { module = "com.github.alorma.compose-settings:ui-tiles", version.ref = "settings" }
 compose-settings-ui-extended = { module = "com.github.alorma.compose-settings:ui-tiles-extended", version.ref = "settings" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
-play-integrity = { module = "com.google.android.play:integrity", version.ref = "play-integrity" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger-hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger-hilt" }
 javasteam = { group = "io.github.joshuatam", name = "javasteam", version.ref = "javasteam" }
@@ -170,7 +168,4 @@ javasteam-dev = [
     "okhttp",
     "okhttp-coroutines",
     "okhttp-dnsoverhttps"
-]
-google = [
-    "play-integrity",
 ]

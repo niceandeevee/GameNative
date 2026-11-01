@@ -1478,55 +1478,6 @@ object PrefManager {
         get() = getPref(APP_LANGUAGE, "")
         set(value) = setPref(APP_LANGUAGE, value)
 
-    // auto-apply known config from BestConfigService on first container creation
-    private val AUTO_APPLY_KNOWN_CONFIG = booleanPreferencesKey("auto_apply_known_config")
-    var autoApplyKnownConfig: Boolean
-        get() = getPref(AUTO_APPLY_KNOWN_CONFIG, true)
-        set(value) = setPref(AUTO_APPLY_KNOWN_CONFIG, value)
-
-    // Game compatibility cache (JSON string)
-    private val GAME_COMPATIBILITY_CACHE = stringPreferencesKey("game_compatibility_cache")
-    var gameCompatibilityCache: String
-        get() = getPref(GAME_COMPATIBILITY_CACHE, "{}")
-        set(value) {
-            setPref(GAME_COMPATIBILITY_CACHE, value)
-        }
-
-    // HLTB cache (JSON string)
-    private val HLTB_CACHE = stringPreferencesKey("hltb_cache")
-    var hltbCache: String
-        get() = getPref(HLTB_CACHE, "{}")
-        set(value) {
-            setPref(HLTB_CACHE, value)
-        }
-
-    // Device-wide game stats cache (JSON string)
-    private val DEVICE_GAME_STATS_CACHE = stringPreferencesKey("device_game_stats_cache")
-    var deviceGameStatsCache: String
-        get() = getPref(DEVICE_GAME_STATS_CACHE, "{}")
-        set(value) {
-            setPref(DEVICE_GAME_STATS_CACHE, value)
-        }
-
-    // GPU-wide game stats cache (JSON string)
-    private val GPU_GAME_STATS_CACHE = stringPreferencesKey("gpu_game_stats_cache")
-    var gpuGameStatsCache: String
-        get() = getPref(GPU_GAME_STATS_CACHE, "{}")
-        set(value) {
-            setPref(GPU_GAME_STATS_CACHE, value)
-        }
-
-    /* Security / Attestation */
-    private val KEY_ATTESTATION_AVAILABLE = booleanPreferencesKey("key_attestation_available")
-    var keyAttestationAvailable: Boolean
-        get() = getPref(KEY_ATTESTATION_AVAILABLE, false)
-        set(value) = setPref(KEY_ATTESTATION_AVAILABLE, value)
-
-    private val PLAY_INTEGRITY_AVAILABLE = booleanPreferencesKey("play_integrity_available")
-    var playIntegrityAvailable: Boolean
-        get() = getPref(PLAY_INTEGRITY_AVAILABLE, false)
-        set(value) = setPref(PLAY_INTEGRITY_AVAILABLE, value)
-
     private val ACHIEVEMENT_SHOW_NOTIFICATION = booleanPreferencesKey("achievement_show_notification")
     var achievementShowNotification: Boolean
         get() = getPref(ACHIEVEMENT_SHOW_NOTIFICATION, true)

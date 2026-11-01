@@ -40,8 +40,6 @@
     <string name="add_drive">Добавить диск</string>
     <string name="add_to_home_screen">Добавить на главный экран</string>
     <string name="adjust_size">Отрегулировать размер</string>
-    <string name="allow_steam_updates">Разрешить обновления Steam</string>
-    <string name="allow_steam_updates_description">Обновляет Steam до последней версии. Значительно снижает производительность.</string>
     <string name="allowed_orientations">Разрешённые ориентации</string>
     <string name="androidx_startup">androidx.startup</string>
     <string name="app_downloads">Загрузки</string>
@@ -82,73 +80,9 @@
     <string name="best_config_applied_with_defaults">Конфигурация применена, отсутствующие компоненты заменены значениями по умолчанию</string>
     <string name="best_config_apply_anyway">Применить всё равно</string>
     <string name="best_config_apply_failed">Ошибка применения конфигурации: %s</string>
-    <string name="community_config_title">Конфигурации сообщества</string>
-    <string name="community_config_close">Закрыть конфигурации сообщества</string>
-    <string name="community_config_refresh">Обновить конфигурации сообщества</string>
-    <string name="community_config_retry">Повторить</string>
-    <string name="community_config_unknown_error">Неизвестная ошибка</string>
-    <string name="community_config_unknown">Неизвестно</string>
-    <string name="community_config_load_failed">Не удалось загрузить конфигурации сообщества: %1$s</string>
-    <string name="community_config_game_not_found">Для %1$s не найдена запись о совместимости</string>
-    <string name="community_config_gpu_unknown">GPU недоступен</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d конфигурация</item>
-        <item quantity="few">%1$d конфигурации</item>
-        <item quantity="many">%1$d конфигураций</item>
-        <item quantity="other">%1$d конфигурации</item>
-    </plurals>
-    <string name="community_config_highest_rated">Высший рейтинг</string>
-    <string name="community_config_newest">Сначала новые</string>
-    <string name="community_config_same_device">То же устройство</string>
-    <string name="community_config_this_gpu">Тот же GPU</string>
-    <string name="community_config_compatible_gpus">Совместимые</string>
-    <string name="community_config_load_more">Загрузить ещё</string>
-    <string name="community_config_no_device_results">Для этого устройства не найдено конфигураций.</string>
-    <string name="community_config_no_gpu_results">Для этого GPU не найдено конфигураций.</string>
-    <string name="community_config_no_compatible_results">Конфигурации для совместимых GPU не найдены.</string>
-    <string name="community_config_show_this_gpu">Показать этот GPU</string>
-    <string name="community_config_show_compatible_gpus">Показать совместимые GPU</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Сведения о конфигурации</string>
-    <string name="community_config_other_gpu_warning">Этот результат получен с другим GPU. Настройки драйвера и обёртки, зависящие от GPU, применены не будут.</string>
-    <string name="community_config_run_details">Тестовый запуск</string>
-    <string name="community_config_rating">Оценка</string>
-    <string name="community_config_average_fps">Средний FPS</string>
-    <string name="community_config_device">Устройство</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">Версия GameNative</string>
-    <string name="community_config_submitted">Отправлено</string>
-    <string name="community_config_session_length">Длительность сеанса</string>
-    <string name="community_config_game_store">Магазин игры</string>
-    <string name="community_config_custom_game">Пользовательская игра</string>
-    <string name="community_config_settings">Настройки</string>
-    <string name="community_config_additional_launch_settings">Дополнительные параметры запуска</string>
-    <string name="community_config_apply_launch_arguments">Применить аргументы запуска</string>
-    <string name="community_config_apply_environment_variables">Применить переменные окружения</string>
-    <string name="community_config_replaces_existing_value">Заменяет текущее значение</string>
-    <string name="community_config_dependencies">Зависимости</string>
-    <string name="community_config_dependencies_apply_check">Зависимости будут проверены при применении конфигурации.</string>
-    <string name="community_config_no_downloads">Сейчас загрузка компонентов из манифеста не требуется.</string>
-    <string name="community_config_downloads_required">Эти компоненты будут загружены автоматически:\n%1$s</string>
-    <string name="community_config_tags">Теги</string>
-    <string name="community_config_notes">Примечания</string>
-    <string name="community_config_apply">Применить конфигурацию</string>
-    <string name="community_config_container">Контейнер</string>
-    <string name="community_config_wine">Wine или Proton</string>
-    <string name="community_config_emulator">Эмулятор</string>
-    <string name="community_config_wrapper">Обёртка DirectX</string>
-    <string name="community_config_box64_preset">Предустановка Box64</string>
-    <string name="community_config_driver">Графический драйвер</string>
-    <string name="best_config_exact_gpu_match">Известная конфигурация работает на вашем GPU</string>
-    <string name="best_config_fallback_match">Известная конфигурация может работать на вашем GPU</string>
     <string name="best_config_known_config_invalid">Известная конфигурация невалидна</string>
     <string name="best_config_missing_components_message">Следующие необходимые компоненты недоступны на этом устройстве:\n\n%1$s\n\nУстановите недостающие компоненты и повторите попытку.</string>
     <string name="best_config_missing_components_title">Конфигурация не применена</string>
-    <string name="best_config_no_config_available">Нет доступной лучшей конфигурации для этой игры</string>
-    <string name="best_config_fetch_failed">Не удалось получить конфигурацию. Проверьте сетевое подключение.</string>
     <string name="bind_button">Привязать: %1$s</string>
     <string name="binding_none">Нет</string>
     <string name="bindings">Привязки</string>
@@ -289,7 +223,6 @@
     <string name="contents_manager">Менеджер контента</string>
     <string name="contents_no_installed">Нет установленного контента для этого типа.</string>
     <string name="contents_removed">Удалено %1$s</string>
-    <string name="contents_review_confirm">Этот контент включает файлы вне доверенного набора. Проверьте и подтвердите для продолжения.</string>
     <string name="contents_type">Тип</string>
     <string name="contents_untrusted_files">Этот контент включает файлы вне доверенного набора.</string>
     <string name="contents_validating">Проверка контента…</string>
@@ -462,8 +395,6 @@
     <string name="frame_synchronization">Синхронизация кадров</string>
     <string name="game_executable_not_found">Исполняемый файл не смог быть автоматически выбран. Пожалуйста, установите путь исполняемого файла в настройках контейнера.</string>
     <string name="game_executable_not_found_title">Невозможно запустить</string>
-    <string name="game_feedback_game_run">Как работала игра?</string>
-    <string name="game_feedback_issues_question">Выберите проблемы, которые вы встретили:</string>
     <string name="game_information">Информация об игре</string>
     <string name="game_not_installed_message">%s не установлена. Пожалуйста, установите игру перед запуском.</string>
     <string name="intent_launch_failed">Не удалось запустить игру: недействительный ярлык запуска</string>
@@ -550,7 +481,6 @@
     <string name="gesture_zoom_page_up_down">Page Up/Down</string>
     <string name="gesture_zoom_plus_minus">+/- клавиши</string>
     <string name="gesture_zoom_scroll_wheel">Колесо прокрутки</string>
-    <string name="get_support_on_discord">Получить поддержку на Discord</string>
     <string name="rockstar_login_required_title">Требуется вход в Rockstar</string>
     <string name="rockstar_login_failed">Не удалось войти в Rockstar: %1$s</string>
     <string name="rockstar_link_refused">Эта учетная запись Rockstar привязана к другой учетной записи Steam.</string>
@@ -573,7 +503,6 @@
     <string name="graphics_driver_version">Версия графического драйвера</string>
     <string name="header_img_desc">Изображение заголовка приложения</string>
     <string name="height">Высота</string>
-    <string name="help_and_support">Справка и поддержка</string>
     <string name="home">Главная</string>
     <string name="icon">Значок</string>
     <string name="icon_content_description">Значок диалога</string>
@@ -637,7 +566,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="library_cloud_sync_failed">Ошибка синхронизации облака</string>
     <string name="library_cloud_sync_error">Ошибка синхронизации облачного сохранения: %1$s</string>
     <string name="library_compatibility_unknown">Неизвестно</string>
-    <string name="library_compatible">Совместимо</string>
     <string name="library_config_title">Конфигурация %s</string>
     <string name="library_delete_app_message">Вы уверены, что хотите удалить это приложение?</string>
     <string name="library_delete_download_message">Удалить все загруженные данные для этой игры?</string>
@@ -658,7 +586,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="download_paused_wifi">Загрузка приостановлена – ожидание Wi-Fi/LAN</string>
     <string name="library_filters">Фильтры</string>
     <string name="library_game_count">%1$d игр • %2$d установлено</string>
-    <string name="library_gpu_compatible">GPU совместимо</string>
     <string name="library_install_imagefs_message">Образ Ubuntu должен быть установлен перед возможностью редактирования конфигурации. Это может занять несколько минут. Вы хотите продолжить?</string>
     <string name="library_install_imagefs_title">Установить ImageFS</string>
     <string name="library_installed">Установлено</string>
@@ -671,7 +598,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="library_layout_title">Макет</string>
     <string name="library_need_internet">Нужен интернет для установки</string>
     <string name="library_no_items">Нет элементов в списке с выбором</string>
-    <string name="library_not_compatible">Не совместимо</string>
     <string name="library_not_enough_space_message">Устанавливаемое приложение требует %1$s пространства, но на этом устройстве осталось только %2$s</string>
     <string name="library_not_installed">Не установлено</string>
     <string name="library_open">Открыть</string>
@@ -690,8 +616,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="library_status_ready">Готово</string>
     <string name="library_storage_permission_required">Требуется разрешение на доступ к хранилищу</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
-    <string name="library_update_message">Пожалуйста, убедитесь, что ваши сохранения загружены в облако или скопированы, поскольку они могут быть перезаписаны.</string>
-    <string name="library_update_title">Обновление</string>
     <string name="library_verify_files_message">Пожалуйста, убедитесь, что ваши сохранения загружены в облако или скопированы, поскольку они могут быть перезаписаны.</string>
     <string name="library_verify_files_title">Проверить файлы</string>
     <string name="library_wifi_only_enabled">Установка только через Wi-Fi/LAN включена</string>
@@ -747,8 +671,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
 Вы всё ещё можете играть в эту игру, но это отключит другой сеанс от Steam и может создать конфликт сохранений, когда прогресс того сеанса синхронизируется</string>
     <string name="main_app_running_title">Приложение запущено</string>
     <string name="main_app_session_suspended">Сеанс приложения приостановлен. Пожалуйста, перезапустите приложение.</string>
-    <string name="main_discord_support_message">Присоединитесь к Discord, чтобы получить поддержку для исправления вашей игры или улучшения производительности.</string>
-    <string name="main_discord_support_title">Игра работала?</string>
     <string name="main_downloading_entry">Загрузка %s</string>
     <string name="main_downloading_steam">Загрузка Steam...</string>
     <string name="steam_update_required_title">Требуется обновление</string>
@@ -765,7 +687,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="main_later_button">Позже</string>
     <string name="main_launch_anyway">Запустить в любом случае</string>
     <string name="main_loading">Загрузка...</string>
-    <string name="main_open_discord">Открыть Discord</string>
     <string name="main_pending_operation_none">Получены ожидающие удалённые операции, операция которых была \'none\'. Пожалуйста, перезапустите приложение.</string>
     <string name="main_multiple_pending_operations_message">В эту игру недавно играли на другом устройстве, и прогресс той сессии ещё не загружен в облако.\nЕсли вы продолжите, игра на том устройстве будет закрыта, а незагруженный прогресс может быть безвозвратно потерян.</string>
     <string name="main_pending_upload_message">Вы играли в %1$s на устройстве %2$s (%3$s), и это сохранение ещё не в облаке. (загрузка не началась)
@@ -797,11 +718,7 @@ https://gamenative.app
     <string name="main_sync_in_progress">Синхронизация в процессе. Пожалуйста, попробуйте снова через момент.</string>
     <string name="main_sync_in_progress_launch_anyway_message">Синхронизация облачного сохранения для этой игры уже запущена. Вы можете подождать и попробовать снова, или запустить в любом случае без синхронизации (может вызвать конфликты сохранений).</string>
     <string name="main_sync_in_progress_retry">Операция синхронизации занимает слишком много времени. Пожалуйста, попробуйте запустить игру снова через момент.</string>
-    <string name="main_update_available_message">Доступна новая версия (%1$s)!%2$s</string>
-    <string name="main_update_available_title">Доступно обновление</string>
     <string name="main_update_button">Обновить</string>
-    <string name="main_update_failed_message">Ошибка загрузки или установки обновления. Пожалуйста, попробуйте позже.</string>
-    <string name="main_update_failed_title">Ошибка обновления</string>
     <string name="main_upload_in_progress_message">Вы играли в %1$s на устройстве %2$s (%3$s) и сохранение того сеанса ещё загружается.
 Попробуйте позже.</string>
     <string name="main_upload_in_progress_title">Загрузка в процессе</string>
@@ -979,9 +896,7 @@ https://gamenative.app
     <string name="performance_hud">HUD производительности</string>
     <string name="performance_hud_description">Показывать или скрывать игровое наложение.</string>
     <string name="performance_hud_fps_limiter">Ограничитель FPS</string>
-    <string name="performance_hud_fps_limiter_description">Ограничивает частоту кадров в игре. Макс.: %1$d Гц.</string>
     <string name="performance_hud_fps_limiter_target">Целевой FPS</string>
-    <string name="performance_hud_fps_limiter_off">Без ограничений</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Ограничивает базовую частоту кадров. Частота на экране — это лимит, умноженный на множитель LSFG.</string>
     <string name="performance_hud_presets">Предустановки</string>
@@ -1096,8 +1011,6 @@ https://gamenative.app
     <string name="settings_download_slow">Медленный</string>
     <string name="settings_download_speed">Скорость загрузки</string>
     <string name="settings_downloads_title">Загрузки</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">Автоматически применять рекомендуемые настройки для игр Steam при первом запуске</string>
-    <string name="settings_emulation_auto_apply_known_config_title">Автоматически применять известную конфигурацию</string>
     <string name="settings_emulation_box64_presets_subtitle">Просмотр, изменение и создание предустановок Box64</string>
     <string name="settings_emulation_box64_presets_title">Предустановки Box64</string>
     <string name="settings_emulation_contents_manager_subtitle">Установить дополнительные компоненты (.wcp)</string>
@@ -1180,7 +1093,6 @@ https://gamenative.app
     <string name="shooter_mode_toggle_description">Автоматически заменять элементы джойстика на динамические джойстики</string>
     <string name="shortcuts">Ярлыки</string>
     <string name="shoulder_buttons_category">Шифты</string>
-    <string name="show_fps">Показать FPS</string>
     <string name="side_sheet_accessibility_pane_title">Боковой лист</string>
     <string name="size">Размер</string>
     <string name="size_subtitle">%.2fx</string>
@@ -1473,11 +1385,7 @@ https://gamenative.app
     <string name="option_open_container">Открыть контейнер</string>
     <string name="option_edit_container">Редактировать контейнер</string>
     <string name="option_reset_to_defaults">Сбросить контейнер</string>
-    <string name="option_get_support">Получить поддержку</string>
-    <string name="option_submit_feedback">Отправить отзыв</string>
     <string name="option_reset_drm">Сбросить DRM</string>
-    <string name="option_use_known_config">Использовать известную конфигурацию</string>
-    <string name="option_browse_community_configs">Просмотреть конфигурации сообщества</string>
 
     <!-- Recommendations -->
     <string name="recommended_badge">Рекомендуемое</string>
@@ -1519,13 +1427,6 @@ https://gamenative.app
     <string name="option_manage_dlc">Управление DLC</string>
     <string name="option_manage_workshop">Управление Workshop</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Основной сюжет</string>
-    <string name="hltb_main_plus_extras">Основное + Дополнения</string>
-    <string name="hltb_completionist">Перфекционист</string>
-    <string name="hltb_all_styles">Все стили</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">Показать спойлеры</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1622,19 +1523,7 @@ https://gamenative.app
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
     <string name="screen_effects_launch_sharpness">Резкость при запуске</string>
     <string name="screen_effects_launch_sharpness_note">CAS и DLS применяются через vkBasalt и вступают в силу при следующем запуске игры.</string>
-    <string name="stats_key_runs">Успешные запуски на вашем GPU</string>
-    <string name="stats_key_reviews">5-звёздочные отзывы (ваш GPU / ваше устройство)</string>
-    <string name="stats_key_fps">Ожидаемый FPS</string>
-    <string name="stats_key_session">Самая длинная сессия на вашем устройстве</string>
-    <string name="sort_fps">Ожидаемый FPS</string>
-    <string name="sort_runs">Успешные запуски</string>
-    <string name="sort_reviews">5-звёздочные отзывы (устройство)</string>
-    <string name="sort_reviews_gpu">5-звёздочные отзывы (GPU)</string>
     <string name="filter_expired">Истекшие</string>
-    <string name="filter_playable">Играбельно (30+ FPS)</string>
-    <string name="filter_five_star_device">5-звёздочные отзывы на устройстве</string>
-    <string name="filter_five_star_gpu">5-звёздочные отзывы на GPU</string>
-    <string name="filter_proven_gpu">Проверено на вашем GPU</string>
     <string name="vibration_intensity">Интенсивность вибрации</string>
     <string name="option_import_files">Импорт файлов</string>
     <string name="option_export_files">Экспорт файлов</string>
@@ -2343,7 +2232,6 @@ https://gamenative.app
     <string name="nexus_plan_ambiguous_case">уже существуют неоднозначные варианты регистра</string>
     <string name="nexus_plan_blocked">Автоматическое применение заблокировано, пока для каждого устанавливаемого файла не подтверждено место назначения.</string>
     <string name="nexus_plan_export">Поделиться диагностикой</string>
-    <string name="nexus_reconfiguration_preview">Предпросмотр перенастройки</string>
     <string name="nexus_reconfiguration_summary">Добавлено: %1$d • изменено: %2$d • перемещено: %3$d • устарело: %4$d</string>
     <string name="nexus_choose_package_variant">Выберите вариант пакета</string>
     <string name="nexus_confirm_risky_game_root_files">Эти файлы в папке игры проверены</string>
@@ -2526,68 +2414,4 @@ https://gamenative.app
     <string name="control_profile_failed">Ошибка операции с профилем управления: %1$s</string>
     <string name="control_profile_delete_title">Удалить профиль управления?</string>
     <string name="control_profile_delete_message">Удалить «%1$s» из библиотеки? Игры, уже настроенные с ним, сохранят свои элементы управления.</string>
-    <string name="sort_compatibility">Совместимость</string>
-    <string name="community_compatibility_details">Подробности</string>
-    <string name="community_compatibility_expanded">Развёрнуто</string>
-    <string name="community_compatibility_collapsed">Свёрнуто</string>
-    <string name="community_compatibility_short_disclaimer">Результаты сообщества не являются гарантией.</string>
-    <string name="community_compatibility_unreliable_short">Нестабильные результаты; возможность играть не подтверждена.</string>
-    <string name="community_compatibility_performance_caution">Заявленная производительность может быть ограничена.</string>
-    <string name="community_compatibility_checking_short">Проверка…</string>
-    <string name="community_compatibility_unavailable_short">Недоступно</string>
-    <string name="community_compatibility_unavailable">Не удалось загрузить совместимость</string>
-    <string name="community_compatibility_missing_tier">В ответе нет данных об оборудовании, необходимых для применения результата к вашему устройству.</string>
-    <string name="community_compatibility_works">Работает хорошо</string>
-    <string name="community_compatibility_should">Работает</string>
-    <string name="community_compatibility_may">Может работать</string>
-    <string name="community_compatibility_mixed">Нестабильно</string>
-    <string name="community_compatibility_wont">Не работает</string>
-    <string name="community_compatibility_unknown">Не проверено</string>
-    <string name="community_compatibility_checking">Проверка совместимости…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d оценённая общая конфигурация с этой модели устройства</item>
-        <item quantity="few">%1$d оценённые общие конфигурации с этой модели устройства</item>
-        <item quantity="many">%1$d оценённых общих конфигураций с этой модели устройства</item>
-        <item quantity="other">%1$d оценённой общей конфигурации с этой модели устройства</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d оценённая общая конфигурация с вашим GPU</item>
-        <item quantity="few">%1$d оценённые общие конфигурации с вашим GPU</item>
-        <item quantity="many">%1$d оценённых общих конфигураций с вашим GPU</item>
-        <item quantity="other">%1$d оценённой общей конфигурации с вашим GPU</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">Общие конфигурации для вашего оборудования не найдены</string>
-    <string name="community_compatibility_configs_unavailable">Не удалось загрузить часть данных о совместимости. Показаны доступные данные.</string>
-    <string name="community_compatibility_retry">Повторить</string>
-    <string name="community_compatibility_fps_median">Медианная частота: %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s на вашей модели устройства.</string>
-    <string name="community_compatibility_fps_soc">%1$s с тем же чипсетом.</string>
-    <string name="community_compatibility_fps_gpu">%1$s с вашим GPU.</string>
-    <string name="community_compatibility_fps_family">%1$s с совместимыми GPU.</string>
-    <string name="community_compatibility_view_reports">Конфигурации</string>
-    <string name="community_config_install_before_apply">Установите игру перед применением конфигурации сообщества.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">На основе %1$d записанного сеанса на вашей модели устройства.</item>
-        <item quantity="few">На основе %1$d записанных сеансов на вашей модели устройства.</item>
-        <item quantity="many">На основе %1$d записанных сеансов на вашей модели устройства.</item>
-        <item quantity="other">На основе %1$d записанного сеанса на вашей модели устройства.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">На основе %1$d записанного сеанса с тем же чипсетом.</item>
-        <item quantity="few">На основе %1$d записанных сеансов с тем же чипсетом.</item>
-        <item quantity="many">На основе %1$d записанных сеансов с тем же чипсетом.</item>
-        <item quantity="other">На основе %1$d записанного сеанса с тем же чипсетом.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">На основе %1$d записанного сеанса с вашим GPU.</item>
-        <item quantity="few">На основе %1$d записанных сеансов с вашим GPU.</item>
-        <item quantity="many">На основе %1$d записанных сеансов с вашим GPU.</item>
-        <item quantity="other">На основе %1$d записанного сеанса с вашим GPU.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">На основе %1$d записанного сеанса в вашем семействе GPU.</item>
-        <item quantity="few">На основе %1$d записанных сеансов в вашем семействе GPU.</item>
-        <item quantity="many">На основе %1$d записанных сеансов в вашем семействе GPU.</item>
-        <item quantity="other">На основе %1$d записанного сеанса в вашем семействе GPU.</item>
-    </plurals>
 </resources>

@@ -366,9 +366,7 @@
     <string name="performance_hud">HUD de performanță</string>
     <string name="performance_hud_description">Afișează sau ascunde suprapunerea din joc.</string>
     <string name="performance_hud_fps_limiter">Limitator FPS</string>
-    <string name="performance_hud_fps_limiter_description">Limitează rata de cadre în joc. Max.: %1$d Hz.</string>
     <string name="performance_hud_fps_limiter_target">FPS țintă</string>
-    <string name="performance_hud_fps_limiter_off">Nelimitat</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Limitează rata de bază. Rata de pe ecran este limita înmulțită cu multiplicatorul LSFG.</string>
     <string name="performance_hud_presets">Presetări</string>
@@ -691,12 +689,9 @@
 	<string name="connection_retry">Reîncearcă</string>
 
     <!--Game Feedback Dialog -->
-	<string name="game_feedback_game_run">Cum a rulat jocul?</string>
-	<string name="game_feedback_issues_question">Selectează orice probleme întâlnite:</string>
 
 
     <!-- Profile & Menu -->
-	<string name="help_and_support">Ajutor &amp; Suport</string>
 	<string name="go_online">Mergi online</string>
 	<string name="go_offline">Mergi offline</string>
 	<string name="log_out">Deconectare</string>
@@ -728,7 +723,6 @@
 	<string name="pulseaudio_low_latency">Mod latență redusă PulseAudio</string>
 	<string name="microphone_input">Intrare microfon</string>
 	<string name="microphone_input_description">Expune microfonul dispozitivului către Wine/Proton ca dispozitiv de înregistrare. Necesită permisiunea pentru microfon.</string>
-	<string name="show_fps">Afișează FPS</string>
 	<string name="portrait_mode">Mod portret</string>
 	<string name="portrait_mode_description">Pentru controlere de tip 8BitDo FlipPad/GameSir Pocket Taco</string>
 	<string name="portrait_below_cutout">Păstrează sub decupajul camerei</string>
@@ -760,8 +754,6 @@
 	<string name="steam_connecting">Se conectează la serverele Steam… poate dura un minut pe o rețea lentă</string>
 	<string name="steam_retrying_login">Se reîncearcă autentificarea în Steam…</string>
 	<string name="launch_bionic_steam">Activează Bionic Steam experimental</string>
-	<string name="allow_steam_updates">Permite actualizările Steam</string>
-	<string name="allow_steam_updates_description">Actualizează Steam la ultima versiune. Reduce semnificativ performanța.</string>
 	<string name="steam_type">Tip Steam</string>
 
     <!-- Container Configuration: Graphics -->
@@ -975,7 +967,6 @@
 	<string name="select_wine_debug_channels">Selectează canalele de debug Wine</string>
 	<string name="cpu_label">CPU%d</string>
 	<string name="describe_what_happened">Descrie ce s-a întâmplat</string>
-	<string name="get_support_on_discord">Obține suport pe Discord</string>
 
 	<!-- Driver Manager -->
 	<string name="driver_manager">Manager drivere</string>
@@ -1020,8 +1011,6 @@
 	<string name="settings_emulation_default_config_title">Modifică configurația implicită</string>
 	<string name="settings_emulation_default_config_subtitle">Setările inițiale ale containerului pentru fiecare joc (nu afectează jocurile deja instalate)</string>
 	<string name="settings_emulation_default_config_dialog_title">Config container implicit</string>
-	<string name="settings_emulation_auto_apply_known_config_title">Aplică automat configurația cunoscută</string>
-	<string name="settings_emulation_auto_apply_known_config_subtitle">Aplică automat setările recomandate pentru jocurile Steam la prima lansare</string>
 	<string name="settings_emulation_box64_presets_title">Presetări Box64</string>
 	<string name="settings_emulation_box64_presets_subtitle">Vizualizează, modifică și creează presetări Box64</string>
 	<string name="settings_emulation_driver_manager_title">Manager drivere</string>
@@ -1129,8 +1118,6 @@
 	<string name="library_reset_container_message">Aceasta va reseta containerul la configurația implicită.</string>
 	<string name="library_verify_files_title">Verifică fișierele</string>
 	<string name="library_verify_files_message">Asigură-te că salvările sunt încărcate în cloud sau copiate înainte de verificare, altfel pot fi suprascrise.</string>
-	<string name="library_update_title">Actualizare</string>
-	<string name="library_update_message">Asigură-te că salvările sunt încărcate în cloud sau copiate înainte de actualizare, altfel pot fi suprascrise.</string>
 	<string name="library_config_title">Config %s</string>
 
 	<!-- LibraryAppScreen: Toast Messages -->
@@ -1154,12 +1141,8 @@
 	<string name="download_paused_wifi">Descărcare în pauză – se așteaptă Wi-Fi/LAN</string>
 
 	<!-- PluviaMain: Update & App Info -->
-	<string name="main_update_available_title">Actualizare disponibilă</string>
-	<string name="main_update_available_message">O nouă versiune (%1$s) este disponibilă!%2$s</string>
 	<string name="main_update_button">Actualizează</string>
 	<string name="main_later_button">Mai târziu</string>
-	<string name="main_update_failed_title">Actualizare eșuată</string>
-	<string name="main_update_failed_message">Nu s-a putut descărca sau instala actualizarea. Încearcă din nou mai târziu.</string>
 	<string name="launch_dependency_failed_title">Descărcarea dependenței de lansare a eșuat</string>
 	<string name="launch_dependency_failed_message">Nu s-a putut descărca o componentă necesară. Încearcă din nou mai târziu.</string>
 
@@ -1170,9 +1153,6 @@
     <string name="main_thank_you_message">Devino membru astăzi. Membrii primesc:\n\n• Ajutor cu AI pentru a-ți face jocurile să funcționeze\n• Acces anticipat la versiuni noi\n• Roluri premium și canale exclusive pe Discord\n• …și altele\n\nDe la 5 $/lună</string>
 	<string name="main_share">Distribuie</string>
 	<string name="main_share_text">Descoperă GameNative - joacă jocurile tale Steam pe PC pe Android, cu suport complet pentru salvări în cloud!\nhttps://gamenative.app\nAlătură-te comunității: https://discord.gg/2hKv4VfZfE</string>
-	<string name="main_discord_support_title">A funcționat jocul?</string>
-	<string name="main_discord_support_message">Alătură-te serverului de Discord pentru suport și optimizare.</string>
-	<string name="main_open_discord">Deschide Discord</string>
 	<string name="main_downloading_entry">Se descarcă %s</string>
 
 	<!-- PluviaMain: Game Launch -->
@@ -1247,86 +1227,18 @@
 	<string name="library_not_installed">Neinstalat</string>
 	<string name="library_family_shared">Partajat în familie</string>
 	<string name="library_shared_short">Partajat</string>
-	<string name="library_compatible">Compatibil</string>
-	<string name="library_gpu_compatible">Compatibil GPU</string>
 	<string name="library_compatibility_unknown">Necunoscut</string>
-	<string name="library_not_compatible">Necompatibil</string>
 
 	<!-- Best Config Compatibility Messages -->
-	<string name="best_config_exact_gpu_match">Config cunoscut funcționează pe GPU-ul tău</string>
-	<string name="best_config_gpu_family_match">Config cunoscut ar trebui să funcționeze pe GPU-ul tău</string>
-	<string name="best_config_fallback_match">Config cunoscut poate funcționa pe GPU-ul tău</string>
-	<string name="best_config_compatibility_unknown">Nicio configurație cunoscută</string>
 
 	<!-- Best Config Toast Messages -->
 	<string name="best_config_applied_successfully">Configurația a fost aplicată cu succes</string>
 	<string name="best_config_missing_components_title">Configurația nu a fost aplicată</string>
 	<string name="best_config_missing_components_message">Următoarele componente necesare nu sunt disponibile pe acest dispozitiv:\n\n%1$s\n\nInstalați componentele lipsă și încercați din nou.</string>
 	<string name="best_config_known_config_invalid">Config cunoscut invalid</string>
-	<string name="best_config_no_config_available">Nu există o configurație optimă pentru acest joc</string>
-	<string name="best_config_fetch_failed">Nu s-a putut obține configurația. Verificați conexiunea la rețea.</string>
 	<string name="best_config_apply_anyway">Aplică oricum</string>
 	<string name="best_config_applied_with_defaults">Configurație aplicată, componentele lipsă înlocuite cu valori implicite</string>
 	<string name="best_config_apply_failed">Aplicarea configurației a eșuat: %s</string>
-    <string name="community_config_title">Configurații ale comunității</string>
-    <string name="community_config_close">Închide configurațiile comunității</string>
-    <string name="community_config_refresh">Actualizează configurațiile comunității</string>
-    <string name="community_config_retry">Reîncearcă</string>
-    <string name="community_config_unknown_error">Eroare necunoscută</string>
-    <string name="community_config_unknown">Necunoscut</string>
-    <string name="community_config_load_failed">Configurațiile comunității nu au putut fi încărcate: %1$s</string>
-    <string name="community_config_game_not_found">Nu a fost găsită nicio intrare de compatibilitate pentru %1$s</string>
-    <string name="community_config_gpu_unknown">GPU indisponibil</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d configurație</item>
-        <item quantity="few">%1$d configurații</item>
-        <item quantity="other">%1$d de configurații</item>
-    </plurals>
-    <string name="community_config_highest_rated">Cele mai bine evaluate</string>
-    <string name="community_config_newest">Cele mai recente</string>
-    <string name="community_config_same_device">Același dispozitiv</string>
-    <string name="community_config_this_gpu">Același GPU</string>
-    <string name="community_config_compatible_gpus">Compatibile</string>
-    <string name="community_config_load_more">Încarcă mai multe</string>
-    <string name="community_config_no_device_results">Nu au fost găsite configurații pentru acest dispozitiv.</string>
-    <string name="community_config_no_gpu_results">Nu au fost găsite configurații pentru acest GPU.</string>
-    <string name="community_config_no_compatible_results">Nu au fost găsite configurații pentru GPU-uri compatibile.</string>
-    <string name="community_config_show_this_gpu">Afișează acest GPU</string>
-    <string name="community_config_show_compatible_gpus">Afișează GPU-uri compatibile</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Detaliile configurației</string>
-    <string name="community_config_other_gpu_warning">Acest rezultat folosește un alt GPU. Setările driverului și wrapperului specifice GPU-ului nu vor fi aplicate.</string>
-    <string name="community_config_run_details">Rulare de test</string>
-    <string name="community_config_rating">Evaluare</string>
-    <string name="community_config_average_fps">FPS mediu</string>
-    <string name="community_config_device">Dispozitiv</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">Versiunea GameNative</string>
-    <string name="community_config_submitted">Trimis</string>
-    <string name="community_config_session_length">Durata sesiunii</string>
-    <string name="community_config_game_store">Magazinul jocului</string>
-    <string name="community_config_custom_game">Joc personalizat</string>
-    <string name="community_config_settings">Setări</string>
-    <string name="community_config_additional_launch_settings">Setări suplimentare de lansare</string>
-    <string name="community_config_apply_launch_arguments">Aplică argumentele de lansare</string>
-    <string name="community_config_apply_environment_variables">Aplică variabilele de mediu</string>
-    <string name="community_config_replaces_existing_value">Înlocuiește valoarea curentă</string>
-    <string name="community_config_dependencies">Dependențe</string>
-    <string name="community_config_dependencies_apply_check">Dependențele vor fi verificate la aplicarea configurației.</string>
-    <string name="community_config_no_downloads">Momentan nu sunt necesare descărcări din manifest.</string>
-    <string name="community_config_downloads_required">Aceste componente vor fi descărcate automat:\n%1$s</string>
-    <string name="community_config_tags">Etichete</string>
-    <string name="community_config_notes">Note</string>
-    <string name="community_config_apply">Aplică configurația</string>
-    <string name="community_config_container">Container</string>
-    <string name="community_config_wine">Wine sau Proton</string>
-    <string name="community_config_emulator">Emulator</string>
-    <string name="community_config_wrapper">Wrapper DirectX</string>
-    <string name="community_config_box64_preset">Presetare Box64</string>
-    <string name="community_config_driver">Driver grafic</string>
 	<string name="import_config">Importă configurarea</string>
 	<string name="export_config">Exportă configurarea</string>
 	<string name="library_app_type">Tip aplicație</string>
@@ -1410,7 +1322,6 @@
 	<string name="contents_all_trusted">Toate fișierele sunt sigure. Gata de instalare.</string>
 	<string name="contents_no_installed">Nu există conținut instalat pentru acest tip.</string>
 	<string name="contents_delete">Șterge</string>
-	<string name="contents_review_confirm">Acest conținut include fișiere în afara setului de încredere. Revizuiește și confirmă pentru a continua.</string>
 	<string name="contents_removed">Eliminat %1$s</string>
 
 	<!-- Driver Manager -->
@@ -1542,11 +1453,7 @@
     <string name="option_open_container">Deschide containerul</string>
     <string name="option_edit_container">Editează containerul</string>
     <string name="option_reset_to_defaults">Resetează containerul</string>
-    <string name="option_get_support">Obține suport</string>
-    <string name="option_submit_feedback">Trimite feedback</string>
     <string name="option_reset_drm">Resetează DRM</string>
-    <string name="option_use_known_config">Folosește configurația cunoscută</string>
-    <string name="option_browse_community_configs">Răsfoiește configurațiile comunității</string>
 
     <!-- Recommendations -->
     <string name="recommended_badge">Recomandat</string>
@@ -1588,13 +1495,6 @@
     <string name="option_manage_dlc">Gestionează DLC</string>
     <string name="option_manage_workshop">Gestionează Workshop</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Poveste principală</string>
-    <string name="hltb_main_plus_extras">Principal + Suplimente</string>
-    <string name="hltb_completionist">Perfecționist</string>
-    <string name="hltb_all_styles">Toate stilurile</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">Afișează spoilere</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1691,19 +1591,7 @@
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
     <string name="screen_effects_launch_sharpness">Claritate la lansare</string>
     <string name="screen_effects_launch_sharpness_note">CAS și DLS sunt aplicate prin vkBasalt și au efect la următoarea lansare a jocului.</string>
-    <string name="stats_key_runs">Rulări reușite pe GPU-ul tău</string>
-    <string name="stats_key_reviews">Recenzii de 5 stele (GPU-ul tău / dispozitivul tău)</string>
-    <string name="stats_key_fps">FPS estimat</string>
-    <string name="stats_key_session">Cea mai lungă sesiune pe dispozitivul tău</string>
-    <string name="sort_fps">FPS estimat</string>
-    <string name="sort_runs">Rulări reușite</string>
-    <string name="sort_reviews">Recenzii de 5 stele (dispozitiv)</string>
-    <string name="sort_reviews_gpu">Recenzii de 5 stele (GPU)</string>
     <string name="filter_expired">Expirat</string>
-    <string name="filter_playable">Jucabil (30+ FPS)</string>
-    <string name="filter_five_star_device">Recenzii de 5 stele pe dispozitiv</string>
-    <string name="filter_five_star_gpu">Recenzii de 5 stele pe GPU</string>
-    <string name="filter_proven_gpu">Testat pe GPU-ul tău</string>
     <string name="vibration_intensity">Intensitatea vibrațiilor</string>
     <string name="option_import_files">Importă fișiere</string>
     <string name="option_export_files">Exportă fișiere</string>
@@ -2409,7 +2297,6 @@
     <string name="nexus_plan_ambiguous_case">există deja variante ambigue de majuscule/minuscule</string>
     <string name="nexus_plan_blocked">Aplicarea automată este blocată până când fiecare fișier instalabil are o destinație verificată.</string>
     <string name="nexus_plan_export">Partajează diagnosticul</string>
-    <string name="nexus_reconfiguration_preview">Previzualizarea reconfigurării</string>
     <string name="nexus_reconfiguration_summary">%1$d adăugate • %2$d modificate • %3$d mutate • %4$d învechite</string>
     <string name="nexus_choose_package_variant">Alege o variantă a pachetului</string>
     <string name="nexus_confirm_risky_game_root_files">Am verificat aceste fișiere din dosarul jocului</string>
@@ -2616,62 +2503,4 @@
     <string name="control_profile_failed">Operațiunea profilului de control a eșuat: %1$s</string>
     <string name="control_profile_delete_title">Ștergi profilul de control?</string>
     <string name="control_profile_delete_message">Elimini „%1$s” din bibliotecă? Jocurile deja configurate cu acest profil își vor păstra controalele.</string>
-    <string name="sort_compatibility">Compatibilitate</string>
-    <string name="community_compatibility_details">Detalii</string>
-    <string name="community_compatibility_expanded">Extins</string>
-    <string name="community_compatibility_collapsed">Restrâns</string>
-    <string name="community_compatibility_short_disclaimer">Rezultatele comunității nu sunt o garanție.</string>
-    <string name="community_compatibility_unreliable_short">Rezultate nesigure; nu este confirmat că jocul poate fi jucat.</string>
-    <string name="community_compatibility_performance_caution">Performanța raportată poate fi limitată.</string>
-    <string name="community_compatibility_checking_short">Se verifică…</string>
-    <string name="community_compatibility_unavailable_short">Indisponibil</string>
-    <string name="community_compatibility_unavailable">Compatibilitatea nu a putut fi încărcată</string>
-    <string name="community_compatibility_missing_tier">Răspunsul nu include datele hardware necesare pentru a aplica rezultatul dispozitivului tău.</string>
-    <string name="community_compatibility_works">Rulează bine</string>
-    <string name="community_compatibility_should">Funcționează</string>
-    <string name="community_compatibility_may">Poate funcționa</string>
-    <string name="community_compatibility_mixed">Nesigur</string>
-    <string name="community_compatibility_wont">Nu funcționează</string>
-    <string name="community_compatibility_unknown">Netestat</string>
-    <string name="community_compatibility_checking">Se verifică compatibilitatea…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d configurație partajată evaluată de pe acest model de dispozitiv</item>
-        <item quantity="few">%1$d configurații partajate evaluate de pe acest model de dispozitiv</item>
-        <item quantity="other">%1$d de configurații partajate evaluate de pe acest model de dispozitiv</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d configurație partajată evaluată cu GPU-ul tău</item>
-        <item quantity="few">%1$d configurații partajate evaluate cu GPU-ul tău</item>
-        <item quantity="other">%1$d de configurații partajate evaluate cu GPU-ul tău</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">Nu s-au găsit configurații partajate pentru hardware-ul tău</string>
-    <string name="community_compatibility_configs_unavailable">Unele date de compatibilitate nu au putut fi încărcate. Se afișează datele disponibile.</string>
-    <string name="community_compatibility_retry">Reîncearcă</string>
-    <string name="community_compatibility_fps_median">Mediană raportată: %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s pe modelul tău de dispozitiv.</string>
-    <string name="community_compatibility_fps_soc">%1$s cu același chipset.</string>
-    <string name="community_compatibility_fps_gpu">%1$s cu GPU-ul tău.</string>
-    <string name="community_compatibility_fps_family">%1$s cu GPU-uri compatibile.</string>
-    <string name="community_compatibility_view_reports">Vezi configurațiile</string>
-    <string name="community_config_install_before_apply">Instalează acest joc înainte de a aplica o configurație a comunității.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată pe modelul tău de dispozitiv.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate pe modelul tău de dispozitiv.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate pe modelul tău de dispozitiv.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată cu același chipset.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate cu același chipset.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate cu același chipset.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată cu GPU-ul tău.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate cu GPU-ul tău.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate cu GPU-ul tău.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată în familia ta de GPU.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate în familia ta de GPU.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate în familia ta de GPU.</item>
-    </plurals>
 </resources>

@@ -78,7 +78,6 @@ import app.gamenative.BuildConfig
 import app.gamenative.PrefManager
 import app.gamenative.PluviaApp
 import app.gamenative.R
-import app.gamenative.data.GameCompatibilityStatus
 import app.gamenative.data.FavoritesManager
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryItem
@@ -1268,13 +1267,6 @@ private fun Preview_LibraryScreenContent() {
                         iconHash = item.iconHash,
                     )
                 },
-                // Add compatibility map for preview
-                compatibilityMap = mapOf(
-                    "Game 0" to GameCompatibilityStatus.COMPATIBLE,
-                    "Game 1" to GameCompatibilityStatus.GPU_COMPATIBLE,
-                    "Game 2" to GameCompatibilityStatus.NOT_COMPATIBLE,
-                    "Game 3" to GameCompatibilityStatus.UNKNOWN,
-                ),
             ),
         )
     }

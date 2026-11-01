@@ -78,7 +78,6 @@ import androidx.compose.ui.unit.dp
 import app.gamenative.PrefManager
 import app.gamenative.R
 import app.gamenative.data.SteamCollection
-import app.gamenative.ui.component.GameStatsKey
 import app.gamenative.ui.component.OptionListItem
 import app.gamenative.ui.component.OptionRadioItem
 import app.gamenative.ui.component.OptionSectionHeader
@@ -204,10 +203,6 @@ fun LibraryOptionsPanel(
                             .verticalScroll(rememberScrollState())
                             .padding(vertical = 12.dp)
                     ) {
-                        GameStatsKey(modifier = Modifier.padding(horizontal = 8.dp))
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
                         OptionSectionHeader(text = stringResource(R.string.options_sort_by))
                         Column(
                             modifier = Modifier
@@ -272,12 +267,7 @@ fun LibraryOptionsPanel(
                                 if (appFilter in listOf(
                                         AppFilter.INSTALLED,
                                         AppFilter.SHARED,
-                                        AppFilter.COMPATIBLE,
                                         AppFilter.EXPIRED,
-                                        AppFilter.PLAYABLE,
-                                        AppFilter.FIVE_STAR,
-                                        AppFilter.FIVE_STAR_GPU,
-                                        AppFilter.PROVEN_GPU,
                                         AppFilter.VR,
                                     )
                                 ) {
@@ -556,9 +546,4 @@ private fun SortOption.icon(): ImageVector = when (this) {
     SortOption.RECENTLY_PLAYED -> Icons.Default.Schedule
     SortOption.SIZE_SMALLEST -> Icons.Default.Compress
     SortOption.SIZE_LARGEST -> Icons.Default.Storage
-    SortOption.FPS_HIGH -> Icons.Rounded.Speed
-    SortOption.RUNS_HIGH -> Icons.Rounded.SportsEsports
-    SortOption.REVIEWS_HIGH -> Icons.Rounded.Star
-    SortOption.REVIEWS_GPU_HIGH -> Icons.Rounded.Stars
-    SortOption.COMPATIBILITY -> Icons.Rounded.Verified
 }

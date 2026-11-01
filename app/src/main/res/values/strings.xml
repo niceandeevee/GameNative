@@ -401,9 +401,7 @@
     <string name="performance_hud">Performance HUD</string>
     <string name="performance_hud_description">Show or hide the in-game overlay.</string>
     <string name="performance_hud_fps_limiter">FPS limiter</string>
-    <string name="performance_hud_fps_limiter_description">Caps the in-game frame rate. Max: %1$d Hz.</string>
     <string name="performance_hud_fps_limiter_target">Target FPS</string>
-    <string name="performance_hud_fps_limiter_off">Unlimited</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Caps the base rate. On-screen rate is the cap times the LSFG multiplier.</string>
     <string name="performance_hud_presets">Presets</string>
@@ -826,10 +824,6 @@
     <string name="app_filter_playtest">Playtest</string>
     <string name="app_filter_family">Family</string>
     <string name="filter_expired">Expired</string>
-    <string name="filter_playable">Playable (30+ FPS)</string>
-    <string name="filter_five_star_device">5-star reviews on device</string>
-    <string name="filter_five_star_gpu">5-star reviews on GPU</string>
-    <string name="filter_proven_gpu">Proven on your GPU</string>
     <string name="app_filter_vr">VR game</string>
 
     <!-- Login & Connection -->
@@ -848,12 +842,9 @@
 
 
     <!--Game Feedback Dialog -->
-    <string name="game_feedback_game_run">How did the game run?</string>
-    <string name="game_feedback_issues_question">Select any issues you encountered:</string>
 
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">Help &amp; Support</string>
     <string name="go_online">Go Online</string>
     <string name="go_offline">Go Offline</string>
     <string name="log_out">Log Out</string>
@@ -885,7 +876,6 @@
     <string name="pulseaudio_low_latency">PulseAudio Low Latency Mode</string>
     <string name="microphone_input">Microphone Input</string>
     <string name="microphone_input_description">Expose the device microphone to Wine/Proton as a recording device. Requires the microphone permission.</string>
-    <string name="show_fps">Show FPS</string>
     <string name="portrait_mode">Portrait Mode</string>
     <string name="portrait_mode_description">For 8BitDo FlipPad/GameSir Pocket Taco type controllers</string>
     <string name="portrait_below_cutout">Keep Below Camera Hole</string>
@@ -918,8 +908,6 @@
     <string name="achievement_position_top_right">Top Right</string>
     <string name="achievement_position_bottom_left">Bottom Left</string>
     <string name="achievement_position_bottom_right">Bottom Right</string>
-    <string name="allow_steam_updates">Allow Steam updates</string>
-    <string name="allow_steam_updates_description">Updates Steam to the latest version. Significantly reduces performance.</string>
     <string name="steam_type">Steam Type</string>
 
     <!-- Container Configuration: Epic -->
@@ -1136,7 +1124,6 @@
     <string name="select_wine_debug_channels">Select Wine Debug Channels</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">Describe what happened</string>
-    <string name="get_support_on_discord">Get support on Discord</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">Driver Manager</string>
@@ -1180,8 +1167,6 @@
     <string name="settings_emulation_default_config_title">Modify Default Config</string>
     <string name="settings_emulation_default_config_subtitle">The initial container settings for each game (does not affect already installed games)</string>
     <string name="settings_emulation_default_config_dialog_title">Default Container Config</string>
-    <string name="settings_emulation_auto_apply_known_config_title">Auto-apply known config</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">Automatically apply recommended settings for Steam games on first launch</string>
     <string name="settings_emulation_box64_presets_title">Box64 Presets</string>
     <string name="settings_emulation_box64_presets_subtitle">View, modify, and create Box64 presets</string>
     <string name="settings_emulation_driver_manager_title">Driver Manager</string>
@@ -1348,8 +1333,6 @@
     <string name="library_reset_container_message">This will reset your container to the default configuration.</string>
     <string name="library_verify_files_title">Verify Files</string>
     <string name="library_verify_files_message">Please ensure your saves are uploaded to the cloud or backed up before verifying, as they may be overwritten otherwise.</string>
-    <string name="library_update_title">Update</string>
-    <string name="library_update_message">Please ensure your saves are uploaded to the cloud or backed up before updating, as they may be overwritten otherwise.</string>
     <string name="library_config_title">%s Config</string>
 
     <!-- LibraryAppScreen: Toast Messages -->
@@ -1375,12 +1358,8 @@
     <string name="download_paused_wifi">Download paused – waiting for Wi-Fi/LAN</string>
 
     <!-- PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">Update Available</string>
-    <string name="main_update_available_message">A new version (%1$s) is available!%2$s</string>
     <string name="main_update_button">Update</string>
     <string name="main_later_button">Later</string>
-    <string name="main_update_failed_title">Update Failed</string>
-    <string name="main_update_failed_message">Failed to download or install the update. Please try again later.</string>
     <string name="launch_dependency_failed_title">Downloading launch dependency failed</string>
     <string name="launch_dependency_failed_message">Failed to download a required component. Please try again later.</string>
 
@@ -1392,9 +1371,6 @@
     <string name="main_thank_you_message">Become a member today. Members get:\n\n• AI help getting your games running\n• Early access to new releases\n• Premium roles and exclusive channels on Discord\n• …and more\n\nFrom $5/month</string>
     <string name="main_share">Share</string>
     <string name="main_share_text">Check out GameNative - play your PC Steam games on Android, with full support for cloud saves!\nhttps://gamenative.app\nJoin the community: https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">Did the game work?</string>
-    <string name="main_discord_support_message">Join the Discord to get support to fix your game or improve performance.</string>
-    <string name="main_open_discord">Open Discord</string>
 
     <!-- PluviaMain: Game Launch -->
     <string name="main_downloading_entry">Downloading %s</string>
@@ -1481,91 +1457,20 @@
     <string name="library_not_installed">Not installed</string>
     <string name="library_family_shared">Family Shared</string>
     <string name="library_shared_short">Shared</string>
-    <string name="library_compatible">Compatible</string>
-    <string name="library_gpu_compatible">GPU Compatible</string>
     <string name="library_compatibility_unknown">Unknown</string>
-    <string name="library_not_compatible">Not Compatible</string>
 
     <!-- Device game stats key/legend (for your device) -->
-    <string name="stats_key_runs">Successful runs on your GPU</string>
-    <string name="stats_key_reviews">5-star reviews (your GPU / your device)</string>
-    <string name="stats_key_fps">Expected FPS</string>
-    <string name="stats_key_session">Longest session on your device</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">Known config works on your GPU</string>
-    <string name="best_config_gpu_family_match">Known config should work on your GPU</string>
-    <string name="best_config_fallback_match">Known config may work on your GPU</string>
-    <string name="best_config_compatibility_unknown">No known config</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">Config applied successfully</string>
     <string name="best_config_known_config_invalid">Known config invalid</string>
-    <string name="best_config_no_config_available">No best config available for this game</string>
-    <string name="best_config_fetch_failed">Failed to fetch config. Please check your network connection.</string>
     <string name="best_config_apply_failed">Failed to apply config: %s</string>
     <string name="best_config_missing_components_title">Config not applied</string>
     <string name="best_config_missing_components_message">The following required components are not available:\n\n%1$s</string>
     <string name="best_config_apply_anyway">Apply anyway</string>
     <string name="best_config_applied_with_defaults">Config applied with missing components replaced by defaults</string>
-    <string name="community_config_title">Community configs</string>
-    <string name="community_config_close">Close community configs</string>
-    <string name="community_config_refresh">Refresh community configs</string>
-    <string name="community_config_retry">Retry</string>
-    <string name="community_config_unknown_error">Unknown error</string>
-    <string name="community_config_unknown">Unknown</string>
-    <string name="community_config_load_failed">Could not load community configs: %1$s</string>
-    <string name="community_config_game_not_found">No compatibility entry was found for %1$s</string>
-    <string name="community_config_gpu_unknown">GPU unavailable</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d config</item>
-        <item quantity="other">%1$d configs</item>
-    </plurals>
-    <string name="community_config_highest_rated">Highest rated</string>
-    <string name="community_config_newest">Newest</string>
-    <string name="community_config_same_device">Same device</string>
-    <string name="community_config_this_gpu">Same GPU</string>
-    <string name="community_config_compatible_gpus">Compatible</string>
-    <string name="community_config_load_more">Load more</string>
-    <string name="community_config_no_device_results">No configs were found for this device.</string>
-    <string name="community_config_no_gpu_results">No configs were found for this GPU.</string>
-    <string name="community_config_no_compatible_results">No configs were found for compatible GPUs.</string>
-    <string name="community_config_show_this_gpu">Show this GPU</string>
-    <string name="community_config_show_compatible_gpus">Show compatible GPUs</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Config details</string>
-    <string name="community_config_other_gpu_warning">This result uses another GPU. GPU-specific driver and wrapper settings will not be applied.</string>
-    <string name="community_config_run_details">Test run</string>
-    <string name="community_config_rating">Rating</string>
-    <string name="community_config_average_fps">Average FPS</string>
-    <string name="community_config_device">Device</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">GameNative version</string>
-    <string name="community_config_submitted">Submitted</string>
-    <string name="community_config_session_length">Session length</string>
-    <string name="community_config_game_store">Game store</string>
-    <string name="community_config_custom_game">Custom game</string>
-    <string name="community_config_settings">Settings</string>
-    <string name="community_config_additional_launch_settings">Additional launch settings</string>
-    <string name="community_config_apply_launch_arguments">Apply launch arguments</string>
-    <string name="community_config_apply_environment_variables">Apply environment variables</string>
-    <string name="community_config_replaces_existing_value">Replaces the current value</string>
-    <string name="community_config_dependencies">Dependencies</string>
-    <string name="community_config_dependencies_apply_check">Dependencies will be checked when the config is applied.</string>
-    <string name="community_config_no_downloads">No manifest downloads are currently required.</string>
-    <string name="community_config_downloads_required">These components will be downloaded automatically:\n%1$s</string>
-    <string name="community_config_tags">Tags</string>
-    <string name="community_config_notes">Notes</string>
-    <string name="community_config_apply">Apply config</string>
-    <string name="community_config_container">Container</string>
-    <string name="community_config_wine">Wine or Proton</string>
-    <string name="community_config_emulator">Emulator</string>
-    <string name="community_config_wrapper">DirectX wrapper</string>
-    <string name="community_config_box64_preset">Box64 preset</string>
-    <string name="community_config_driver">Graphics driver</string>
     <string name="import_config">Import config</string>
     <string name="export_config">Export config</string>
     <string name="steam_save_export_success">Saves exported</string>
@@ -1608,10 +1513,6 @@
     <string name="sort_recently_played">Recently Played</string>
     <string name="sort_size_smallest">Size (Smallest)</string>
     <string name="sort_size_largest">Size (Largest)</string>
-    <string name="sort_fps">Expected FPS</string>
-    <string name="sort_runs">Successful runs</string>
-    <string name="sort_reviews">5-star reviews (device)</string>
-    <string name="sort_reviews_gpu">5-star reviews (GPU)</string>
 
     <!-- Game Options Panel -->
     <string name="game_options_title">Options</string>
@@ -1660,7 +1561,6 @@
     <string name="contents_all_trusted">All files are trusted. Ready to install.</string>
     <string name="contents_no_installed">No installed content for this type.</string>
     <string name="contents_delete">Delete</string>
-    <string name="contents_review_confirm">This content includes files outside the trusted set. Review and confirm to proceed.</string>
     <string name="contents_removed">Removed %1$s</string>
 
     <!-- Driver Manager -->
@@ -1799,8 +1699,6 @@
     <string name="option_open_container">Open container</string>
     <string name="option_edit_container">Edit container</string>
     <string name="option_reset_to_defaults">Reset container</string>
-    <string name="option_get_support">Get support</string>
-    <string name="option_submit_feedback">Submit feedback</string>
     <string name="option_add_to_favorites">Favorite</string>
     <string name="option_remove_from_favorites">Unfavorite</string>
     <string name="favorite_add_named">Favorite %1$s</string>
@@ -1810,8 +1708,6 @@
     <string name="favorite_removed">Removed from favorites</string>
     <string name="favorite_removed_named">Removed %1$s from favorites</string>
     <string name="option_reset_drm">Reset DRM</string>
-    <string name="option_use_known_config">Use known config</string>
-    <string name="option_browse_community_configs">Browse community configs</string>
     <string name="option_import_saves">Import saves</string>
     <string name="option_export_saves">Export saves</string>
     <string name="option_verify_files">Verify files</string>
@@ -2233,7 +2129,6 @@
     <string name="nexus_plan_ambiguous_case">ambiguous case variants already exist</string>
     <string name="nexus_plan_blocked">Automatic apply is blocked until every installable file has a proven destination.</string>
     <string name="nexus_plan_export">Share diagnostic</string>
-    <string name="nexus_reconfiguration_preview">Reconfiguration preview</string>
     <string name="nexus_reconfiguration_summary">%1$d added • %2$d changed • %3$d moved • %4$d stale</string>
     <string name="nexus_choose_package_variant">Choose a package variant</string>
     <string name="nexus_confirm_risky_game_root_files">I reviewed these game-root files</string>
@@ -2376,13 +2271,6 @@
     <string name="settings_interface_show_hidden_games_subtitle">Hidden Steam and GOG games stay visible unless you turn this off. Selecting the Hidden Steam collection always shows hidden Steam games.</string>
 
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Main Story</string>
-    <string name="hltb_main_plus_extras">Main + Extras</string>
-    <string name="hltb_completionist">Completionist</string>
-    <string name="hltb_all_styles">All Styles</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">How Long to Beat</string>
-    <string name="hltb_show_spoilers">Show spoilers</string>
 
     <!-- Frontend Sync Settings -->
     <string name="settings_interface_frontend_sync_title">Frontend Sync</string>
@@ -2633,56 +2521,4 @@
     <string name="gyro_degrees_per_second_value">%1$.1f°/s</string>
     <string name="gyro_milliseconds_value">%1$d ms</string>
     <string name="reset_gyro_settings">Reset gyro settings</string>
-    <string name="sort_compatibility">Compatibility</string>
-    <string name="community_compatibility_details">Details</string>
-    <string name="community_compatibility_expanded">Expanded</string>
-    <string name="community_compatibility_collapsed">Collapsed</string>
-    <string name="community_compatibility_short_disclaimer">Community results aren’t a guarantee.</string>
-    <string name="community_compatibility_unreliable_short">Unreliable results; working gameplay isn’t confirmed.</string>
-    <string name="community_compatibility_performance_caution">Reported performance may be limited.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">Based on %1$d recorded session on your device model.</item>
-        <item quantity="other">Based on %1$d recorded sessions on your device model.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">Based on %1$d recorded session using the same chipset.</item>
-        <item quantity="other">Based on %1$d recorded sessions using the same chipset.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">Based on %1$d recorded session using your GPU.</item>
-        <item quantity="other">Based on %1$d recorded sessions using your GPU.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">Based on %1$d recorded session in your GPU family.</item>
-        <item quantity="other">Based on %1$d recorded sessions in your GPU family.</item>
-    </plurals>
-    <string name="community_compatibility_checking_short">Checking…</string>
-    <string name="community_compatibility_unavailable_short">Unavailable</string>
-    <string name="community_compatibility_unavailable">Compatibility could not be loaded</string>
-    <string name="community_compatibility_missing_tier">The response lacks the hardware evidence needed to apply its verdict to your device.</string>
-    <string name="community_compatibility_works">Plays well</string>
-    <string name="community_compatibility_should">Runs</string>
-    <string name="community_compatibility_may">May work</string>
-    <string name="community_compatibility_mixed">Unreliable</string>
-    <string name="community_compatibility_wont">Broken</string>
-    <string name="community_compatibility_unknown">Untested</string>
-    <string name="community_compatibility_checking">Checking compatibility…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d rated shared config from this device model</item>
-        <item quantity="other">%1$d rated shared configs from this device model</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d rated shared config using your GPU</item>
-        <item quantity="other">%1$d rated shared configs using your GPU</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">No shared configs found for your hardware</string>
-    <string name="community_compatibility_configs_unavailable">Some compatibility data could not be loaded. Showing available evidence.</string>
-    <string name="community_compatibility_retry">Retry</string>
-    <string name="community_compatibility_fps_median">Median %1$d FPS reported</string>
-    <string name="community_compatibility_fps_device">%1$s on your device model.</string>
-    <string name="community_compatibility_fps_soc">%1$s using the same chipset.</string>
-    <string name="community_compatibility_fps_gpu">%1$s using your GPU.</string>
-    <string name="community_compatibility_fps_family">%1$s using compatible GPUs.</string>
-    <string name="community_compatibility_view_reports">Browse Configs</string>
-    <string name="community_config_install_before_apply">Install this game before applying a community configuration.</string>
 </resources>

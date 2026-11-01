@@ -1,13 +1,10 @@
 package app.gamenative.ui.data
 
 import app.gamenative.PrefManager
-import app.gamenative.data.CommunityCompatibilitySummary
-import app.gamenative.data.GameCompatibilityStatus
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryItem
 import app.gamenative.data.SteamCollection
 import app.gamenative.ui.enums.AppFilter
-import app.gamenative.utils.DeviceGameStatsService.DeviceGameStats
 import app.gamenative.ui.enums.LibraryTab
 import app.gamenative.ui.enums.SortOption
 import java.util.EnumSet
@@ -48,16 +45,6 @@ data class LibraryState(
     // Used to trigger UI recomposition to show newly downloaded images
     val imageRefreshCounter: Long = 0,
 
-    // Compatibility status map: game name -> compatibility status
-    val compatibilityMap: Map<String, GameCompatibilityStatus> = emptyMap(),
-    val communityCompatibilityMap: Map<String, CommunityCompatibilitySummary> = emptyMap(),
-
-    // Device-specific play stats, grouped by platform then game name
-    val deviceGameStats: Map<GameSource, Map<String, DeviceGameStats>> = emptyMap(),
-
-    // GPU-specific play stats (across all devices with this GPU), grouped by platform then game name
-    val gpuGameStats: Map<GameSource, Map<String, DeviceGameStats>> = emptyMap(),
-
     // Sort option for the library
     val currentSortOption: SortOption = PrefManager.librarySortOption,
 
@@ -74,35 +61,3 @@ data class LibraryState(
     val localCount: Int = 0,
     val favoritesCount: Int = 0,
 )
-
-/**
- * Stats shown on a library card. Runs and 5-star reviews are counts that default to 0 when their
- * dataset has no entry (absence means "none recorded"). FPS and session are device measurements
- * that are unknown without a run, so they are null (rendered as "?") and never fall back to GPU.
- */
-data class GameCardStats(
-    val runsGpu: Int,
-    val reviewsDevice: Int,
-    val reviewsGpu: Int,
-    val fps: Int?,
-    val sessionSec: Int?,
-)
-
-fun LibraryState.statsFor(item: LibraryItem): GameCardStats? = statsFor(item.gameSource, item.name)
-
-/** Combined device + GPU stats for a game, or null when neither dataset has an entry. */
-fun LibraryState.statsFor(source: GameSource, name: String): GameCardStats? {
-    val device = deviceGameStats[source]?.get(name)
-    val gpu = gpuGameStats[source]?.get(name)
-    if (device == null && gpu == null) return null
-    return GameCardStats(
-        runsGpu = gpu?.successfulRuns ?: 0,
-        reviewsDevice = device?.fiveStarReviews ?: 0,
-        reviewsGpu = gpu?.fiveStarReviews ?: 0,
-        fps = device?.medianFps,
-        sessionSec = device?.medianSessionSec,
-    )
-}
-
-fun LibraryState.communityCompatibilityFor(item: LibraryItem): CommunityCompatibilitySummary? =
-    communityCompatibilityMap[item.name]

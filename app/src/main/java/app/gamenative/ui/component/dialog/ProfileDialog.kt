@@ -155,12 +155,6 @@ fun ProfileDialog(
                                     Text(text = stringResource(R.string.settings_text))
                                 }
 
-                                FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = { uriHandler.openUri("https://discord.gg/2hKv4VfZfE") }) {
-                                    Icon(imageVector = Icons.AutoMirrored.Filled.Help, contentDescription = null)
-                                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSize))
-                                    Text(text = stringResource(R.string.help_and_support))
-                                }
-
                                 if(isOffline) {
                                     FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = onGoOnline) {
                                         Icon(imageVector = Icons.AutoMirrored.Filled.Login, contentDescription = null)

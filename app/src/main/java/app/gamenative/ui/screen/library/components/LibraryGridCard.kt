@@ -61,15 +61,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.gamenative.R
-import app.gamenative.data.CommunityCompatibilitySummary
-import app.gamenative.data.GameCompatibilityStatus
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryItem
-import app.gamenative.ui.component.CommunityCompatibilityBadge
-import app.gamenative.ui.component.CompatibilityBadge
-import app.gamenative.ui.component.GameStatsRow
 import app.gamenative.ui.component.focusRing
-import app.gamenative.ui.data.GameCardStats
 import app.gamenative.ui.enums.PaneType
 import app.gamenative.ui.theme.PluviaTheme
 import app.gamenative.ui.util.ListItemImage
@@ -98,12 +92,8 @@ internal fun GridViewCard(
     imageAlpha: Float,
     onImageLoadFailed: () -> Unit,
     onImageLoaded: () -> Unit = {},
-    compatibilityStatus: GameCompatibilityStatus?,
-    communityCompatibility: CommunityCompatibilitySummary?,
-    gameStats: GameCardStats?,
     showFocusGlow: Boolean,
     context: Context,
-    animateStats: Boolean = true,
 ) {
     val aspectRatio = if (paneType == PaneType.GRID_CAPSULE) 2f / 3f else 460f / 215f
     val isCapsule = paneType == PaneType.GRID_CAPSULE
@@ -330,36 +320,7 @@ internal fun GridViewCard(
                     }
 
 
-                    GameStatsRow(
-                        stats = gameStats,
-                        tint = Color.White.copy(alpha = 0.55f),
-                        animate = animateStats,
-                    )
                 }
-                }
-
-                // Top-left: compatibility badge
-                if (communityCompatibility != null) {
-                    CommunityCompatibilityBadge(
-                        verdict = communityCompatibility.verdict,
-                        verdictLoaded = communityCompatibility.verdictLoaded,
-                        loadFailed = communityCompatibility.loadFailed,
-                        checking = communityCompatibility.isChecking,
-                        showLabel = true,
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(top = topOverlayPadding, start = topOverlayPadding, end = topIconPadding + 24.dp),
-                    )
-                } else {
-                    compatibilityStatus?.let { status ->
-                        CompatibilityBadge(
-                            status = status,
-                            showLabel = true,
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(top = topOverlayPadding, start = topOverlayPadding),
-                        )
-                    }
                 }
 
                 // Top-right: source icon

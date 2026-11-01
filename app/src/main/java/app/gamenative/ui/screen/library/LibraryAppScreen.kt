@@ -158,11 +158,9 @@ import androidx.compose.ui.unit.dp
 import app.gamenative.NetworkMonitor
 import app.gamenative.PrefManager
 import app.gamenative.R
-import app.gamenative.data.CommunityCompatibilitySummary
 import app.gamenative.data.LibraryItem
 import app.gamenative.data.StoreGameDetails
 import app.gamenative.service.SteamService
-import app.gamenative.ui.component.CommunityCompatibilitySection
 import app.gamenative.ui.component.GamepadAction
 import app.gamenative.ui.component.GamepadActionBar
 import app.gamenative.ui.component.GamepadButton
@@ -177,7 +175,6 @@ import app.gamenative.ui.screen.library.appscreen.SteamAppScreen
 import app.gamenative.ui.screen.library.components.GameOptionsPanel
 import app.gamenative.ui.screen.library.components.VideoHero
 import app.gamenative.utils.FormatUtils
-import app.gamenative.utils.HltbService
 import app.gamenative.ui.theme.PluviaTheme
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
@@ -399,125 +396,6 @@ private fun ActionIconButton(
             tint = Color.White,
             modifier = Modifier.size(24.dp),
         )
-    }
-}
-
-@Composable
-private fun HltbInfoBar(
-    stats: HltbService.Stats,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    var revealed by remember(stats.gameId) { mutableStateOf(false) }
-    val items = listOf(
-        stringResource(R.string.hltb_main_story) to stats.mainHours,
-        stringResource(R.string.hltb_main_plus_extras) to stats.mainPlusHours,
-        stringResource(R.string.hltb_completionist) to stats.completeHours,
-        stringResource(R.string.hltb_all_styles) to stats.allStylesHours,
-    )
-    val canOpenHltb = stats.gameId > 0
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .padding(14.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .clickable(enabled = canOpenHltb) {
-                    try {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW, Uri.parse("${HltbService.GAME_URL}${stats.gameId}")),
-                        )
-                    } catch (e: ActivityNotFoundException) {
-                        Timber.tag("HLTB").w(e, "No handler for HLTB game URL")
-                    }
-                },
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(R.string.hltb_section_title),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.Medium,
-            )
-            if (canOpenHltb) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.OpenInNew,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(16.dp),
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Box(contentAlignment = Alignment.Center) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .graphicsLayer { alpha = if (revealed) 1f else 0f }
-                    .then(if (!revealed) Modifier.clearAndSetSemantics {} else Modifier),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .horizontalScroll(rememberScrollState(), enabled = revealed)
-                        .widthIn(min = maxWidth),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    items.forEach { (label, hours) ->
-                        Column(
-                            modifier = Modifier
-                                .widthIn(min = 48.dp)
-                                .padding(horizontal = 10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(
-                                text = if (hours == HltbService.UNKNOWN_HOURS) {
-                                    HltbService.UNKNOWN_HOURS
-                                } else {
-                                    stringResource(R.string.hltb_hours_value, hours)
-                                },
-                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            Text(
-                                text = label,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                softWrap = false,
-                            )
-                        }
-                    }
-                }
-            }
-
-            if (!revealed) {
-                Button(
-                    onClick = { revealed = true },
-                    modifier = Modifier.matchParentSize(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                ) {
-                    Text(
-                        text = stringResource(R.string.hltb_show_spoilers),
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                }
-            }
-        }
     }
 }
 
@@ -895,14 +773,6 @@ internal data class ImmersiveModeUiState(
     val onVrChange: (Boolean) -> Unit = {},
 )
 
-internal data class CommunityCompatibilityUiState(
-    val summary: CommunityCompatibilitySummary = CommunityCompatibilitySummary.unknown(),
-    val loading: Boolean = false,
-    val loadError: Boolean = false,
-    val onRetry: () -> Unit = {},
-    val onViewReports: () -> Unit = {},
-)
-
 @Composable
 internal fun AppScreenContent(
     modifier: Modifier = Modifier,
@@ -919,7 +789,6 @@ internal fun AppScreenContent(
     optionsMenu: List<AppMenuOption>,
     dialogOpen: Boolean = false,
     immersiveMode: ImmersiveModeUiState = ImmersiveModeUiState(),
-    communityCompatibility: CommunityCompatibilityUiState = CommunityCompatibilityUiState(),
 ) {
     // Unpacked so the body below is unchanged; bundling the params avoids a Compose VerifyError.
     val isInstalled = downloadDisplayDetails.isInstalled
@@ -1636,15 +1505,6 @@ internal fun AppScreenContent(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                CommunityCompatibilitySection(
-                    gameKey = displayInfo.appId.toString(),
-                    summary = communityCompatibility.summary,
-                    loading = communityCompatibility.loading,
-                    loadError = communityCompatibility.loadError,
-                    onRetry = communityCompatibility.onRetry,
-                    onViewReports = communityCompatibility.onViewReports,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
 
                 if (displayInfo.storeDetails.hasOverview) {
                     StoreDetailsSection(
@@ -1694,11 +1554,6 @@ internal fun AppScreenContent(
                         modifier = Modifier.weight(1f),
                         focusableForNavigation = true,
                     )
-                }
-
-                displayInfo.hltbStats?.let { hltb ->
-                    Spacer(modifier = Modifier.height(10.dp))
-                    HltbInfoBar(hltb)
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))

@@ -87,10 +87,8 @@ import app.gamenative.ui.component.AchievementOverlay
 import app.gamenative.ui.component.ConnectionStatusBanner
 import app.gamenative.ui.component.GameInviteOverlay
 import app.gamenative.ui.component.dialog.ContainerConfigDialog
-import app.gamenative.ui.component.dialog.GameFeedbackDialog
 import app.gamenative.ui.component.dialog.LoadingDialog
 import app.gamenative.ui.component.dialog.MessageDialog
-import app.gamenative.ui.component.dialog.state.GameFeedbackDialogState
 import app.gamenative.ui.component.dialog.state.MessageDialogState
 import app.gamenative.ui.components.BootingSplash
 import app.gamenative.ui.enums.AppOptionMenuType
@@ -115,12 +113,8 @@ import app.gamenative.utils.HardwareUtils
 import app.gamenative.utils.PlatformAuthUtils
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.utils.ManifestInstaller
-import app.gamenative.utils.GameFeedbackUtils
 import app.gamenative.utils.IntentLaunchManager
 import app.gamenative.utils.SteamUtils
-import app.gamenative.utils.UpdateChecker
-import app.gamenative.utils.UpdateInfo
-import app.gamenative.utils.UpdateInstaller
 import app.gamenative.utils.LaunchDependencies
 import app.gamenative.workshop.WorkshopManager
 import app.gamenative.workshop.compatibility.SlayTheSpireModTheSpireCompatibility
@@ -289,9 +283,6 @@ fun PluviaMain(
     }
     val setMessageDialogState: (MessageDialogState) -> Unit = { msgDialogState = it }
 
-    var gameFeedbackState by rememberSaveable(stateSaver = GameFeedbackDialogState.Saver) {
-        mutableStateOf(GameFeedbackDialogState(false))
-    }
 
     var hasBack by rememberSaveable { mutableStateOf(navController.previousBackStackEntry?.destination?.route != null) }
 
@@ -302,7 +293,6 @@ fun PluviaMain(
 
     var gameBackAction by remember { mutableStateOf<() -> Unit?>({}) }
 
-    var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
 
     var openContainerConfigForAppId by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -324,21 +314,6 @@ fun PluviaMain(
         // first attempt resolved (connected or failed)
         if (state.connectionState != ConnectionState.CONNECTING) {
             initialConnectDone = true
-        }
-    }
-
-    // Check for updates on app start
-    LaunchedEffect(Unit) {
-        if (BuildConfig.MODERN_ANDROID || BuildConfig.XR_BUILD) return@LaunchedEffect
-        val checkedUpdateInfo = UpdateChecker.checkForUpdate(context)
-        if (checkedUpdateInfo != null) {
-            val appVersionCode = BuildConfig.VERSION_CODE
-            val serverVersionCode = checkedUpdateInfo.versionCode
-            Timber.i("Update check: app versionCode=$appVersionCode, server versionCode=$serverVersionCode")
-            if (appVersionCode < serverVersionCode) {
-                updateInfo = checkedUpdateInfo
-                viewModel.setUpdateInfo(checkedUpdateInfo)
-            }
         }
     }
 
@@ -603,24 +578,6 @@ fun PluviaMain(
                     }
                 }
 
-                MainViewModel.MainUiEvent.ShowDiscordSupportDialog -> {
-                    msgDialogState = MessageDialogState(
-                        visible = true,
-                        type = DialogType.DISCORD,
-                        title = context.getString(R.string.main_discord_support_title),
-                        message = context.getString(R.string.main_discord_support_message),
-                        confirmBtnText = context.getString(R.string.main_open_discord),
-                        dismissBtnText = context.getString(R.string.close),
-                    )
-                }
-
-                is MainViewModel.MainUiEvent.ShowGameFeedbackDialog -> {
-                    gameFeedbackState = GameFeedbackDialogState(
-                        visible = true,
-                        appId = event.appId,
-                    )
-                }
-
             }
         }
     }
@@ -726,23 +683,13 @@ fun PluviaMain(
         )
     }
 
-    // Listen for game feedback request
-    val onShowGameFeedback: (AndroidEvent.ShowGameFeedback) -> Unit = { event ->
-        gameFeedbackState = GameFeedbackDialogState(
-            visible = true,
-            appId = event.appId,
-        )
-    }
-
     LaunchedEffect(Unit) {
         PluviaApp.events.on<AndroidEvent.PromptSaveContainerConfig, Unit>(onPromptSaveConfig)
-        PluviaApp.events.on<AndroidEvent.ShowGameFeedback, Unit>(onShowGameFeedback)
     }
 
     DisposableEffect(Unit) {
         onDispose {
             PluviaApp.events.off<AndroidEvent.PromptSaveContainerConfig, Unit>(onPromptSaveConfig)
-            PluviaApp.events.off<AndroidEvent.ShowGameFeedback, Unit>(onShowGameFeedback)
         }
     }
 
@@ -751,19 +698,6 @@ fun PluviaMain(
     val onConfirmClick: (() -> Unit)?
     var onActionClick: (() -> Unit)? = null
     when (msgDialogState.type) {
-        DialogType.DISCORD -> {
-            onConfirmClick = {
-                setMessageDialogState(MessageDialogState(false))
-                uriHandler.openUri("https://discord.gg/2hKv4VfZfE")
-            }
-            onDismissClick = {
-                setMessageDialogState(MessageDialogState(false))
-            }
-            onDismissRequest = {
-                setMessageDialogState(MessageDialogState(false))
-            }
-        }
-
         DialogType.SYNC_CONFLICT -> {
             onConfirmClick = {
                 preLaunchApp(
@@ -1089,46 +1023,6 @@ fun PluviaMain(
             }
         }
 
-        DialogType.APP_UPDATE -> {
-            onConfirmClick = {
-                setMessageDialogState(MessageDialogState(false))
-                val updateInfo = viewModel.updateInfo.value
-                if (updateInfo != null) {
-                    scope.launch {
-                        viewModel.setLoadingDialogVisible(true)
-                        viewModel.setLoadingDialogMessage("Downloading update...")
-                        viewModel.setLoadingDialogProgress(0f)
-
-                        val success = UpdateInstaller.downloadAndInstall(
-                            context = context,
-                            downloadUrl = updateInfo.downloadUrl,
-                            versionName = updateInfo.versionName,
-                            onProgress = { progress ->
-                                viewModel.setLoadingDialogProgress(progress)
-                            },
-                        )
-
-                        viewModel.setLoadingDialogVisible(false)
-                        if (!success) {
-                            msgDialogState = MessageDialogState(
-                                visible = true,
-                                type = DialogType.SYNC_FAIL,
-                                title = context.getString(R.string.main_update_failed_title),
-                                message = context.getString(R.string.main_update_failed_message),
-                                dismissBtnText = context.getString(R.string.ok),
-                            )
-                        }
-                    }
-                }
-            }
-            onDismissClick = {
-                setMessageDialogState(MessageDialogState(false))
-            }
-            onDismissRequest = {
-                setMessageDialogState(MessageDialogState(false))
-            }
-        }
-
         DialogType.WORKSHOP_UPDATE_PROMPT -> {
             onConfirmClick = {
                 workshopUpdateDeferred?.complete(true)
@@ -1246,66 +1140,6 @@ fun PluviaMain(
                 }
             }
 
-            GameFeedbackDialog(
-                state = gameFeedbackState,
-                onStateChange = { gameFeedbackState = it },
-                onSubmit = { feedbackState ->
-                    Timber.d(
-                        "GameFeedback: onSubmit called with rating=${feedbackState.rating}, tags=${feedbackState.selectedTags}, text=${
-                            feedbackState.feedbackText.take(
-                                20,
-                            )
-                        }",
-                    )
-                    try {
-                        // Get the container for the app
-                        val appId = feedbackState.appId
-                        Timber.d("GameFeedback: Got appId=$appId")
-
-                        // Submit feedback via worker API
-                        Timber.d("GameFeedback: Starting coroutine for submission")
-                        viewModel.viewModelScope.launch {
-                            Timber.d("GameFeedback: Inside coroutine scope")
-                            try {
-                                Timber.d("GameFeedback: Calling submitGameFeedback with rating=${feedbackState.rating}")
-                                val result = GameFeedbackUtils.submitGameFeedback(
-                                    context = context,
-                                    appId = appId,
-                                    rating = feedbackState.rating,
-                                    tags = feedbackState.selectedTags.toList(),
-                                    notes = feedbackState.feedbackText.takeIf { it.isNotBlank() },
-                                )
-
-                                Timber.d("GameFeedback: Submission returned $result")
-                                if (result) {
-                                    Timber.d("GameFeedback: Showing success snackbar")
-                                    SnackbarManager.show("Thank you for your feedback!")
-                                } else {
-                                    Timber.d("GameFeedback: Showing failure snackbar")
-                                    SnackbarManager.show("Failed to submit feedback")
-                                }
-                            } catch (e: Exception) {
-                                Timber.e(e, "GameFeedback: Error submitting game feedback")
-                                SnackbarManager.show("Error submitting feedback")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Timber.e(e, "GameFeedback: Error preparing game feedback")
-                        SnackbarManager.show("Failed to submit feedback")
-                    } finally {
-                        // Close the dialog regardless of success
-                        Timber.d("GameFeedback: Closing dialog")
-                        gameFeedbackState = GameFeedbackDialogState(visible = false)
-                    }
-                },
-                onDismiss = {
-                    gameFeedbackState = GameFeedbackDialogState(visible = false)
-                },
-                onDiscordSupport = {
-                    uriHandler.openUri("https://discord.gg/2hKv4VfZfE")
-                },
-            )
-
             Box(modifier = Modifier.zIndex(10f)) {
                 BootingSplash(
                     visible = state.showBootingSplash,
@@ -1385,22 +1219,7 @@ fun PluviaMain(
                         val shouldShowDialogs = !isOffline || !SteamUtils.hasStoredCredentials()
 
                         if (shouldShowDialogs && !state.annoyingDialogShown && PluviaApp.xEnvironment == null && !SteamService.keepAlive && !MainActivity.wasLaunchedViaExternalIntent) {
-                            val currentUpdateInfo = updateInfo
-                            if (currentUpdateInfo != null) {
-                                viewModel.setAnnoyingDialogShown(true)
-                                msgDialogState = MessageDialogState(
-                                    visible = true,
-                                    type = DialogType.APP_UPDATE,
-                                    title = context.getString(R.string.main_update_available_title),
-                                    message = context.getString(
-                                        R.string.main_update_available_message,
-                                        currentUpdateInfo.versionName,
-                                        currentUpdateInfo.releaseNotes?.let { "\n\n$it" } ?: "",
-                                    ),
-                                    confirmBtnText = context.getString(R.string.main_update_button),
-                                    dismissBtnText = context.getString(R.string.main_later_button),
-                                )
-                            } else if (state.hasCrashedLastStart) {
+                            if (state.hasCrashedLastStart) {
                                 viewModel.setAnnoyingDialogShown(true)
                                 msgDialogState = MessageDialogState(
                                     visible = true,

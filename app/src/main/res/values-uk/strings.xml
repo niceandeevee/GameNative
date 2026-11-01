@@ -367,9 +367,7 @@
     <string name="performance_hud">HUD продуктивності</string>
     <string name="performance_hud_description">Показувати або приховувати ігрове накладання.</string>
     <string name="performance_hud_fps_limiter">Обмежувач FPS</string>
-    <string name="performance_hud_fps_limiter_description">Обмежує частоту кадрів у грі. Макс.: %1$d Гц.</string>
     <string name="performance_hud_fps_limiter_target">Цільовий FPS</string>
-    <string name="performance_hud_fps_limiter_off">Без обмежень</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Обмежує базову частоту кадрів. Частота на екрані — це ліміт, помножений на множник LSFG.</string>
     <string name="performance_hud_presets">Набори</string>
@@ -689,12 +687,9 @@
     <string name="connection_retry">Повторити</string>
 
     <!--Game Feedback Dialog -->
-    <string name="game_feedback_game_run">Як працювала гра?</string>
-    <string name="game_feedback_issues_question">Оберіть знайдені проблеми:</string>
 
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">Довідка та підтримка</string>
     <string name="go_online">Увійти в мережу</string>
     <string name="go_offline">Вийти з мережі</string>
     <string name="log_out">Вийти з акаунта</string>
@@ -726,7 +721,6 @@
     <string name="pulseaudio_low_latency">Режим низької затримки PulseAudio</string>
     <string name="microphone_input">Мікрофонний вхід</string>
     <string name="microphone_input_description">Надає мікрофон пристрою Wine/Proton як пристрій запису. Потрібен дозвіл на мікрофон.</string>
-    <string name="show_fps">Показати FPS</string>
     <string name="portrait_mode">Портретний режим</string>
     <string name="portrait_mode_description">Для контролерів типу 8BitDo FlipPad/GameSir Pocket Taco</string>
     <string name="portrait_below_cutout">Тримати під вирізом камери</string>
@@ -758,8 +752,6 @@
     <string name="steam_connecting">Підключення до серверів Steam… у повільній мережі це може зайняти хвилину</string>
     <string name="steam_retrying_login">Повторна спроба входу в Steam…</string>
     <string name="launch_bionic_steam">Увімкнути експериментальний Bionic Steam</string>
-    <string name="allow_steam_updates">Дозволити оновлення клієнту Steam</string>
-    <string name="allow_steam_updates_description">Оновлює клієнт Steam до останньої версії. Значно зменшує продуктивність.</string>
     <string name="steam_type">Версія Steam</string>
 
     <!-- Container Configuration: Graphics -->
@@ -973,7 +965,6 @@
     <string name="select_wine_debug_channels">Обрати канали налагодження Wine</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">Опишіть, що сталось</string>
-    <string name="get_support_on_discord">Отримати допомогу в Discord</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">Менеджер драйверів</string>
@@ -1018,8 +1009,6 @@
     <string name="settings_emulation_default_config_title">Змінити стандартну конфігурацію</string>
     <string name="settings_emulation_default_config_subtitle">Стандартні налаштування контейнера для кожної гри (не впливає на вже інстальовані ігри)</string>
     <string name="settings_emulation_default_config_dialog_title">Стандартні налаштування контейнера</string>
-    <string name="settings_emulation_auto_apply_known_config_title">Автоматично застосовувати відому конфігурацію</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">Автоматично застосовувати рекомендовані налаштування для ігор Steam при першому запуску</string>
     <string name="settings_emulation_box64_presets_title">Box64 Пресети</string>
     <string name="settings_emulation_box64_presets_subtitle">Перегляд, зміна та створення пресетів Box64</string>
     <string name="settings_emulation_driver_manager_title">Менеджер драйвера</string>
@@ -1127,8 +1116,6 @@
     <string name="library_reset_container_message">Це скине налаштування Вашого контейнера до стандартної конфігурації.</string>
     <string name="library_verify_files_title">Перевірити файли</string>
     <string name="library_verify_files_message">Будь ласка, переконайтеся, що ваші збереження завантажено у хмару або створено їхню резервну копію, оскільки інакше вони можуть бути перезаписані.</string>
-    <string name="library_update_title">Оновити</string>
-    <string name="library_update_message">Будь ласка, переконайтеся, що ваші збереження завантажено у хмару або створено їхню резервну копію перед оновленням, оскільки інакше вони можуть бути перезаписані.</string>
     <string name="library_config_title">Конфігурація %s</string>
 
     <!-- LibraryAppScreen: Toast Messages -->
@@ -1152,12 +1139,8 @@
     <string name="download_paused_wifi">Завантаження призупинено – очікування Wi-Fi/LAN</string>
 
     <!-- PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">Доступне оновлення</string>
-    <string name="main_update_available_message">Нова версія (%1$s) доступна!%2$s</string>
     <string name="main_update_button">Оновити</string>
     <string name="main_later_button">Пізніше</string>
-    <string name="main_update_failed_title">Помилка оновлення</string>
-    <string name="main_update_failed_message">Помилка завантаження або інсталяції оновлення. Будь ласка, спробуйте знову.</string>
     <string name="launch_dependency_failed_title">Помилка завантаження залежності запуску</string>
     <string name="launch_dependency_failed_message">Помилка завантаження необхідного компонента. Будь ласка, спробуйте знову пізніше.</string>
 
@@ -1168,9 +1151,6 @@
     <string name="main_thank_you_message">Станьте учасником сьогодні. Учасники отримують:\n\n• Допомогу ШІ із запуском ігор\n• Ранній доступ до нових версій\n• Преміум-ролі та ексклюзивні канали в Discord\n• …та інше\n\nВід $5/міс.</string>
     <string name="main_share">Поділитися</string>
     <string name="main_share_text">Спробуй GameNative — грай у свої Steam-ігри з ПК на Android з повною підтримкою хмарних збережень!\nhttps://gamenative.app\nПриєднуйся до спільноти: https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">Чи працювала гра?</string>
-    <string name="main_discord_support_message">Долучайтесь до нашого Discord, щоб отримати підтримку у виправленні чи покращенні роботи ігор.</string>
-    <string name="main_open_discord">Відкрити Discord</string>
     <string name="main_downloading_entry">Завантаження %s</string>
 
     <!-- PluviaMain: Game Launch -->
@@ -1252,87 +1232,18 @@
     <string name="library_not_installed">Не інстальовано</string>
     <string name="library_family_shared">Сімейна бібліотека</string>
     <string name="library_shared_short">Спільний доступ</string>
-    <string name="library_compatible">Сумісно</string>
-    <string name="library_gpu_compatible">Сумісно з GPU</string>
     <string name="library_compatibility_unknown">Сумісність невідома</string>
-    <string name="library_not_compatible">Несумісно</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">Відома конфігурація працює на вашому пристрої</string>
-    <string name="best_config_gpu_family_match">Відома конфігурація має працювати на вашому пристрої</string>
-    <string name="best_config_fallback_match">Відома конфігурація може працювати на вашому пристрої</string>
-    <string name="best_config_compatibility_unknown">Немає відомої конфігурації</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">Конфігурацію успішно застосовано</string>
     <string name="best_config_missing_components_title">Конфігурацію не застосовано</string>
     <string name="best_config_missing_components_message">Наступні необхідні компоненти недоступні на цьому пристрої:\n\n%1$s\n\nВстановіть відсутні компоненти та спробуйте знову.</string>
     <string name="best_config_known_config_invalid">Відома конфігурація недійсна</string>
-    <string name="best_config_no_config_available">Немає доступної найкращої конфігурації для цієї гри</string>
-    <string name="best_config_fetch_failed">Не вдалося отримати конфігурацію. Перевірте підключення до мережі.</string>
     <string name="best_config_apply_anyway">Застосувати все одно</string>
     <string name="best_config_applied_with_defaults">Конфігурацію застосовано, відсутні компоненти замінено значеннями за замовчуванням</string>
     <string name="best_config_apply_failed">Не вдалося застосувати конфігурацію: %s</string>
-    <string name="community_config_title">Конфігурації спільноти</string>
-    <string name="community_config_close">Закрити конфігурації спільноти</string>
-    <string name="community_config_refresh">Оновити конфігурації спільноти</string>
-    <string name="community_config_retry">Повторити</string>
-    <string name="community_config_unknown_error">Невідома помилка</string>
-    <string name="community_config_unknown">Невідомо</string>
-    <string name="community_config_load_failed">Не вдалося завантажити конфігурації спільноти: %1$s</string>
-    <string name="community_config_game_not_found">Для %1$s не знайдено запису про сумісність</string>
-    <string name="community_config_gpu_unknown">GPU недоступний</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d конфігурація</item>
-        <item quantity="few">%1$d конфігурації</item>
-        <item quantity="many">%1$d конфігурацій</item>
-        <item quantity="other">%1$d конфігурації</item>
-    </plurals>
-    <string name="community_config_highest_rated">За рейтингом</string>
-    <string name="community_config_newest">Найновіші</string>
-    <string name="community_config_same_device">Той самий пристрій</string>
-    <string name="community_config_this_gpu">Той самий GPU</string>
-    <string name="community_config_compatible_gpus">Сумісні</string>
-    <string name="community_config_load_more">Завантажити ще</string>
-    <string name="community_config_no_device_results">Для цього пристрою не знайдено конфігурацій.</string>
-    <string name="community_config_no_gpu_results">Для цього GPU не знайдено конфігурацій.</string>
-    <string name="community_config_no_compatible_results">Конфігурацій для сумісних GPU не знайдено.</string>
-    <string name="community_config_show_this_gpu">Показати цей GPU</string>
-    <string name="community_config_show_compatible_gpus">Показати сумісні GPU</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Відомості про конфігурацію</string>
-    <string name="community_config_other_gpu_warning">Цей результат отримано з іншим GPU. Налаштування драйвера та обгортки, що залежать від GPU, не буде застосовано.</string>
-    <string name="community_config_run_details">Тестовий запуск</string>
-    <string name="community_config_rating">Оцінка</string>
-    <string name="community_config_average_fps">Середній FPS</string>
-    <string name="community_config_device">Пристрій</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">Версія GameNative</string>
-    <string name="community_config_submitted">Надіслано</string>
-    <string name="community_config_session_length">Тривалість сеансу</string>
-    <string name="community_config_game_store">Магазин гри</string>
-    <string name="community_config_custom_game">Користувацька гра</string>
-    <string name="community_config_settings">Налаштування</string>
-    <string name="community_config_additional_launch_settings">Додаткові параметри запуску</string>
-    <string name="community_config_apply_launch_arguments">Застосувати аргументи запуску</string>
-    <string name="community_config_apply_environment_variables">Застосувати змінні середовища</string>
-    <string name="community_config_replaces_existing_value">Замінює поточне значення</string>
-    <string name="community_config_dependencies">Залежності</string>
-    <string name="community_config_dependencies_apply_check">Залежності буде перевірено під час застосування конфігурації.</string>
-    <string name="community_config_no_downloads">Зараз завантаження компонентів із маніфесту не потрібне.</string>
-    <string name="community_config_downloads_required">Ці компоненти буде завантажено автоматично:\n%1$s</string>
-    <string name="community_config_tags">Теги</string>
-    <string name="community_config_notes">Примітки</string>
-    <string name="community_config_apply">Застосувати конфігурацію</string>
-    <string name="community_config_container">Контейнер</string>
-    <string name="community_config_wine">Wine або Proton</string>
-    <string name="community_config_emulator">Емулятор</string>
-    <string name="community_config_wrapper">Обгортка DirectX</string>
-    <string name="community_config_box64_preset">Передналаштування Box64</string>
-    <string name="community_config_driver">Графічний драйвер</string>
     <string name="import_config">Імпортувати конфігурацію</string>
     <string name="export_config">Експортувати конфігурацію</string>
     <string name="library_app_type">Тип застосунку</string>
@@ -1416,7 +1327,6 @@
     <string name="contents_all_trusted">Усі файли є надійними. Готово до інсталяції.</string>
     <string name="contents_no_installed">Немає інстальованого вмісту цього типу.</string>
     <string name="contents_delete">Видалити</string>
-    <string name="contents_review_confirm">Цей вміст містить файли, що не входять до надійного набору. Перегляньте та підтвердьте для продовження.</string>
     <string name="contents_removed">Видалено %1$s</string>
 
     <!-- Driver Manager -->
@@ -1564,11 +1474,7 @@
     <string name="option_open_container">Відкрити контейнер</string>
     <string name="option_edit_container">Редагувати контейнер</string>
     <string name="option_reset_to_defaults">Скинути контейнер</string>
-    <string name="option_get_support">Отримати підтримку</string>
-    <string name="option_submit_feedback">Надіслати відгук</string>
     <string name="option_reset_drm">Скинути DRM</string>
-    <string name="option_use_known_config">Використати відому конфігурацію</string>
-    <string name="option_browse_community_configs">Переглянути конфігурації спільноти</string>
 
     <!-- Recommendations -->
     <string name="recommended_badge">Рекомендовано</string>
@@ -1610,13 +1516,6 @@
     <string name="option_manage_dlc">Керувати DLC</string>
     <string name="option_manage_workshop">Керувати Workshop</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Основний сюжет</string>
-    <string name="hltb_main_plus_extras">Основне + Доповнення</string>
-    <string name="hltb_completionist">Перфекціоніст</string>
-    <string name="hltb_all_styles">Усі стилі</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">Показати спойлери</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1713,19 +1612,7 @@
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
     <string name="screen_effects_launch_sharpness">Чіткість при запуску</string>
     <string name="screen_effects_launch_sharpness_note">CAS і DLS застосовуються через vkBasalt і набувають чинності при наступному запуску гри.</string>
-    <string name="stats_key_runs">Успішні запуски на вашому GPU</string>
-    <string name="stats_key_reviews">5-зіркові відгуки (ваш GPU / ваш пристрій)</string>
-    <string name="stats_key_fps">Очікуваний FPS</string>
-    <string name="stats_key_session">Найдовша сесія на вашому пристрої</string>
-    <string name="sort_fps">Очікуваний FPS</string>
-    <string name="sort_runs">Успішні запуски</string>
-    <string name="sort_reviews">5-зіркові відгуки (пристрій)</string>
-    <string name="sort_reviews_gpu">5-зіркові відгуки (GPU)</string>
     <string name="filter_expired">Прострочено</string>
-    <string name="filter_playable">Придатна (30+ FPS)</string>
-    <string name="filter_five_star_device">5-зіркові відгуки на пристрої</string>
-    <string name="filter_five_star_gpu">5-зіркові відгуки на GPU</string>
-    <string name="filter_proven_gpu">Перевірено на вашому GPU</string>
     <string name="vibration_intensity">Інтенсивність вібрації</string>
     <string name="option_import_files">Імпорт файлів</string>
     <string name="option_export_files">Експорт файлів</string>
@@ -2434,7 +2321,6 @@
     <string name="nexus_plan_ambiguous_case">неоднозначні варіанти регістру вже існують</string>
     <string name="nexus_plan_blocked">Автоматичне застосування заблоковано, доки для кожного встановлюваного файлу не підтверджено місце призначення.</string>
     <string name="nexus_plan_export">Поділитися діагностикою</string>
-    <string name="nexus_reconfiguration_preview">Попередній перегляд переналаштування</string>
     <string name="nexus_reconfiguration_summary">Додано: %1$d • змінено: %2$d • переміщено: %3$d • застаріло: %4$d</string>
     <string name="nexus_choose_package_variant">Виберіть варіант пакета</string>
     <string name="nexus_confirm_risky_game_root_files">Ці файли в папці гри перевірено</string>
@@ -2617,68 +2503,4 @@
     <string name="control_profile_failed">Не вдалося виконати операцію з профілем керування: %1$s</string>
     <string name="control_profile_delete_title">Видалити профіль керування?</string>
     <string name="control_profile_delete_message">Видалити «%1$s» з бібліотеки? Ігри, уже налаштовані з ним, збережуть своє керування.</string>
-    <string name="sort_compatibility">Сумісність</string>
-    <string name="community_compatibility_details">Подробиці</string>
-    <string name="community_compatibility_expanded">Розгорнуто</string>
-    <string name="community_compatibility_collapsed">Згорнуто</string>
-    <string name="community_compatibility_short_disclaimer">Результати спільноти не є гарантією.</string>
-    <string name="community_compatibility_unreliable_short">Нестабільні результати; можливість грати не підтверджена.</string>
-    <string name="community_compatibility_performance_caution">Повідомлена продуктивність може бути обмеженою.</string>
-    <string name="community_compatibility_checking_short">Перевірка…</string>
-    <string name="community_compatibility_unavailable_short">Недоступно</string>
-    <string name="community_compatibility_unavailable">Не вдалося завантажити сумісність</string>
-    <string name="community_compatibility_missing_tier">У відповіді немає даних про обладнання, потрібних для застосування результату до вашого пристрою.</string>
-    <string name="community_compatibility_works">Працює добре</string>
-    <string name="community_compatibility_should">Працює</string>
-    <string name="community_compatibility_may">Може працювати</string>
-    <string name="community_compatibility_mixed">Нестабільно</string>
-    <string name="community_compatibility_wont">Не працює</string>
-    <string name="community_compatibility_unknown">Не перевірено</string>
-    <string name="community_compatibility_checking">Перевірка сумісності…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d оцінена спільна конфігурація з цієї моделі пристрою</item>
-        <item quantity="few">%1$d оцінені спільні конфігурації з цієї моделі пристрою</item>
-        <item quantity="many">%1$d оцінених спільних конфігурацій з цієї моделі пристрою</item>
-        <item quantity="other">%1$d оціненої спільної конфігурації з цієї моделі пристрою</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d оцінена спільна конфігурація з вашим GPU</item>
-        <item quantity="few">%1$d оцінені спільні конфігурації з вашим GPU</item>
-        <item quantity="many">%1$d оцінених спільних конфігурацій з вашим GPU</item>
-        <item quantity="other">%1$d оціненої спільної конфігурації з вашим GPU</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">Не знайдено спільних конфігурацій для вашого обладнання</string>
-    <string name="community_compatibility_configs_unavailable">Не вдалося завантажити частину даних про сумісність. Показано доступні дані.</string>
-    <string name="community_compatibility_retry">Повторити</string>
-    <string name="community_compatibility_fps_median">Медіанна частота: %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s на вашій моделі пристрою.</string>
-    <string name="community_compatibility_fps_soc">%1$s із тим самим чипсетом.</string>
-    <string name="community_compatibility_fps_gpu">%1$s із вашим GPU.</string>
-    <string name="community_compatibility_fps_family">%1$s із сумісними GPU.</string>
-    <string name="community_compatibility_view_reports">Конфігурації</string>
-    <string name="community_config_install_before_apply">Установіть цю гру перед застосуванням конфігурації спільноти.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу на вашій моделі пристрою.</item>
-        <item quantity="few">На основі %1$d записаних сеансів на вашій моделі пристрою.</item>
-        <item quantity="many">На основі %1$d записаних сеансів на вашій моделі пристрою.</item>
-        <item quantity="other">На основі %1$d записаного сеансу на вашій моделі пристрою.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу з тим самим чипсетом.</item>
-        <item quantity="few">На основі %1$d записаних сеансів з тим самим чипсетом.</item>
-        <item quantity="many">На основі %1$d записаних сеансів з тим самим чипсетом.</item>
-        <item quantity="other">На основі %1$d записаного сеансу з тим самим чипсетом.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу з вашим GPU.</item>
-        <item quantity="few">На основі %1$d записаних сеансів з вашим GPU.</item>
-        <item quantity="many">На основі %1$d записаних сеансів з вашим GPU.</item>
-        <item quantity="other">На основі %1$d записаного сеансу з вашим GPU.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу у вашій родині GPU.</item>
-        <item quantity="few">На основі %1$d записаних сеансів у вашій родині GPU.</item>
-        <item quantity="many">На основі %1$d записаних сеансів у вашій родині GPU.</item>
-        <item quantity="other">На основі %1$d записаного сеансу у вашій родині GPU.</item>
-    </plurals>
 </resources>

@@ -91,17 +91,6 @@ fun SettingsGroupEmulation() {
             subtitle = { Text(text = stringResource(R.string.settings_emulation_default_config_subtitle)) },
             onClick = { showConfigDialog = true },
         )
-        var autoApplyKnownConfig by rememberSaveable { mutableStateOf(PrefManager.autoApplyKnownConfig) }
-        SettingsSwitch(
-            colors = settingsTileColorsAlt(),
-            state = autoApplyKnownConfig,
-            title = { Text(text = stringResource(R.string.settings_emulation_auto_apply_known_config_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_emulation_auto_apply_known_config_subtitle)) },
-            onCheckedChange = {
-                autoApplyKnownConfig = it
-                PrefManager.autoApplyKnownConfig = it
-            },
-        )
         SettingsMenuLink(
             colors = settingsTileColors(),
             title = { Text(text = stringResource(R.string.settings_emulation_box64_presets_title)) },
