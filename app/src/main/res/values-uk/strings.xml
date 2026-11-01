@@ -655,9 +655,6 @@
     <string name="add_custom_game_dont_show_again">Більше не показувати</string>
     <string name="base_app_shortcut_created">Ярлик створено</string>
     <string name="base_app_shortcut_failed">Не вдалося створити ярлик: %s</string>
-    <string name="base_app_images_fetched">Зображення успішно отримано</string>
-    <string name="base_app_game_folder_not_found">Папку гри не знайдено</string>
-    <string name="base_app_images_fetch_failed">Не вдалося отримати зображення: %s</string>
     <string name="base_app_exported">Вивантажено</string>
     <string name="base_app_export_failed">Не вдалося вивантажити: %s</string>
     <string name="base_app_export_cancelled">Вивантаження скасовано</string>
@@ -1511,7 +1508,6 @@
     <string name="option_browse_online_saves">Переглянути онлайн-збереження</string>
     <string name="option_force_download_remote">Примусово завантажити віддалені збереження</string>
     <string name="option_force_upload_local">Примусово вивантажити локальні збереження</string>
-    <string name="option_fetch_game_images">Отримати зображення гри</string>
     <string name="option_test_graphics">Перевірити графіку</string>
     <string name="option_manage_dlc">Керувати DLC</string>
     <string name="option_manage_workshop">Керувати Workshop</string>

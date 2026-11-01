@@ -656,9 +656,6 @@
     <string name="add_custom_game_dont_show_again">Non mostrare più questa finestra</string>
     <string name="base_app_shortcut_created">Scorciatoia creata</string>
     <string name="base_app_shortcut_failed">Impossibile creare scorciatoia: %s</string>
-    <string name="base_app_images_fetched">Immagini recuperate con successo</string>
-    <string name="base_app_game_folder_not_found">Cartella gioco non trovata</string>
-    <string name="base_app_images_fetch_failed">Impossibile recuperare immagini: %s</string>
     <string name="base_app_exported">Esportato</string>
     <string name="base_app_export_failed">Impossibile esportare: %s</string>
     <string name="base_app_export_cancelled">Esportazione annullata</string>
@@ -1504,7 +1501,6 @@
     <string name="option_browse_online_saves">Sfoglia salvataggi online</string>
     <string name="option_force_download_remote">Forza download salvataggi remoti</string>
     <string name="option_force_upload_local">Forza caricamento salvataggi locali</string>
-    <string name="option_fetch_game_images">Recupera immagini del gioco</string>
     <string name="option_test_graphics">Prova grafica</string>
     <string name="option_manage_dlc">Gestisci DLC</string>
     <string name="option_manage_workshop">Gestisci Workshop</string>

@@ -807,9 +807,6 @@
     <string name="custom_game_import_remove_original">Remove original after import</string>
     <string name="base_app_shortcut_created">Shortcut created</string>
     <string name="base_app_shortcut_failed">Failed to create shortcut: %s</string>
-    <string name="base_app_images_fetched">Images fetched successfully</string>
-    <string name="base_app_game_folder_not_found">Game folder not found</string>
-    <string name="base_app_images_fetch_failed">Failed to fetch images: %s</string>
     <string name="base_app_exported">Exported</string>
     <string name="base_app_export_failed">Failed to export: %s</string>
     <string name="base_app_export_cancelled">Export cancelled</string>
@@ -1718,7 +1715,6 @@
     <string name="option_browse_online_saves">Browse online saves</string>
     <string name="option_force_download_remote">Force download remote saves</string>
     <string name="option_force_upload_local">Force upload local saves</string>
-    <string name="option_fetch_game_images">Fetch game images</string>
     <string name="option_test_graphics">Test graphics</string>
     <string name="option_play_with_diagnostics">Diagnostic Run</string>
     <string name="option_share_diagnostics">Share diagnostics</string>

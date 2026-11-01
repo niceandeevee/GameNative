@@ -647,9 +647,6 @@
     <string name="add_custom_game_dont_show_again">不再显示</string>
     <string name="base_app_shortcut_created">快捷方式已创建</string>
     <string name="base_app_shortcut_failed">无法创建快捷方式：%s</string>
-    <string name="base_app_images_fetched">图像获取成功</string>
-    <string name="base_app_game_folder_not_found">找不到游戏文件夹</string>
-    <string name="base_app_images_fetch_failed">无法获取图像：%s</string>
     <string name="base_app_exported">已导出</string>
     <string name="base_app_export_failed">无法导出：%s</string>
     <string name="base_app_export_cancelled">取消导出</string>
@@ -1484,7 +1481,6 @@
     <string name="option_edit_container">编辑容器</string>
     <string name="option_reset_to_defaults">重置容器</string>
     <string name="option_test_graphics">测试图形渲染</string>
-    <string name="option_fetch_game_images">获取游戏封面</string>
 
     <!-- 容器配置：自定义分辨率 -->
     <string name="container_config_custom_resolution_title">设置自定义分辨率</string>

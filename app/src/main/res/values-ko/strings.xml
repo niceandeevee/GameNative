@@ -653,9 +653,6 @@
     <string name="add_custom_game_dont_show_again">이 대화상자 다시 표시 안 함</string>
     <string name="base_app_shortcut_created">바로가기가 생성되었습니다</string>
     <string name="base_app_shortcut_failed">바로가기 생성 실패: %s</string>
-    <string name="base_app_images_fetched">이미지를 성공적으로 가져왔습니다</string>
-    <string name="base_app_game_folder_not_found">게임 폴더를 찾을 수 없음</string>
-    <string name="base_app_images_fetch_failed">이미지 가져오기 실패: %s</string>
     <string name="base_app_exported">내보내기 완료</string>
     <string name="base_app_export_failed">내보내기 실패: %s</string>
     <string name="base_app_export_cancelled">내보내기 취소됨</string>
@@ -1608,7 +1605,6 @@
     <string name="option_browse_online_saves">온라인 저장 파일 찾아보기</string>
     <string name="option_force_download_remote">원격 저장 파일 강제 다운로드</string>
     <string name="option_force_upload_local">로컬 저장 파일 강제 업로드</string>
-    <string name="option_fetch_game_images">게임 이미지 가져오기</string>
     <string name="option_test_graphics">그래픽 테스트</string>
     <string name="option_manage_dlc">DLC 관리</string>
     <string name="option_manage_workshop">워크숍 관리</string>

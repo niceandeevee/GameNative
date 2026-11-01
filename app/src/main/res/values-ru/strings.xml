@@ -67,9 +67,6 @@
     <string name="base_app_export_cancelled">Экспорт отменён</string>
     <string name="base_app_export_failed">Ошибка экспорта: %s</string>
     <string name="base_app_exported">Экспортировано</string>
-    <string name="base_app_game_folder_not_found">Папка игры не найдена</string>
-    <string name="base_app_images_fetch_failed">Ошибка загрузки изображений: %s</string>
-    <string name="base_app_images_fetched">Изображения успешно загружены</string>
     <string name="base_app_reset_container_confirm">Сброс</string>
     <string name="base_app_reset_container_title">Сбросить контейнер?</string>
     <string name="base_app_shortcut_created">Ярлык создан</string>
@@ -1422,7 +1419,6 @@ https://gamenative.app
     <string name="option_browse_online_saves">Просмотреть онлайн-сохранения</string>
     <string name="option_force_download_remote">Принудительно загрузить удалённые сохранения</string>
     <string name="option_force_upload_local">Принудительно выгрузить локальные сохранения</string>
-    <string name="option_fetch_game_images">Загрузить изображения игры</string>
     <string name="option_test_graphics">Проверить графику</string>
     <string name="option_manage_dlc">Управление DLC</string>
     <string name="option_manage_workshop">Управление Workshop</string>

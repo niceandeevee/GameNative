@@ -657,9 +657,6 @@
     <string name="add_custom_game_dont_show_again">Nu mai arăta acest dialog</string>
     <string name="base_app_shortcut_created">Shortcut creat</string>
     <string name="base_app_shortcut_failed">Nu s-a putut crea shortcut-ul: %s</string>
-    <string name="base_app_images_fetched">Imaginile au fost preluate cu succes</string>
-    <string name="base_app_game_folder_not_found">Folderul jocului nu a fost găsit</string>
-    <string name="base_app_images_fetch_failed">Nu s-au putut prelua imaginile: %s</string>
     <string name="base_app_exported">Exportat</string>
     <string name="base_app_export_failed">Exportul a eșuat: %s</string>
     <string name="base_app_export_cancelled">Export anulat</string>
@@ -1490,7 +1487,6 @@
     <string name="option_browse_online_saves">Răsfoiește salvările online</string>
     <string name="option_force_download_remote">Forțează descărcarea salvărilor remote</string>
     <string name="option_force_upload_local">Forțează încărcarea salvărilor locale</string>
-    <string name="option_fetch_game_images">Preia imaginile jocului</string>
     <string name="option_test_graphics">Testează grafica</string>
     <string name="option_manage_dlc">Gestionează DLC</string>
     <string name="option_manage_workshop">Gestionează Workshop</string>

@@ -645,9 +645,6 @@
     <string name="add_custom_game_dont_show_again">Diesen Hinweis nicht mehr anzeigen</string>
     <string name="base_app_shortcut_created">Verknüpfung erstellt</string>
     <string name="base_app_shortcut_failed">Verknüpfung konnte nicht erstellt werden: %s</string>
-    <string name="base_app_images_fetched">Bilder erfolgreich geladen</string>
-    <string name="base_app_game_folder_not_found">Spielordner nicht gefunden</string>
-    <string name="base_app_images_fetch_failed">Bilder konnten nicht geladen werden: %s</string>
     <string name="base_app_exported">Exportiert</string>
     <string name="base_app_export_failed">Export fehlgeschlagen: %s</string>
     <string name="base_app_export_cancelled">Export abgebrochen</string>
@@ -1453,7 +1450,6 @@
     <string name="option_browse_online_saves">Online-Spielstände durchsuchen</string>
     <string name="option_force_download_remote">Download der Remote-Spielstände erzwingen</string>
     <string name="option_force_upload_local">Upload der lokalen Spielstände erzwingen</string>
-    <string name="option_fetch_game_images">Spielbilder abrufen</string>
     <string name="option_test_graphics">Grafik testen</string>
     <string name="option_manage_dlc">DLC verwalten</string>
     <string name="option_manage_workshop">Workshop verwalten</string>

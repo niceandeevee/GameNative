@@ -647,9 +647,6 @@
     <string name="add_custom_game_dont_show_again">不再顯示</string>
     <string name="base_app_shortcut_created">已創建捷徑</string>
     <string name="base_app_shortcut_failed">無法創建捷徑：%s</string>
-    <string name="base_app_images_fetched">映像獲取成功</string>
-    <string name="base_app_game_folder_not_found">找不到遊戲文件夾</string>
-    <string name="base_app_images_fetch_failed">無法獲取映像: %s</string>
     <string name="base_app_exported">已導出</string>
     <string name="base_app_export_failed">無法導出: %s</string>
     <string name="base_app_export_cancelled">取消導出</string>
@@ -1486,7 +1483,6 @@
     <string name="option_edit_container">編輯容器</string>
     <string name="option_reset_to_defaults">重置容器</string>
     <string name="option_test_graphics">測試繪圖渲染</string>
-    <string name="option_fetch_game_images">取得遊戲封面</string>
 
     <string name="container_config_custom_resolution_title">設定自訂解析度</string>
     <string name="container_config_custom_resolution_separator">x</string>

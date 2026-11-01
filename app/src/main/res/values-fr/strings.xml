@@ -674,9 +674,6 @@
     <string name="add_custom_game_dont_show_again">Ne plus afficher ce dialogue</string>
     <string name="base_app_shortcut_created">Raccourci créé</string>
     <string name="base_app_shortcut_failed">Échec de la création du raccourci : %s</string>
-    <string name="base_app_images_fetched">Images récupérées avec succès</string>
-    <string name="base_app_game_folder_not_found">Dossier du jeu introuvable</string>
-    <string name="base_app_images_fetch_failed">Échec de la récupération des images : %s</string>
     <string name="base_app_exported">Exporté</string>
     <string name="base_app_export_failed">Échec de l\'exportation : %s</string>
     <string name="base_app_export_cancelled">Exportation annulée</string>
@@ -1531,7 +1528,6 @@
     <string name="option_browse_online_saves">Parcourir les sauvegardes en ligne</string>
     <string name="option_force_download_remote">Forcer le téléchargement des sauvegardes distantes</string>
     <string name="option_force_upload_local">Forcer l\'envoi des sauvegardes locales</string>
-    <string name="option_fetch_game_images">Récupérer les images du jeu</string>
     <string name="option_test_graphics">Tester les graphismes</string>
     <string name="option_manage_dlc">Gérer les DLC</string>
     <string name="option_manage_workshop">Gérer le Workshop</string>

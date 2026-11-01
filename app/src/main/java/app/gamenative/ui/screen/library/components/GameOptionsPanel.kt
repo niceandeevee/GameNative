@@ -345,7 +345,6 @@ private fun getIconForOption(type: AppOptionMenuType): ImageVector {
         AppOptionMenuType.BrowseOnlineSaves -> Icons.AutoMirrored.Filled.OpenInNew
         AppOptionMenuType.ForceDownloadRemote -> Icons.Default.CloudDownload
         AppOptionMenuType.ForceUploadLocal -> Icons.Default.CloudUpload
-        AppOptionMenuType.FetchSteamGridDBImages -> Icons.Default.Image
         AppOptionMenuType.TestGraphics -> Icons.Default.Build
         AppOptionMenuType.PlayWithDiagnostics -> Icons.Default.BugReport
         AppOptionMenuType.ShareDiagnostics -> Icons.Default.Share
@@ -414,7 +413,6 @@ private fun groupOptions(options: List<AppMenuOption>): Map<OptionCategory, List
 
             // Help & Info
             AppOptionMenuType.StorePage,
-            AppOptionMenuType.FetchSteamGridDBImages,
             AppOptionMenuType.TestGraphics,
             AppOptionMenuType.PlayWithDiagnostics,
             AppOptionMenuType.ShareDiagnostics,

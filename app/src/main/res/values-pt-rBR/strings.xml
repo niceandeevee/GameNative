@@ -1282,9 +1282,6 @@
     <string name="add_custom_game_dont_show_again">Não mostrar este diálogo novamente</string>
     <string name="base_app_shortcut_created">Atalho criado</string>
     <string name="base_app_shortcut_failed">Falha ao criar atalho: %s</string>
-    <string name="base_app_images_fetched">Imagens obtidas com sucesso</string>
-    <string name="base_app_game_folder_not_found">Pasta do jogo não encontrada</string>
-    <string name="base_app_images_fetch_failed">Falha ao obter imagens: %s</string>
     <string name="base_app_exported">Exportado</string>
     <string name="base_app_export_failed">Falha ao exportar: %s</string>
     <string name="base_app_export_cancelled">Exportação cancelada</string>
@@ -1383,7 +1380,6 @@
     <string name="option_browse_online_saves">Procurar saves online</string>
     <string name="option_force_download_remote">Forçar download dos saves remotos</string>
     <string name="option_force_upload_local">Forçar upload dos saves locais</string>
-    <string name="option_fetch_game_images">Buscar imagens do jogo</string>
     <string name="option_test_graphics">Testar gráficos</string>
     <string name="option_manage_dlc">Gerenciar DLC</string>
     <string name="option_manage_workshop">Gerenciar Workshop</string>

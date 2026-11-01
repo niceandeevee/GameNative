@@ -1282,9 +1282,6 @@
     <string name="add_custom_game_dont_show_again">Vis ikke denne dialog igen</string>
     <string name="base_app_shortcut_created">Genvej oprettet</string>
     <string name="base_app_shortcut_failed">Kunne ikke oprette genvej: %s</string>
-    <string name="base_app_images_fetched">Billeder hentet</string>
-    <string name="base_app_game_folder_not_found">Spilmappe ikke fundet</string>
-    <string name="base_app_images_fetch_failed">Kunne ikke hente billeder: %s</string>
     <string name="base_app_exported">Eksporteret</string>
     <string name="base_app_export_failed">Kunne ikke eksportere: %s</string>
     <string name="base_app_export_cancelled">Eksport annulleret</string>
@@ -1383,7 +1380,6 @@
     <string name="option_browse_online_saves">Gennemse online-gemfiler</string>
     <string name="option_force_download_remote">Gennemtving download af fjern-gemfiler</string>
     <string name="option_force_upload_local">Gennemtving upload af lokale gemfiler</string>
-    <string name="option_fetch_game_images">Hent spilbilleder</string>
     <string name="option_test_graphics">Test grafik</string>
     <string name="option_manage_dlc">Administrér DLC</string>
     <string name="option_manage_workshop">Administrér Workshop</string>

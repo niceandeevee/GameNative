@@ -655,9 +655,6 @@
     <string name="add_custom_game_dont_show_again">Nie pokazuj tego ponownie</string>
     <string name="base_app_shortcut_created">Utworzono skrót</string>
     <string name="base_app_shortcut_failed">Nie udało się utworzyć skrótu: %s</string>
-    <string name="base_app_images_fetched">Pobrano obrazy pomyślnie</string>
-    <string name="base_app_game_folder_not_found">Nie znaleziono folderu gry</string>
-    <string name="base_app_images_fetch_failed">Nie udało się pobrać obrazów: %s</string>
     <string name="base_app_exported">Wyeksportowano</string>
     <string name="base_app_export_failed">Nie udało się wyeksportować: %s</string>
     <string name="base_app_export_cancelled">Eksport anulowany</string>
@@ -1511,7 +1508,6 @@
     <string name="option_browse_online_saves">Przeglądaj zapisy online</string>
     <string name="option_force_download_remote">Wymuś pobranie zapisów zdalnych</string>
     <string name="option_force_upload_local">Wymuś przesłanie zapisów lokalnych</string>
-    <string name="option_fetch_game_images">Pobierz obrazy gry</string>
     <string name="option_test_graphics">Przetestuj grafikę</string>
     <string name="option_manage_dlc">Zarządzaj DLC</string>
     <string name="option_manage_workshop">Zarządzaj Workshop</string>
