@@ -9,8 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-import app.gamenative.db.dao.AmazonGameDao
-import app.gamenative.db.dao.GOGGameDao
 import app.gamenative.display.GamescopeCommandQueue
 import app.gamenative.events.EventDispatcher
 import app.gamenative.mods.NexusAuthManager
@@ -22,16 +20,13 @@ import app.gamenative.sync.FrontendSyncManager
 import app.gamenative.ui.screen.xserver.RadialMenuCoordinator
 import app.gamenative.utils.AppExitRecorder
 import app.gamenative.utils.ContainerMigrator
-import app.gamenative.utils.DebugReportUtils
 import app.gamenative.utils.IntentLaunchManager
-import app.gamenative.utils.PlayIntegrity
 import app.gamenative.utils.downloader.ContainerFilesDownloader
 import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
-import com.google.android.play.core.splitcompat.SplitCompatApplication
+import android.app.Application
 
-import app.gamenative.billing.PlayBilling
 import com.winlator.container.Container
 import com.winlator.inputcontrols.InputControlsManager
 import com.winlator.widget.InputControlsView
@@ -50,10 +45,8 @@ import kotlinx.coroutines.launch
 typealias NavChangedListener = NavController.OnDestinationChangedListener
 
 @HiltAndroidApp
-class PluviaApp : SplitCompatApplication() {
+class PluviaApp : Application() {
 
-    @Inject lateinit var gogGameDao: GOGGameDao
-    @Inject lateinit var amazonGameDao: AmazonGameDao
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -82,29 +75,21 @@ class PluviaApp : SplitCompatApplication() {
         // Init our custom crash handler.
         CrashHandler.initialize(this)
 
-        // Android's record of why the last process died, then any debug run it never finished.
-        DebugReportUtils.recovery = appScope.async {
+        // Android's record of why the last process died (exported with Settings > Save logcat)
+        appScope.launch {
             try {
                 AppExitRecorder.record(applicationContext)
-                DebugReportUtils.recoverInterruptedRuns(applicationContext)
             } catch (e: Throwable) {
-                Timber.w(e, "[PluviaApp]: exit record / run recovery failed")
-                emptyList()
+                Timber.w(e, "[PluviaApp]: exit record failed")
             }
         }
 
         // Init our datastore preferences.
         PrefManager.init(this)
-        PlayBilling.init(this)
         NexusAuthManager.initialize(this)
         FrontendSyncManager.init(this)
 
-        // Initialize GOGConstants
-        app.gamenative.service.gog.GOGConstants.init(this)
-
         DownloadService.populateDownloadService(this)
-
-        migrateGogAmazonPaths()
 
         appScope.launch {
             ContainerMigrator.migrateLegacyContainersIfNeeded(
@@ -131,79 +116,9 @@ class PluviaApp : SplitCompatApplication() {
             Timber.e(e, "[PluviaApp]: Failed to clear temporary config overrides")
         }
 
-        // No analytics in this build: the PostHog SDK and the device / GPU / power probes that
-        // only fed it are gone (see app.gamenative.analytics.PostHog).
-
-        PlayIntegrity.warmUp(this)
-
         Thread {
             PowerManager.initialize(this)
         }.start()
-    }
-
-    /**
-     * One-time migration: moves GOG/Amazon game directories from
-     * {filesDir}/ to {dataDir}/ to match Steam/Epic, and updates DB paths.
-     */
-    private fun migrateGogAmazonPaths() {
-        if (PrefManager.gogAmazonPathMigrated) return
-
-        val dataDir = dataDir.path
-        val filesDir = filesDir.absolutePath
-        Timber.i("[Migration] Migrating GOG/Amazon install paths from $filesDir to $dataDir")
-
-        val migrations = listOf(
-            File(filesDir, "GOG") to File(dataDir, "GOG"),
-            File(filesDir, "Amazon") to File(dataDir, "Amazon"),
-        )
-
-        for ((oldDir, newDir) in migrations) {
-            if (!oldDir.exists()) continue
-            if (newDir.exists()) {
-                Timber.w("[Migration] Target already exists, skipping rename: ${newDir.path}")
-                continue
-            }
-            val renamed = oldDir.renameTo(newDir)
-            if (renamed) {
-                Timber.i("[Migration] Renamed ${oldDir.path} -> ${newDir.path}")
-            } else {
-                Timber.w("[Migration] Failed to rename ${oldDir.path} -> ${newDir.path}")
-            }
-        }
-
-        val oldPrefix = "$filesDir/"
-        val newPrefix = "$dataDir/"
-
-        runBlocking(Dispatchers.IO) {
-            try {
-                val gogGames = gogGameDao.getAllAsList()
-                for (game in gogGames) {
-                    if (game.installPath.isNotEmpty() && game.installPath.contains(oldPrefix)) {
-                        val updated = game.copy(installPath = game.installPath.replace(oldPrefix, newPrefix))
-                        gogGameDao.update(updated)
-                    }
-                }
-                Timber.i("[Migration] Updated ${gogGames.count { it.installPath.contains(oldPrefix) }} GOG install paths")
-            } catch (e: Exception) {
-                Timber.e(e, "[Migration] Failed to update GOG DB paths")
-            }
-
-            try {
-                val amazonGames = amazonGameDao.getAllAsList()
-                for (game in amazonGames) {
-                    if (game.installPath.isNotEmpty() && game.installPath.contains(oldPrefix)) {
-                        val newPath = game.installPath.replace(oldPrefix, newPrefix)
-                        amazonGameDao.markAsInstalled(game.productId, newPath, game.installSize, game.versionId)
-                    }
-                }
-                Timber.i("[Migration] Updated ${amazonGames.count { it.installPath.contains(oldPrefix) }} Amazon install paths")
-            } catch (e: Exception) {
-                Timber.e(e, "[Migration] Failed to update Amazon DB paths")
-            }
-        }
-
-        PrefManager.gogAmazonPathMigrated = true
-        Timber.i("[Migration] GOG/Amazon path migration complete")
     }
 
     companion object {

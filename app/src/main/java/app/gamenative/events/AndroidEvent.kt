@@ -20,7 +20,6 @@ interface AndroidEvent<T> : Event<T> {
     data object EndProcess : AndroidEvent<Unit>
     data class ExternalGameLaunch(val appId: String, val execArgs: String? = null) : AndroidEvent<Unit>
     data class PromptSaveContainerConfig(val appId: String) : AndroidEvent<Unit>
-    data class ShowGameFeedback(val appId: String) : AndroidEvent<Unit>
     data class ShowLaunchingOverlay(val appName: String) : AndroidEvent<Unit>
     data object HideLaunchingOverlay : AndroidEvent<Unit>
     data class SetBootingSplashText(val text: String) : AndroidEvent<Unit>
@@ -30,13 +29,9 @@ interface AndroidEvent<T> : Event<T> {
     data class PostInstallSyncStatusChanged(val appId: Int, val isSyncing: Boolean) : AndroidEvent<Unit>
     data class LibraryInstallStatusChanged(val appId: Int, val source: GameSource) : AndroidEvent<Unit>
     data class PreferredCopyChanged(val appId: Int) : AndroidEvent<Unit>
-    data class CustomGameImagesFetched(val appId: String) : AndroidEvent<Unit>
-    data object RecommendationToggleChanged : AndroidEvent<Unit>
     data object AllowedAppsLoaded : AndroidEvent<Unit>
     data class HiddenGamesSettingChanged(val showHiddenGamesByDefault: Boolean) : AndroidEvent<Unit>
     data class LibraryTabsChanged(val visibleTabs: List<LibraryTab>) : AndroidEvent<Unit>
-    data class GOGAuthCodeReceived(val authCode: String) : AndroidEvent<Unit>
-    data class EpicAuthCodeReceived(val authCode: String) : AndroidEvent<Unit>
     data object ServiceReady : AndroidEvent<Unit>
     // data class SetAppBarVisibility(val visible: Boolean) : AndroidEvent<Unit>
 }

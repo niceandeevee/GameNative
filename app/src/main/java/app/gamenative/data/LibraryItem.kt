@@ -6,10 +6,6 @@ import app.gamenative.utils.CustomGameScanner
 enum class GameSource {
     STEAM,
     CUSTOM_GAME,
-    GOG,
-    EPIC,
-    AMAZON
-    // Add other platforms here..
 }
 
 enum class GameCompatibilityStatus {
@@ -35,19 +31,6 @@ data class LibraryItem(
     val compatibilityStatus: GameCompatibilityStatus? = null,
     val sizeBytes: Long = 0L,
     val isInstalled: Boolean = false,
-    val isRecommended: Boolean = false,
-    val recommendedGameId: String = "",
-    val recRating: Int? = null,
-    val recDiscount: String? = null,
-    val recPrice: String? = null,
-    val recBasePrice: String? = null,
-    val recSeedCount: Int = 0,
-    val recSeedIconUrl: String? = null,
-    val recStoreCard: Boolean = false,
-    val recSource: String = "",
-    val isFeatured: Boolean = false,
-    val isRecTeaser: Boolean = false,
-    val isRecLoading: Boolean = false,
 ) {
     val clientIconUrl: String
         get() = when (gameSource) {
@@ -64,22 +47,6 @@ data class LibraryItem(
                 } else {
                     ""
                 }
-            }
-            GameSource.GOG -> {
-                // GoG Images are typically the full URL, but have fallback just in case.
-                if (iconHash.isEmpty()) {
-                    ""
-                } else if (iconHash.startsWith("http")) {
-                    iconHash
-                } else {
-                    "${GOGGame.GOG_IMAGE_BASE_URL}/$iconHash"
-                }
-            }
-            GameSource.EPIC -> {
-                iconHash
-            }
-            GameSource.AMAZON -> {
-                iconHash
             }
         }
 

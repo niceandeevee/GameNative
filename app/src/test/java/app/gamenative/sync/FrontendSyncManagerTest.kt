@@ -28,9 +28,6 @@ class FrontendSyncManagerTest {
     @Test
     fun `extensionFor returns correct extension for each source`() {
         assertEquals(".steam", FrontendSyncManager.extensionFor(GameSource.STEAM))
-        assertEquals(".epic", FrontendSyncManager.extensionFor(GameSource.EPIC))
-        assertEquals(".gog", FrontendSyncManager.extensionFor(GameSource.GOG))
-        assertEquals(".amazon", FrontendSyncManager.extensionFor(GameSource.AMAZON))
         assertEquals(".pcgame", FrontendSyncManager.extensionFor(GameSource.CUSTOM_GAME))
     }
 

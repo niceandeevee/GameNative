@@ -57,24 +57,4 @@ class HiddenGameFilterTest {
         )
     }
 
-    @Test
-    fun gogHiddenGameIsHiddenByDefault() {
-        assertFalse(HiddenGameFilter.passesGog(isHidden = true, showHiddenByDefault = false))
-    }
-
-    @Test
-    fun gogHiddenGameIsShownWhenSettingOn() {
-        assertTrue(HiddenGameFilter.passesGog(isHidden = true, showHiddenByDefault = true))
-    }
-
-    @Test
-    fun gogNonHiddenGameIsAlwaysShown() {
-        assertTrue(HiddenGameFilter.passesGog(isHidden = false, showHiddenByDefault = false))
-    }
-
-    @Test
-    fun gogUnflaggedRowsFailOpen() {
-        // Rows default to not hidden before the first hidden-metadata refresh.
-        assertTrue(HiddenGameFilter.passesGog(isHidden = false, showHiddenByDefault = false))
-    }
 }

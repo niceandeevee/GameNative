@@ -35,13 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import app.gamenative.PrefManager
-import app.gamenative.data.GameCompatibilityStatus
-import app.gamenative.data.CommunityCompatibilitySummary
 import app.gamenative.data.GameSource
 import app.gamenative.data.LibraryItem
 import app.gamenative.ui.enums.PaneType
-import app.gamenative.ui.data.GameCardStats
-import app.gamenative.ui.icons.Amazon
 import app.gamenative.ui.icons.Steam
 import app.gamenative.ui.internal.fakeAppInfo
 import app.gamenative.ui.theme.PluviaTheme
@@ -70,12 +66,8 @@ internal fun AppItem(
     onFocus: () -> Unit = {},
     isRefreshing: Boolean = false,
     imageRefreshCounter: Long = 0L,
-    compatibilityStatus: GameCompatibilityStatus? = null,
-    communityCompatibility: CommunityCompatibilitySummary? = null,
-    gameStats: GameCardStats? = null,
     showFocusGlow: Boolean = true,
     enableFocusScale: Boolean = true,
-    animateStats: Boolean = true,
 ) {
     val context = LocalContext.current
     var hideText by remember { mutableStateOf(true) }
@@ -124,9 +116,6 @@ internal fun AppItem(
             isFocused = isFocused,
             onFocusChanged = { isFocused = it },
             isRefreshing = isRefreshing,
-            compatibilityStatus = compatibilityStatus,
-            communityCompatibility = communityCompatibility,
-            gameStats = gameStats,
             context = context,
         )
 
@@ -150,12 +139,8 @@ internal fun AppItem(
                 hideText = true
                 alpha = 1f
             },
-            compatibilityStatus = compatibilityStatus,
-            communityCompatibility = communityCompatibility,
-            gameStats = gameStats,
             showFocusGlow = showFocusGlow,
             context = context,
-            animateStats = animateStats,
         )
     }
 }
@@ -174,9 +159,6 @@ fun GameSourceIcon(
         when (gameSource) {
             GameSource.STEAM -> Icon(imageVector = Icons.Filled.Steam, contentDescription = "Steam", modifier = Modifier.size(iconSize.dp).alpha(0.7f))
             GameSource.CUSTOM_GAME -> Icon(imageVector = Icons.Filled.Folder, contentDescription = "Custom Game", modifier = Modifier.size(iconSize.dp).alpha(0.7f))
-            GameSource.GOG -> Icon(painter = painterResource(R.drawable.ic_gog), contentDescription = "Gog", modifier = Modifier.size(iconSize.dp).alpha(0.7f))
-            GameSource.EPIC -> Icon(painter = painterResource(R.drawable.ic_epic), contentDescription = "Epic", modifier = Modifier.size(iconSize.dp).alpha(0.7f))
-            GameSource.AMAZON -> Icon(imageVector = Icons.Filled.Amazon, contentDescription = "Amazon", modifier = Modifier.size(iconSize.dp).alpha(0.7f))
         }
     }
 }
@@ -207,16 +189,9 @@ private fun Preview_AppItem() {
                         )
                     },
                     itemContent = {
-                        val status = when (it.index % 4) {
-                            0 -> GameCompatibilityStatus.COMPATIBLE
-                            1 -> GameCompatibilityStatus.GPU_COMPATIBLE
-                            2 -> GameCompatibilityStatus.NOT_COMPATIBLE
-                            else -> GameCompatibilityStatus.UNKNOWN
-                        }
                         AppItem(
                             appInfo = it,
                             onClick = {},
-                            compatibilityStatus = status,
                         )
                     },
                 )
@@ -250,17 +225,10 @@ private fun Preview_AppItemGrid() {
                     contentPadding = PaddingValues(20.dp),
                 ) {
                     items(items = appInfoList, key = { it.index }) { item ->
-                        val status = when (item.index % 4) {
-                            0 -> GameCompatibilityStatus.COMPATIBLE
-                            1 -> GameCompatibilityStatus.GPU_COMPATIBLE
-                            2 -> GameCompatibilityStatus.NOT_COMPATIBLE
-                            else -> GameCompatibilityStatus.UNKNOWN
-                        }
                         AppItem(
                             appInfo = item,
                             onClick = { },
                             paneType = PaneType.GRID_HERO,
-                            compatibilityStatus = status,
                         )
                     }
                 }

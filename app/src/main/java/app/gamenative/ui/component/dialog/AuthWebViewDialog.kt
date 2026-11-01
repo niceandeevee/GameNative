@@ -97,7 +97,7 @@ fun AuthWebViewDialog(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                 )
 
-                                // OAuth WebView settings (secure defaults for GOG/Epic etc.)
+                                // OAuth WebView settings (secure defaults for EA/Rockstar sign-in)
                                 settings.apply {
                                     javaScriptEnabled = true
                                     domStorageEnabled = true
@@ -201,7 +201,7 @@ private fun Preview_AuthWebView() {
     PluviaTheme {
         AuthWebViewDialog(
             isVisible = true,
-            url = "https://auth.gog.com/auth?client_id=46899977096215655&redirect_uri=https%3A%2F%2Fembed.gog.com%2Fon_login_success%3Forigin%3Dclient&response_type=code&layout=galaxy",
+            url = "https://example.com/login",
             onDismissRequest = {},
         )
     }

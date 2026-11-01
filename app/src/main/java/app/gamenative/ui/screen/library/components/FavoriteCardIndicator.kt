@@ -33,11 +33,10 @@ internal class FavoriteCardIndicator(
 @Composable
 internal fun rememberFavoriteCardIndicator(
     appId: String,
-    isRecommended: Boolean,
 ): FavoriteCardIndicator {
     val favorites by FavoritesManager.favorites.collectAsStateWithLifecycle()
     val favoritesLoaded by FavoritesManager.loaded.collectAsStateWithLifecycle()
-    val isFavorite = !isRecommended && appId in favorites
+    val isFavorite = appId in favorites
     val glowAlpha = remember { Animatable(1f) }
     var wasReady by remember { mutableStateOf(false) }
     var previousIsFavorite by remember { mutableStateOf(isFavorite) }

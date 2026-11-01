@@ -335,11 +335,7 @@ private fun getIconForOption(type: AppOptionMenuType): ImageVector {
         AppOptionMenuType.RunContainer -> Icons.Default.PlayArrow
         AppOptionMenuType.EditContainer -> Icons.Default.Settings
         AppOptionMenuType.ResetToDefaults -> Icons.Default.RestartAlt
-        AppOptionMenuType.GetSupport -> Icons.AutoMirrored.Filled.Help
-        AppOptionMenuType.SubmitFeedback -> Icons.Default.Feedback
         AppOptionMenuType.ResetDrm -> Icons.Default.Key
-        AppOptionMenuType.UseKnownConfig -> Icons.Default.Build
-        AppOptionMenuType.BrowseCommunityConfigs -> Icons.Default.Search
         AppOptionMenuType.Uninstall -> Icons.Default.Delete
         AppOptionMenuType.VerifyFiles -> Icons.Default.VerifiedUser
         AppOptionMenuType.Update -> Icons.Default.Update
@@ -349,11 +345,9 @@ private fun getIconForOption(type: AppOptionMenuType): ImageVector {
         AppOptionMenuType.BrowseOnlineSaves -> Icons.AutoMirrored.Filled.OpenInNew
         AppOptionMenuType.ForceDownloadRemote -> Icons.Default.CloudDownload
         AppOptionMenuType.ForceUploadLocal -> Icons.Default.CloudUpload
-        AppOptionMenuType.FetchSteamGridDBImages -> Icons.Default.Image
         AppOptionMenuType.TestGraphics -> Icons.Default.Build
         AppOptionMenuType.PlayWithDiagnostics -> Icons.Default.BugReport
         AppOptionMenuType.ShareDiagnostics -> Icons.Default.Share
-        AppOptionMenuType.AiDebugRun -> Icons.Default.SmartToy
         AppOptionMenuType.ImportConfig -> Icons.Default.ArrowDownward
         AppOptionMenuType.ExportConfig -> Icons.Default.ArrowUpward
         AppOptionMenuType.ImportSaves -> Icons.Default.ArrowDownward
@@ -382,7 +376,6 @@ private fun groupOptions(options: List<AppMenuOption>): Map<OptionCategory, List
             // Quick Actions
             AppOptionMenuType.EditContainer,
             AppOptionMenuType.RunContainer,
-            AppOptionMenuType.AiDebugRun,
             AppOptionMenuType.CreateShortcut,
             AppOptionMenuType.ExportFrontend,
             AppOptionMenuType.CopyLaunchLink,
@@ -403,8 +396,6 @@ private fun groupOptions(options: List<AppMenuOption>): Map<OptionCategory, List
             // Container Settings
             AppOptionMenuType.ResetToDefaults,
             AppOptionMenuType.ResetDrm,
-            AppOptionMenuType.UseKnownConfig,
-            AppOptionMenuType.BrowseCommunityConfigs,
             AppOptionMenuType.ImportConfig,
             AppOptionMenuType.ExportConfig,
             AppOptionMenuType.ImportFiles,
@@ -422,9 +413,6 @@ private fun groupOptions(options: List<AppMenuOption>): Map<OptionCategory, List
 
             // Help & Info
             AppOptionMenuType.StorePage,
-            AppOptionMenuType.GetSupport,
-            AppOptionMenuType.SubmitFeedback,
-            AppOptionMenuType.FetchSteamGridDBImages,
             AppOptionMenuType.TestGraphics,
             AppOptionMenuType.PlayWithDiagnostics,
             AppOptionMenuType.ShareDiagnostics,

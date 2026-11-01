@@ -96,10 +96,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import app.gamenative.Constants
-import app.gamenative.ui.screen.auth.AmazonOAuthActivity
-import app.gamenative.ui.screen.auth.EpicOAuthActivity
-import app.gamenative.ui.screen.auth.GOGOAuthActivity
-import app.gamenative.utils.PlatformOAuthHandlers
 import app.gamenative.R
 import app.gamenative.enums.LoginResult
 import app.gamenative.enums.LoginScreen
@@ -154,113 +150,8 @@ fun UserLoginScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val userLoginState by viewModel.loginState.collectAsState()
 
-    val gogOAuthLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        if (result.resultCode != android.app.Activity.RESULT_OK) {
-            val message = result.data?.getStringExtra(GOGOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.gog_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        val code = result.data?.getStringExtra(GOGOAuthActivity.EXTRA_AUTH_CODE)
-        if (code == null) {
-            val message = result.data?.getStringExtra(GOGOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.gog_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        lifecycleScope.launch {
-            PlatformOAuthHandlers.handleGogAuthentication(
-                context = context,
-                authCode = code,
-                coroutineScope = lifecycleScope,
-                onLoadingChange = { },
-                onError = { msg ->
-                    if (msg != null) {
-                        SnackbarManager.show(msg)
-                    }
-                },
-                onSuccess = {
-                    SnackbarManager.show(context.getString(R.string.gog_login_success_title))
-                    onPlatformSignedIn()
-                },
-                onDialogClose = { },
-            )
-        }
-    }
 
-    val epicOAuthLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        if (result.resultCode != android.app.Activity.RESULT_OK) {
-            val message = result.data?.getStringExtra(EpicOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.epic_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        val code = result.data?.getStringExtra(EpicOAuthActivity.EXTRA_AUTH_CODE)
-        if (code == null) {
-            val message = result.data?.getStringExtra(EpicOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.epic_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        lifecycleScope.launch {
-            PlatformOAuthHandlers.handleEpicAuthentication(
-                context = context,
-                authCode = code,
-                coroutineScope = lifecycleScope,
-                onLoadingChange = { },
-                onError = { msg ->
-                    if (msg != null) {
-                        SnackbarManager.show(msg)
-                    }
-                },
-                onSuccess = {
-                    SnackbarManager.show(context.getString(R.string.epic_login_success_title))
-                    onPlatformSignedIn()
-                },
-                onDialogClose = { },
-            )
-        }
-    }
 
-    val amazonOAuthLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { result ->
-        if (result.resultCode != android.app.Activity.RESULT_OK) {
-            val message = result.data?.getStringExtra(AmazonOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.amazon_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        val code = result.data?.getStringExtra(AmazonOAuthActivity.EXTRA_AUTH_CODE)
-        if (code == null) {
-            val message = result.data?.getStringExtra(AmazonOAuthActivity.EXTRA_ERROR)
-                ?: context.getString(R.string.amazon_login_cancel)
-            SnackbarManager.show(message)
-            return@rememberLauncherForActivityResult
-        }
-        lifecycleScope.launch {
-            PlatformOAuthHandlers.handleAmazonAuthentication(
-                context = context,
-                authCode = code,
-                coroutineScope = lifecycleScope,
-                onLoadingChange = { },
-                onError = { msg ->
-                    if (msg != null) {
-                        SnackbarManager.show(msg)
-                    }
-                },
-                onSuccess = {
-                    SnackbarManager.show(context.getString(R.string.amazon_login_success_title))
-                    onPlatformSignedIn()
-                },
-                onDialogClose = { },
-            )
-        }
-    }
 
     LaunchedEffect(userLoginState.loginScreen, userLoginState.isLoggingIn, connectionState, userLoginState.isQrFailed) {
         if (connectionState == ConnectionState.CONNECTED && userLoginState.isLoggingIn.not()) {
@@ -301,9 +192,6 @@ fun UserLoginScreen(
         onUseGuardTotp = viewModel::useGuardTotp,
         onRetryConnection = onRetryConnection,
         onContinueOffline = onContinueOffline,
-        onLaunchGog = { gogOAuthLauncher.launch(Intent(context, GOGOAuthActivity::class.java)) },
-        onLaunchEpic = { epicOAuthLauncher.launch(Intent(context, EpicOAuthActivity::class.java)) },
-        onLaunchAmazon = { amazonOAuthLauncher.launch(Intent(context, AmazonOAuthActivity::class.java)) },
     )
 }
 
@@ -324,9 +212,6 @@ private fun UserLoginScreenContent(
     onUseGuardTotp: () -> Unit,
     onRetryConnection: () -> Unit,
     onContinueOffline: () -> Unit,
-    onLaunchGog: () -> Unit,
-    onLaunchEpic: () -> Unit,
-    onLaunchAmazon: () -> Unit,
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
     val tertiaryColor = MaterialTheme.colorScheme.tertiary
@@ -529,7 +414,7 @@ private fun UserLoginScreenContent(
                 }
             }
 
-            // Or sign in with: Epic · GOG · Amazon · Skip login
+            // Skip login
             if (
                 userLoginState.isLoggingIn.not() &&
                 userLoginState.loginResult != LoginResult.Success
@@ -549,27 +434,6 @@ private fun UserLoginScreenContent(
                     FlowRow(
                         horizontalArrangement = Arrangement.Center,
                     ) {
-                        TextButton(onClick = onLaunchEpic) {
-                            Text(
-                                text = "Epic",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                        TextButton(onClick = onLaunchGog) {
-                            Text(
-                                text = "GOG",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                        TextButton(onClick = onLaunchAmazon) {
-                            Text(
-                                text = "Amazon",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
                         TextButton(onClick = onContinueOffline) {
                             Text(
                                 text = stringResource(R.string.login_skip_login),
@@ -988,9 +852,6 @@ private fun Preview_UserLoginScreen(
                 onShowLoginScreen = { },
                 onRetryConnection = { },
                 onContinueOffline = { },
-                onLaunchGog = { },
-                onLaunchEpic = { },
-                onLaunchAmazon = { },
             )
         }
     }
@@ -1025,9 +886,6 @@ private fun Preview_UserLoginScreen_Landscape(
                 onShowLoginScreen = { },
                 onRetryConnection = { },
                 onContinueOffline = { },
-                onLaunchGog = { },
-                onLaunchEpic = { },
-                onLaunchAmazon = { },
             )
         }
     }

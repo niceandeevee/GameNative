@@ -4,12 +4,15 @@ package app.gamenative.gamefixes
 object GameInputCompatibility {
     private val mouseDragCompatibilityGames = setOf(
         "STEAM_3858650", // Crushed in Time
-        // Call of Duty: Black Ops (Zombies / Multiplayer). Mouselook from a stick bound to mouse
-        // movement was jerky: without XGE, Wine's XInput2 can't receive raw motion, so it rebuilds
-        // the camera delta from absolute pointer positions and its own cursor warps. With XGE the
-        // exact deltas reach it as XI_RawMotion events.
-        "STEAM_42700",
-        "STEAM_42710",
+    )
+
+    // Games whose mouselook warps the cursor back to the window centre every frame and reads the
+    // offset (no raw input, no DirectInput mouse). Going through the X server, each stick-to-mouse
+    // step races the warp and reaches Wine in bursts, so turning is jerky; injected as Win32
+    // relative input (SendInput inside Wine) the steps land in the game's own cursor state.
+    private val win32RelativeMouseGames = setOf(
+        "STEAM_42700", // Call of Duty: Black Ops (campaign / Zombies)
+        "STEAM_42710", // Call of Duty: Black Ops - Multiplayer
     )
 
     /**
@@ -18,4 +21,7 @@ object GameInputCompatibility {
      */
     fun needsMouseDragCompatibility(appId: String, useGlibcContainer: Boolean): Boolean =
         !useGlibcContainer && appId in mouseDragCompatibilityGames
+
+    /** Whether injected mouse movement should always go to Wine as relative Win32 input. */
+    fun needsWin32RelativeMouse(appId: String): Boolean = appId in win32RelativeMouseGames
 }

@@ -3,7 +3,6 @@ package app.gamenative.utils
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
-import androidx.compose.ui.graphics.Color
 import app.gamenative.BuildConfig
 import app.gamenative.MainActivity
 import app.gamenative.PrefManager
@@ -23,41 +22,13 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import timber.log.Timber
 
 /**
- * Service for fetching best configurations for games from GameNative API.
+ * Parses and applies container configs (imported config files) and resolves the components they need.
  */
 object BestConfigService {
-    private const val API_BASE_URL = "https://api.gamenative.app/api/best-config"
-    private val httpClient = Net.http
-
-    // In-memory cache keyed by "${gameName}_${gpuName}"
-    private val cache = ConcurrentHashMap<String, BestConfigResponse>()
-
-    /**
-     * Data class for API response.
-     */
-    data class BestConfigResponse(
-        val bestConfig: JsonObject,
-        val matchType: String, // "exact_gpu_match" | "gpu_family_match" | "fallback_match" | "no_match"
-        val matchedGpu: String,
-        val matchedDeviceId: Int,
-        val matchedStore: String,
-    )
-
-    /**
-     * Compatibility message with text and color.
-     */
-    data class CompatibilityMessage(
-        val text: String,
-        val color: Color,
-    )
-
     data class ManifestInstallRequest(
         val entry: ManifestEntry,
         val contentType: ContentProfile.ContentType? = null,
@@ -75,125 +46,6 @@ object BestConfigService {
     internal fun usesWowBox64(wineVersion: String, emulator: String): Boolean =
         wineVersion.contains("arm64ec", ignoreCase = true) &&
             !emulator.equals("FEXCore", ignoreCase = true)
-
-    /**
-     * Fetches best configuration for a game.
-     * Returns cached response if available, otherwise makes API call.
-     */
-    suspend fun fetchBestConfig(
-        context: Context,
-        gameName: String,
-        gpuName: String,
-        gameStore: String,
-    ): BestConfigResponse? = withContext(Dispatchers.IO) {
-        val cacheKey = "${gameName}_${gpuName}_${gameStore}"
-
-        // Check cache first
-        cache[cacheKey]?.let {
-            Timber.tag("BestConfigService").d("Using cached config for $cacheKey")
-            return@withContext it
-        }
-
-        try {
-            val requestBody = JSONObject().apply {
-                put("gameName", gameName)
-                put("gpuName", gpuName)
-                put("game_store", gameStore)
-                // Modern build can't run glibc containers — server should pick a config that
-                // doesn't require glibc when this is true.
-                put("modernBuild", BuildConfig.MODERN_ANDROID)
-                HardwareUtils.getSOCName()?.let { put("socModel", it) }
-                put("model", Build.MODEL)
-                put("androidSdk", Build.VERSION.SDK_INT)
-                put("androidVersion", Build.VERSION.RELEASE)
-                put("appVersionCode", BuildConfig.VERSION_CODE)
-                val memInfo = ActivityManager.MemoryInfo()
-                (context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager)?.getMemoryInfo(memInfo)
-                if (memInfo.totalMem > 0) put("ramTotalMb", memInfo.totalMem / (1024L * 1024L))
-                GPUInformation.getVersion(context)?.takeIf { it.isNotBlank() }?.let { put("gpuDriverVersion", it) }
-            }
-
-            PlayIntegrity.signingCertSha256?.let { requestBody.put("signingCertSha256", it) }
-
-            val attestation = KeyAttestationHelper.getAttestationFields("https://api.gamenative.app")
-            if (attestation != null) {
-                requestBody.put("nonce", attestation.first)
-                requestBody.put("attestationChain", org.json.JSONArray(attestation.second))
-            }
-
-            val mediaType = "application/json".toMediaType()
-            val bodyString = requestBody.toString()
-            val body = bodyString.toRequestBody(mediaType)
-
-            val integrityToken = PlayIntegrity.requestToken(bodyString.toByteArray())
-
-            val requestBuilder = Request.Builder()
-                .url(API_BASE_URL)
-                .post(body)
-                .header("Content-Type", "application/json")
-            if (integrityToken != null) {
-                requestBuilder.header("X-Integrity-Token", integrityToken)
-            }
-            val request = requestBuilder.build()
-
-            httpClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    Timber.tag("BestConfigService")
-                        .w("API request failed - HTTP ${response.code}")
-                    return@withContext null
-                }
-
-                val responseBody = response.body?.string() ?: return@withContext null
-                val jsonResponse = JSONObject(responseBody)
-
-                val bestConfigJson = jsonResponse.getJSONObject("bestConfig")
-                val bestConfig = Json.parseToJsonElement(bestConfigJson.toString()).jsonObject
-
-                val bestConfigResponse = BestConfigResponse(
-                    bestConfig = bestConfig,
-                    matchType = jsonResponse.getString("matchType"),
-                    matchedGpu = jsonResponse.getString("matchedGpu"),
-                    matchedDeviceId = jsonResponse.getInt("matchedDeviceId"),
-                    matchedStore = jsonResponse.optString("matchedStore", gameStore),
-                )
-
-                cache[cacheKey] = bestConfigResponse
-
-                Timber.tag("BestConfigService")
-                    .d("Fetched best config for $gameName on $gpuName (matchType: ${bestConfigResponse.matchType})")
-
-                bestConfigResponse
-            }
-        } catch (e: Exception) {
-            Timber.tag("BestConfigService")
-                .e(e, "Error fetching best config: ${e.message}")
-            null
-        }
-    }
-
-    /**
-     * Gets user-friendly compatibility message based on match type.
-     */
-    fun getCompatibilityMessage(context: Context, matchType: String?): CompatibilityMessage {
-        return when (matchType) {
-            "exact_gpu_match" -> CompatibilityMessage(
-                text = context.getString(R.string.best_config_exact_gpu_match),
-                color = Color.Green
-            )
-            "gpu_family_match" -> CompatibilityMessage(
-                text = context.getString(R.string.best_config_gpu_family_match),
-                color = Color.Green
-            )
-            "fallback_match" -> CompatibilityMessage(
-                text = context.getString(R.string.best_config_fallback_match),
-                color = Color.Yellow
-            )
-            else -> CompatibilityMessage(
-                text = context.getString(R.string.best_config_compatibility_unknown),
-                color = Color.Gray
-            )
-        }
-    }
 
     /**
      * Filters config JSON based on match type.
@@ -1015,9 +867,6 @@ object BestConfigService {
                 }
                 if (filteredJson.has("loadMods") && !filteredJson.isNull("loadMods")) {
                     resultMap["loadMods"] = filteredJson.optBoolean("loadMods", PrefManager.loadMods)
-                }
-                if (filteredJson.has("epicOfflineMode") && !filteredJson.isNull("epicOfflineMode")) {
-                    resultMap["epicOfflineMode"] = filteredJson.optBoolean("epicOfflineMode", false)
                 }
                 if (filteredJson.has("unpackFiles") && !filteredJson.isNull("unpackFiles")) {
                     resultMap["unpackFiles"] = filteredJson.optBoolean("unpackFiles", false)

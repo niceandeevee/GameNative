@@ -29,9 +29,6 @@ import timber.log.Timber
 import android.content.Context
 import android.content.Intent
 import app.gamenative.data.GameSource
-import app.gamenative.service.amazon.AmazonService
-import app.gamenative.service.epic.EpicService
-import app.gamenative.service.gog.GOGService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -797,73 +794,8 @@ object GameDownloadService {
         return out.toString()
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // GOG
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /** True when the native GOG engine is loaded. */
-    fun isGogNativeAvailable(): Boolean = NativeGogDownload.isAvailable()
-
-    /** Starts a native GOG chunk-download loop (base install, DLC, or redist assembly). */
-    fun downloadGogChunks(
-        kind: Int,
-        depotManifests: Array<String>,
-        cdnBases: Array<String>,
-        installDir: String,
-        skipPaths: Array<String>,
-        maxWorkers: Int,
-        processWorkers: Int,
-        sortLargestFirst: Boolean,
-        label: String,
-        listener: NativeGogDownloadListener,
-    ): Long = NativeGogDownload.start(
-        kind, depotManifests, cdnBases, installDir, skipPaths, "",
-        maxWorkers, processWorkers, sortLargestFirst, label, listener,
-    )
-
-    fun cancelGogDownload(handle: Long) = NativeGogDownload.cancel(handle)
-
-    fun releaseGogDownload(handle: Long) = NativeGogDownload.release(handle)
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Epic
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /** Blocking Epic chunk fetch for `pendingFileIdx` (fills `<installDir>/.chunks`). */
-    fun downloadEpicChunks(
-        manifest: ByteArray,
-        installDir: String,
-        cdnPrefixes: Array<String>,
-        pendingFileIdx: IntArray,
-        expectedChunks: Int,
-        expectedBytes: Long,
-        maxWorkers: Int,
-        processWorkers: Int,
-        cancel: AtomicBoolean?,
-        listener: NativeEpicDownload.Listener,
-    ): NativeEpicDownload.Result = NativeEpicDownload.run(
-        manifest, installDir, cdnPrefixes, pendingFileIdx, expectedChunks, expectedBytes, "",
-        maxWorkers, processWorkers, cancel, listener,
-    )
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // Amazon
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /** Blocking Amazon file-download run. `planJson` = `[{relPath, url, size, sha256hex}]`. */
-    fun downloadAmazonFiles(
-        planJson: String,
-        installDir: String,
-        maxWorkers: Int,
-        processWorkers: Int,
-        isCancelled: NativeAmazonCancelCheck?,
-        listener: NativeAmazonDownloadListener,
-    ): NativeAmazonDownload.RunResult = NativeAmazonDownload.runBlocking(
-        planJson, installDir, "", maxWorkers, processWorkers, isCancelled, listener,
-    )
-
     // ═════════════════════════════════════════════════════════════════════════
-    // Download queue (one active download across Steam/Epic/GOG/Amazon, queue-
+    // Download queue (one active download across Steam/custom, queue-
     // managed auto-pause/resume, wake-lock while transferring). Merged from the
     // former GameDownloadService object.
     // ═════════════════════════════════════════════════════════════════════════
@@ -1067,24 +999,6 @@ object GameDownloadService {
                 GameSource.STEAM -> SteamService.downloadApp(
                     appId = nextEntry.gameId.toInt(),
                     mode = SteamService.resumeModeFor(nextEntry.gameId.toInt()),
-                )
-                GameSource.AMAZON -> AmazonService.downloadGame(
-                    context = context,
-                    productId = nextEntry.gameId,
-                    installPath = nextEntry.installPath!!
-                )
-                GameSource.GOG -> GOGService.downloadGame(
-                    context = context,
-                    gameId = nextEntry.gameId,
-                    installPath = nextEntry.installPath!!,
-                    containerLanguage = nextEntry.containerLanguage!!
-                )
-                GameSource.EPIC -> EpicService.downloadGame(
-                    context = context,
-                    appId = nextEntry.gameId.toInt(),
-                    dlcGameIds = nextEntry.dlcGameIds,
-                    installPath = nextEntry.installPath!!,
-                    containerLanguage = nextEntry.containerLanguage!!
                 )
                 // Do Nothing for Custom Game
                 GameSource.CUSTOM_GAME -> {}

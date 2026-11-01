@@ -87,9 +87,7 @@ import app.gamenative.data.SteamFriend
 import app.gamenative.events.AndroidEvent
 import app.gamenative.events.SteamEvent
 import app.gamenative.service.SteamService
-import app.gamenative.ui.component.dialog.SupportersDialog
 import app.gamenative.ui.screen.PluviaScreen
-import app.gamenative.ui.screen.support.SupportReplyWatcher
 import app.gamenative.ui.theme.PluviaTheme
 import app.gamenative.ui.util.SteamIconImage
 import app.gamenative.ui.util.adaptivePanelWidth
@@ -263,15 +261,6 @@ fun SystemMenu(
     onLogout: () -> Unit,
     onGoOnline: () -> Unit,
     isOffline: Boolean = false,
-    gogLoggedIn: Boolean,
-    epicLoggedIn: Boolean,
-    amazonLoggedIn: Boolean,
-    onGogLoginClick: () -> Unit,
-    onGogLogoutClick: () -> Unit,
-    onEpicLoginClick: () -> Unit,
-    onEpicLogoutClick: () -> Unit,
-    onAmazonLoginClick: () -> Unit,
-    onAmazonLogoutClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
@@ -282,7 +271,6 @@ fun SystemMenu(
 
     var persona by remember { mutableStateOf<SteamFriend?>(null) }
     var selectedStatus by remember(persona) { mutableStateOf(persona?.state ?: EPersonaState.Online) }
-    var showSupporters by remember { mutableStateOf(false) }
     var showStatusPicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -320,7 +308,6 @@ fun SystemMenu(
         onDismiss()
     }
 
-    SupportersDialog(visible = showSupporters, onDismiss = { showSupporters = false })
 
     val colorOnline = PluviaTheme.colors.statusInstalled
     val colorAway = PluviaTheme.colors.statusAway
@@ -627,16 +614,6 @@ fun SystemMenu(
                         )
 
                         SystemMenuItem(
-                            text = stringResource(R.string.support_title),
-                            icon = Icons.Default.SupportAgent,
-                            onClick = {
-                                onNavigateRoute(PluviaScreen.Support.route)
-                                onDismiss()
-                            },
-                            badge = SupportReplyWatcher.unread.value.isNotEmpty(),
-                        )
-
-                        SystemMenuItem(
                             text = stringResource(R.string.app_downloads),
                             icon = Icons.Default.Download,
                             onClick = {
@@ -644,20 +621,6 @@ fun SystemMenu(
                                 onDismiss()
                             },
                             focusRequester = firstItemFocusRequester,
-                        )
-
-                        SystemMenuItem(
-                            text = stringResource(R.string.help_and_support),
-                            icon = Icons.AutoMirrored.Filled.Help,
-                            onClick = {
-                                uriHandler.openUri("https://discord.gg/2hKv4VfZfE")
-                            },
-                        )
-
-                        SystemMenuItem(
-                            text = stringResource(R.string.hall_of_fame),
-                            icon = Icons.AutoMirrored.Filled.StarHalf,
-                            onClick = { showSupporters = true },
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -702,72 +665,6 @@ fun SystemMenu(
                                 isDestructive = true,
                             )
                         }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        if (app.gamenative.StoreSupport.GOG_ENABLED) {
-                            // GOG
-                            SystemMenuItem(
-                                text = stringResource(
-                                    if (gogLoggedIn) R.string.gog_settings_logout_title
-                                    else R.string.gog_settings_login_title,
-                                ),
-                                icon = if (gogLoggedIn) {
-                                    Icons.AutoMirrored.Filled.Logout
-                                } else {
-                                    Icons.AutoMirrored.Filled.Login
-                                },
-                                onClick = {
-                                    if (gogLoggedIn) onGogLogoutClick() else onGogLoginClick()
-                                    onDismiss()
-                                },
-                                isDestructive = gogLoggedIn,
-                            )
-                        }
-
-                        if (app.gamenative.StoreSupport.EPIC_ENABLED) {
-                            // Epic
-                            SystemMenuItem(
-                                text = stringResource(
-                                    if (epicLoggedIn) R.string.epic_settings_logout_title
-                                    else R.string.epic_settings_login_title,
-                                ),
-                                icon = if (epicLoggedIn) {
-                                    Icons.AutoMirrored.Filled.Logout
-                                } else {
-                                    Icons.AutoMirrored.Filled.Login
-                                },
-                                onClick = {
-                                    if (epicLoggedIn) onEpicLogoutClick() else onEpicLoginClick()
-                                    onDismiss()
-                                },
-                                isDestructive = epicLoggedIn,
-                            )
-                        }
-
-                        // Amazon
-                        SystemMenuItem(
-                            text = stringResource(
-                                if (amazonLoggedIn) R.string.amazon_settings_logout_title
-                                else R.string.amazon_settings_login_title,
-                            ),
-                            icon = if (amazonLoggedIn) {
-                                Icons.AutoMirrored.Filled.Logout
-                            } else {
-                                Icons.AutoMirrored.Filled.Login
-                            },
-                            onClick = {
-                                if (amazonLoggedIn) onAmazonLogoutClick() else onAmazonLoginClick()
-                                onDismiss()
-                            },
-                            isDestructive = amazonLoggedIn,
-                        )
                     }
 
                     // Gamepad hint at bottom (only on expanded screens)
@@ -836,15 +733,6 @@ private fun Preview_SystemMenu() {
                     onLogout = { },
                     onGoOnline = { },
                     isOffline = false,
-                    gogLoggedIn = false,
-                    epicLoggedIn = false,
-                    amazonLoggedIn = false,
-                    onGogLoginClick = { },
-                    onGogLogoutClick = { },
-                    onEpicLoginClick = { },
-                    onEpicLogoutClick = { },
-                    onAmazonLoginClick = { },
-                    onAmazonLogoutClick = { },
                 )
             }
         }

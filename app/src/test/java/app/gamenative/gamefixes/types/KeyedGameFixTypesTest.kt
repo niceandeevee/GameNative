@@ -16,24 +16,6 @@ class KeyedGameFixTypesTest {
     }
 
     @Test
-    fun keyedLaunchArgFix_exposesSourceAndId_forRegistryLookup() {
-        val fix = GOG_Fix_1129934535
-
-        assertTrue(fix is KeyedLaunchArgFix)
-        assertEquals(GameSource.GOG, fix.gameSource)
-        assertEquals("1129934535", fix.gameId)
-    }
-
-    @Test
-    fun gogDependencyFix_exposesSourceAndId_forRegistryLookup() {
-        val fix = GOG_Fix_2147483047
-
-        assertTrue(fix is GOGDependencyFix)
-        assertEquals(GameSource.GOG, fix.gameSource)
-        assertEquals("2147483047", fix.gameId)
-    }
-
-    @Test
     fun keyedVulkanExtensionBlacklistFix_exposesSourceAndId_forRegistryLookup() {
         val fix = STEAM_Fix_658920
 

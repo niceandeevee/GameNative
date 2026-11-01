@@ -2,7 +2,6 @@ package app.gamenative.ui.enums
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import app.gamenative.R
@@ -11,38 +10,19 @@ enum class LibraryTab(
     @get:StringRes val labelResId: Int,
     val showCustom: Boolean,
     val showSteam: Boolean,
-    val showGoG: Boolean,
-    val showEpic: Boolean,
-    val showAmazon: Boolean,
     val installedOnly: Boolean,
     val icon: ImageVector? = null,
 ) {
-    RECOMMENDED(
-        labelResId = R.string.tab_recommended,
-        showCustom = false,
-        showSteam = false,
-        showGoG = false,
-        showEpic = false,
-        showAmazon = false,
-        installedOnly = false,
-        icon = Icons.Outlined.Explore,
-    ),
     ALL(
         labelResId = R.string.tab_all,
         showCustom = true,
         showSteam = true,
-        showGoG = true,
-        showEpic = true,
-        showAmazon = true,
         installedOnly = false,
     ),
     FAVORITES(
         labelResId = R.string.tab_favorites,
         showCustom = true,
         showSteam = true,
-        showGoG = true,
-        showEpic = true,
-        showAmazon = true,
         installedOnly = false,
         icon = Icons.Rounded.Star,
     ),
@@ -50,63 +30,25 @@ enum class LibraryTab(
         labelResId = R.string.tab_steam,
         showCustom = false,
         showSteam = true,
-        showGoG = false,
-        showEpic = false,
-        showAmazon = false,
-        installedOnly = false,
-    ),
-    GOG(
-        labelResId = R.string.tab_gog,
-        showCustom = false,
-        showSteam = false,
-        showGoG = true,
-        showEpic = false,
-        showAmazon = false,
-        installedOnly = false,
-    ),
-    EPIC(
-        labelResId = R.string.tab_epic,
-        showCustom = false,
-        showSteam = false,
-        showGoG = false,
-        showEpic = true,
-        showAmazon = false,
-        installedOnly = false,
-    ),
-    AMAZON(
-        labelResId = R.string.tab_amazon,
-        showCustom = false,
-        showSteam = false,
-        showGoG = false,
-        showEpic = false,
-        showAmazon = true,
         installedOnly = false,
     ),
     LOCAL(
         labelResId = R.string.tab_local,
         showCustom = true,
         showSteam = false,
-        showGoG = false,
-        showEpic = false,
-        showAmazon = false,
         installedOnly = false,
     ),
     ;
 
     companion object {
-        val configurableEntries = listOf(RECOMMENDED, STEAM, GOG, EPIC, AMAZON)
+        val configurableEntries = listOf(STEAM)
 
         /**
          * Tabs shown in the UI. Custom (LOCAL) games work on all flavors: legacy maps folders
          * in place via all-files access, modern imports them into app-owned storage.
          */
         val visibleEntries: List<LibraryTab>
-            // Recommended is removed from this build, and Epic / GOG are switched off
-            get() = entries.filter {
-                it != RECOMMENDED &&
-                    (it != EPIC || app.gamenative.StoreSupport.EPIC_ENABLED) &&
-                    (it != GOG || app.gamenative.StoreSupport.GOG_ENABLED)
-            }
+            get() = entries
 
         fun normalizeVisibleTabs(
             serialized: String,

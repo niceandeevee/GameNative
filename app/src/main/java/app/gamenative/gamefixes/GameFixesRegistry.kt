@@ -4,10 +4,7 @@ import android.content.Context
 import app.gamenative.data.GameSource
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.CustomGameScanner
-import app.gamenative.service.gog.GOGConstants
-import app.gamenative.service.gog.GOGService
 import app.gamenative.service.SteamService
-import app.gamenative.service.epic.EpicService
 import com.winlator.container.Container
 import java.io.File
 import kotlinx.coroutines.Dispatchers
@@ -18,18 +15,6 @@ object GameFixesRegistry {
     private const val GAME_DRIVE_LETTER = "A"
 
     private val fixes: Map<Pair<GameSource, String>, GameFix> = listOf(
-        GOG_Fix_1129934535,
-        GOG_Fix_1141086411,
-        GOG_Fix_1177610018,
-        GOG_Fix_1453375253,
-        GOG_Fix_1454315831,
-        GOG_Fix_1454587428,
-        GOG_Fix_1458058109,
-        GOG_Fix_1589319779,
-        GOG_Fix_1635627436,
-        GOG_Fix_1787707874,
-        GOG_Fix_1808582759,
-        GOG_Fix_2147483047,
         STEAM_Fix_220,
         STEAM_Fix_400,
         STEAM_Fix_22300,
@@ -53,12 +38,6 @@ object GameFixesRegistry {
         STEAM_Fix_3602270,
         STEAM_Fix_4320000,
         STEAM_Fix_990080,
-        EPIC_Fix_b1b4e0b67a044575820cb5e63028dcae,
-        EPIC_Fix_dabb52e328834da7bbe99691e374cb84,
-        EPIC_Fix_e345fdb9186645a48d30c3f85a8951dc,
-        EPIC_Fix_59a0c86d02da42e8ba6444cb171e61bf,
-        EPIC_Fix_864c7bc2c2394f7dbd1b534aa068ff56,
-        EPIC_Fix_7f6bb22e14044be880ba254f683cd928,
         CUSTOM_GAME_Fix_WowB_ARM64,
     ).associateBy { it.gameSource to it.gameId }
 
@@ -68,11 +47,6 @@ object GameFixesRegistry {
         val source = ContainerUtils.extractGameSourceFromContainerId(appId)
         val gameId = ContainerUtils.extractGameIdFromContainerId(appId)?.toString() ?: return
         val catalogId = when (source) {
-            // EPIC auto-generates the id. so we need the catalog id instead.
-            GameSource.EPIC -> {
-                val game = EpicService.getEpicGameOf(gameId.toInt()) ?: return
-                game.catalogId
-            }
             // Custom game ids are a hash of the install folder, so key on the launch executable's file name.
             GameSource.CUSTOM_GAME -> {
                 val exe = CustomGameScanner.getLaunchExecutable(container)
@@ -95,20 +69,8 @@ object GameFixesRegistry {
         container: Container,
     ): Pair<String, String>? {
         return when (source) {
-            GameSource.GOG -> {
-                val game = runBlocking(Dispatchers.IO) { GOGService.getGOGGameOf(gameId) } ?: return null
-                if (!game.isInstalled) return null
-                val path = game.installPath.ifEmpty { GOGConstants.getGameInstallPath(game.title) }
-                if (path.isEmpty() || !File(path).exists()) return null
-                path to "$GAME_DRIVE_LETTER:\\"
-            }
             GameSource.STEAM -> {
                 val path = SteamService.getAppDirPath(gameId.toInt())
-                if (path.isEmpty() || !File(path).exists()) return null
-                path to "$GAME_DRIVE_LETTER:\\"
-            }
-            GameSource.EPIC -> {
-                val path = EpicService.getInstallPath(gameId.toInt()) ?: return null
                 if (path.isEmpty() || !File(path).exists()) return null
                 path to "$GAME_DRIVE_LETTER:\\"
             }

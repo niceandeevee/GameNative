@@ -41,34 +41,6 @@
     <string name="steam_uninstall_success">%1$s has been uninstalled</string>
     <string name="steam_uninstall_failed">Failed to uninstall game</string>
     <string name="deleting">Deleting…</string>
-    <string name="amazon_uninstall_game_title">Uninstall Game</string>
-    <string name="amazon_uninstall_confirmation_message">Are you sure you want to uninstall %1$s? This action cannot be undone.</string>
-    <string name="amazon_install_game_title">Download Game</string>
-    <string name="amazon_install_confirmation_message">The app being installed has the following space requirements. Would you like to proceed?\n\n\tDownload Size: %1$s\n\tAvailable Space: %2$s</string>
-    <string name="amazon_verify_files_title">Verify Files</string>
-    <string name="amazon_verify_files_message">This will check all installed files against the download manifest to detect missing or corrupted files.\n\nThis may take a while for large games.</string>
-    <string name="amazon_verify_confirm">Verify</string>
-    <string name="amazon_verify_in_progress">Verifying files… This may take a while.</string>
-    <string name="amazon_verify_success">All files verified successfully.\n\n%1$d / %2$d files OK.</string>
-    <string name="amazon_verify_failed_detail">Verification found issues.\n\n%1$d / %2$d files OK\n%3$d missing\n%4$d size mismatch\n%5$d hash mismatch\n\nReinstall the game to fix corrupted files.</string>
-    <string name="amazon_verify_error">Verification failed: %1$s</string>
-    <string name="gog_uninstall_game_title">Uninstall Game</string>
-    <string name="gog_uninstall_confirmation_message">Are you sure you want to uninstall %1$s? This action cannot be undone.</string>
-    <string name="gog_install_game_title">Download Game</string>
-    <string name="gog_install_confirmation_message">The app being installed has the following space requirements. Would you like to proceed?\n\n\tDownload Size: %1$s\n\tAvailable Space: %2$s</string>
-    <string name="epic_uninstall_game_title">Uninstall Game</string>
-    <string name="epic_uninstall_game_message">Are you sure you want to uninstall %1$s? This action cannot be undone.</string>
-    <string name="epic_install_game_title">Download Game</string>
-    <string name="epic_install_game_message">The app being installed has the following space requirements. Would you like to proceed?\n\n\tDownload Size: %1$s\n\tSize on Disk: %2$s\n\tAvailable Space: %3$s</string>
-    <string name="epic_game_not_found">Game not found</string>
-    <string name="epic_starting_download">Starting download: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Starting download: %1$s + DLCs</string>
-    <string name="epic_download_failed">Failed to start download: %1$s</string>
-    <string name="epic_download_error">Download error: %1$s</string>
-    <string name="epic_cancel_download_message">Are you sure you want to cancel the download of the app?</string>
-    <string name="epic_delete_download_message">Delete all downloaded data for this game?</string>
-    <string name="epic_uninstall_failed">Uninstall failed: %1$s</string>
-    <string name="epic_uninstall_error">Uninstall error: %1$s</string>
     <string name="steam_never">Never</string>
     <string name="steam_continue">Continue</string>
     <string name="header_img_desc">App header image</string>
@@ -119,8 +91,6 @@
     <string name="downloads_cancel_confirm">Cancel download and delete files for %1$s?</string>
 
     <!-- Library Tabs -->
-    <string name="tab_recommended">Recommended</string>
-    <string name="gog_rec_empty">Add or play some games to get GOG recommendations based on your library.</string>
     <string name="tab_all">All</string>
     <string name="tab_favorites">Favorites</string>
     <string name="favorites_empty_title">No favorites yet</string>
@@ -129,9 +99,6 @@
     <string name="favorites_empty_filtered_title">No favorites to show</string>
     <string name="favorites_empty_filtered_message">No favorite games match the current search or filters, or are available in your library.</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Installed</string>
     <string name="tab_local">Custom</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -256,8 +223,6 @@
     <string name="faster_external_loading_subtitle">Can significantly speed up game boot from external storage, but may cause issues in some games</string>
     <string name="disable_libredirect_title">Disable libredirect</string>
     <string name="disable_libredirect_subtitle">May improve performance but may also cause unexpected issues</string>
-    <string name="disable_epic_overlay_title">Disable Epic Overlay</string>
-    <string name="disable_epic_overlay_subtitle">Disables the EOS overlay and CEF renderer to prevent memory exhaustion crashes in certain games</string>
     <string name="bring_to_front">Bring to Front</string>
     <string name="end_process">End Process</string>
     <string name="new_file">New File</string>
@@ -436,9 +401,7 @@
     <string name="performance_hud">Performance HUD</string>
     <string name="performance_hud_description">Show or hide the in-game overlay.</string>
     <string name="performance_hud_fps_limiter">FPS limiter</string>
-    <string name="performance_hud_fps_limiter_description">Caps the in-game frame rate. Max: %1$d Hz.</string>
     <string name="performance_hud_fps_limiter_target">Target FPS</string>
-    <string name="performance_hud_fps_limiter_off">Unlimited</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Caps the base rate. On-screen rate is the cap times the LSFG multiplier.</string>
     <string name="performance_hud_presets">Presets</string>
@@ -844,9 +807,6 @@
     <string name="custom_game_import_remove_original">Remove original after import</string>
     <string name="base_app_shortcut_created">Shortcut created</string>
     <string name="base_app_shortcut_failed">Failed to create shortcut: %s</string>
-    <string name="base_app_images_fetched">Images fetched successfully</string>
-    <string name="base_app_game_folder_not_found">Game folder not found</string>
-    <string name="base_app_images_fetch_failed">Failed to fetch images: %s</string>
     <string name="base_app_exported">Exported</string>
     <string name="base_app_export_failed">Failed to export: %s</string>
     <string name="base_app_export_cancelled">Export cancelled</string>
@@ -861,10 +821,6 @@
     <string name="app_filter_playtest">Playtest</string>
     <string name="app_filter_family">Family</string>
     <string name="filter_expired">Expired</string>
-    <string name="filter_playable">Playable (30+ FPS)</string>
-    <string name="filter_five_star_device">5-star reviews on device</string>
-    <string name="filter_five_star_gpu">5-star reviews on GPU</string>
-    <string name="filter_proven_gpu">Proven on your GPU</string>
     <string name="app_filter_vr">VR game</string>
 
     <!-- Login & Connection -->
@@ -883,13 +839,9 @@
 
 
     <!--Game Feedback Dialog -->
-    <string name="game_feedback_game_run">How did the game run?</string>
-    <string name="game_feedback_issues_question">Select any issues you encountered:</string>
 
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">Help &amp; Support</string>
-    <string name="hall_of_fame">Hall of Fame</string>
     <string name="go_online">Go Online</string>
     <string name="go_offline">Go Offline</string>
     <string name="log_out">Log Out</string>
@@ -921,7 +873,6 @@
     <string name="pulseaudio_low_latency">PulseAudio Low Latency Mode</string>
     <string name="microphone_input">Microphone Input</string>
     <string name="microphone_input_description">Expose the device microphone to Wine/Proton as a recording device. Requires the microphone permission.</string>
-    <string name="show_fps">Show FPS</string>
     <string name="portrait_mode">Portrait Mode</string>
     <string name="portrait_mode_description">For 8BitDo FlipPad/GameSir Pocket Taco type controllers</string>
     <string name="portrait_below_cutout">Keep Below Camera Hole</string>
@@ -954,13 +905,9 @@
     <string name="achievement_position_top_right">Top Right</string>
     <string name="achievement_position_bottom_left">Bottom Left</string>
     <string name="achievement_position_bottom_right">Bottom Right</string>
-    <string name="allow_steam_updates">Allow Steam updates</string>
-    <string name="allow_steam_updates_description">Updates Steam to the latest version. Significantly reduces performance.</string>
     <string name="steam_type">Steam Type</string>
 
     <!-- Container Configuration: Epic -->
-    <string name="epic_offline_mode">Epic Offline Mode</string>
-    <string name="epic_offline_mode_description">Launch Epic games in offline mode</string>
 
     <!-- Container Configuration: Graphics -->
     <string name="graphics_driver">Graphics Driver</string>
@@ -1174,7 +1121,6 @@
     <string name="select_wine_debug_channels">Select Wine Debug Channels</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">Describe what happened</string>
-    <string name="get_support_on_discord">Get support on Discord</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">Driver Manager</string>
@@ -1213,150 +1159,11 @@
     <string name="settings_accounts_signed_out">Not signed in</string>
     <string name="settings_accounts_ea_title">EA account</string>
     <string name="settings_accounts_rockstar_title">Rockstar account</string>
-    <string name="gamenative_account_title">GameNative account</string>
-    <string name="gamenative_account_sign_in">Sign in</string>
-    <string name="gamenative_account_sign_in_subtitle">Sign in to see your plan and manage your subscription.</string>
-    <string name="gamenative_account_loading">Loading your account details.</string>
-    <string name="gamenative_account_load_failed">Your account details could not be loaded. Select to try again.</string>
-    <string name="gamenative_account_plan">Plan: %1$s</string>
-    <string name="gamenative_account_plan_none">No plan</string>
-    <string name="gamenative_account_plan_basic">Basic</string>
-    <string name="gamenative_account_plan_pro">Pro</string>
-    <string name="gamenative_account_plan_patron">Patron</string>
-    <string name="gamenative_account_manage_subscription">Manage subscription</string>
-    <string name="gamenative_account_manage_subscription_subtitle">Opens the billing page in your browser.</string>
-    <string name="gamenative_account_manage_subscription_opening">Opening the billing page.</string>
-    <string name="gamenative_account_manage_subscription_none">There is no subscription on this account to manage.</string>
-    <string name="gamenative_account_managed_discord">Your plan comes from Discord. Manage it on Discord.</string>
-    <string name="gamenative_account_managed_kofi">Your plan comes from Ko-fi. Manage it on Ko-fi.</string>
-    <string name="gamenative_account_managed_play">Your plan comes from Google Play. Manage it in the Play Store.</string>
-    <string name="gamenative_account_manage_subscription_failed">The billing page could not be opened. Please try again later.</string>
-    <string name="gamenative_account_sign_out">Sign out</string>
-    <string name="gamenative_account_sign_out_subtitle">Sign out of your GameNative account on this device.</string>
-    <string name="gamenative_account_discord">Discord</string>
-    <string name="gamenative_account_discord_not_connected">Not connected › Connect</string>
-    <string name="gamenative_account_discord_connected">Connected › Disconnect</string>
-    <string name="gamenative_account_discord_connected_as">Connected as %1$s › Disconnect</string>
-    <string name="gamenative_account_discord_link_scan">Scan this code with your phone, or open this address on any device, to connect Discord.</string>
-    <string name="gamenative_account_discord_link_this_device">Or open on this device</string>
-    <string name="gamenative_account_discord_link_waiting">Waiting for you to finish connecting Discord.</string>
-    <string name="gamenative_account_discord_link_starting">Preparing your code.</string>
-    <string name="gamenative_account_discord_link_expired">This code has expired. Select Try again to get a new code.</string>
-    <string name="gamenative_account_discord_link_failed">Discord connection is not available right now. Check your connection and try again.</string>
-    <string name="gamenative_account_discord_link_connected_as">Connected as %1$s</string>
-    <string name="gamenative_account_discord_link_no_browser">No browser was found to open Discord. Scan the code with another device instead.</string>
-    <string name="gamenative_sign_in_title">Sign in to GameNative</string>
-    <string name="gamenative_sign_in_scan">Scan this code with your phone to sign in. You can also sign in on this device.</string>
-    <string name="gamenative_sign_in_code">Code: %1$s</string>
-    <string name="gamenative_sign_in_this_device">Sign in on this device</string>
-    <string name="gamenative_sign_in_waiting">Waiting for you to finish signing in.</string>
-    <string name="gamenative_sign_in_starting">Preparing your sign-in code.</string>
-    <string name="gamenative_sign_in_expired">This sign-in code has expired. Select Try again to get a new code.</string>
-    <string name="gamenative_sign_in_failed">Sign-in is not available right now. Check your connection and try again.</string>
-    <string name="gamenative_sign_in_try_again">Try again</string>
-    <string name="gamenative_sign_in_success">You are signed in to GameNative.</string>
-    <string name="gamenative_sign_in_no_browser">No browser was found to open the sign-in page. Scan the code with another device instead.</string>
-    <string name="support_title">AI Help</string>
-    <string name="support_subtitle">Your conversations with GameNative AI support</string>
-    <string name="support_refresh">Refresh</string>
-    <string name="support_signed_out_title">Get help with your games</string>
-    <string name="support_signed_out_body">Sign in to your GameNative account to see your support conversations and talk with our AI about problems with your games.</string>
-    <string name="support_signed_out_discord">You can also get help in our Discord</string>
-    <string name="support_empty_title">No conversations yet</string>
-    <string name="support_empty_body">To start one, choose “Get AI help” on a game in your library. Play until the problem happens, close the game, and then describe what went wrong.</string>
-    <string name="support_state_waiting">Waiting for a reply</string>
-    <string name="support_state_answered">Answered</string>
-    <string name="support_state_solved">Solved</string>
-    <string name="support_state_not_solved">Not solved</string>
-    <string name="support_started">Started %1$s</string>
-    <string name="support_last_activity">Last activity %1$s</string>
-    <string name="support_problem_network">Could not connect. Check your connection and try again.</string>
-    <string name="support_problem_unavailable">In-app support chat is not available yet. Until it is, AI help continues in our Discord.</string>
-    <string name="support_problem_unauthorized">Your GameNative account could not be confirmed. Please try again later, or sign out and sign in again in Settings.</string>
-    <string name="support_problem_rate_limited">You have sent a lot in a short time. Please wait a while and try again.</string>
-    <string name="support_problem_not_found">This conversation could not be found.</string>
-    <string name="support_problem_server">Something went wrong on our side. Please try again in a few minutes.</string>
-    <string name="support_problem_too_long">Your message is too long. Please shorten it and try again.</string>
-    <string name="support_problem_too_large">These logs are too large to send.</string>
-    <string name="support_problem_no_logs">There are no new logs for this game on this device. Start a new debug run to capture them.</string>
-    <string name="support_problem_locked">A plan is needed to send more messages in this conversation.</string>
-    <string name="support_problem_already_answered">You have already told us how this went.</string>
-    <string name="support_label_you">You</string>
-    <string name="support_label_report">Your report</string>
-    <string name="support_label_ai">GameNative AI</string>
-    <string name="support_label_staff">%1$s · GameNative team</string>
-    <string name="support_label_team">GameNative team</string>
-    <string name="support_analysing_first">Our AI is analyzing your logs. This usually takes a few minutes. You can leave this screen, and the reply will be here when you come back.</string>
-    <string name="support_analysing_followup">Waiting for a reply. This usually takes a few minutes.</string>
-    <string name="support_outcome_question">Did this fix the problem?</string>
-    <string name="support_outcome_worked">It worked</string>
-    <string name="support_outcome_broken">Still broken</string>
-    <string name="support_outcome_recorded_worked">You said the fix worked. Thank you for letting us know.</string>
-    <string name="support_outcome_recorded_broken">You said the problem is not fixed yet. Reply below with what happens now, or send new logs.</string>
-    <string name="support_notice_moved">This conversation now continues with Pro support.</string>
-    <string name="support_upgrade_title">A plan is needed to continue</string>
-    <string name="support_upgrade_reason_trial_used">Your first analysis was free. To reply and keep talking with the AI about this problem, choose a plan.</string>
-    <string name="support_upgrade_reason_reply_cap">You have reached today\'s fair-use limit. It resets in a few hours.</string>
-    <plurals name="support_fair_use_resets_in_hours">
-        <item quantity="one">You have reached today\'s fair-use limit. It resets in %1$d hour.</item>
-        <item quantity="other">You have reached today\'s fair-use limit. It resets in %1$d hours.</item>
-    </plurals>
-    <string name="support_upgrade_reply_cap_pro_hint">Pro reports skip the queue.</string>
-    <string name="support_limit_title">Daily fair-use limit reached</string>
-    <string name="support_upgrade_reason_required">AI replies need a GameNative subscription. If you already subscribe on Discord or Ko-fi, connect Discord in Settings.</string>
-    <string name="support_see_plans">See plans</string>
-    <string name="support_plan_basic_title">$5/month · Basic</string>
-    <string name="support_plan_basic_body">Get your games running, or running better.</string>
-    <string name="support_checkout_scan">Scan this code with your phone to finish checkout. You can also finish it on this device.</string>
-    <string name="support_checkout_waiting">When you are done, come back here. Your plan updates by itself.</string>
-    <string name="support_checkout_open">Open on this device</string>
-    <string name="support_checkout_no_browser">No browser was found to open the checkout page. Scan the code with another device instead.</string>
-    <string name="support_checkout_failed">The checkout page could not be opened. Check your connection and try again.</string>
-    <string name="support_checkout_done">Done</string>
-    <string name="support_plan_pro_title_priced">%1$s/month · Pro</string>
-    <string name="support_plan_basic_title_priced">%1$s/month · Basic</string>
-    <string name="support_checkout_waiting_guest">After you pay, sign in on that page to create your account. Your plan activates here by itself.</string>
-    <string name="support_play_unavailable">Google Play billing is not available right now. Try again later.</string>
-    <string name="support_checkout_expired">This checkout timed out. If you already paid, sign in with the email you used and your plan appears.</string>
-    <string name="support_already_member">Already a member? Sign in</string>
-    <string name="membership_plans_title">Become a member</string>
-    <string name="membership_plans_pitch">Members get AI help getting games running, early access to new releases, and premium roles on Discord.</string>
-    <string name="support_already_subscribed">This account already has a subscription. You can change your plan on the billing page.</string>
-    <string name="support_plan_active">Your plan is active.</string>
-    <string name="support_plan_pending">Your plan is still being set up. Please try again in a minute.</string>
-    <string name="support_composer_hint">Write a reply</string>
-    <string name="support_composer_analysing">Please wait. The AI is still reading your logs. You can reply after its answer arrives.</string>
-    <string name="support_send_logs">Send logs</string>
-    <string name="support_new_debug_run">New debug run</string>
-    <string name="support_fix_request_action">Ask for a custom fix</string>
-    <string name="support_fix_request_title">Ask for a custom fix</string>
-    <string name="support_fix_request_message">The AI can change this game\'s files or build a new driver or emulator for your device. If you already sent a report, it reviews that report now. If not, it runs the game once to measure the problem.</string>
-    <string name="support_fix_request_left">Custom fixes left: %1$d of %2$d.</string>
-    <string name="support_fix_request_left_resets">Custom fixes left: %1$d of %2$d (resets on %3$s).</string>
-    <string name="support_fix_request_run">Ask for the fix</string>
-    <string name="support_fix_request_failed">Could not start a custom fix. Try again.</string>
-    <string name="support_fix_request_in_progress">A custom fix for this game is already being prepared.</string>
-    <string name="support_fix_upgrade_reason">Custom fixes are part of every plan.</string>
-    <string name="support_fix_quota">You have used all your custom fixes for now.</string>
-    <string name="support_fix_quota_resets">You have used all your custom fixes. They reset on %1$s.</string>
-    <string name="support_run_check_title">How did it run?</string>
-    <string name="support_run_check_sent">Your log was sent.</string>
-    <string name="support_run_check_failed">Your log could not be sent.</string>
-    <string name="support_run_check_answer_waiting">Your answer will be sent with the log.</string>
-    <string name="support_run_check_answer_failed">Your answer could not be sent.</string>
-    <string name="support_run_check_offer">The log from your last run of this game was not sent.</string>
-    <string name="support_run_check_send_last">Send the last run</string>
-    <string name="support_uploading">Uploading your logs</string>
-    <string name="support_share_file">Open file</string>
-    <string name="debug_report_use_discord">Use Discord instead</string>
-    <string name="debug_report_use_app">Use in-app chat instead</string>
     <string name="settings_emulation_orientations_title">Allowed Orientations</string>
     <string name="settings_emulation_orientations_subtitle">Choose which orientations can be rotated to when in-game</string>
     <string name="settings_emulation_default_config_title">Modify Default Config</string>
     <string name="settings_emulation_default_config_subtitle">The initial container settings for each game (does not affect already installed games)</string>
     <string name="settings_emulation_default_config_dialog_title">Default Container Config</string>
-    <string name="settings_emulation_auto_apply_known_config_title">Auto-apply known config</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">Automatically apply recommended settings for Steam games on first launch</string>
     <string name="settings_emulation_box64_presets_title">Box64 Presets</string>
     <string name="settings_emulation_box64_presets_subtitle">View, modify, and create Box64 presets</string>
     <string name="settings_emulation_driver_manager_title">Driver Manager</string>
@@ -1389,24 +1196,12 @@
 
     <!-- Settings: Info Group -->
     <string name="settings_info_title">Info</string>
-    <string name="settings_info_send_tip_title">Become a member</string>
-    <string name="settings_info_send_tip_subtitle">AI help getting your games running, early access to releases, and more</string>
-    <string name="settings_info_ask_tip_title">Membership offers</string>
-    <string name="settings_info_ask_tip_subtitle">Show occasional offers to become a GameNative member</string>
     <string name="settings_info_source_title">Source code</string>
     <string name="settings_info_source_subtitle">View the source code of this project</string>
     <string name="settings_info_libraries_title">Libraries Used</string>
     <string name="settings_info_libraries_subtitle">See what technologies make GameNative possible</string>
     <string name="settings_info_privacy_title">Privacy Policy</string>
     <string name="settings_info_privacy_subtitle">Opens a link to GameNative\'s privacy policy</string>
-    <string name="settings_hide_ai_title">Hide AI features</string>
-    <string name="settings_hide_ai_subtitle">Hides the optional AI debugging help</string>
-    <string name="settings_info_boot_ads_title">Sponsored loading screens</string>
-    <string name="settings_info_boot_ads_subtitle">Keeping this on helps support GameNative\'s development. It never slows down game launches or affects you in any way.</string>
-    <string name="settings_info_boot_recs_title">Game recommendations on loading screens</string>
-    <string name="settings_info_boot_recs_subtitle">Show a game you might like while a game boots, when there is no sponsor card.</string>
-    <string name="settings_info_usage_analytics_title">Usage analytics</string>
-    <string name="settings_info_usage_analytics_subtitle">We never track personal information. Disabling this stops non-essential analytics, however core game performance data is still collected as a legitimate interest to improve compatibility.</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">Interface</string>
@@ -1505,7 +1300,6 @@
     <string name="login_password_hint">Enter your password</string>
     <string name="login_password_show">Show password</string>
     <string name="login_password_hide">Hide password</string>
-    <string name="login_remember_session">Remember session</string>
     <string name="login_sign_in">Sign in with Steam</string>
     <string name="login_qr_failed">QR Code Failed</string>
     <string name="login_retry_qr">Retry QR Code</string>
@@ -1536,8 +1330,6 @@
     <string name="library_reset_container_message">This will reset your container to the default configuration.</string>
     <string name="library_verify_files_title">Verify Files</string>
     <string name="library_verify_files_message">Please ensure your saves are uploaded to the cloud or backed up before verifying, as they may be overwritten otherwise.</string>
-    <string name="library_update_title">Update</string>
-    <string name="library_update_message">Please ensure your saves are uploaded to the cloud or backed up before updating, as they may be overwritten otherwise.</string>
     <string name="library_config_title">%s Config</string>
 
     <!-- LibraryAppScreen: Toast Messages -->
@@ -1563,12 +1355,8 @@
     <string name="download_paused_wifi">Download paused – waiting for Wi-Fi/LAN</string>
 
     <!-- PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">Update Available</string>
-    <string name="main_update_available_message">A new version (%1$s) is available!%2$s</string>
     <string name="main_update_button">Update</string>
     <string name="main_later_button">Later</string>
-    <string name="main_update_failed_title">Update Failed</string>
-    <string name="main_update_failed_message">Failed to download or install the update. Please try again later.</string>
     <string name="launch_dependency_failed_title">Downloading launch dependency failed</string>
     <string name="launch_dependency_failed_message">Failed to download a required component. Please try again later.</string>
 
@@ -1578,14 +1366,8 @@
     <string name="main_thank_you_title">Enjoying GameNative?</string>
     <string name="main_thank_you_message_play">Become a member today. Members get:\n\n• AI help getting your games running\n• Early access to new releases\n• Premium roles and exclusive channels on Discord\n• …and more\n\nFrom %1$s/month</string>
     <string name="main_thank_you_message">Become a member today. Members get:\n\n• AI help getting your games running\n• Early access to new releases\n• Premium roles and exclusive channels on Discord\n• …and more\n\nFrom $5/month</string>
-    <string name="main_join_kofi">Become a member</string>
-    <string name="pitch_session_title">Enjoying %1$s?</string>
-    <string name="pitch_five_star_title">Glad %1$s ran great!</string>
     <string name="main_share">Share</string>
     <string name="main_share_text">Check out GameNative - play your PC Steam games on Android, with full support for cloud saves!\nhttps://gamenative.app\nJoin the community: https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">Did the game work?</string>
-    <string name="main_discord_support_message">Join the Discord to get support to fix your game or improve performance.</string>
-    <string name="main_open_discord">Open Discord</string>
 
     <!-- PluviaMain: Game Launch -->
     <string name="main_downloading_entry">Downloading %s</string>
@@ -1662,23 +1444,8 @@
     <string name="libraries_message">Pluvia - github.com/oxters168/Pluvia\nJavaSteam - github.com/Longi94/JavaSteam\nWinlator &amp; Vortek - github.com/brunodev85/winlator\nWinlator Cmod - github.com/coffincolors/winlator\nWrapper - https://github.com/leegao/bionic-vulkan-wrapper &amp; https://github.com/pipetto-crypto/\nUbuntu RootFs - releases.ubuntu.com/focal\nGame engine detection rules - SteamDB, github.com/SteamDatabase/FileDetectionRuleSets (MIT)</string>
 
     <!-- Supporters Dialog -->
-    <string name="supporters_art_credits">Art Credits</string>
-    <string name="supporters_app_icon">App Icon: Hachi</string>
-    <string name="supporters_alt_icon">Alternate App Icon: rhapsody_mdr</string>
-    <string name="supporters_loading">Loading supporters…</string>
-    <string name="supporters_error">Unable to load supporters</string>
-    <string name="supporters_members">Members</string>
-    <string name="supporters_supporters">Supporters</string>
-    <string name="supporters_none">No supporters yet.</string>
-    <string name="supporters_anonymous">Anonymous</string>
 
     <!-- Chat Screen -->
-    <string name="chat_preview_warning">Chatting is still an early feature.\nPlease report any issues in the project repo.</string>
-    <string name="chat_no_history">No chat history</string>
-    <string name="chat_send_message">Send a message</string>
-    <string name="chat_send">Send</string>
-    <string name="chat_emoticons">Emoticons</string>
-    <string name="chat_stickers">Stickers</string>
 
     <!-- Library Components -->
     <string name="library_open">Open</string>
@@ -1687,91 +1454,20 @@
     <string name="library_not_installed">Not installed</string>
     <string name="library_family_shared">Family Shared</string>
     <string name="library_shared_short">Shared</string>
-    <string name="library_compatible">Compatible</string>
-    <string name="library_gpu_compatible">GPU Compatible</string>
     <string name="library_compatibility_unknown">Unknown</string>
-    <string name="library_not_compatible">Not Compatible</string>
 
     <!-- Device game stats key/legend (for your device) -->
-    <string name="stats_key_runs">Successful runs on your GPU</string>
-    <string name="stats_key_reviews">5-star reviews (your GPU / your device)</string>
-    <string name="stats_key_fps">Expected FPS</string>
-    <string name="stats_key_session">Longest session on your device</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">Known config works on your GPU</string>
-    <string name="best_config_gpu_family_match">Known config should work on your GPU</string>
-    <string name="best_config_fallback_match">Known config may work on your GPU</string>
-    <string name="best_config_compatibility_unknown">No known config</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">Config applied successfully</string>
     <string name="best_config_known_config_invalid">Known config invalid</string>
-    <string name="best_config_no_config_available">No best config available for this game</string>
-    <string name="best_config_fetch_failed">Failed to fetch config. Please check your network connection.</string>
     <string name="best_config_apply_failed">Failed to apply config: %s</string>
     <string name="best_config_missing_components_title">Config not applied</string>
     <string name="best_config_missing_components_message">The following required components are not available:\n\n%1$s</string>
     <string name="best_config_apply_anyway">Apply anyway</string>
     <string name="best_config_applied_with_defaults">Config applied with missing components replaced by defaults</string>
-    <string name="community_config_title">Community configs</string>
-    <string name="community_config_close">Close community configs</string>
-    <string name="community_config_refresh">Refresh community configs</string>
-    <string name="community_config_retry">Retry</string>
-    <string name="community_config_unknown_error">Unknown error</string>
-    <string name="community_config_unknown">Unknown</string>
-    <string name="community_config_load_failed">Could not load community configs: %1$s</string>
-    <string name="community_config_game_not_found">No compatibility entry was found for %1$s</string>
-    <string name="community_config_gpu_unknown">GPU unavailable</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d config</item>
-        <item quantity="other">%1$d configs</item>
-    </plurals>
-    <string name="community_config_highest_rated">Highest rated</string>
-    <string name="community_config_newest">Newest</string>
-    <string name="community_config_same_device">Same device</string>
-    <string name="community_config_this_gpu">Same GPU</string>
-    <string name="community_config_compatible_gpus">Compatible</string>
-    <string name="community_config_load_more">Load more</string>
-    <string name="community_config_no_device_results">No configs were found for this device.</string>
-    <string name="community_config_no_gpu_results">No configs were found for this GPU.</string>
-    <string name="community_config_no_compatible_results">No configs were found for compatible GPUs.</string>
-    <string name="community_config_show_this_gpu">Show this GPU</string>
-    <string name="community_config_show_compatible_gpus">Show compatible GPUs</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Config details</string>
-    <string name="community_config_other_gpu_warning">This result uses another GPU. GPU-specific driver and wrapper settings will not be applied.</string>
-    <string name="community_config_run_details">Test run</string>
-    <string name="community_config_rating">Rating</string>
-    <string name="community_config_average_fps">Average FPS</string>
-    <string name="community_config_device">Device</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">GameNative version</string>
-    <string name="community_config_submitted">Submitted</string>
-    <string name="community_config_session_length">Session length</string>
-    <string name="community_config_game_store">Game store</string>
-    <string name="community_config_custom_game">Custom game</string>
-    <string name="community_config_settings">Settings</string>
-    <string name="community_config_additional_launch_settings">Additional launch settings</string>
-    <string name="community_config_apply_launch_arguments">Apply launch arguments</string>
-    <string name="community_config_apply_environment_variables">Apply environment variables</string>
-    <string name="community_config_replaces_existing_value">Replaces the current value</string>
-    <string name="community_config_dependencies">Dependencies</string>
-    <string name="community_config_dependencies_apply_check">Dependencies will be checked when the config is applied.</string>
-    <string name="community_config_no_downloads">No manifest downloads are currently required.</string>
-    <string name="community_config_downloads_required">These components will be downloaded automatically:\n%1$s</string>
-    <string name="community_config_tags">Tags</string>
-    <string name="community_config_notes">Notes</string>
-    <string name="community_config_apply">Apply config</string>
-    <string name="community_config_container">Container</string>
-    <string name="community_config_wine">Wine or Proton</string>
-    <string name="community_config_emulator">Emulator</string>
-    <string name="community_config_wrapper">DirectX wrapper</string>
-    <string name="community_config_box64_preset">Box64 preset</string>
-    <string name="community_config_driver">Graphics driver</string>
     <string name="import_config">Import config</string>
     <string name="export_config">Export config</string>
     <string name="steam_save_export_success">Saves exported</string>
@@ -1796,9 +1492,6 @@
     <string name="library_source_custom">Custom Games</string>
     <string name="library_source_title">Source</string>
     <string name="library_source_not_logged_in_steam">Sign in to Steam to see your library</string>
-    <string name="library_source_not_logged_in_gog">Sign in to GOG to see your library</string>
-    <string name="library_source_not_logged_in_epic">Sign in to Epic to see your library</string>
-    <string name="library_source_not_logged_in_amazon">Sign in to Amazon to see your library</string>
     <string name="library_source_no_custom_games">No custom games added yet</string>
     <string name="library_layout_title">Layout</string>
     <string name="library_options">Options</string>
@@ -1817,10 +1510,6 @@
     <string name="sort_recently_played">Recently Played</string>
     <string name="sort_size_smallest">Size (Smallest)</string>
     <string name="sort_size_largest">Size (Largest)</string>
-    <string name="sort_fps">Expected FPS</string>
-    <string name="sort_runs">Successful runs</string>
-    <string name="sort_reviews">5-star reviews (device)</string>
-    <string name="sort_reviews_gpu">5-star reviews (GPU)</string>
 
     <!-- Game Options Panel -->
     <string name="game_options_title">Options</string>
@@ -1869,7 +1558,6 @@
     <string name="contents_all_trusted">All files are trusted. Ready to install.</string>
     <string name="contents_no_installed">No installed content for this type.</string>
     <string name="contents_delete">Delete</string>
-    <string name="contents_review_confirm">This content includes files outside the trusted set. Review and confirm to proceed.</string>
     <string name="contents_removed">Removed %1$s</string>
 
     <!-- Driver Manager -->
@@ -1962,10 +1650,6 @@
     <string name="auth_webview_title">Authorization</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">GOG Integration (Alpha)</string>
-    <string name="gog_settings_login_title">Sign in to GOG</string>
-    <string name="gog_settings_login_subtitle">Sign in to your GOG account</string>
-    <string name="gog_login_success_title">Login Successful</string>
     <string name="rockstar_login_required_title">Rockstar sign-in required</string>
     <string name="rockstar_login_failed">Rockstar sign-in failed: %1$s</string>
     <string name="rockstar_link_refused">This Rockstar account is linked to a different Steam account.</string>
@@ -1983,52 +1667,16 @@
     <string name="rockstar_preparing">Preparing Rockstar launcher support</string>
     <string name="rockstar_runtime_installing">Installing the Social Club runtime</string>
     <string name="rockstar_installer_missing">The Social Club installer is missing from the game files. Verify the game files in Steam and try again.</string>
-    <string name="gog_login_cancel">Cancel</string>
-    <string name="gog_settings_logout_title">Sign out of GOG</string>
-    <string name="gog_settings_logout_subtitle">Sign out from your GOG account</string>
-    <string name="gog_logout_confirm_title">Logout from GOG?</string>
-    <string name="gog_logout_confirm_message">This will remove your GOG credentials and clear your GOG library from this device. You can sign in again at any time.</string>
-    <string name="gog_logout_confirm">Logout</string>
-    <string name="gog_logout_success">Logged out from GOG successfully</string>
-    <string name="gog_logout_failed">Failed to logout: %s</string>
-    <string name="gog_logout_in_progress">Logging out from GOG…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Epic Games Integration</string>
-    <string name="epic_settings_login_title">Sign in to Epic</string>
-    <string name="epic_settings_login_subtitle">Sign in to your Epic Games account</string>
-    <string name="epic_login_success_title">Login Successful</string>
-    <string name="epic_login_cancel">Cancel</string>
-    <string name="epic_settings_logout_title">Sign out of Epic</string>
-    <string name="epic_settings_logout_subtitle">Sign out from your Epic Games account</string>
-    <string name="epic_logout_confirm_title">Logout from Epic Games?</string>
-    <string name="epic_logout_confirm_message">This will remove your Epic Games credentials and clear your Epic Games library from this device. You can sign in again at any time.</string>
-    <string name="epic_logout_confirm">Logout</string>
-    <string name="epic_logout_success">Logged out from Epic Games successfully</string>
-    <string name="epic_logout_failed">Failed to logout: %s</string>
-    <string name="epic_logout_in_progress">Logging out from Epic Games…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Amazon Games Integration (Alpha)</string>
-    <string name="amazon_settings_login_title">Sign in to Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Sign in to your Amazon Games account</string>
-    <string name="amazon_login_success_title">Login Successful</string>
-    <string name="amazon_login_cancel">Cancel</string>
-    <string name="amazon_settings_logout_title">Sign out of Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Sign out from your Amazon Games account</string>
-    <string name="amazon_logout_confirm_title">Logout from Amazon Games?</string>
-    <string name="amazon_logout_confirm_message">This will remove your Amazon Games credentials and clear your Amazon library from this device. You can sign in again at any time.</string>
-    <string name="amazon_logout_confirm">Logout</string>
-    <string name="amazon_logout_success">Logged out from Amazon Games successfully</string>
-    <string name="amazon_logout_failed">Failed to logout: %s</string>
-    <string name="amazon_logout_in_progress">Logging out from Amazon Games…</string>
     <string name="manifest_downloading_item">Downloading %1$s...</string>
     <string name="manifest_download_failed">Download failed: %1$s</string>
     <string name="manifest_install_failed">Failed to install %1$s</string>
     <string name="manifest_install_success">%1$s installed</string>
     <string name="manifest_content_untrusted">Content is not trusted and was not installed.</string>
     <string name="manifest_type_mismatch">Downloaded content does not match expected type.</string>
-    <string name="manifest_glibc_not_supported">GLIBC builds are not supported.</string>
 
     <!-- Workshop -->
     <string name="workshop_checking_mods">Checking Workshop mods…</string>
@@ -2048,8 +1696,6 @@
     <string name="option_open_container">Open container</string>
     <string name="option_edit_container">Edit container</string>
     <string name="option_reset_to_defaults">Reset container</string>
-    <string name="option_get_support">Get support</string>
-    <string name="option_submit_feedback">Submit feedback</string>
     <string name="option_add_to_favorites">Favorite</string>
     <string name="option_remove_from_favorites">Unfavorite</string>
     <string name="favorite_add_named">Favorite %1$s</string>
@@ -2059,8 +1705,6 @@
     <string name="favorite_removed">Removed from favorites</string>
     <string name="favorite_removed_named">Removed %1$s from favorites</string>
     <string name="option_reset_drm">Reset DRM</string>
-    <string name="option_use_known_config">Use known config</string>
-    <string name="option_browse_community_configs">Browse community configs</string>
     <string name="option_import_saves">Import saves</string>
     <string name="option_export_saves">Export saves</string>
     <string name="option_verify_files">Verify files</string>
@@ -2071,51 +1715,9 @@
     <string name="option_browse_online_saves">Browse online saves</string>
     <string name="option_force_download_remote">Force download remote saves</string>
     <string name="option_force_upload_local">Force upload local saves</string>
-    <string name="option_fetch_game_images">Fetch game images</string>
     <string name="option_test_graphics">Test graphics</string>
     <string name="option_play_with_diagnostics">Diagnostic Run</string>
     <string name="option_share_diagnostics">Share diagnostics</string>
-    <string name="option_ai_debug_run">Get AI help</string>
-    <string name="debug_report_title">AI Debug Report</string>
-    <string name="debug_report_summary">%1$s · %2$s</string>
-    <string name="debug_report_preparing">Preparing your log…</string>
-    <string name="debug_report_what_went_wrong">What went wrong?</string>
-    <string name="debug_report_send">Send</string>
-    <string name="debug_report_share_instead">Share instead</string>
-    <string name="debug_report_connect_hint">Connect your Discord account so our AI can reply to you in a support thread.</string>
-    <string name="debug_report_connect_discord">Connect Discord</string>
-    <string name="debug_report_sending">Sending your report…</string>
-    <string name="debug_report_success_title">Report sent</string>
-    <string name="debug_report_success_message">A support thread was opened in our Discord. Our AI is reading your log and will reply there.</string>
-    <string name="debug_report_open_discord">Open Discord</string>
-    <string name="debug_report_failed_title">Could not send report</string>
-    <string name="debug_report_failed_message">Your report is saved on this device. Retry when you are back online, or share the log instead.</string>
-    <string name="debug_report_retry">Retry</string>
-    <string name="debug_report_share_log_title">Share debug log</string>
-    <string name="debug_report_discord_linked">Discord connected</string>
-    <string name="debug_report_no_log">No debug log was captured for this run.</string>
-    <string name="debug_paywall_title">Get AI debug support</string>
-    <string name="debug_paywall_pitch">Custom AI patches and builds that fix your games.</string>
-    <string name="debug_paywall_tier5_title">$5/month · Basic</string>
-    <string name="debug_paywall_tier5_body">1 custom fix a month, up to 5 attempts each.</string>
-    <string name="debug_paywall_tier10_title">$10/month · Pro</string>
-    <string name="debug_paywall_tier10_body">3 custom fixes a month, faster answers, first in the queue.</string>
-    <string name="debug_paywall_cancel_anytime">Cancel anytime. Fair-use limits apply.</string>
-    <string name="debug_paywall_costs_note">Subscriptions cover the AI service costs that make this feature possible.</string>
-    <string name="debug_paywall_already">Already a supporter?</string>
-    <string name="debug_paywall_send_now">I’ve subscribed, send now</string>
-    <string name="debug_paywall_not_now">Not now</string>
-    <string name="debug_offer_title">Get AI help with this crash</string>
-    <string name="debug_offer_message">That session ended early. Run %1$s once more with debug logging and our AI will read the log and tell you what to change.</string>
-    <string name="debug_offer_confirm">Start debug run</string>
-    <string name="debug_prerun_title">Get AI help</string>
-    <string name="debug_prerun_message_1">Runs the game with debug logging and shares the log with our AI on Discord when you quit. Run the game until you experience the issue.</string>
-    <string name="debug_prerun_message_2">AI replies are for subscribers only.</string>
-    <string name="debug_prerun_message_1_app">Runs the game with debug logging. When you quit, the log goes to our AI and the answer comes in our Discord, or in the app if you sign in with a GameNative account. Run the game until you experience the issue.</string>
-    <string name="debug_prerun_message_2_app">The first analysis is free. Follow-up replies need a plan.</string>
-    <string name="debug_prerun_message_1_neutral">The game runs with debug logging. When you quit, the log goes to our AI. Play until the problem happens.</string>
-    <string name="debug_trial_note">Free trial available.</string>
-    <string name="debug_prerun_message_3">Anyone can share the report for human help.</string>
     <string name="diagnostics_share_title">Share diagnostics log</string>
     <string name="diagnostics_share_none">No diagnostics log yet. Use \"Diagnostic Run\" first.</string>
     <string name="option_manage_dlc">Manage DLC</string>
@@ -2523,7 +2125,6 @@
     <string name="nexus_plan_ambiguous_case">ambiguous case variants already exist</string>
     <string name="nexus_plan_blocked">Automatic apply is blocked until every installable file has a proven destination.</string>
     <string name="nexus_plan_export">Share diagnostic</string>
-    <string name="nexus_reconfiguration_preview">Reconfiguration preview</string>
     <string name="nexus_reconfiguration_summary">%1$d added • %2$d changed • %3$d moved • %4$d stale</string>
     <string name="nexus_choose_package_variant">Choose a package variant</string>
     <string name="nexus_confirm_risky_game_root_files">I reviewed these game-root files</string>
@@ -2612,9 +2213,6 @@
     <string name="nexus_profile_name_duplicate">A profile with that name already exists</string>
     <!-- Recommendations -->
     <string name="recommended_badge">Recommended</string>
-    <string name="recommended_buy_button">Purchase on GOG</string>
-    <string name="rec_buy_with_price">%1$s · Purchase on GOG</string>
-    <string name="recommended_support_message">We earn a commission on purchases made through this link.</string>
     <string name="recommended_about_heading">About This Game</string>
     <string name="recommended_review_count">Based on %1$s reviews</string>
     <string name="library_store_media_page">%1$d of %2$d</string>
@@ -2626,39 +2224,8 @@
     <string name="library_store_about_collapse">Collapse About This Game</string>
 
     <!-- FeaturedItem (server-driven promoted slot) -->
-    <string name="featured_badge">Sponsored</string>
-    <string name="boot_rec_badge">Recommended for you</string>
-    <string name="boot_ad_close_cd">Close this card</string>
-    <string name="boot_ad_sheet_title_sponsored">About sponsor cards</string>
-    <string name="boot_ad_sheet_title_rec">About recommendations</string>
-    <string name="boot_ad_sheet_body_sponsored">Sponsor cards help fund full-time work on GameNative. You can change this any time in Settings.</string>
-    <string name="boot_ad_sheet_body_rec">Recommendations are picked from the games you play. You can change this any time in Settings.</string>
-    <string name="boot_ad_close_one">Close this one</string>
-    <string name="boot_ad_turn_off_sponsored">Turn off sponsor cards</string>
-    <string name="boot_ad_turn_off_rec">Turn off recommendations</string>
-    <string name="boot_ad_not_now">Not now</string>
     <string name="boot_quiz_win_default">Correct!</string>
     <string name="boot_quiz_lose_default">The answer was %1$s</string>
-    <string name="featured_action_wishlist">Wishlist</string>
-    <string name="featured_action_wishlist_on">Wishlist on %1$s</string>
-    <string name="featured_action_wishlisted">Wishlisted</string>
-    <string name="featured_action_get_demo">Get the Demo</string>
-    <string name="featured_action_in_library">In Library</string>
-    <string name="featured_action_failed">Couldn\'t finish in the app — opening the store page</string>
-    <string name="featured_action_preorder">Pre-order</string>
-    <string name="featured_action_preorder_on">Pre-order on %1$s</string>
-    <string name="featured_action_buy">Buy</string>
-    <string name="featured_action_buy_on">Buy on %1$s</string>
-    <string name="featured_action_notify">Notify me</string>
-    <string name="featured_action_visit">Learn more</string>
-    <string name="featured_status_coming_soon_title">Coming Soon</string>
-    <string name="featured_status_coming_soon_body">Wishlist now to get notified the moment it launches</string>
-    <string name="featured_status_early_access_title">Early Access</string>
-    <string name="featured_status_early_access_body">Available now in Early Access</string>
-    <string name="featured_status_preorder_title">Pre-order Now</string>
-    <string name="featured_status_preorder_body">Pre-order to be ready at launch</string>
-    <string name="featured_status_out_now_title">Out Now</string>
-    <string name="featured_status_out_now_body">Available now</string>
     <string name="review_overwhelmingly_positive">Overwhelmingly Positive</string>
     <string name="review_very_positive">Very Positive</string>
     <string name="review_mostly_positive">Mostly Positive</string>
@@ -2679,7 +2246,6 @@
     <string name="lsfg_backend_desc">Legacy runs the lsfg-vk layer inside the game; Native runs frame generation in the GameNative renderer</string>
     <string name="lsfg_backend_legacy">Legacy (layer)</string>
     <string name="lsfg_backend_native">Native (renderer)</string>
-    <string name="lsfg_not_supported">Frame generation requires a Bionic container</string>
     <string name="lsfg_install_prompt">Lossless Scaling not installed. Tap to install. Only known to work on Adreno 6xx and above.</string>
     <string name="lsfg_not_in_library">Lossless Scaling not in your Steam library</string>
     <string name="lsfg_install_title">Install Lossless Scaling?</string>
@@ -2697,34 +2263,16 @@
     <string name="steam_invite_joined">In your game</string>
     <string name="steam_invite_online">Online</string>
     <string name="steam_invite_offline">Offline</string>
-    <string name="rec_disclosure_title">Game recommendations</string>
-    <string name="rec_disclosure_body">For personalized recommendations, we share the games you play with GOG. Turn off anytime in Settings.</string>
-    <string name="rec_disclosure_allow">Allow</string>
-    <string name="rec_disclosure_not_now">Not now</string>
-    <string name="rec_teaser_title">Discover games for your device</string>
-    <string name="rec_teaser_subtitle">Tap to take a look</string>
-    <string name="settings_interface_show_recommendations_title">Show game recommendations</string>
-    <string name="settings_interface_show_recommendations_subtitle">Show personalized recommendations. Keeping this on helps support GameNative.</string>
     <string name="settings_interface_show_hidden_games_title">Show hidden games by default</string>
     <string name="settings_interface_show_hidden_games_subtitle">Hidden Steam and GOG games stay visible unless you turn this off. Selecting the Hidden Steam collection always shows hidden Steam games.</string>
 
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Main Story</string>
-    <string name="hltb_main_plus_extras">Main + Extras</string>
-    <string name="hltb_completionist">Completionist</string>
-    <string name="hltb_all_styles">All Styles</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">How Long to Beat</string>
-    <string name="hltb_show_spoilers">Show spoilers</string>
 
     <!-- Frontend Sync Settings -->
     <string name="settings_interface_frontend_sync_title">Frontend Sync</string>
     <string name="settings_interface_frontend_sync_subtitle">Auto-export installed games for game library frontends</string>
     <string name="frontend_sync_dialog_title">Frontend Sync</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Custom Games</string>
     <string name="frontend_sync_not_set">Not set</string>
     <string name="frontend_sync_clear_confirm_title">Remove old export files?</string>
@@ -2969,183 +2517,4 @@
     <string name="gyro_degrees_per_second_value">%1$.1f°/s</string>
     <string name="gyro_milliseconds_value">%1$d ms</string>
     <string name="reset_gyro_settings">Reset gyro settings</string>
-    <string name="sort_compatibility">Compatibility</string>
-    <string name="community_compatibility_details">Details</string>
-    <string name="community_compatibility_expanded">Expanded</string>
-    <string name="community_compatibility_collapsed">Collapsed</string>
-    <string name="community_compatibility_short_disclaimer">Community results aren’t a guarantee.</string>
-    <string name="community_compatibility_unreliable_short">Unreliable results; working gameplay isn’t confirmed.</string>
-    <string name="community_compatibility_performance_caution">Reported performance may be limited.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">Based on %1$d recorded session on your device model.</item>
-        <item quantity="other">Based on %1$d recorded sessions on your device model.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">Based on %1$d recorded session using the same chipset.</item>
-        <item quantity="other">Based on %1$d recorded sessions using the same chipset.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">Based on %1$d recorded session using your GPU.</item>
-        <item quantity="other">Based on %1$d recorded sessions using your GPU.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">Based on %1$d recorded session in your GPU family.</item>
-        <item quantity="other">Based on %1$d recorded sessions in your GPU family.</item>
-    </plurals>
-    <string name="community_compatibility_checking_short">Checking…</string>
-    <string name="community_compatibility_unavailable_short">Unavailable</string>
-    <string name="community_compatibility_unavailable">Compatibility could not be loaded</string>
-    <string name="community_compatibility_missing_tier">The response lacks the hardware evidence needed to apply its verdict to your device.</string>
-    <string name="community_compatibility_works">Plays well</string>
-    <string name="community_compatibility_should">Runs</string>
-    <string name="community_compatibility_may">May work</string>
-    <string name="community_compatibility_mixed">Unreliable</string>
-    <string name="community_compatibility_wont">Broken</string>
-    <string name="community_compatibility_unknown">Untested</string>
-    <string name="community_compatibility_checking">Checking compatibility…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d rated shared config from this device model</item>
-        <item quantity="other">%1$d rated shared configs from this device model</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d rated shared config using your GPU</item>
-        <item quantity="other">%1$d rated shared configs using your GPU</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">No shared configs found for your hardware</string>
-    <string name="community_compatibility_configs_unavailable">Some compatibility data could not be loaded. Showing available evidence.</string>
-    <string name="community_compatibility_retry">Retry</string>
-    <string name="community_compatibility_fps_median">Median %1$d FPS reported</string>
-    <string name="community_compatibility_fps_device">%1$s on your device model.</string>
-    <string name="community_compatibility_fps_soc">%1$s using the same chipset.</string>
-    <string name="community_compatibility_fps_gpu">%1$s using your GPU.</string>
-    <string name="community_compatibility_fps_family">%1$s using compatible GPUs.</string>
-    <string name="community_compatibility_view_reports">Browse Configs</string>
-    <string name="community_config_install_before_apply">Install this game before applying a community configuration.</string>
-    <string name="debug_prerun_instruction">What to do in this run: %1$s</string>
-    <plurals name="debug_prerun_min_minutes">
-        <item quantity="one">Keep the game open for at least %1$d minute before you quit.</item>
-        <item quantity="other">Keep the game open for at least %1$d minutes before you quit.</item>
-    </plurals>
-    <string name="support_suggestion_title">Suggested settings</string>
-    <string name="support_suggestion_not_applicable">This version of the app cannot apply these changes. You can change them by hand in the game settings.</string>
-    <string name="support_suggestion_no_game">Install the game on this device to apply these changes.</string>
-    <string name="support_suggestion_change">%1$s: %2$s → %3$s</string>
-    <string name="support_suggestion_changed_since">Your current value is %1$s. The report had %2$s.</string>
-    <string name="support_suggestion_run_record">The next run will also record: %1$s</string>
-    <string name="support_suggestion_run_channels">Wine log channels %1$s</string>
-    <string name="support_suggestion_run_env">debug values %1$s</string>
-    <string name="support_suggestion_run_wrapper_diag">graphics wrapper diagnostics</string>
-    <string name="support_suggestion_apply_and_run">Apply and run</string>
-    <string name="support_suggestion_apply_only">Apply only</string>
-    <string name="support_suggestion_restore">Restore previous settings</string>
-    <string name="support_suggestion_confirm_title">Change these settings?</string>
-    <string name="support_suggestion_confirm_message">The app saves your current values first. You can restore them from this card.</string>
-    <string name="support_suggestion_confirm_run">After the change, the app starts a debug run of the game.</string>
-    <string name="support_suggestion_confirm_warning">This changes the Wine version or the graphics driver. If the game gets worse, restore the previous settings.</string>
-    <string name="support_suggestion_confirm">Apply</string>
-    <string name="support_suggestion_restore_confirm_title">Restore previous settings?</string>
-    <string name="support_suggestion_restore_confirm_message">The app puts back the values that these changes replaced.</string>
-    <string name="support_suggestion_restore_confirm">Restore</string>
-    <string name="support_suggestion_installing">Installing %1$s</string>
-    <string name="support_suggestion_applied">The settings are changed.</string>
-    <string name="support_suggestion_restored">The previous settings are back.</string>
-    <string name="support_suggestion_failed">The settings could not be changed. %1$s</string>
-    <string name="support_suggestion_missing">These parts are not available on this device: %1$s</string>
-    <string name="support_files_title">Files requested</string>
-    <string name="support_files_not_applicable">This version of the app cannot read this file request.</string>
-    <string name="support_files_no_game">Install the game on this device to upload these files.</string>
-    <string name="support_files_size">%1$s (%2$s)</string>
-    <string name="support_files_missing">%1$s (missing)</string>
-    <string name="support_files_too_large">%1$s (too large)</string>
-    <string name="support_files_wifi_warning">These files are %1$s. You are on mobile data. Use Wi-Fi if you can.</string>
-    <string name="support_files_upload">Upload</string>
-    <string name="support_files_hashing">Checking %1$s</string>
-    <string name="support_files_uploading">Uploading %1$s</string>
-    <string name="support_files_uploaded">%1$s uploaded</string>
-    <string name="support_files_failed">%1$s could not be uploaded. %2$s</string>
-    <string name="support_files_done">The files are uploaded.</string>
-    <string name="support_files_cancelled">The upload stopped.</string>
-    <string name="support_files_listing">Folder listing: %1$s</string>
-    <string name="support_files_listing_missing">Folder not found: %1$s</string>
-    <string name="support_files_send_listing">Send listing</string>
-    <string name="support_files_listing_sending">Sending the listing of %1$s</string>
-    <string name="support_files_listing_sent">Listing sent (%1$d entries)</string>
-    <string name="support_files_listing_failed">The listing of %1$s could not be sent. %2$s</string>
-    <string name="support_patch_title">Game file patch</string>
-    <string name="support_patch_not_applicable">This version of the app cannot apply this patch.</string>
-    <string name="support_patch_no_game">Install the game on this device to apply this patch.</string>
-    <string name="support_patch_apply_and_run">Apply patch and run</string>
-    <string name="support_patch_apply">Apply patch</string>
-    <string name="support_patch_restore">Restore original files</string>
-    <string name="support_patch_confirm_title">Change game files?</string>
-    <string name="support_patch_confirm_message">The app keeps a copy of the original files. You can restore them from this card.</string>
-    <string name="support_patch_restore_confirm_title">Restore original files?</string>
-    <string name="support_patch_restore_confirm_message">The app puts back the files that the patch replaced.</string>
-    <string name="support_patch_downloading">Downloading %1$s</string>
-    <string name="support_patch_verifying">Checking %1$s</string>
-    <string name="support_patch_backing_up">Saving a copy of %1$s</string>
-    <string name="support_patch_replacing">Replacing %1$s</string>
-    <string name="support_patch_restoring">Restoring %1$s</string>
-    <string name="support_patch_applied">The patch is applied.</string>
-    <string name="support_patch_restored">The original files are back.</string>
-    <string name="support_patch_game_updated">The game files changed. The patch is no longer applied.</string>
-    <string name="support_patch_hash_mismatch">%1$s is not the file this patch was made for. Nothing was changed.</string>
-    <string name="support_patch_failed">The patch could not be applied. %1$s</string>
-    <string name="support_patch_restore_failed">The original files could not be restored. %1$s</string>
-    <string name="support_component_title">Component build</string>
-    <string name="support_component_version">%1$s %2$s (%3$s)</string>
-    <string name="support_component_source">Built from %1$s</string>
-    <string name="support_component_source_ref">Built from %1$s at %2$s</string>
-    <string name="support_component_no_game">Install the game on this device to use this build.</string>
-    <string name="support_component_no_container">This game has no settings on this device yet. Open the game once, then try again.</string>
-    <string name="support_component_install_and_run">Install and run</string>
-    <string name="support_component_install">Install</string>
-    <string name="support_component_restore">Restore previous version</string>
-    <string name="support_component_confirm_title">Install %1$s %2$s and use it for this game?</string>
-    <string name="support_component_confirm_message">The app keeps the previous setting. You can restore it from this card.</string>
-    <string name="support_component_restore_confirm_title">Restore previous version?</string>
-    <string name="support_component_restore_confirm_message">The game uses the version it had before. The new build stays installed.</string>
-    <string name="support_component_downloading">Downloading the build</string>
-    <string name="support_component_verifying">Checking the build</string>
-    <string name="support_component_importing">Installing the build</string>
-    <string name="support_component_applying">Changing the game settings</string>
-    <string name="support_component_restoring">Restoring the previous version</string>
-    <string name="support_component_applied">The build is installed and in use.</string>
-    <string name="support_component_restored">The game uses the previous version again.</string>
-    <string name="support_component_hash_mismatch">The download is not the expected file. Nothing was changed.</string>
-    <string name="support_component_failed">The build could not be installed. %1$s</string>
-    <string name="support_component_restore_failed">The previous version could not be restored. %1$s</string>
-    <string name="support_progress_next">Yours is next.</string>
-    <string name="support_progress_eta_soon">Expected reply very soon.</string>
-    <string name="support_progress_analysing">The AI is reading your logs</string>
-    <string name="support_progress_analysing_elapsed">The AI is reading your logs (%1$d min)</string>
-    <string name="support_progress_building">The AI is building a custom fix for your device. This can take 10 minutes or more.</string>
-    <string name="support_progress_building_elapsed">The AI is building a custom fix for your device (%1$d min). This can take 10 minutes or more.</string>
-    <string name="support_progress_failed">The analysis did not finish. Send your report again to try once more.</string>
-    <string name="support_progress_retry">Try again</string>
-    <string name="support_stage_queued">In queue</string>
-    <string name="support_stage_queued_eta">In queue · about %1$d min</string>
-    <string name="support_stage_analysing">Analyzing</string>
-    <string name="support_stage_analysing_elapsed">Analyzing · %1$d min</string>
-    <string name="support_stage_building">Building a fix</string>
-    <string name="support_stage_failed">Analysis failed</string>
-    <plurals name="support_progress_ahead">
-        <item quantity="one">%1$d report is ahead of yours.</item>
-        <item quantity="other">%1$d reports are ahead of yours.</item>
-    </plurals>
-    <plurals name="support_progress_eta_minutes">
-        <item quantity="one">Expected reply in about %1$d minute.</item>
-        <item quantity="other">Expected reply in about %1$d minutes.</item>
-    </plurals>
-    <string name="support_reply_ready">Your AI Help reply is ready</string>
-    <string name="support_reply_open">Open</string>
-    <string name="support_wait_channel_name">AI Help reply status</string>
-    <string name="support_wait_channel_description">Shows while GameNative waits for a reply to your report.</string>
-    <string name="support_replies_channel_name">AI Help replies</string>
-    <string name="support_replies_channel_description">Tells you when a reply to your report is ready.</string>
-    <string name="support_wait_title">Waiting for the AI Help reply</string>
-    <string name="support_wait_text">Your report was sent. We will tell you when the reply is ready.</string>
-    <string name="support_wait_stop">Stop</string>
-    <string name="support_reply_ready_tap">Tap to read it.</string>
-    <string name="support_notify_me">Notify me when the reply arrives</string>
 </resources>

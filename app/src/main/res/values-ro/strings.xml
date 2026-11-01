@@ -41,26 +41,7 @@
     <string name="steam_uninstall_success">%1$s a fost dezinstalat</string>
     <string name="steam_uninstall_failed">Dezinstalarea jocului a eșuat</string>
     <string name="deleting">Ștergere…</string>
-    <string name="amazon_uninstall_game_title">Dezinstalare joc</string>
-    <string name="amazon_uninstall_confirmation_message">Sigur vrei să dezinstalezi %1$s? Această acțiune nu poate fi anulată.</string>
-    <string name="amazon_install_game_title">Descărcare joc</string>
-    <string name="amazon_install_confirmation_message">Aplicația ce urmează să fie instalată are următoarele cerințe de spațiu. Vrei să continui?\n\n\tDimensiune descărcare: %1$s\n\tSpațiu disponibil: %2$s</string>
-    <string name="amazon_verify_files_title">Verificare fișiere</string>
-    <string name="amazon_verify_files_message">Se vor verifica toate fișierele instalate în raport cu manifestul de descărcare pentru a detecta fișiere lipsă sau corupte.\n\nAcest lucru poate dura ceva timp pentru jocuri mari.</string>
-    <string name="amazon_verify_confirm">Verificare</string>
-    <string name="amazon_verify_in_progress">Se verifică fișierele… Poate dura ceva timp.</string>
-    <string name="amazon_verify_success">Toate fișierele au fost verificate cu succes.\n\n%1$d / %2$d fișiere OK.</string>
-    <string name="amazon_verify_failed_detail">Verificarea a găsit probleme.\n\n%1$d / %2$d fișiere OK\n%3$d lipsă\n%4$d dimensiune incorectă\n%5$d hash incorect\n\nReinstalează jocul pentru a repara fișierele corupte.</string>
-    <string name="amazon_verify_error">Verificarea a eșuat: %1$s</string>
-    <string name="gog_uninstall_game_title">Dezinstalare joc</string>
-    <string name="gog_uninstall_confirmation_message">Sigur vrei să dezinstalezi %1$s? Această acțiune nu poate fi anulată.</string>
-    <string name="gog_install_game_title">Descărcare joc</string>
-    <string name="gog_install_confirmation_message">Aplicația ce urmează să fie instalată are următoarele cerințe de spațiu. Vrei să continui?\n\n\tDimensiune descărcare: %1$s\n\tSpațiu disponibil: %2$s</string>
     <string name="steam_never">Niciodată</string>
-    <string name="epic_cancel_download_message">Sigur doriți să anulați descărcarea aplicației?</string>
-    <string name="epic_delete_download_message">Ștergeți toate datele descărcate pentru acest joc?</string>
-    <string name="epic_uninstall_failed">Dezinstalarea a eșuat: %1$s</string>
-    <string name="epic_uninstall_error">Eroare la dezinstalare: %1$s</string>
     <string name="steam_continue">Continuă</string>
     <string name="header_img_desc">Imagine antet aplicație</string>
     <string name="download">Descărcare</string>
@@ -162,9 +143,6 @@
     <!-- Library Tabs -->
     <string name="tab_all">Toate</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Instalate</string>
     <string name="tab_local">Personalizat</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -388,9 +366,7 @@
     <string name="performance_hud">HUD de performanță</string>
     <string name="performance_hud_description">Afișează sau ascunde suprapunerea din joc.</string>
     <string name="performance_hud_fps_limiter">Limitator FPS</string>
-    <string name="performance_hud_fps_limiter_description">Limitează rata de cadre în joc. Max.: %1$d Hz.</string>
     <string name="performance_hud_fps_limiter_target">FPS țintă</string>
-    <string name="performance_hud_fps_limiter_off">Nelimitat</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Limitează rata de bază. Rata de pe ecran este limita înmulțită cu multiplicatorul LSFG.</string>
     <string name="performance_hud_presets">Presetări</string>
@@ -681,9 +657,6 @@
     <string name="add_custom_game_dont_show_again">Nu mai arăta acest dialog</string>
     <string name="base_app_shortcut_created">Shortcut creat</string>
     <string name="base_app_shortcut_failed">Nu s-a putut crea shortcut-ul: %s</string>
-    <string name="base_app_images_fetched">Imaginile au fost preluate cu succes</string>
-    <string name="base_app_game_folder_not_found">Folderul jocului nu a fost găsit</string>
-    <string name="base_app_images_fetch_failed">Nu s-au putut prelua imaginile: %s</string>
     <string name="base_app_exported">Exportat</string>
     <string name="base_app_export_failed">Exportul a eșuat: %s</string>
     <string name="base_app_export_cancelled">Export anulat</string>
@@ -713,13 +686,9 @@
 	<string name="connection_retry">Reîncearcă</string>
 
     <!--Game Feedback Dialog -->
-	<string name="game_feedback_game_run">Cum a rulat jocul?</string>
-	<string name="game_feedback_issues_question">Selectează orice probleme întâlnite:</string>
 
 
     <!-- Profile & Menu -->
-	<string name="help_and_support">Ajutor &amp; Suport</string>
-	<string name="hall_of_fame">Hall of Fame</string>
 	<string name="go_online">Mergi online</string>
 	<string name="go_offline">Mergi offline</string>
 	<string name="log_out">Deconectare</string>
@@ -751,7 +720,6 @@
 	<string name="pulseaudio_low_latency">Mod latență redusă PulseAudio</string>
 	<string name="microphone_input">Intrare microfon</string>
 	<string name="microphone_input_description">Expune microfonul dispozitivului către Wine/Proton ca dispozitiv de înregistrare. Necesită permisiunea pentru microfon.</string>
-	<string name="show_fps">Afișează FPS</string>
 	<string name="portrait_mode">Mod portret</string>
 	<string name="portrait_mode_description">Pentru controlere de tip 8BitDo FlipPad/GameSir Pocket Taco</string>
 	<string name="portrait_below_cutout">Păstrează sub decupajul camerei</string>
@@ -771,8 +739,6 @@
 	<string name="launch_steam_client_beta">Pornește Steam Client</string>
 	<string name="steam_offline_mode">Mod Offline Steam</string>
 	<string name="steam_offline_mode_description">Pornește jocurile Steam în mod offline</string>
-	<string name="epic_offline_mode">Mod Offline Epic</string>
-	<string name="epic_offline_mode_description">Pornește jocurile Epic în mod offline</string>
 	<string name="achievement_unlocked">Realizare deblocată</string>
 	<string name="settings_achievement_notification_position">Poziția notificării realizării</string>
 	<string name="achievement_position_top_left">Stânga sus</string>
@@ -785,8 +751,6 @@
 	<string name="steam_connecting">Se conectează la serverele Steam… poate dura un minut pe o rețea lentă</string>
 	<string name="steam_retrying_login">Se reîncearcă autentificarea în Steam…</string>
 	<string name="launch_bionic_steam">Activează Bionic Steam experimental</string>
-	<string name="allow_steam_updates">Permite actualizările Steam</string>
-	<string name="allow_steam_updates_description">Actualizează Steam la ultima versiune. Reduce semnificativ performanța.</string>
 	<string name="steam_type">Tip Steam</string>
 
     <!-- Container Configuration: Graphics -->
@@ -1000,7 +964,6 @@
 	<string name="select_wine_debug_channels">Selectează canalele de debug Wine</string>
 	<string name="cpu_label">CPU%d</string>
 	<string name="describe_what_happened">Descrie ce s-a întâmplat</string>
-	<string name="get_support_on_discord">Obține suport pe Discord</string>
 
 	<!-- Driver Manager -->
 	<string name="driver_manager">Manager drivere</string>
@@ -1039,152 +1002,12 @@
     <string name="settings_accounts_signed_out">Neautentificat</string>
     <string name="settings_accounts_ea_title">Cont EA</string>
     <string name="settings_accounts_rockstar_title">Cont Rockstar</string>
-    <string name="gamenative_account_title">Cont GameNative</string>
-    <string name="gamenative_account_sign_in">Conectare</string>
-    <string name="gamenative_account_sign_in_subtitle">Conectează-te pentru a vedea planul tău și a-ți gestiona abonamentul.</string>
-    <string name="gamenative_account_loading">Se încarcă detaliile contului.</string>
-    <string name="gamenative_account_load_failed">Detaliile contului nu au putut fi încărcate. Selectează pentru a încerca din nou.</string>
-    <string name="gamenative_account_plan">Plan: %1$s</string>
-    <string name="gamenative_account_plan_none">Niciun plan</string>
-    <string name="gamenative_account_plan_basic">Basic</string>
-    <string name="gamenative_account_plan_pro">Pro</string>
-    <string name="gamenative_account_plan_patron">Patron</string>
-    <string name="gamenative_account_manage_subscription">Gestionează abonamentul</string>
-    <string name="gamenative_account_manage_subscription_subtitle">Deschide pagina de facturare în browser.</string>
-    <string name="gamenative_account_manage_subscription_opening">Se deschide pagina de facturare.</string>
-    <string name="gamenative_account_manage_subscription_none">Acest cont nu are niciun abonament de gestionat.</string>
-    <string name="gamenative_account_managed_discord">Planul tău vine de pe Discord. Gestionează-l pe Discord.</string>
-    <string name="gamenative_account_managed_kofi">Planul tău vine de pe Ko-fi. Gestionează-l pe Ko-fi.</string>
-    <string name="gamenative_account_manage_subscription_failed">Pagina de facturare nu a putut fi deschisă. Încearcă din nou mai târziu.</string>
-    <string name="gamenative_account_sign_out">Deconectare</string>
-    <string name="gamenative_account_sign_out_subtitle">Deconectează-te de la contul GameNative pe acest dispozitiv.</string>
-    <string name="gamenative_account_discord">Discord</string>
-    <string name="gamenative_account_discord_not_connected">Neconectat › Conectează</string>
-    <string name="gamenative_account_discord_connected">Conectat › Deconectează</string>
-    <string name="gamenative_account_discord_connected_as">Conectat ca %1$s › Deconectează</string>
-    <string name="gamenative_account_discord_link_scan">Scanează acest cod cu telefonul sau deschide această adresă pe alt dispozitiv pentru a conecta Discord.</string>
-    <string name="gamenative_account_discord_link_this_device">Sau deschide pe acest dispozitiv</string>
-    <string name="gamenative_account_discord_link_waiting">Se așteaptă să termini conectarea Discord.</string>
-    <string name="gamenative_account_discord_link_starting">Se pregătește codul.</string>
-    <string name="gamenative_account_discord_link_expired">Acest cod a expirat. Selectează Încearcă din nou pentru a obține un cod nou.</string>
-    <string name="gamenative_account_discord_link_failed">Conectarea Discord nu este disponibilă acum. Verifică conexiunea și încearcă din nou.</string>
-    <string name="gamenative_account_discord_link_connected_as">Conectat ca %1$s</string>
-    <string name="gamenative_account_discord_link_no_browser">Nu a fost găsit niciun browser pentru a deschide Discord. Scanează codul cu alt dispozitiv.</string>
-    <string name="gamenative_sign_in_title">Conectează-te la GameNative</string>
-    <string name="gamenative_sign_in_scan">Scanează acest cod cu telefonul pentru a te conecta. Te poți conecta și pe acest dispozitiv.</string>
-    <string name="gamenative_sign_in_code">Cod: %1$s</string>
-    <string name="gamenative_sign_in_this_device">Conectează-te pe acest dispozitiv</string>
-    <string name="gamenative_sign_in_waiting">Se așteaptă finalizarea conectării.</string>
-    <string name="gamenative_sign_in_starting">Se pregătește codul de conectare.</string>
-    <string name="gamenative_sign_in_expired">Acest cod de conectare a expirat. Selectează Încearcă din nou pentru a primi un cod nou.</string>
-    <string name="gamenative_sign_in_failed">Conectarea nu este disponibilă acum. Verifică conexiunea și încearcă din nou.</string>
-    <string name="gamenative_sign_in_try_again">Încearcă din nou</string>
-    <string name="gamenative_sign_in_success">Te-ai conectat la GameNative.</string>
-    <string name="gamenative_sign_in_no_browser">Nu a fost găsit niciun browser pentru a deschide pagina de conectare. Scanează codul cu alt dispozitiv.</string>
-    <string name="support_title">Ajutor AI</string>
-    <string name="support_subtitle">Conversațiile tale cu asistența AI GameNative</string>
-    <string name="support_refresh">Reîmprospătează</string>
-    <string name="support_signed_out_title">Primește ajutor pentru jocurile tale</string>
-    <string name="support_signed_out_body">Conectează-te la contul GameNative ca să vezi conversațiile de asistență și să vorbești cu AI-ul nostru despre problemele cu jocurile tale.</string>
-    <string name="support_signed_out_discord">Poți primi ajutor și pe Discordul nostru</string>
-    <string name="support_empty_title">Nicio conversație încă</string>
-    <string name="support_empty_body">Pentru a începe una, alege „Primește ajutor de la AI” la un joc din bibliotecă. Joacă până apare problema, închide jocul și apoi descrie ce nu a mers.</string>
-    <string name="support_state_waiting">Se așteaptă un răspuns</string>
-    <string name="support_state_answered">Răspuns primit</string>
-    <string name="support_state_solved">Rezolvat</string>
-    <string name="support_state_not_solved">Nerezolvat</string>
-    <string name="support_started">Începută pe %1$s</string>
-    <string name="support_last_activity">Ultima activitate %1$s</string>
-    <string name="support_problem_network">Nu s-a putut realiza conexiunea. Verifică-ți conexiunea și încearcă din nou.</string>
-    <string name="support_problem_unavailable">Chatul de asistență din aplicație nu este încă disponibil. Până atunci, ajutorul AI continuă pe Discordul nostru.</string>
-    <string name="support_problem_unauthorized">Contul tău GameNative nu a putut fi confirmat. Încearcă din nou mai târziu sau deconectează-te și conectează-te din nou din Setări.</string>
-    <string name="support_problem_rate_limited">Ai trimis mult într-un timp scurt. Așteaptă puțin și încearcă din nou.</string>
-    <string name="support_problem_not_found">Această conversație nu a fost găsită.</string>
-    <string name="support_problem_server">Ceva nu a mers bine la noi. Încearcă din nou în câteva minute.</string>
-    <string name="support_problem_too_long">Mesajul este prea lung. Scurtează-l și încearcă din nou.</string>
-    <string name="support_problem_too_large">Aceste jurnale sunt prea mari pentru a fi trimise.</string>
-    <string name="support_problem_no_logs">Nu există jurnale noi pentru acest joc pe acest dispozitiv. Pornește o nouă rulare de depanare pentru a le înregistra.</string>
-    <string name="support_problem_locked">Este nevoie de un plan pentru a trimite mai multe mesaje în această conversație.</string>
-    <string name="support_problem_already_answered">Ne-ai spus deja cum a mers.</string>
-    <string name="support_label_you">Tu</string>
-    <string name="support_label_report">Raportul tău</string>
-    <string name="support_label_ai">GameNative AI</string>
-    <string name="support_label_staff">%1$s · Echipa GameNative</string>
-    <string name="support_label_team">Echipa GameNative</string>
-    <string name="support_analysing_first">AI-ul nostru îți analizează jurnalele. De obicei durează câteva minute. Poți părăsi acest ecran, iar răspunsul va fi aici când revii.</string>
-    <string name="support_analysing_followup">Se așteaptă un răspuns. De obicei durează câteva minute.</string>
-    <string name="support_outcome_question">Asta a rezolvat problema?</string>
-    <string name="support_outcome_worked">A funcționat</string>
-    <string name="support_outcome_broken">Tot nu merge</string>
-    <string name="support_outcome_recorded_worked">Ai spus că soluția a funcționat. Îți mulțumim că ne-ai anunțat.</string>
-    <string name="support_outcome_recorded_broken">Ai spus că problema nu este încă rezolvată. Răspunde mai jos cu ce se întâmplă acum sau trimite jurnale noi.</string>
-    <string name="support_notice_moved">Această conversație continuă acum cu asistența Pro.</string>
-    <string name="support_upgrade_title">Este nevoie de un plan pentru a continua</string>
-    <string name="support_upgrade_reason_trial_used">Prima analiză a fost gratuită. Pentru a răspunde și a continua discuția cu AI-ul despre această problemă, alege un plan.</string>
-    <string name="support_upgrade_reason_reply_cap">Ai atins limita de utilizare corectă pentru azi. Se resetează în câteva ore.</string>
-    <plurals name="support_fair_use_resets_in_hours">
-        <item quantity="one">Ai atins limita de utilizare corectă de azi. Se resetează în %1$d oră.</item>
-        <item quantity="few">Ai atins limita de utilizare corectă de azi. Se resetează în %1$d ore.</item>
-        <item quantity="other">Ai atins limita de utilizare corectă de azi. Se resetează în %1$d de ore.</item>
-    </plurals>
-    <string name="support_upgrade_reply_cap_pro_hint">Rapoartele Pro sar peste coadă.</string>
-    <string name="support_limit_title">Limita zilnică de utilizare corectă a fost atinsă</string>
-    <string name="support_upgrade_reason_required">Răspunsurile AI necesită un abonament GameNative. Dacă ai deja un abonament pe Discord sau Ko-fi, conectează Discord în Setări.</string>
-    <string name="support_see_plans">Vezi planurile</string>
-    <string name="support_plan_basic_title">$5/lună · Basic</string>
-    <string name="support_plan_basic_body">Fă-ți jocurile să ruleze sau să ruleze mai bine.</string>
-    <string name="support_checkout_scan">Scanează acest cod cu telefonul pentru a finaliza plata. O poți finaliza și pe acest dispozitiv.</string>
-    <string name="support_checkout_waiting">Când ai terminat, revino aici. Planul se actualizează singur.</string>
-    <string name="support_checkout_open">Deschide pe acest dispozitiv</string>
-    <string name="support_checkout_no_browser">Nu s-a găsit niciun browser pentru a deschide pagina de plată. Scanează codul cu alt dispozitiv.</string>
-    <string name="support_checkout_failed">Pagina de plată nu a putut fi deschisă. Verifică-ți conexiunea și încearcă din nou.</string>
-    <string name="support_checkout_done">Gata</string>
     <string name="main_thank_you_message_play">Devino membru astăzi. Membrii primesc:\n\n• Ajutor cu AI pentru a-ți face jocurile să funcționeze\n• Acces anticipat la versiuni noi\n• Roluri premium și canale exclusive pe Discord\n• …și altele\n\nDe la %1$s/lună</string>
-    <string name="support_plan_pro_title_priced">%1$s/lună · Pro</string>
-    <string name="support_plan_basic_title_priced">%1$s/lună · Basic</string>
-    <string name="membership_plans_pitch">Membrii primesc ajutor cu AI pentru a-și face jocurile să funcționeze, acces anticipat la versiuni noi și roluri premium pe Discord.</string>
-    <string name="membership_plans_title">Devino membru</string>
-    <string name="support_already_member">Ești deja membru? Conectează-te</string>
-    <string name="support_checkout_expired">Această plată a expirat. Dacă ai plătit deja, conectează-te cu e-mailul folosit și planul va apărea.</string>
-    <string name="support_play_unavailable">Facturarea Google Play nu este disponibilă acum. Încearcă din nou mai târziu.</string>
-    <string name="support_checkout_waiting_guest">După plată, conectează-te pe acea pagină pentru a-ți crea contul. Planul se activează aici automat.</string>
-    <string name="gamenative_account_managed_play">Planul tău vine de pe Google Play. Gestionează-l în Magazinul Play.</string>
-    <string name="support_already_subscribed">Acest cont are deja un abonament. Îți poți schimba planul pe pagina de facturare.</string>
-    <string name="support_plan_active">Planul tău este activ.</string>
-    <string name="support_plan_pending">Planul tău încă este configurat. Încearcă din nou peste un minut.</string>
-    <string name="support_composer_hint">Scrie un răspuns</string>
-    <string name="support_composer_analysing">Te rugăm să aștepți. AI-ul încă citește jurnalele tale. Poți răspunde după ce sosește răspunsul lui.</string>
-    <string name="support_send_logs">Trimite jurnalele</string>
-    <string name="support_new_debug_run">Rulare nouă de depanare</string>
-    <string name="support_fix_request_action">Cere o remediere personalizată</string>
-    <string name="support_fix_request_title">Cere o remediere personalizată</string>
-    <string name="support_fix_request_message">AI-ul poate modifica fișierele acestui joc sau poate construi un driver ori un emulator nou pentru dispozitivul tău. Dacă ai trimis deja un raport, îl analizează acum. Dacă nu, rulează jocul o dată pentru a măsura problema.</string>
-    <string name="support_fix_request_left">Remedieri personalizate rămase: %1$d din %2$d.</string>
-    <string name="support_fix_request_left_resets">Remedieri personalizate rămase: %1$d din %2$d (se resetează pe %3$s).</string>
-    <string name="support_fix_request_run">Cere remedierea</string>
-    <string name="support_fix_request_failed">Nu s-a putut porni o remediere personalizată. Încearcă din nou.</string>
-    <string name="support_fix_request_in_progress">O remediere personalizată pentru acest joc este deja în pregătire.</string>
-    <string name="support_fix_upgrade_reason">Remedierile personalizate sunt incluse în fiecare plan.</string>
-    <string name="support_fix_quota">Ai folosit deocamdată toate remedierile personalizate.</string>
-    <string name="support_fix_quota_resets">Ai folosit toate remedierile personalizate. Se resetează pe %1$s.</string>
-    <string name="support_run_check_title">Cum a mers?</string>
-    <string name="support_run_check_sent">Jurnalul tău a fost trimis.</string>
-    <string name="support_run_check_failed">Jurnalul tău nu a putut fi trimis.</string>
-    <string name="support_run_check_answer_waiting">Răspunsul tău va fi trimis împreună cu jurnalul.</string>
-    <string name="support_run_check_answer_failed">Răspunsul tău nu a putut fi trimis.</string>
-    <string name="support_run_check_offer">Jurnalul ultimei rulări a acestui joc nu a fost trimis.</string>
-    <string name="support_run_check_send_last">Trimite ultima rulare</string>
-    <string name="support_uploading">Se încarcă jurnalele</string>
-    <string name="support_share_file">Deschide fișierul</string>
-    <string name="debug_report_use_discord">Folosește Discord</string>
-    <string name="debug_report_use_app">Folosește chatul din aplicație</string>
 	<string name="settings_emulation_orientations_title">Orientări permise</string>
 	<string name="settings_emulation_orientations_subtitle">Alege orientările în care se poate roti în timpul jocului</string>
 	<string name="settings_emulation_default_config_title">Modifică configurația implicită</string>
 	<string name="settings_emulation_default_config_subtitle">Setările inițiale ale containerului pentru fiecare joc (nu afectează jocurile deja instalate)</string>
 	<string name="settings_emulation_default_config_dialog_title">Config container implicit</string>
-	<string name="settings_emulation_auto_apply_known_config_title">Aplică automat configurația cunoscută</string>
-	<string name="settings_emulation_auto_apply_known_config_subtitle">Aplică automat setările recomandate pentru jocurile Steam la prima lansare</string>
 	<string name="settings_emulation_box64_presets_title">Presetări Box64</string>
 	<string name="settings_emulation_box64_presets_subtitle">Vizualizează, modifică și creează presetări Box64</string>
 	<string name="settings_emulation_driver_manager_title">Manager drivere</string>
@@ -1217,18 +1040,12 @@
 
 	<!-- Settings: Info Group -->
 	<string name="settings_info_title">Informații</string>
-    <string name="settings_info_send_tip_title">Devino membru</string>
-    <string name="settings_info_send_tip_subtitle">Ajutor cu AI pentru jocurile tale, acces anticipat la versiuni și altele</string>
-    <string name="settings_info_ask_tip_title">Oferte de membru</string>
-    <string name="settings_info_ask_tip_subtitle">Afișează ocazional oferte pentru a deveni membru GameNative</string>
 	<string name="settings_info_source_title">Cod sursă</string>
 	<string name="settings_info_source_subtitle">Vezi codul sursă al acestui proiect</string>
 	<string name="settings_info_libraries_title">Biblioteci utilizate</string>
 	<string name="settings_info_libraries_subtitle">Vezi tehnologiile care fac GameNative posibil</string>
 	<string name="settings_info_privacy_title">Politica de confidențialitate</string>
 	<string name="settings_info_privacy_subtitle">Deschide linkul către politica de confidențialitate GameNative</string>
-	<string name="settings_info_usage_analytics_title">Analiză utilizare</string>
-	<string name="settings_info_usage_analytics_subtitle">Nu urmărim niciodată informații personale. Dezactivarea oprește analizele neesențiale, însă datele de bază privind performanța jocurilor sunt în continuare colectate ca interes legitim pentru a îmbunătăți compatibilitatea.</string>
 
 	<!-- Settings: Interface Group -->
 	<string name="settings_interface_title">Interfață</string>
@@ -1268,7 +1085,6 @@
 	<string name="login_password_hint">Introdu parola</string>
 	<string name="login_password_show">Arată parola</string>
 	<string name="login_password_hide">Ascunde parola</string>
-	<string name="login_remember_session">Ține-mă minte</string>
 	<string name="login_sign_in">Autentificare cu Steam</string>
 	<string name="login_qr_failed">Cod QR eșuat</string>
 	<string name="login_retry_qr">Reîncearcă codul QR</string>
@@ -1299,8 +1115,6 @@
 	<string name="library_reset_container_message">Aceasta va reseta containerul la configurația implicită.</string>
 	<string name="library_verify_files_title">Verifică fișierele</string>
 	<string name="library_verify_files_message">Asigură-te că salvările sunt încărcate în cloud sau copiate înainte de verificare, altfel pot fi suprascrise.</string>
-	<string name="library_update_title">Actualizare</string>
-	<string name="library_update_message">Asigură-te că salvările sunt încărcate în cloud sau copiate înainte de actualizare, altfel pot fi suprascrise.</string>
 	<string name="library_config_title">Config %s</string>
 
 	<!-- LibraryAppScreen: Toast Messages -->
@@ -1324,12 +1138,8 @@
 	<string name="download_paused_wifi">Descărcare în pauză – se așteaptă Wi-Fi/LAN</string>
 
 	<!-- PluviaMain: Update & App Info -->
-	<string name="main_update_available_title">Actualizare disponibilă</string>
-	<string name="main_update_available_message">O nouă versiune (%1$s) este disponibilă!%2$s</string>
 	<string name="main_update_button">Actualizează</string>
 	<string name="main_later_button">Mai târziu</string>
-	<string name="main_update_failed_title">Actualizare eșuată</string>
-	<string name="main_update_failed_message">Nu s-a putut descărca sau instala actualizarea. Încearcă din nou mai târziu.</string>
 	<string name="launch_dependency_failed_title">Descărcarea dependenței de lansare a eșuat</string>
 	<string name="launch_dependency_failed_message">Nu s-a putut descărca o componentă necesară. Încearcă din nou mai târziu.</string>
 
@@ -1338,14 +1148,8 @@
 	<string name="main_recent_crash_message">Ne pare rău!\nAr fi util să știm ce problemă ai întâmpinat.\nPoți vizualiza și exporta cel mai recent crash log din setările aplicației și îl poți atașa ca issue pe Github în repository-ul proiectului.\nLinkul către repo este tot în setări!</string>
     <string name="main_thank_you_title">Îți place GameNative?</string>
     <string name="main_thank_you_message">Devino membru astăzi. Membrii primesc:\n\n• Ajutor cu AI pentru a-ți face jocurile să funcționeze\n• Acces anticipat la versiuni noi\n• Roluri premium și canale exclusive pe Discord\n• …și altele\n\nDe la 5 $/lună</string>
-    <string name="main_join_kofi">Devino membru</string>
-    <string name="pitch_session_title">Îți place %1$s?</string>
-    <string name="pitch_five_star_title">Ne bucurăm că %1$s a mers excelent!</string>
 	<string name="main_share">Distribuie</string>
 	<string name="main_share_text">Descoperă GameNative - joacă jocurile tale Steam pe PC pe Android, cu suport complet pentru salvări în cloud!\nhttps://gamenative.app\nAlătură-te comunității: https://discord.gg/2hKv4VfZfE</string>
-	<string name="main_discord_support_title">A funcționat jocul?</string>
-	<string name="main_discord_support_message">Alătură-te serverului de Discord pentru suport și optimizare.</string>
-	<string name="main_open_discord">Deschide Discord</string>
 	<string name="main_downloading_entry">Se descarcă %s</string>
 
 	<!-- PluviaMain: Game Launch -->
@@ -1410,23 +1214,8 @@
 	<string name="libraries_message">Pluvia - github.com/oxters168/Pluvia\nJavaSteam - github.com/Longi94/JavaSteam\nWinlator &amp; Vortek - github.com/brunodev85/winlator\nWinlator Cmod - github.com/coffincolors/winlator\nWrapper - https://github.com/leegao/bionic-vulkan-wrapper &amp; https://github.com/pipetto-crypto/\nUbuntu RootFs - releases.ubuntu.com/focal</string>
 
 	<!-- Supporters Dialog -->
-	<string name="supporters_art_credits">Credite artă</string>
-	<string name="supporters_app_icon">Icon aplicație: Hachi</string>
-	<string name="supporters_alt_icon">Icon alternativ: rhapsody_mdr</string>
-	<string name="supporters_loading">Se încarcă susținătorii…</string>
-	<string name="supporters_error">Nu s-au putut încărca susținătorii</string>
-	<string name="supporters_members">Membri</string>
-	<string name="supporters_supporters">Susținători</string>
-	<string name="supporters_none">Niciun susținător încă.</string>
-	<string name="supporters_anonymous">Anonim</string>
 
 	<!-- Chat Screen -->
-	<string name="chat_preview_warning">Funcția de chat este încă într-un stadiu incipient.\nTe rugăm să raportezi orice problemă în repo-ul proiectului.</string>
-	<string name="chat_no_history">Nu există istoric de chat</string>
-	<string name="chat_send_message">Trimite un mesaj</string>
-	<string name="chat_send">Trimite</string>
-	<string name="chat_emoticons">Emoticoane</string>
-	<string name="chat_stickers">Stickere</string>
 
 	<!-- Library Components -->
 	<string name="library_open">Deschide</string>
@@ -1435,86 +1224,18 @@
 	<string name="library_not_installed">Neinstalat</string>
 	<string name="library_family_shared">Partajat în familie</string>
 	<string name="library_shared_short">Partajat</string>
-	<string name="library_compatible">Compatibil</string>
-	<string name="library_gpu_compatible">Compatibil GPU</string>
 	<string name="library_compatibility_unknown">Necunoscut</string>
-	<string name="library_not_compatible">Necompatibil</string>
 
 	<!-- Best Config Compatibility Messages -->
-	<string name="best_config_exact_gpu_match">Config cunoscut funcționează pe GPU-ul tău</string>
-	<string name="best_config_gpu_family_match">Config cunoscut ar trebui să funcționeze pe GPU-ul tău</string>
-	<string name="best_config_fallback_match">Config cunoscut poate funcționa pe GPU-ul tău</string>
-	<string name="best_config_compatibility_unknown">Nicio configurație cunoscută</string>
 
 	<!-- Best Config Toast Messages -->
 	<string name="best_config_applied_successfully">Configurația a fost aplicată cu succes</string>
 	<string name="best_config_missing_components_title">Configurația nu a fost aplicată</string>
 	<string name="best_config_missing_components_message">Următoarele componente necesare nu sunt disponibile pe acest dispozitiv:\n\n%1$s\n\nInstalați componentele lipsă și încercați din nou.</string>
 	<string name="best_config_known_config_invalid">Config cunoscut invalid</string>
-	<string name="best_config_no_config_available">Nu există o configurație optimă pentru acest joc</string>
-	<string name="best_config_fetch_failed">Nu s-a putut obține configurația. Verificați conexiunea la rețea.</string>
 	<string name="best_config_apply_anyway">Aplică oricum</string>
 	<string name="best_config_applied_with_defaults">Configurație aplicată, componentele lipsă înlocuite cu valori implicite</string>
 	<string name="best_config_apply_failed">Aplicarea configurației a eșuat: %s</string>
-    <string name="community_config_title">Configurații ale comunității</string>
-    <string name="community_config_close">Închide configurațiile comunității</string>
-    <string name="community_config_refresh">Actualizează configurațiile comunității</string>
-    <string name="community_config_retry">Reîncearcă</string>
-    <string name="community_config_unknown_error">Eroare necunoscută</string>
-    <string name="community_config_unknown">Necunoscut</string>
-    <string name="community_config_load_failed">Configurațiile comunității nu au putut fi încărcate: %1$s</string>
-    <string name="community_config_game_not_found">Nu a fost găsită nicio intrare de compatibilitate pentru %1$s</string>
-    <string name="community_config_gpu_unknown">GPU indisponibil</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d configurație</item>
-        <item quantity="few">%1$d configurații</item>
-        <item quantity="other">%1$d de configurații</item>
-    </plurals>
-    <string name="community_config_highest_rated">Cele mai bine evaluate</string>
-    <string name="community_config_newest">Cele mai recente</string>
-    <string name="community_config_same_device">Același dispozitiv</string>
-    <string name="community_config_this_gpu">Același GPU</string>
-    <string name="community_config_compatible_gpus">Compatibile</string>
-    <string name="community_config_load_more">Încarcă mai multe</string>
-    <string name="community_config_no_device_results">Nu au fost găsite configurații pentru acest dispozitiv.</string>
-    <string name="community_config_no_gpu_results">Nu au fost găsite configurații pentru acest GPU.</string>
-    <string name="community_config_no_compatible_results">Nu au fost găsite configurații pentru GPU-uri compatibile.</string>
-    <string name="community_config_show_this_gpu">Afișează acest GPU</string>
-    <string name="community_config_show_compatible_gpus">Afișează GPU-uri compatibile</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Detaliile configurației</string>
-    <string name="community_config_other_gpu_warning">Acest rezultat folosește un alt GPU. Setările driverului și wrapperului specifice GPU-ului nu vor fi aplicate.</string>
-    <string name="community_config_run_details">Rulare de test</string>
-    <string name="community_config_rating">Evaluare</string>
-    <string name="community_config_average_fps">FPS mediu</string>
-    <string name="community_config_device">Dispozitiv</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">Versiunea GameNative</string>
-    <string name="community_config_submitted">Trimis</string>
-    <string name="community_config_session_length">Durata sesiunii</string>
-    <string name="community_config_game_store">Magazinul jocului</string>
-    <string name="community_config_custom_game">Joc personalizat</string>
-    <string name="community_config_settings">Setări</string>
-    <string name="community_config_additional_launch_settings">Setări suplimentare de lansare</string>
-    <string name="community_config_apply_launch_arguments">Aplică argumentele de lansare</string>
-    <string name="community_config_apply_environment_variables">Aplică variabilele de mediu</string>
-    <string name="community_config_replaces_existing_value">Înlocuiește valoarea curentă</string>
-    <string name="community_config_dependencies">Dependențe</string>
-    <string name="community_config_dependencies_apply_check">Dependențele vor fi verificate la aplicarea configurației.</string>
-    <string name="community_config_no_downloads">Momentan nu sunt necesare descărcări din manifest.</string>
-    <string name="community_config_downloads_required">Aceste componente vor fi descărcate automat:\n%1$s</string>
-    <string name="community_config_tags">Etichete</string>
-    <string name="community_config_notes">Note</string>
-    <string name="community_config_apply">Aplică configurația</string>
-    <string name="community_config_container">Container</string>
-    <string name="community_config_wine">Wine sau Proton</string>
-    <string name="community_config_emulator">Emulator</string>
-    <string name="community_config_wrapper">Wrapper DirectX</string>
-    <string name="community_config_box64_preset">Presetare Box64</string>
-    <string name="community_config_driver">Driver grafic</string>
 	<string name="import_config">Importă configurarea</string>
 	<string name="export_config">Exportă configurarea</string>
 	<string name="library_app_type">Tip aplicație</string>
@@ -1598,7 +1319,6 @@
 	<string name="contents_all_trusted">Toate fișierele sunt sigure. Gata de instalare.</string>
 	<string name="contents_no_installed">Nu există conținut instalat pentru acest tip.</string>
 	<string name="contents_delete">Șterge</string>
-	<string name="contents_review_confirm">Acest conținut include fișiere în afara setului de încredere. Revizuiește și confirmă pentru a continua.</string>
 	<string name="contents_removed">Eliminat %1$s</string>
 
 	<!-- Driver Manager -->
@@ -1692,72 +1412,20 @@
 	<string name="auth_webview_title">Autorizare</string>
 
 	<!-- GOG Integration -->
-	<string name="gog_integration_title">Integrare GOG (Alpha)</string>
-	<string name="gog_settings_login_title">Autentificare la GOG</string>
-	<string name="gog_settings_login_subtitle">Autentifică-te în contul tău GOG</string>
-	<string name="gog_login_success_title">Autentificare reușită</string>
-	<string name="gog_login_cancel">Anulează</string>
-	<string name="gog_settings_logout_title">Deconectare de la GOG</string>
-	<string name="gog_settings_logout_subtitle">Deconectează-te din contul tău GOG</string>
-	<string name="gog_logout_confirm_title">Te deconectezi de la GOG?</string>
-	<string name="gog_logout_confirm_message">Aceasta va elimina datele tale GOG și va șterge biblioteca GOG de pe acest dispozitiv. Te poți autentifica din nou oricând.</string>
-	<string name="gog_logout_confirm">Deconectare</string>
-	<string name="gog_logout_success">Deconectare reușită de la GOG</string>
-	<string name="gog_logout_failed">Deconectare eșuată: %s</string>
-	<string name="gog_logout_in_progress">Se deconectează de la GOG…</string>
 
 	<!-- Epic Games Integration -->
-	<string name="epic_integration_title">Integrare Epic Games</string>
-	<string name="epic_settings_login_title">Autentificare la Epic</string>
-	<string name="epic_settings_login_subtitle">Autentifică-te în contul tău Epic Games</string>
-	<string name="epic_login_success_title">Autentificare reușită</string>
-	<string name="epic_login_cancel">Anulează</string>
-	<string name="epic_settings_logout_title">Deconectare de la Epic</string>
-	<string name="epic_settings_logout_subtitle">Deconectează-te din contul tău Epic Games</string>
-	<string name="epic_logout_confirm_title">Te deconectezi de la Epic Games?</string>
-	<string name="epic_logout_confirm_message">Aceasta va elimina datele tale Epic Games și va șterge biblioteca Epic Games de pe acest dispozitiv. Te poți autentifica din nou oricând.</string>
-	<string name="epic_logout_confirm">Deconectare</string>
-	<string name="epic_logout_success">Deconectat de la Epic Games cu succes</string>
-	<string name="epic_logout_failed">Deconectare eșuată: %s</string>
-	<string name="epic_logout_in_progress">Se deconectează de la Epic Games…</string>
 
 	<!-- Amazon Games Integration -->
-	<string name="amazon_integration_title">Integrare Amazon Games (Alpha)</string>
-	<string name="amazon_settings_login_title">Autentificare</string>
-	<string name="amazon_settings_login_subtitle">Autentifică-te în contul tău Amazon Games</string>
-	<string name="amazon_login_success_title">Autentificare reușită</string>
-	<string name="amazon_login_cancel">Anulare</string>
-	<string name="amazon_settings_logout_title">Deconectare de la Amazon Games</string>
-	<string name="amazon_settings_logout_subtitle">Deconectează-te din contul tău Amazon Games</string>
-	<string name="amazon_logout_confirm_title">Deconectare de la Amazon Games?</string>
-	<string name="amazon_logout_confirm_message">Acest lucru va șterge datele de autentificare Amazon Games și va curăța biblioteca Amazon de pe acest dispozitiv. Te poți autentifica din nou oricând.</string>
-	<string name="amazon_logout_confirm">Deconectare</string>
-	<string name="amazon_logout_success">Deconectat de la Amazon Games cu succes</string>
-	<string name="amazon_logout_failed">Deconectare eșuată: %s</string>
-	<string name="amazon_logout_in_progress">Se deconectează de la Amazon Games…</string>
 
 	<!-- Epic Install/Uninstall -->
-	<string name="epic_uninstall_game_title">Dezinstalare joc</string>
-	<string name="epic_uninstall_game_message">Sigur vrei să dezinstalezi %1$s? Această acțiune nu poate fi anulată.</string>
-	<string name="epic_install_game_title">Descărcare joc</string>
-	<string name="epic_install_game_message">Aplicația ce urmează să fie instalată are următoarele cerințe de spațiu. Vrei să continui?\n\n\tDimensiune descărcare: %1$s\n\tDimensiune pe disc: %2$s\n\tSpațiu disponibil: %3$s</string>
-	<string name="epic_game_not_found">Joc negăsit</string>
-	<string name="epic_starting_download">Se pornește descărcarea: %1$s</string>
-	<string name="epic_starting_download_with_dlcs">Se pornește descărcarea: %1$s + DLC-uri</string>
-	<string name="epic_download_failed">Descărcarea nu a putut fi pornită: %1$s</string>
-	<string name="epic_download_error">Eroare la descărcare: %1$s</string>
     <string name="manifest_downloading_item">Se descarcă %1$s…</string>
     <string name="manifest_download_failed">Descărcarea a eșuat: %1$s</string>
     <string name="manifest_install_failed">Instalarea %1$s a eșuat</string>
     <string name="manifest_install_success">%1$s instalat cu succes</string>
     <string name="manifest_content_untrusted">Conținutul nu este de încredere și nu a fost instalat.</string>
     <string name="manifest_type_mismatch">Conținutul descărcat nu corespunde tipului așteptat.</string>
-    <string name="manifest_glibc_not_supported">Build-urile GLIBC nu sunt acceptate.</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Conectează-te pentru a accesa biblioteca ta Steam.</string>
-    <string name="library_source_not_logged_in_gog">Conectează-te pentru a accesa biblioteca ta GOG.</string>
-    <string name="library_source_not_logged_in_epic">Conectează-te pentru a accesa biblioteca ta Epic.</string>
-    <string name="library_source_not_logged_in_amazon">Conectează-te pentru a accesa biblioteca ta Amazon.</string>
     <string name="library_source_no_custom_games">Nu ai adăugat niciun joc personalizat.</string>
     <string name="download_failed_title">Descărcarea a eșuat</string>
     <string name="download_failed_message">Un fișier necesar nu a putut fi descărcat. Verifică conexiunea la rețea și încearcă din nou.</string>
@@ -1782,17 +1450,10 @@
     <string name="option_open_container">Deschide containerul</string>
     <string name="option_edit_container">Editează containerul</string>
     <string name="option_reset_to_defaults">Resetează containerul</string>
-    <string name="option_get_support">Obține suport</string>
-    <string name="option_submit_feedback">Trimite feedback</string>
     <string name="option_reset_drm">Resetează DRM</string>
-    <string name="option_use_known_config">Folosește configurația cunoscută</string>
-    <string name="option_browse_community_configs">Răsfoiește configurațiile comunității</string>
 
     <!-- Recommendations -->
     <string name="recommended_badge">Recomandat</string>
-    <string name="recommended_buy_button">Cumpără pe GOG</string>
-    <string name="rec_buy_with_price">%1$s · Cumpără pe GOG</string>
-    <string name="recommended_support_message">Primim un comision pentru achizițiile efectuate prin acest link.</string>
     <string name="recommended_about_heading">Despre acest joc</string>
     <string name="recommended_review_count">Pe baza a %1$s recenzii</string>
     <string name="library_store_media_page">%1$d din %2$d</string>
@@ -1808,8 +1469,6 @@
     <string name="review_mixed">Mixt</string>
     <string name="review_mostly_negative">Majoritar negativ</string>
     <string name="review_overwhelmingly_negative">Copleșitor de negativ</string>
-    <string name="settings_interface_show_recommendations_title">Afișează recomandări de jocuri</string>
-    <string name="settings_interface_show_recommendations_subtitle">Afișează recomandări personalizate. Menținerea activă ajută la susținerea GameNative.</string>
     <string name="settings_interface_library_tabs_title">File bibliotecă</string>
     <string name="settings_interface_library_tabs_subtitle">Alege ce file de magazine apar în bibliotecă.</string>
     <string name="settings_interface_library_tabs_none">Fără file de magazine</string>
@@ -1828,18 +1487,10 @@
     <string name="option_browse_online_saves">Răsfoiește salvările online</string>
     <string name="option_force_download_remote">Forțează descărcarea salvărilor remote</string>
     <string name="option_force_upload_local">Forțează încărcarea salvărilor locale</string>
-    <string name="option_fetch_game_images">Preia imaginile jocului</string>
     <string name="option_test_graphics">Testează grafica</string>
     <string name="option_manage_dlc">Gestionează DLC</string>
     <string name="option_manage_workshop">Gestionează Workshop</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Poveste principală</string>
-    <string name="hltb_main_plus_extras">Principal + Suplimente</string>
-    <string name="hltb_completionist">Perfecționist</string>
-    <string name="hltb_all_styles">Toate stilurile</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">Afișează spoilere</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1855,7 +1506,6 @@
     <string name="lsfg_backend_desc">Legacy rulează stratul lsfg-vk în joc; Nativ rulează generarea de cadre în randorul GameNative</string>
     <string name="lsfg_backend_legacy">Legacy (strat)</string>
     <string name="lsfg_backend_native">Nativ (randor)</string>
-    <string name="lsfg_not_supported">Generarea de cadre necesită un container Bionic</string>
     <string name="lsfg_install_prompt">Lossless Scaling nu este instalat. Atingeți pentru a instala. Se știe că funcționează doar pe Adreno 6xx și mai nou.</string>
     <string name="lsfg_not_in_library">Lossless Scaling nu este în biblioteca dumneavoastră Steam</string>
     <string name="lsfg_install_title">Instalați Lossless Scaling?</string>
@@ -1895,9 +1545,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Exportați automat jocurile instalate pentru frontend-uri de bibliotecă</string>
     <string name="frontend_sync_dialog_title">Sincronizare frontend</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Jocuri personalizate</string>
     <string name="frontend_sync_not_set">Nesetat</string>
     <string name="frontend_sync_clear_confirm_title">Eliminați fișierele de export vechi?</string>
@@ -1940,19 +1587,7 @@
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
     <string name="screen_effects_launch_sharpness">Claritate la lansare</string>
     <string name="screen_effects_launch_sharpness_note">CAS și DLS sunt aplicate prin vkBasalt și au efect la următoarea lansare a jocului.</string>
-    <string name="stats_key_runs">Rulări reușite pe GPU-ul tău</string>
-    <string name="stats_key_reviews">Recenzii de 5 stele (GPU-ul tău / dispozitivul tău)</string>
-    <string name="stats_key_fps">FPS estimat</string>
-    <string name="stats_key_session">Cea mai lungă sesiune pe dispozitivul tău</string>
-    <string name="sort_fps">FPS estimat</string>
-    <string name="sort_runs">Rulări reușite</string>
-    <string name="sort_reviews">Recenzii de 5 stele (dispozitiv)</string>
-    <string name="sort_reviews_gpu">Recenzii de 5 stele (GPU)</string>
     <string name="filter_expired">Expirat</string>
-    <string name="filter_playable">Jucabil (30+ FPS)</string>
-    <string name="filter_five_star_device">Recenzii de 5 stele pe dispozitiv</string>
-    <string name="filter_five_star_gpu">Recenzii de 5 stele pe GPU</string>
-    <string name="filter_proven_gpu">Testat pe GPU-ul tău</string>
     <string name="vibration_intensity">Intensitatea vibrațiilor</string>
     <string name="option_import_files">Importă fișiere</string>
     <string name="option_export_files">Exportă fișiere</string>
@@ -2085,47 +1720,6 @@
     <string name="wrapper_quality_high">Ridicată (imagini mai clare, folosește mai multă RAM)</string>
     <string name="option_play_with_diagnostics">Rulare de diagnosticare</string>
     <string name="option_share_diagnostics">Partajează diagnosticarea</string>
-    <string name="option_ai_debug_run">Obține ajutor AI</string>
-    <string name="debug_report_title">Raport de depanare AI</string>
-    <string name="debug_report_summary">%1$s · %2$s</string>
-    <string name="debug_report_preparing">Se pregătește jurnalul…</string>
-    <string name="debug_report_what_went_wrong">Ce nu a funcționat?</string>
-    <string name="debug_report_send">Trimite</string>
-    <string name="debug_report_share_instead">Partajează în schimb</string>
-    <string name="debug_report_connect_hint">Conectează-ți contul de Discord pentru ca AI-ul nostru să îți poată răspunde într-un fir de suport.</string>
-    <string name="debug_report_connect_discord">Conectează Discord</string>
-    <string name="debug_report_sending">Se trimite raportul…</string>
-    <string name="debug_report_success_title">Raport trimis</string>
-    <string name="debug_report_success_message">A fost deschis un fir de suport pe Discordul nostru. AI-ul nostru îți citește jurnalul și îți va răspunde acolo.</string>
-    <string name="debug_report_open_discord">Deschide Discord</string>
-    <string name="debug_report_failed_title">Raportul nu a putut fi trimis</string>
-    <string name="debug_report_failed_message">Raportul este salvat pe acest dispozitiv. Reîncearcă atunci când revii online sau partajează jurnalul în schimb.</string>
-    <string name="debug_report_retry">Reîncearcă</string>
-    <string name="debug_report_share_log_title">Partajează jurnalul de depanare</string>
-    <string name="debug_report_discord_linked">Discord conectat</string>
-    <string name="debug_report_no_log">Nu a fost capturat niciun jurnal de depanare pentru această rulare.</string>
-    <string name="debug_offer_title">Primește ajutor de la AI pentru această blocare</string>
-    <string name="debug_offer_message">Acea sesiune s-a încheiat prematur. Rulează %1$s încă o dată cu jurnalizarea de depanare, iar AI-ul nostru va citi jurnalul și îți va spune ce să schimbi.</string>
-    <string name="debug_offer_confirm">Pornește rularea de depanare</string>
-    <string name="debug_prerun_title">Primește ajutor de la AI</string>
-    <string name="debug_prerun_message_1">Rulează jocul cu jurnal de depanare și partajează jurnalul cu AI-ul nostru pe Discord la ieșire. Joacă până când apare problema.</string>
-    <string name="debug_prerun_message_2">Răspunsurile AI sunt doar pentru abonați.</string>
-    <string name="debug_prerun_message_1_app">Rulează jocul cu jurnal de depanare. Când ieși, jurnalul ajunge la AI-ul nostru, iar răspunsul vine pe Discordul nostru sau în aplicație, dacă te conectezi cu un cont GameNative. Joacă până când apare problema.</string>
-    <string name="debug_prerun_message_2_app">Prima analiză este gratuită. Răspunsurile ulterioare necesită un plan.</string>
-    <string name="debug_prerun_message_1_neutral">Jocul rulează cu jurnal de depanare. Când ieși, jurnalul ajunge la AI-ul nostru. Joacă până când apare problema.</string>
-    <string name="debug_trial_note">Perioadă de probă gratuită disponibilă.</string>
-    <string name="debug_prerun_message_3">Oricine poate partaja raportul pentru ajutor uman.</string>
-    <string name="debug_paywall_title">Obține suport de depanare AI</string>
-    <string name="debug_paywall_pitch">Patch-uri și build-uri AI personalizate care îți repară jocurile.</string>
-    <string name="debug_paywall_tier5_title">$5/lună · Basic</string>
-    <string name="debug_paywall_tier5_body">1 remediere personalizată pe lună, până la 5 încercări fiecare.</string>
-    <string name="debug_paywall_tier10_title">$10/lună · Pro</string>
-    <string name="debug_paywall_tier10_body">3 remedieri personalizate pe lună, răspunsuri mai rapide, primul la rând.</string>
-    <string name="debug_paywall_cancel_anytime">Anulează oricând. Se aplică limite de utilizare corectă.</string>
-    <string name="debug_paywall_costs_note">Abonamentele acoperă costurile serviciului AI care face posibilă această funcție.</string>
-    <string name="debug_paywall_already">Ești deja susținător?</string>
-    <string name="debug_paywall_send_now">M-am abonat, trimite acum</string>
-    <string name="debug_paywall_not_now">Nu acum</string>
     <string name="diagnostics_share_title">Partajează jurnalul de diagnosticare</string>
     <string name="diagnostics_share_none">Încă nu există jurnal de diagnosticare. Folosește mai întâi \"Rulare de diagnosticare\".</string>
 
@@ -2501,37 +2095,8 @@
     <string name="toast_no_buttons_to_copy_appearance">Nu există alte controale de la care să copiezi aspectul</string>
     <string name="toast_copied_button_appearance">Aspectul controlului a fost copiat</string>
     <string name="toast_applied_button_appearance">Aspectul a fost aplicat tuturor controalelor</string>
-    <string name="rec_disclosure_title">Recomandări de jocuri</string>
-    <string name="rec_disclosure_body">Pentru recomandări personalizate, partajăm jocurile pe care le joci cu GOG. Poți dezactiva oricând din Setări.</string>
-    <string name="rec_disclosure_allow">Permite</string>
-    <string name="rec_disclosure_not_now">Nu acum</string>
-    <string name="rec_teaser_title">Descoperă jocuri pentru dispozitivul tău</string>
-    <string name="rec_teaser_subtitle">Atinge pentru a arunca o privire</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Sponsorizat</string>
-    <string name="featured_action_wishlist">Listă de dorințe</string>
-    <string name="featured_action_wishlist_on">Adaugă în listă pe %1$s</string>
-    <string name="featured_action_wishlisted">În lista de dorințe</string>
-    <string name="featured_action_get_demo">Obține demo-ul</string>
-    <string name="featured_action_in_library">În bibliotecă</string>
-    <string name="featured_action_failed">Nu s-a putut finaliza în aplicație – se deschide pagina magazinului</string>
-    <string name="featured_action_preorder">Precomandă</string>
-    <string name="featured_action_preorder_on">Precomandă pe %1$s</string>
-    <string name="featured_action_buy">Cumpără</string>
-    <string name="featured_action_buy_on">Cumpără pe %1$s</string>
-    <string name="featured_action_notify">Anunță-mă</string>
-    <string name="featured_action_visit">Află mai multe</string>
-    <string name="featured_status_coming_soon_title">În curând</string>
-    <string name="featured_status_coming_soon_body">Adaugă în lista de dorințe ca să fii anunțat la lansare</string>
-    <string name="featured_status_early_access_title">Acces timpuriu</string>
-    <string name="featured_status_early_access_body">Disponibil acum în acces timpuriu</string>
-    <string name="featured_status_preorder_title">Precomandă acum</string>
-    <string name="featured_status_preorder_body">Precomandă ca să fii pregătit la lansare</string>
-    <string name="featured_status_out_now_title">Disponibil acum</string>
-    <string name="featured_status_out_now_body">Acum disponibil</string>
-    <string name="tab_recommended">Recomandate</string>
-    <string name="gog_rec_empty">Adaugă sau joacă câteva jocuri pentru a primi recomandări GOG pe baza bibliotecii tale.</string>
     <!-- Steam achievements -->
 	<string name="achievements">Realizări</string>
 	<string name="achievements_all_title">Toate realizările</string>
@@ -2728,7 +2293,6 @@
     <string name="nexus_plan_ambiguous_case">există deja variante ambigue de majuscule/minuscule</string>
     <string name="nexus_plan_blocked">Aplicarea automată este blocată până când fiecare fișier instalabil are o destinație verificată.</string>
     <string name="nexus_plan_export">Partajează diagnosticul</string>
-    <string name="nexus_reconfiguration_preview">Previzualizarea reconfigurării</string>
     <string name="nexus_reconfiguration_summary">%1$d adăugate • %2$d modificate • %3$d mutate • %4$d învechite</string>
     <string name="nexus_choose_package_variant">Alege o variantă a pachetului</string>
     <string name="nexus_confirm_risky_game_root_files">Am verificat aceste fișiere din dosarul jocului</string>
@@ -2801,8 +2365,6 @@
     <string name="faster_external_loading_subtitle">Poate accelera semnificativ pornirea jocurilor de pe stocarea externă, dar poate cauza probleme în unele jocuri</string>
     <string name="disable_libredirect_title">Dezactivează libredirect</string>
     <string name="disable_libredirect_subtitle">Poate îmbunătăți performanța, dar poate cauza și probleme neașteptate</string>
-    <string name="disable_epic_overlay_title">Dezactivează overlay-ul Epic</string>
-    <string name="disable_epic_overlay_subtitle">Dezactivează overlay-ul EOS și motorul de randare CEF pentru a preveni blocările cauzate de epuizarea memoriei în anumite jocuri</string>
     <string name="binding_mode_simultaneous">Simultan</string>
     <string name="binding_mode_sequence">Secvență</string>
     <string name="binding_sequence_delay_ms">Întârziere secvență (ms)</string>
@@ -2818,22 +2380,6 @@
     <string name="xr_open_composite_toggle">Compatibilitate SteamVR (OpenVR)</string>
     <string name="xr_open_composite_toggle_desc">Direcționează jocurile create pentru SteamVR prin OpenComposite. Activează dacă jocul spune că SteamVR nu rulează sau rămâne plat cu modul VR pornit.</string>
     <string name="xr_render_scale">Scară de randare VR</string>
-    <string name="settings_hide_ai_title">Ascunde funcțiile AI</string>
-    <string name="settings_hide_ai_subtitle">Ascunde ajutorul opțional de depanare cu AI</string>
-    <string name="settings_info_boot_ads_title">Ecrane de încărcare sponsorizate</string>
-    <string name="settings_info_boot_ads_subtitle">Păstrarea acestei opțiuni activate ajută la susținerea dezvoltării GameNative. Nu încetinește niciodată pornirea jocurilor și nu te afectează în niciun fel.</string>
-    <string name="settings_info_boot_recs_title">Recomandări de jocuri pe ecranele de încărcare</string>
-    <string name="settings_info_boot_recs_subtitle">Afișează un joc care ți-ar putea plăcea în timp ce un joc pornește, când nu există un card sponsor.</string>
-    <string name="boot_rec_badge">Recomandat pentru tine</string>
-    <string name="boot_ad_close_cd">Închide acest card</string>
-    <string name="boot_ad_sheet_title_sponsored">Despre cardurile sponsorizate</string>
-    <string name="boot_ad_sheet_title_rec">Despre recomandări</string>
-    <string name="boot_ad_sheet_body_sponsored">Cardurile sponsorizate ajută la finanțarea muncii cu normă întreagă la GameNative. Poți schimba asta oricând din Setări.</string>
-    <string name="boot_ad_sheet_body_rec">Recomandările sunt alese în funcție de jocurile pe care le joci. Poți schimba asta oricând din Setări.</string>
-    <string name="boot_ad_close_one">Închide acesta</string>
-    <string name="boot_ad_turn_off_sponsored">Dezactivează cardurile sponsorizate</string>
-    <string name="boot_ad_turn_off_rec">Dezactivează recomandările</string>
-    <string name="boot_ad_not_now">Nu acum</string>
     <string name="boot_quiz_win_default">Corect!</string>
     <string name="boot_quiz_lose_default">Răspunsul era %1$s</string>
     <string name="gyro_aiming">Țintire giroscopică</string>
@@ -2953,134 +2499,4 @@
     <string name="control_profile_failed">Operațiunea profilului de control a eșuat: %1$s</string>
     <string name="control_profile_delete_title">Ștergi profilul de control?</string>
     <string name="control_profile_delete_message">Elimini „%1$s” din bibliotecă? Jocurile deja configurate cu acest profil își vor păstra controalele.</string>
-    <string name="sort_compatibility">Compatibilitate</string>
-    <string name="community_compatibility_details">Detalii</string>
-    <string name="community_compatibility_expanded">Extins</string>
-    <string name="community_compatibility_collapsed">Restrâns</string>
-    <string name="community_compatibility_short_disclaimer">Rezultatele comunității nu sunt o garanție.</string>
-    <string name="community_compatibility_unreliable_short">Rezultate nesigure; nu este confirmat că jocul poate fi jucat.</string>
-    <string name="community_compatibility_performance_caution">Performanța raportată poate fi limitată.</string>
-    <string name="community_compatibility_checking_short">Se verifică…</string>
-    <string name="community_compatibility_unavailable_short">Indisponibil</string>
-    <string name="community_compatibility_unavailable">Compatibilitatea nu a putut fi încărcată</string>
-    <string name="community_compatibility_missing_tier">Răspunsul nu include datele hardware necesare pentru a aplica rezultatul dispozitivului tău.</string>
-    <string name="community_compatibility_works">Rulează bine</string>
-    <string name="community_compatibility_should">Funcționează</string>
-    <string name="community_compatibility_may">Poate funcționa</string>
-    <string name="community_compatibility_mixed">Nesigur</string>
-    <string name="community_compatibility_wont">Nu funcționează</string>
-    <string name="community_compatibility_unknown">Netestat</string>
-    <string name="community_compatibility_checking">Se verifică compatibilitatea…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d configurație partajată evaluată de pe acest model de dispozitiv</item>
-        <item quantity="few">%1$d configurații partajate evaluate de pe acest model de dispozitiv</item>
-        <item quantity="other">%1$d de configurații partajate evaluate de pe acest model de dispozitiv</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d configurație partajată evaluată cu GPU-ul tău</item>
-        <item quantity="few">%1$d configurații partajate evaluate cu GPU-ul tău</item>
-        <item quantity="other">%1$d de configurații partajate evaluate cu GPU-ul tău</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">Nu s-au găsit configurații partajate pentru hardware-ul tău</string>
-    <string name="community_compatibility_configs_unavailable">Unele date de compatibilitate nu au putut fi încărcate. Se afișează datele disponibile.</string>
-    <string name="community_compatibility_retry">Reîncearcă</string>
-    <string name="community_compatibility_fps_median">Mediană raportată: %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s pe modelul tău de dispozitiv.</string>
-    <string name="community_compatibility_fps_soc">%1$s cu același chipset.</string>
-    <string name="community_compatibility_fps_gpu">%1$s cu GPU-ul tău.</string>
-    <string name="community_compatibility_fps_family">%1$s cu GPU-uri compatibile.</string>
-    <string name="community_compatibility_view_reports">Vezi configurațiile</string>
-    <string name="community_config_install_before_apply">Instalează acest joc înainte de a aplica o configurație a comunității.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată pe modelul tău de dispozitiv.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate pe modelul tău de dispozitiv.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate pe modelul tău de dispozitiv.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată cu același chipset.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate cu același chipset.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate cu același chipset.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată cu GPU-ul tău.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate cu GPU-ul tău.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate cu GPU-ul tău.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">Pe baza a %1$d sesiune înregistrată în familia ta de GPU.</item>
-        <item quantity="few">Pe baza a %1$d sesiuni înregistrate în familia ta de GPU.</item>
-        <item quantity="other">Pe baza a %1$d de sesiuni înregistrate în familia ta de GPU.</item>
-    </plurals>
-    <string name="debug_prerun_instruction">Ce trebuie să faci în această rulare: %1$s</string>
-    <plurals name="debug_prerun_min_minutes">
-        <item quantity="one">Ține jocul deschis cel puțin %1$d minut înainte să ieși.</item>
-        <item quantity="few">Ține jocul deschis cel puțin %1$d minute înainte să ieși.</item>
-        <item quantity="other">Ține jocul deschis cel puțin %1$d de minute înainte să ieși.</item>
-    </plurals>
-    <string name="support_suggestion_title">Setări sugerate</string>
-    <string name="support_suggestion_not_applicable">Această versiune a aplicației nu poate aplica aceste modificări. Le poți schimba manual în setările jocului.</string>
-    <string name="support_suggestion_no_game">Instalează jocul pe acest dispozitiv pentru a aplica aceste modificări.</string>
-    <string name="support_suggestion_change">%1$s: %2$s → %3$s</string>
-    <string name="support_suggestion_changed_since">Valoarea ta actuală este %1$s. Raportul avea %2$s.</string>
-    <string name="support_suggestion_run_record">Următoarea rulare va înregistra și: %1$s</string>
-    <string name="support_suggestion_run_channels">canale de jurnal Wine %1$s</string>
-    <string name="support_suggestion_run_env">valori de depanare %1$s</string>
-    <string name="support_suggestion_run_wrapper_diag">diagnosticarea wrapperului grafic</string>
-    <string name="support_suggestion_apply_and_run">Aplică și rulează</string>
-    <string name="support_suggestion_apply_only">Doar aplică</string>
-    <string name="support_suggestion_restore">Restabilește setările anterioare</string>
-    <string name="support_suggestion_confirm_title">Schimbi aceste setări?</string>
-    <string name="support_suggestion_confirm_message">Aplicația salvează mai întâi valorile tale actuale. Le poți restabili din acest card.</string>
-    <string name="support_suggestion_confirm_run">După modificare, aplicația pornește o rulare de depanare a jocului.</string>
-    <string name="support_suggestion_confirm_warning">Aceasta schimbă versiunea Wine sau driverul grafic. Dacă jocul merge mai rău, restabilește setările anterioare.</string>
-    <string name="support_suggestion_confirm">Aplică</string>
-    <string name="support_suggestion_restore_confirm_title">Restabilești setările anterioare?</string>
-    <string name="support_suggestion_restore_confirm_message">Aplicația pune înapoi valorile înlocuite de aceste modificări.</string>
-    <string name="support_suggestion_restore_confirm">Restabilește</string>
-    <string name="support_suggestion_installing">Se instalează %1$s</string>
-    <string name="support_suggestion_applied">Setările au fost schimbate.</string>
-    <string name="support_suggestion_restored">Setările anterioare au fost restabilite.</string>
-    <string name="support_suggestion_failed">Setările nu au putut fi schimbate. %1$s</string>
-    <string name="support_suggestion_missing">Aceste componente nu sunt disponibile pe acest dispozitiv: %1$s</string>
-    <string name="support_progress_next">Al tău urmează.</string>
-    <string name="support_progress_eta_soon">Răspuns așteptat foarte curând.</string>
-    <string name="support_progress_analysing">AI citește jurnalele tale</string>
-    <string name="support_progress_analysing_elapsed">AI citește jurnalele tale (%1$d min)</string>
-    <string name="support_progress_building">AI construiește o remediere personalizată pentru dispozitivul tău. Poate dura 10 minute sau mai mult.</string>
-    <string name="support_progress_building_elapsed">AI construiește o remediere personalizată pentru dispozitivul tău (%1$d min). Poate dura 10 minute sau mai mult.</string>
-    <string name="support_progress_failed">Analiza nu s-a terminat. Trimite raportul din nou pentru a încerca încă o dată.</string>
-    <string name="support_progress_retry">Încearcă din nou</string>
-    <string name="support_stage_queued">În coadă</string>
-    <string name="support_stage_queued_eta">În coadă · circa %1$d min</string>
-    <string name="support_stage_analysing">Se analizează</string>
-    <string name="support_stage_analysing_elapsed">Se analizează · %1$d min</string>
-    <string name="support_stage_building">Se construiește o remediere</string>
-    <string name="support_stage_failed">Analiza a eșuat</string>
-    <plurals name="support_progress_ahead">
-        <item quantity="one">Înaintea ta este %1$d raport.</item>
-        <item quantity="few">Înaintea ta sunt %1$d rapoarte.</item>
-        <item quantity="other">Înaintea ta sunt %1$d de rapoarte.</item>
-    </plurals>
-    <plurals name="support_progress_eta_minutes">
-        <item quantity="one">Răspuns așteptat în aproximativ %1$d minut.</item>
-        <item quantity="few">Răspuns așteptat în aproximativ %1$d minute.</item>
-        <item quantity="other">Răspuns așteptat în aproximativ %1$d de minute.</item>
-    </plurals>
-    <string name="support_reply_ready">Răspunsul de la Ajutor AI este gata</string>
-    <string name="support_reply_open">Deschide</string>
-    <string name="support_wait_channel_name">Starea răspunsului de la Ajutor AI</string>
-    <string name="support_wait_channel_description">Apare cât timp GameNative așteaptă un răspuns la raportul tău.</string>
-    <string name="support_replies_channel_name">Răspunsuri de la Ajutor AI</string>
-    <string name="support_replies_channel_description">Te anunță când răspunsul la raportul tău este gata.</string>
-    <string name="support_wait_title">Se așteaptă răspunsul de la Ajutor AI</string>
-    <string name="support_wait_text">Raportul tău a fost trimis. Te anunțăm când răspunsul este gata.</string>
-    <string name="support_wait_stop">Oprește</string>
-    <string name="support_reply_ready_tap">Atinge pentru a-l citi.</string>
-    <string name="support_notify_me">Anunță-mă când sosește răspunsul</string>
-    <string name="support_files_listing">Lista folderului: %1$s</string>
-    <string name="support_files_listing_missing">Folderul nu a fost găsit: %1$s</string>
-    <string name="support_files_send_listing">Trimite lista</string>
-    <string name="support_files_listing_sending">Se trimite lista pentru %1$s</string>
-    <string name="support_files_listing_sent">Listă trimisă (elemente: %1$d)</string>
-    <string name="support_files_listing_failed">Lista pentru %1$s nu a putut fi trimisă. %2$s</string>
 </resources>

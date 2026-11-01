@@ -41,17 +41,6 @@
     <string name="steam_uninstall_success">%1$s деінстальовано</string>
     <string name="steam_uninstall_failed">Помилка деінсталяції гри</string>
     <string name="deleting">Видалення…</string>
-    <string name="amazon_uninstall_game_title">Деінсталювати гру</string>
-    <string name="amazon_uninstall_confirmation_message">Ви впевнені, що хочете деінсталювати %1$s? Цю дію не можна скасувати.</string>
-    <string name="amazon_install_game_title">Завантажити гру</string>
-    <string name="amazon_install_confirmation_message">Гра має наступні вимоги до простору. Бажаєте продовжити?\n\n\tРозмір завантаження: %1$s\n\tДоступний простір: %2$s</string>
-    <string name="amazon_verify_files_title">Перевірити файли</string>
-    <string name="amazon_verify_files_message">Буде перевірено всі встановлені файли за маніфестом завантаження для виявлення відсутніх або пошкоджених файлів.\n\nЦе може зайняти деякий час для великих ігор.</string>
-    <string name="amazon_verify_confirm">Перевірити</string>
-    <string name="amazon_verify_in_progress">Перевірка файлів… Це може зайняти деякий час.</string>
-    <string name="amazon_verify_success">Всі файли успішно перевірено.\n\n%1$d / %2$d файлів OK.</string>
-    <string name="amazon_verify_failed_detail">Перевірка виявила проблеми.\n\n%1$d / %2$d файлів OK\n%3$d відсутніх\n%4$d невідповідність розміру\n%5$d невідповідність хешу\n\nПеревстановіть гру, щоб виправити пошкоджені файли.</string>
-    <string name="amazon_verify_error">Перевірка не вдалася: %1$s</string>
     <string name="steam_never">Ніколи</string>
     <string name="steam_continue">Продовжити</string>
     <string name="header_img_desc">Зображення заголовка застосунку</string>
@@ -80,10 +69,6 @@
     <string name="private_branch_password_success">Гілку розблоковано!</string>
     <string name="private_branch_password_invalid">Невірний код доступу</string>
     <string name="run_app">Грати</string>
-    <string name="gog_uninstall_game_title">Деінсталювати гру</string>
-    <string name="gog_uninstall_confirmation_message">Ви впевнені, що хочете деінсталювати %1$s? Цю дію не можна скасувати.</string>
-    <string name="gog_install_game_title">Завантажити гру</string>
-    <string name="gog_install_confirmation_message">Гра має наступні вимоги до простору. Бажаєте продовжити?\n\n\tРозмір завантаження: %1$s\n\tДоступний простір: %2$s</string>
     <string name="download_prompt_title">Інсталювати застосунок</string>
     <string name="calculating_space_requirements">Розрахунок необхідного місця...</string>
     <string name="delete_prompt_title">Деінсталювати застосунок</string>
@@ -157,9 +142,6 @@
     <string name="settings_storage_manage_subtitle">Переглядайте встановлення, переміщуйте їх між місцями зберігання та очищайте контейнери</string>
     <string name="tab_all">Усі</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Встановлено</string>
     <string name="tab_local">Власні</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -385,9 +367,7 @@
     <string name="performance_hud">HUD продуктивності</string>
     <string name="performance_hud_description">Показувати або приховувати ігрове накладання.</string>
     <string name="performance_hud_fps_limiter">Обмежувач FPS</string>
-    <string name="performance_hud_fps_limiter_description">Обмежує частоту кадрів у грі. Макс.: %1$d Гц.</string>
     <string name="performance_hud_fps_limiter_target">Цільовий FPS</string>
-    <string name="performance_hud_fps_limiter_off">Без обмежень</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Обмежує базову частоту кадрів. Частота на екрані — це ліміт, помножений на множник LSFG.</string>
     <string name="performance_hud_presets">Набори</string>
@@ -675,9 +655,6 @@
     <string name="add_custom_game_dont_show_again">Більше не показувати</string>
     <string name="base_app_shortcut_created">Ярлик створено</string>
     <string name="base_app_shortcut_failed">Не вдалося створити ярлик: %s</string>
-    <string name="base_app_images_fetched">Зображення успішно отримано</string>
-    <string name="base_app_game_folder_not_found">Папку гри не знайдено</string>
-    <string name="base_app_images_fetch_failed">Не вдалося отримати зображення: %s</string>
     <string name="base_app_exported">Вивантажено</string>
     <string name="base_app_export_failed">Не вдалося вивантажити: %s</string>
     <string name="base_app_export_cancelled">Вивантаження скасовано</string>
@@ -707,13 +684,9 @@
     <string name="connection_retry">Повторити</string>
 
     <!--Game Feedback Dialog -->
-    <string name="game_feedback_game_run">Як працювала гра?</string>
-    <string name="game_feedback_issues_question">Оберіть знайдені проблеми:</string>
 
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">Довідка та підтримка</string>
-    <string name="hall_of_fame">Зал слави</string>
     <string name="go_online">Увійти в мережу</string>
     <string name="go_offline">Вийти з мережі</string>
     <string name="log_out">Вийти з акаунта</string>
@@ -745,7 +718,6 @@
     <string name="pulseaudio_low_latency">Режим низької затримки PulseAudio</string>
     <string name="microphone_input">Мікрофонний вхід</string>
     <string name="microphone_input_description">Надає мікрофон пристрою Wine/Proton як пристрій запису. Потрібен дозвіл на мікрофон.</string>
-    <string name="show_fps">Показати FPS</string>
     <string name="portrait_mode">Портретний режим</string>
     <string name="portrait_mode_description">Для контролерів типу 8BitDo FlipPad/GameSir Pocket Taco</string>
     <string name="portrait_below_cutout">Тримати під вирізом камери</string>
@@ -765,8 +737,6 @@
     <string name="launch_steam_client_beta">Запустити клієнт Steam</string>
     <string name="steam_offline_mode">Режим Офлайн Steam</string>
     <string name="steam_offline_mode_description">Запускати ігри Steam в офлайн режимі</string>
-    <string name="epic_offline_mode">Режим Офлайн Epic</string>
-    <string name="epic_offline_mode_description">Запускати ігри Epic в офлайн режимі</string>
     <string name="achievement_unlocked">Досягнення розблоковано</string>
     <string name="settings_achievement_notification_position">Позиція сповіщення про досягнення</string>
     <string name="achievement_position_top_left">Лівий верхній</string>
@@ -779,8 +749,6 @@
     <string name="steam_connecting">Підключення до серверів Steam… у повільній мережі це може зайняти хвилину</string>
     <string name="steam_retrying_login">Повторна спроба входу в Steam…</string>
     <string name="launch_bionic_steam">Увімкнути експериментальний Bionic Steam</string>
-    <string name="allow_steam_updates">Дозволити оновлення клієнту Steam</string>
-    <string name="allow_steam_updates_description">Оновлює клієнт Steam до останньої версії. Значно зменшує продуктивність.</string>
     <string name="steam_type">Версія Steam</string>
 
     <!-- Container Configuration: Graphics -->
@@ -994,7 +962,6 @@
     <string name="select_wine_debug_channels">Обрати канали налагодження Wine</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">Опишіть, що сталось</string>
-    <string name="get_support_on_discord">Отримати допомогу в Discord</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">Менеджер драйверів</string>
@@ -1033,153 +1000,12 @@
     <string name="settings_accounts_signed_out">Вхід не виконано</string>
     <string name="settings_accounts_ea_title">Обліковий запис EA</string>
     <string name="settings_accounts_rockstar_title">Обліковий запис Rockstar</string>
-    <string name="gamenative_account_title">Обліковий запис GameNative</string>
-    <string name="gamenative_account_sign_in">Увійти</string>
-    <string name="gamenative_account_sign_in_subtitle">Увійдіть, щоб побачити свій тариф і керувати підпискою.</string>
-    <string name="gamenative_account_loading">Завантаження даних облікового запису.</string>
-    <string name="gamenative_account_load_failed">Не вдалося завантажити дані облікового запису. Виберіть, щоб спробувати ще раз.</string>
-    <string name="gamenative_account_plan">Тариф: %1$s</string>
-    <string name="gamenative_account_plan_none">Немає тарифу</string>
-    <string name="gamenative_account_plan_basic">Basic</string>
-    <string name="gamenative_account_plan_pro">Pro</string>
-    <string name="gamenative_account_plan_patron">Patron</string>
-    <string name="gamenative_account_manage_subscription">Керувати підпискою</string>
-    <string name="gamenative_account_manage_subscription_subtitle">Відкриває сторінку оплати в браузері.</string>
-    <string name="gamenative_account_manage_subscription_opening">Відкривається сторінка оплати.</string>
-    <string name="gamenative_account_manage_subscription_none">У цьому обліковому записі немає підписки для керування.</string>
-    <string name="gamenative_account_managed_discord">Ваш тариф надано через Discord. Керуйте ним у Discord.</string>
-    <string name="gamenative_account_managed_kofi">Ваш тариф надано через Ko-fi. Керуйте ним на Ko-fi.</string>
-    <string name="gamenative_account_manage_subscription_failed">Не вдалося відкрити сторінку оплати. Спробуйте пізніше.</string>
-    <string name="gamenative_account_sign_out">Вийти</string>
-    <string name="gamenative_account_sign_out_subtitle">Вийти з облікового запису GameNative на цьому пристрої.</string>
-    <string name="gamenative_account_discord">Discord</string>
-    <string name="gamenative_account_discord_not_connected">Не підключено › Підключити</string>
-    <string name="gamenative_account_discord_connected">Підключено › Відключити</string>
-    <string name="gamenative_account_discord_connected_as">Підключено як %1$s › Відключити</string>
-    <string name="gamenative_account_discord_link_scan">Відскануйте цей код телефоном або відкрийте цю адресу на іншому пристрої, щоб підключити Discord.</string>
-    <string name="gamenative_account_discord_link_this_device">Або відкрити на цьому пристрої</string>
-    <string name="gamenative_account_discord_link_waiting">Очікування завершення підключення Discord.</string>
-    <string name="gamenative_account_discord_link_starting">Підготовка коду.</string>
-    <string name="gamenative_account_discord_link_expired">Термін дії коду минув. Виберіть «Спробувати ще раз», щоб отримати новий код.</string>
-    <string name="gamenative_account_discord_link_failed">Підключення Discord зараз недоступне. Перевірте з’єднання та спробуйте ще раз.</string>
-    <string name="gamenative_account_discord_link_connected_as">Підключено як %1$s</string>
-    <string name="gamenative_account_discord_link_no_browser">Не знайдено браузер для відкриття Discord. Відскануйте код іншим пристроєм.</string>
-    <string name="gamenative_sign_in_title">Вхід у GameNative</string>
-    <string name="gamenative_sign_in_scan">Відскануйте цей код телефоном, щоб увійти. Також можна увійти на цьому пристрої.</string>
-    <string name="gamenative_sign_in_code">Код: %1$s</string>
-    <string name="gamenative_sign_in_this_device">Увійти на цьому пристрої</string>
-    <string name="gamenative_sign_in_waiting">Очікування завершення входу.</string>
-    <string name="gamenative_sign_in_starting">Підготовка коду для входу.</string>
-    <string name="gamenative_sign_in_expired">Термін дії цього коду минув. Виберіть «Спробувати ще раз», щоб отримати новий код.</string>
-    <string name="gamenative_sign_in_failed">Вхід зараз недоступний. Перевірте з’єднання та спробуйте ще раз.</string>
-    <string name="gamenative_sign_in_try_again">Спробувати ще раз</string>
-    <string name="gamenative_sign_in_success">Ви увійшли в GameNative.</string>
-    <string name="gamenative_sign_in_no_browser">Не знайдено браузер для відкриття сторінки входу. Відскануйте код іншим пристроєм.</string>
-    <string name="support_title">Допомога AI</string>
-    <string name="support_subtitle">Ваші розмови з AI-підтримкою GameNative</string>
-    <string name="support_refresh">Оновити</string>
-    <string name="support_signed_out_title">Допомога з вашими іграми</string>
-    <string name="support_signed_out_body">Увійдіть в обліковий запис GameNative, щоб бачити свої розмови з підтримкою та обговорювати з нашим AI проблеми з іграми.</string>
-    <string name="support_signed_out_discord">Допомогу також можна отримати в нашому Discord</string>
-    <string name="support_empty_title">Розмов поки немає</string>
-    <string name="support_empty_body">Щоб почати, виберіть «Отримати допомогу AI» у грі в бібліотеці. Грайте, доки не виникне проблема, закрийте гру, а потім опишіть, що пішло не так.</string>
-    <string name="support_state_waiting">Очікує відповіді</string>
-    <string name="support_state_answered">Є відповідь</string>
-    <string name="support_state_solved">Вирішено</string>
-    <string name="support_state_not_solved">Не вирішено</string>
-    <string name="support_started">Розпочато %1$s</string>
-    <string name="support_last_activity">Остання активність %1$s</string>
-    <string name="support_problem_network">Не вдалося підключитися. Перевірте з\'єднання та спробуйте ще раз.</string>
-    <string name="support_problem_unavailable">Чат підтримки в застосунку ще недоступний. Доти допомога AI продовжується в нашому Discord.</string>
-    <string name="support_problem_unauthorized">Не вдалося підтвердити ваш обліковий запис GameNative. Спробуйте пізніше або вийдіть і знову увійдіть у налаштуваннях.</string>
-    <string name="support_problem_rate_limited">Ви надіслали забагато за короткий час. Зачекайте трохи та спробуйте ще раз.</string>
-    <string name="support_problem_not_found">Цю розмову не знайдено.</string>
-    <string name="support_problem_server">На нашому боці сталася помилка. Спробуйте ще раз за кілька хвилин.</string>
-    <string name="support_problem_too_long">Повідомлення задовге. Скоротіть його та спробуйте ще раз.</string>
-    <string name="support_problem_too_large">Ці журнали завеликі для надсилання.</string>
-    <string name="support_problem_no_logs">На цьому пристрої немає нових журналів цієї гри. Запустіть новий налагоджувальний запуск, щоб записати їх.</string>
-    <string name="support_problem_locked">Щоб надсилати більше повідомлень у цій розмові, потрібен план.</string>
-    <string name="support_problem_already_answered">Ви вже повідомили нам результат.</string>
-    <string name="support_label_you">Ви</string>
-    <string name="support_label_report">Ваш звіт</string>
-    <string name="support_label_ai">GameNative AI</string>
-    <string name="support_label_staff">%1$s · Команда GameNative</string>
-    <string name="support_label_team">Команда GameNative</string>
-    <string name="support_analysing_first">Наш AI аналізує ваші журнали. Зазвичай це займає кілька хвилин. Ви можете піти з цього екрана — відповідь буде тут, коли ви повернетеся.</string>
-    <string name="support_analysing_followup">Очікування відповіді. Зазвичай це займає кілька хвилин.</string>
-    <string name="support_outcome_question">Це вирішило проблему?</string>
-    <string name="support_outcome_worked">Спрацювало</string>
-    <string name="support_outcome_broken">Досі не працює</string>
-    <string name="support_outcome_recorded_worked">Ви повідомили, що рішення спрацювало. Дякуємо, що дали знати.</string>
-    <string name="support_outcome_recorded_broken">Ви повідомили, що проблему ще не вирішено. Напишіть нижче, що відбувається зараз, або надішліть нові журнали.</string>
-    <string name="support_notice_moved">Ця розмова тепер триває в підтримці Pro.</string>
-    <string name="support_upgrade_title">Щоб продовжити, потрібен план</string>
-    <string name="support_upgrade_reason_trial_used">Перший аналіз був безкоштовним. Щоб відповісти й продовжити розмову з AI про цю проблему, виберіть план.</string>
-    <string name="support_upgrade_reason_reply_cap">Ви досягли сьогоднішнього ліміту чесного використання. Він скинеться за кілька годин.</string>
-    <plurals name="support_fair_use_resets_in_hours">
-        <item quantity="one">Ви досягли сьогоднішнього ліміту чесного використання. Він скинеться через %1$d годину.</item>
-        <item quantity="few">Ви досягли сьогоднішнього ліміту чесного використання. Він скинеться через %1$d години.</item>
-        <item quantity="many">Ви досягли сьогоднішнього ліміту чесного використання. Він скинеться через %1$d годин.</item>
-        <item quantity="other">Ви досягли сьогоднішнього ліміту чесного використання. Він скинеться через %1$d години.</item>
-    </plurals>
-    <string name="support_upgrade_reply_cap_pro_hint">Звіти Pro проходять без черги.</string>
-    <string name="support_limit_title">Денний ліміт чесного використання вичерпано</string>
-    <string name="support_upgrade_reason_required">Для відповідей AI потрібна підписка GameNative. Якщо ви вже маєте підписку в Discord або на Ko-fi, підключіть Discord у налаштуваннях.</string>
-    <string name="support_see_plans">Переглянути плани</string>
-    <string name="support_plan_basic_title">$5/місяць · Basic</string>
-    <string name="support_plan_basic_body">Запустіть свої ігри або змусьте їх працювати краще.</string>
-    <string name="support_checkout_scan">Відскануйте цей код телефоном, щоб завершити оплату. Також її можна завершити на цьому пристрої.</string>
-    <string name="support_checkout_waiting">Коли закінчите, поверніться сюди. План оновиться автоматично.</string>
-    <string name="support_checkout_open">Відкрити на цьому пристрої</string>
-    <string name="support_checkout_no_browser">Не знайдено браузер для відкриття сторінки оплати. Відскануйте код іншим пристроєм.</string>
-    <string name="support_checkout_failed">Не вдалося відкрити сторінку оплати. Перевірте з\'єднання та спробуйте ще раз.</string>
-    <string name="support_checkout_done">Готово</string>
     <string name="main_thank_you_message_play">Станьте учасником сьогодні. Учасники отримують:\n\n• Допомогу ШІ із запуском ігор\n• Ранній доступ до нових версій\n• Преміум-ролі та ексклюзивні канали в Discord\n• …та інше\n\nВід %1$s/міс.</string>
-    <string name="support_plan_pro_title_priced">%1$s/місяць · Pro</string>
-    <string name="support_plan_basic_title_priced">%1$s/місяць · Basic</string>
-    <string name="membership_plans_pitch">Учасники отримують допомогу ШІ із запуском ігор, ранній доступ до нових версій і преміум-ролі в Discord.</string>
-    <string name="membership_plans_title">Стати учасником</string>
-    <string name="support_already_member">Уже учасник? Увійти</string>
-    <string name="support_checkout_expired">Час оплати минув. Якщо ви вже заплатили, увійдіть з використаною електронною адресою, і план з\'явиться.</string>
-    <string name="support_play_unavailable">Оплата через Google Play зараз недоступна. Спробуйте пізніше.</string>
-    <string name="support_checkout_waiting_guest">Після оплати увійдіть на тій сторінці, щоб створити обліковий запис. План активується тут автоматично.</string>
-    <string name="gamenative_account_managed_play">Ваш тариф надано через Google Play. Керуйте ним у Play Маркеті.</string>
-    <string name="support_already_subscribed">Цей обліковий запис уже має підписку. Змінити план можна на сторінці оплати.</string>
-    <string name="support_plan_active">Ваш план активний.</string>
-    <string name="support_plan_pending">Ваш план ще налаштовується. Спробуйте ще раз за хвилину.</string>
-    <string name="support_composer_hint">Напишіть відповідь</string>
-    <string name="support_composer_analysing">Зачекайте. AI ще читає ваші журнали. Відповісти можна після того, як надійде його відповідь.</string>
-    <string name="support_send_logs">Надіслати журнали</string>
-    <string name="support_new_debug_run">Новий налагоджувальний запуск</string>
-    <string name="support_fix_request_action">Запросити індивідуальне виправлення</string>
-    <string name="support_fix_request_title">Запросити індивідуальне виправлення</string>
-    <string name="support_fix_request_message">AI може змінити файли цієї гри або зібрати новий драйвер чи емулятор для вашого пристрою. Якщо ви вже надіслали звіт, він зараз перегляне цей звіт. Якщо ні, він один раз запустить гру, щоб виміряти проблему.</string>
-    <string name="support_fix_request_left">Залишилося індивідуальних виправлень: %1$d з %2$d.</string>
-    <string name="support_fix_request_left_resets">Залишилося індивідуальних виправлень: %1$d з %2$d (оновляться %3$s).</string>
-    <string name="support_fix_request_run">Запросити виправлення</string>
-    <string name="support_fix_request_failed">Не вдалося почати індивідуальне виправлення. Спробуйте ще раз.</string>
-    <string name="support_fix_request_in_progress">Індивідуальне виправлення для цієї гри вже готується.</string>
-    <string name="support_fix_upgrade_reason">Індивідуальні виправлення входять до кожного тарифу.</string>
-    <string name="support_fix_quota">Ви поки що використали всі індивідуальні виправлення.</string>
-    <string name="support_fix_quota_resets">Ви використали всі індивідуальні виправлення. Вони оновляться %1$s.</string>
-    <string name="support_run_check_title">Як пройшов запуск?</string>
-    <string name="support_run_check_sent">Ваш лог надіслано.</string>
-    <string name="support_run_check_failed">Не вдалося надіслати лог.</string>
-    <string name="support_run_check_answer_waiting">Вашу відповідь буде надіслано разом із логом.</string>
-    <string name="support_run_check_answer_failed">Не вдалося надіслати відповідь.</string>
-    <string name="support_run_check_offer">Лог останнього запуску цієї гри не було надіслано.</string>
-    <string name="support_run_check_send_last">Надіслати останній запуск</string>
-    <string name="support_uploading">Завантаження журналів</string>
-    <string name="support_share_file">Відкрити файл</string>
-    <string name="debug_report_use_discord">Використати Discord</string>
-    <string name="debug_report_use_app">Використати чат у застосунку</string>
     <string name="settings_emulation_orientations_title">Дозволені орієнтації екрану</string>
     <string name="settings_emulation_orientations_subtitle">Виберіть можливі орієнтації екрана під час гри.</string>
     <string name="settings_emulation_default_config_title">Змінити стандартну конфігурацію</string>
     <string name="settings_emulation_default_config_subtitle">Стандартні налаштування контейнера для кожної гри (не впливає на вже інстальовані ігри)</string>
     <string name="settings_emulation_default_config_dialog_title">Стандартні налаштування контейнера</string>
-    <string name="settings_emulation_auto_apply_known_config_title">Автоматично застосовувати відому конфігурацію</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">Автоматично застосовувати рекомендовані налаштування для ігор Steam при першому запуску</string>
     <string name="settings_emulation_box64_presets_title">Box64 Пресети</string>
     <string name="settings_emulation_box64_presets_subtitle">Перегляд, зміна та створення пресетів Box64</string>
     <string name="settings_emulation_driver_manager_title">Менеджер драйвера</string>
@@ -1212,18 +1038,12 @@
 
     <!-- Settings: Info Group -->
     <string name="settings_info_title">Інформація</string>
-    <string name="settings_info_send_tip_title">Стати учасником</string>
-    <string name="settings_info_send_tip_subtitle">Допомога ШІ із запуском ігор, ранній доступ до версій та інше</string>
-    <string name="settings_info_ask_tip_title">Пропозиції членства</string>
-    <string name="settings_info_ask_tip_subtitle">Час від часу показувати пропозиції стати учасником GameNative</string>
     <string name="settings_info_source_title">Вихідний код</string>
     <string name="settings_info_source_subtitle">Переглянути вихідний код застосунку</string>
     <string name="settings_info_libraries_title">Використані бібліотеки</string>
     <string name="settings_info_libraries_subtitle">Дізнайтеся, завдяки яким технологіям працює GameNative</string>
     <string name="settings_info_privacy_title">Політика конфіденційності</string>
     <string name="settings_info_privacy_subtitle">Відкриває посилання на Політику конфіденційності GameNative</string>
-    <string name="settings_info_usage_analytics_title">Аналітика використання</string>
-    <string name="settings_info_usage_analytics_subtitle">Ми ніколи не відстежуємо особисту інформацію. Вимкнення зупиняє несуттєву аналітику, однак основні дані про продуктивність ігор все одно збираються як законний інтерес для покращення сумісності.</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">Інтерфейс</string>
@@ -1263,7 +1083,6 @@
     <string name="login_password_hint">Введіть пароль</string>
     <string name="login_password_show">Показати пароль</string>
     <string name="login_password_hide">Приховати пароль</string>
-    <string name="login_remember_session">Запам\'ятати мене</string>
     <string name="login_sign_in">Увійти через Steam</string>
     <string name="login_qr_failed">Помилка QR-коду</string>
     <string name="login_retry_qr">Спробувати ще раз</string>
@@ -1294,8 +1113,6 @@
     <string name="library_reset_container_message">Це скине налаштування Вашого контейнера до стандартної конфігурації.</string>
     <string name="library_verify_files_title">Перевірити файли</string>
     <string name="library_verify_files_message">Будь ласка, переконайтеся, що ваші збереження завантажено у хмару або створено їхню резервну копію, оскільки інакше вони можуть бути перезаписані.</string>
-    <string name="library_update_title">Оновити</string>
-    <string name="library_update_message">Будь ласка, переконайтеся, що ваші збереження завантажено у хмару або створено їхню резервну копію перед оновленням, оскільки інакше вони можуть бути перезаписані.</string>
     <string name="library_config_title">Конфігурація %s</string>
 
     <!-- LibraryAppScreen: Toast Messages -->
@@ -1319,12 +1136,8 @@
     <string name="download_paused_wifi">Завантаження призупинено – очікування Wi-Fi/LAN</string>
 
     <!-- PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">Доступне оновлення</string>
-    <string name="main_update_available_message">Нова версія (%1$s) доступна!%2$s</string>
     <string name="main_update_button">Оновити</string>
     <string name="main_later_button">Пізніше</string>
-    <string name="main_update_failed_title">Помилка оновлення</string>
-    <string name="main_update_failed_message">Помилка завантаження або інсталяції оновлення. Будь ласка, спробуйте знову.</string>
     <string name="launch_dependency_failed_title">Помилка завантаження залежності запуску</string>
     <string name="launch_dependency_failed_message">Помилка завантаження необхідного компонента. Будь ласка, спробуйте знову пізніше.</string>
 
@@ -1333,14 +1146,8 @@
     <string name="main_recent_crash_message">Перепрошуємо!\nБуло б добре дізнатися про проблему, з якою Ви нещодавно зіткнулися.\nВи можете переглянути та експортувати останній журнал збою в налаштуваннях застосунку і додати його як проблему (issue) на GitHub у репозиторії проєкту.\nПосилання на репозиторій GitHub також знаходиться в налаштуваннях!</string>
     <string name="main_thank_you_title">Подобається GameNative?</string>
     <string name="main_thank_you_message">Станьте учасником сьогодні. Учасники отримують:\n\n• Допомогу ШІ із запуском ігор\n• Ранній доступ до нових версій\n• Преміум-ролі та ексклюзивні канали в Discord\n• …та інше\n\nВід $5/міс.</string>
-    <string name="main_join_kofi">Стати учасником</string>
-    <string name="pitch_session_title">Подобається %1$s?</string>
-    <string name="pitch_five_star_title">Раді, що %1$s чудово працює!</string>
     <string name="main_share">Поділитися</string>
     <string name="main_share_text">Спробуй GameNative — грай у свої Steam-ігри з ПК на Android з повною підтримкою хмарних збережень!\nhttps://gamenative.app\nПриєднуйся до спільноти: https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">Чи працювала гра?</string>
-    <string name="main_discord_support_message">Долучайтесь до нашого Discord, щоб отримати підтримку у виправленні чи покращенні роботи ігор.</string>
-    <string name="main_open_discord">Відкрити Discord</string>
     <string name="main_downloading_entry">Завантаження %s</string>
 
     <!-- PluviaMain: Game Launch -->
@@ -1412,23 +1219,8 @@
     <string name="libraries_message">Pluvia - github.com/oxters168/Pluvia\nJavaSteam - github.com/Longi94/JavaSteam\nWinlator та Vortek - github.com/brunodev85/winlator\nWinlator Cmod - github.com/coffincolors/winlator\nWrapper - https://github.com/leegao/bionic-vulkan-wrapper та https://github.com/pipetto-crypto/\nUbuntu RootFs - releases.ubuntu.com/focal</string>
 
     <!-- Supporters Dialog -->
-    <string name="supporters_art_credits">Автори ілюстрацій</string>
-    <string name="supporters_app_icon">Іконка застосунку: Hachi</string>
-    <string name="supporters_alt_icon">Альтернативна іконка застосунку: rhapsody_mdr</string>
-    <string name="supporters_loading">Завантаження прихильників…</string>
-    <string name="supporters_error">Не вдалося завантажити прихильників</string>
-    <string name="supporters_members">Учасники</string>
-    <string name="supporters_supporters">Прихильники</string>
-    <string name="supporters_none">Прихильників поки немає.</string>
-    <string name="supporters_anonymous">Анонімно</string>
 
     <!-- Chat Screen -->
-    <string name="chat_preview_warning">Чат знаходиться у ранньому доступі\nБудь ласка, повідомляйте про проблеми у репозиторії проєкту.</string>
-    <string name="chat_no_history">Історія чату відсутня</string>
-    <string name="chat_send_message">Надіслати повідомлення</string>
-    <string name="chat_send">Надіслати</string>
-    <string name="chat_emoticons">Смайли</string>
-    <string name="chat_stickers">Стікери</string>
 
     <!-- Library Components -->
     <string name="library_open">Відкрити</string>
@@ -1437,87 +1229,18 @@
     <string name="library_not_installed">Не інстальовано</string>
     <string name="library_family_shared">Сімейна бібліотека</string>
     <string name="library_shared_short">Спільний доступ</string>
-    <string name="library_compatible">Сумісно</string>
-    <string name="library_gpu_compatible">Сумісно з GPU</string>
     <string name="library_compatibility_unknown">Сумісність невідома</string>
-    <string name="library_not_compatible">Несумісно</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">Відома конфігурація працює на вашому пристрої</string>
-    <string name="best_config_gpu_family_match">Відома конфігурація має працювати на вашому пристрої</string>
-    <string name="best_config_fallback_match">Відома конфігурація може працювати на вашому пристрої</string>
-    <string name="best_config_compatibility_unknown">Немає відомої конфігурації</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">Конфігурацію успішно застосовано</string>
     <string name="best_config_missing_components_title">Конфігурацію не застосовано</string>
     <string name="best_config_missing_components_message">Наступні необхідні компоненти недоступні на цьому пристрої:\n\n%1$s\n\nВстановіть відсутні компоненти та спробуйте знову.</string>
     <string name="best_config_known_config_invalid">Відома конфігурація недійсна</string>
-    <string name="best_config_no_config_available">Немає доступної найкращої конфігурації для цієї гри</string>
-    <string name="best_config_fetch_failed">Не вдалося отримати конфігурацію. Перевірте підключення до мережі.</string>
     <string name="best_config_apply_anyway">Застосувати все одно</string>
     <string name="best_config_applied_with_defaults">Конфігурацію застосовано, відсутні компоненти замінено значеннями за замовчуванням</string>
     <string name="best_config_apply_failed">Не вдалося застосувати конфігурацію: %s</string>
-    <string name="community_config_title">Конфігурації спільноти</string>
-    <string name="community_config_close">Закрити конфігурації спільноти</string>
-    <string name="community_config_refresh">Оновити конфігурації спільноти</string>
-    <string name="community_config_retry">Повторити</string>
-    <string name="community_config_unknown_error">Невідома помилка</string>
-    <string name="community_config_unknown">Невідомо</string>
-    <string name="community_config_load_failed">Не вдалося завантажити конфігурації спільноти: %1$s</string>
-    <string name="community_config_game_not_found">Для %1$s не знайдено запису про сумісність</string>
-    <string name="community_config_gpu_unknown">GPU недоступний</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d конфігурація</item>
-        <item quantity="few">%1$d конфігурації</item>
-        <item quantity="many">%1$d конфігурацій</item>
-        <item quantity="other">%1$d конфігурації</item>
-    </plurals>
-    <string name="community_config_highest_rated">За рейтингом</string>
-    <string name="community_config_newest">Найновіші</string>
-    <string name="community_config_same_device">Той самий пристрій</string>
-    <string name="community_config_this_gpu">Той самий GPU</string>
-    <string name="community_config_compatible_gpus">Сумісні</string>
-    <string name="community_config_load_more">Завантажити ще</string>
-    <string name="community_config_no_device_results">Для цього пристрою не знайдено конфігурацій.</string>
-    <string name="community_config_no_gpu_results">Для цього GPU не знайдено конфігурацій.</string>
-    <string name="community_config_no_compatible_results">Конфігурацій для сумісних GPU не знайдено.</string>
-    <string name="community_config_show_this_gpu">Показати цей GPU</string>
-    <string name="community_config_show_compatible_gpus">Показати сумісні GPU</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Відомості про конфігурацію</string>
-    <string name="community_config_other_gpu_warning">Цей результат отримано з іншим GPU. Налаштування драйвера та обгортки, що залежать від GPU, не буде застосовано.</string>
-    <string name="community_config_run_details">Тестовий запуск</string>
-    <string name="community_config_rating">Оцінка</string>
-    <string name="community_config_average_fps">Середній FPS</string>
-    <string name="community_config_device">Пристрій</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">Версія GameNative</string>
-    <string name="community_config_submitted">Надіслано</string>
-    <string name="community_config_session_length">Тривалість сеансу</string>
-    <string name="community_config_game_store">Магазин гри</string>
-    <string name="community_config_custom_game">Користувацька гра</string>
-    <string name="community_config_settings">Налаштування</string>
-    <string name="community_config_additional_launch_settings">Додаткові параметри запуску</string>
-    <string name="community_config_apply_launch_arguments">Застосувати аргументи запуску</string>
-    <string name="community_config_apply_environment_variables">Застосувати змінні середовища</string>
-    <string name="community_config_replaces_existing_value">Замінює поточне значення</string>
-    <string name="community_config_dependencies">Залежності</string>
-    <string name="community_config_dependencies_apply_check">Залежності буде перевірено під час застосування конфігурації.</string>
-    <string name="community_config_no_downloads">Зараз завантаження компонентів із маніфесту не потрібне.</string>
-    <string name="community_config_downloads_required">Ці компоненти буде завантажено автоматично:\n%1$s</string>
-    <string name="community_config_tags">Теги</string>
-    <string name="community_config_notes">Примітки</string>
-    <string name="community_config_apply">Застосувати конфігурацію</string>
-    <string name="community_config_container">Контейнер</string>
-    <string name="community_config_wine">Wine або Proton</string>
-    <string name="community_config_emulator">Емулятор</string>
-    <string name="community_config_wrapper">Обгортка DirectX</string>
-    <string name="community_config_box64_preset">Передналаштування Box64</string>
-    <string name="community_config_driver">Графічний драйвер</string>
     <string name="import_config">Імпортувати конфігурацію</string>
     <string name="export_config">Експортувати конфігурацію</string>
     <string name="library_app_type">Тип застосунку</string>
@@ -1601,7 +1324,6 @@
     <string name="contents_all_trusted">Усі файли є надійними. Готово до інсталяції.</string>
     <string name="contents_no_installed">Немає інстальованого вмісту цього типу.</string>
     <string name="contents_delete">Видалити</string>
-    <string name="contents_review_confirm">Цей вміст містить файли, що не входять до надійного набору. Перегляньте та підтвердьте для продовження.</string>
     <string name="contents_removed">Видалено %1$s</string>
 
     <!-- Driver Manager -->
@@ -1694,10 +1416,6 @@
     <string name="auth_webview_title">Авторизація</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">Інтеграція GOG (Альфа)</string>
-    <string name="gog_settings_login_title">Увійти в GOG</string>
-    <string name="gog_settings_login_subtitle">Увійдіть у свій обліковий запис GOG</string>
-    <string name="gog_login_success_title">Вхід успішний</string>
     <string name="rockstar_login_required_title">Потрібен вхід у Rockstar</string>
     <string name="rockstar_login_failed">Не вдалося увійти в Rockstar: %1$s</string>
     <string name="rockstar_link_refused">Цей обліковий запис Rockstar прив’язано до іншого облікового запису Steam.</string>
@@ -1715,68 +1433,20 @@
     <string name="rockstar_preparing">Підготовка підтримки лаунчера Rockstar</string>
     <string name="rockstar_runtime_installing">Встановлення середовища Social Club</string>
     <string name="rockstar_installer_missing">У файлах гри відсутній інсталятор Social Club. Перевірте файли гри в Steam і спробуйте ще раз.</string>
-    <string name="gog_login_cancel">Скасувати</string>
-    <string name="gog_settings_logout_title">Вийти з GOG</string>
-    <string name="gog_settings_logout_subtitle">Вийти з облікового запису GOG</string>
-    <string name="gog_logout_confirm_title">Вийти з GOG?</string>
-    <string name="gog_logout_confirm_message">Це видалить ваші облікові дані GOG та очистить бібліотеку GOG на цьому пристрої. Ви можете увійти знову в будь-який час.</string>
-    <string name="gog_logout_confirm">Вийти</string>
-    <string name="gog_logout_success">Успішно вийшли з GOG</string>
-    <string name="gog_logout_failed">Не вдалося вийти: %s</string>
-    <string name="gog_logout_in_progress">Вихід з GOG…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Інтеграція Epic Games</string>
-    <string name="epic_settings_login_title">Увійти в Epic</string>
-    <string name="epic_settings_login_subtitle">Увійдіть у свій обліковий запис Epic Games</string>
-    <string name="epic_login_success_title">Вхід успішний</string>
-    <string name="epic_login_cancel">Скасувати</string>
-    <string name="epic_settings_logout_title">Вийти з Epic</string>
-    <string name="epic_settings_logout_subtitle">Відключіть свій обліковий запис Epic Games</string>
-    <string name="epic_logout_confirm_title">Вийти з Epic Games?</string>
-    <string name="epic_logout_confirm_message">Це видалить ваші облікові дані Epic Games та очистить бібліотеку Epic Games на цьому пристрої. Ви можете увійти знову в будь-який час.</string>
-    <string name="epic_logout_confirm">Вийти</string>
-    <string name="epic_logout_success">Успішно вийшли з Epic Games</string>
-    <string name="epic_logout_failed">Не вдалося вийти: %s</string>
-    <string name="epic_logout_in_progress">Вихід з Epic Games…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Інтеграція Amazon Games (Alpha)</string>
-    <string name="amazon_settings_login_title">Увійти в Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Увійдіть у свій обліковий запис Amazon Games</string>
-    <string name="amazon_login_success_title">Вхід успішний</string>
-    <string name="amazon_login_cancel">Скасувати</string>
-    <string name="amazon_settings_logout_title">Вийти з Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Вийти з облікового запису Amazon Games</string>
-    <string name="amazon_logout_confirm_title">Вийти з Amazon Games?</string>
-    <string name="amazon_logout_confirm_message">Це видалить ваші облікові дані Amazon Games та очистить вашу бібліотеку Amazon на цьому пристрої. Ви можете увійти знову будь-коли.</string>
-    <string name="amazon_logout_confirm">Вийти</string>
-    <string name="amazon_logout_success">Успішно вийшли з Amazon Games</string>
-    <string name="amazon_logout_failed">Не вдалося вийти: %s</string>
-    <string name="amazon_logout_in_progress">Вихід з Amazon Games…</string>
 
     <!-- Epic Install/Uninstall -->
-    <string name="epic_uninstall_game_title">Деінсталювати гру</string>
-    <string name="epic_uninstall_game_message">Ви впевнені, що хочете деінсталювати %1$s? Цю дію не можна скасувати.</string>
-    <string name="epic_install_game_title">Завантажити гру</string>
-    <string name="epic_install_game_message">Гра має наступні вимоги до простору. Бажаєте продовжити?\n\n\tРозмір завантаження: %1$s\n\tРозмір на диску: %2$s\n\tДоступний простір: %3$s</string>
-    <string name="epic_game_not_found">Гру не знайдено</string>
-    <string name="epic_starting_download">Початок завантаження: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Початок завантаження: %1$s + DLC</string>
-    <string name="epic_download_failed">Не вдалося розпочати завантаження: %1$s</string>
-    <string name="epic_download_error">Помилка завантаження: %1$s</string>
     <string name="manifest_downloading_item">Завантаження %1$s...</string>
     <string name="manifest_download_failed">Помилка завантаження: %1$s</string>
     <string name="manifest_install_failed">Не вдалося інсталювати %1$s</string>
     <string name="manifest_install_success">%1$s інстальовано</string>
     <string name="manifest_content_untrusted">Вміст не є надійним, тому його не інстальовано.</string>
     <string name="manifest_type_mismatch">Завантажений вміст не відповідає очікуваному типу.</string>
-    <string name="manifest_glibc_not_supported">Збірки GLIBC не підтримуються.</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Увійдіть, щоб отримати доступ до бібліотеки Steam.</string>
-    <string name="library_source_not_logged_in_gog">Увійдіть, щоб отримати доступ до бібліотеки GOG.</string>
-    <string name="library_source_not_logged_in_epic">Увійдіть, щоб отримати доступ до бібліотеки Epic.</string>
-    <string name="library_source_not_logged_in_amazon">Увійдіть, щоб отримати доступ до бібліотеки Amazon.</string>
     <string name="library_source_no_custom_games">Ви не додали жодної власної гри.</string>
     <string name="download_failed_title">Помилка завантаження</string>
     <string name="download_failed_message">Не вдалося завантажити необхідний файл. Перевірте підключення до мережі та спробуйте ще раз.</string>
@@ -1801,17 +1471,10 @@
     <string name="option_open_container">Відкрити контейнер</string>
     <string name="option_edit_container">Редагувати контейнер</string>
     <string name="option_reset_to_defaults">Скинути контейнер</string>
-    <string name="option_get_support">Отримати підтримку</string>
-    <string name="option_submit_feedback">Надіслати відгук</string>
     <string name="option_reset_drm">Скинути DRM</string>
-    <string name="option_use_known_config">Використати відому конфігурацію</string>
-    <string name="option_browse_community_configs">Переглянути конфігурації спільноти</string>
 
     <!-- Recommendations -->
     <string name="recommended_badge">Рекомендовано</string>
-    <string name="recommended_buy_button">Купити в GOG</string>
-    <string name="rec_buy_with_price">%1$s · Купити в GOG</string>
-    <string name="recommended_support_message">Ми отримуємо комісію з покупок, здійснених за цим посиланням.</string>
     <string name="recommended_about_heading">Про цю гру</string>
     <string name="recommended_review_count">На основі %1$s відгуків</string>
     <string name="library_store_media_page">%1$d з %2$d</string>
@@ -1827,8 +1490,6 @@
     <string name="review_mixed">Змішані</string>
     <string name="review_mostly_negative">Переважно негативні</string>
     <string name="review_overwhelmingly_negative">Надзвичайно негативні</string>
-    <string name="settings_interface_show_recommendations_title">Показувати рекомендації ігор</string>
-    <string name="settings_interface_show_recommendations_subtitle">Показує персональні рекомендації. Залишивши це ввімкненим, ви допомагаєте підтримати GameNative.</string>
     <string name="settings_interface_library_tabs_title">Вкладки бібліотеки</string>
     <string name="settings_interface_library_tabs_subtitle">Виберіть, які вкладки магазинів показувати в бібліотеці.</string>
     <string name="settings_interface_library_tabs_none">Немає вкладок магазинів</string>
@@ -1847,18 +1508,10 @@
     <string name="option_browse_online_saves">Переглянути онлайн-збереження</string>
     <string name="option_force_download_remote">Примусово завантажити віддалені збереження</string>
     <string name="option_force_upload_local">Примусово вивантажити локальні збереження</string>
-    <string name="option_fetch_game_images">Отримати зображення гри</string>
     <string name="option_test_graphics">Перевірити графіку</string>
     <string name="option_manage_dlc">Керувати DLC</string>
     <string name="option_manage_workshop">Керувати Workshop</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Основний сюжет</string>
-    <string name="hltb_main_plus_extras">Основне + Доповнення</string>
-    <string name="hltb_completionist">Перфекціоніст</string>
-    <string name="hltb_all_styles">Усі стилі</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">Показати спойлери</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1874,7 +1527,6 @@
     <string name="lsfg_backend_desc">Legacy запускає шар lsfg-vk усередині гри; Native виконує генерацію кадрів у рендерері GameNative</string>
     <string name="lsfg_backend_legacy">Legacy (шар)</string>
     <string name="lsfg_backend_native">Native (рендерер)</string>
-    <string name="lsfg_not_supported">Для генерації кадрів потрібен контейнер Bionic</string>
     <string name="lsfg_install_prompt">Lossless Scaling не встановлено. Натисніть для встановлення. Відомо, що працює лише на Adreno 6xx і новіших.</string>
     <string name="lsfg_not_in_library">Lossless Scaling немає у вашій бібліотеці Steam</string>
     <string name="lsfg_install_title">Встановити Lossless Scaling?</string>
@@ -1914,9 +1566,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Автоматично експортувати встановлені ігри для фронтендів бібліотеки</string>
     <string name="frontend_sync_dialog_title">Синхронізація frontend</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Власні ігри</string>
     <string name="frontend_sync_not_set">Не задано</string>
     <string name="frontend_sync_clear_confirm_title">Видалити старі файли експорту?</string>
@@ -1959,19 +1608,7 @@
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
     <string name="screen_effects_launch_sharpness">Чіткість при запуску</string>
     <string name="screen_effects_launch_sharpness_note">CAS і DLS застосовуються через vkBasalt і набувають чинності при наступному запуску гри.</string>
-    <string name="stats_key_runs">Успішні запуски на вашому GPU</string>
-    <string name="stats_key_reviews">5-зіркові відгуки (ваш GPU / ваш пристрій)</string>
-    <string name="stats_key_fps">Очікуваний FPS</string>
-    <string name="stats_key_session">Найдовша сесія на вашому пристрої</string>
-    <string name="sort_fps">Очікуваний FPS</string>
-    <string name="sort_runs">Успішні запуски</string>
-    <string name="sort_reviews">5-зіркові відгуки (пристрій)</string>
-    <string name="sort_reviews_gpu">5-зіркові відгуки (GPU)</string>
     <string name="filter_expired">Прострочено</string>
-    <string name="filter_playable">Придатна (30+ FPS)</string>
-    <string name="filter_five_star_device">5-зіркові відгуки на пристрої</string>
-    <string name="filter_five_star_gpu">5-зіркові відгуки на GPU</string>
-    <string name="filter_proven_gpu">Перевірено на вашому GPU</string>
     <string name="vibration_intensity">Інтенсивність вібрації</string>
     <string name="option_import_files">Імпорт файлів</string>
     <string name="option_export_files">Експорт файлів</string>
@@ -2104,47 +1741,6 @@
     <string name="wrapper_quality_high">Висока (чіткіші зображення, більше ОЗП)</string>
     <string name="option_play_with_diagnostics">Діагностичний запуск</string>
     <string name="option_share_diagnostics">Поділитися діагностикою</string>
-    <string name="option_ai_debug_run">Отримати допомогу AI</string>
-    <string name="debug_report_title">AI-звіт про налагодження</string>
-    <string name="debug_report_summary">%1$s · %2$s</string>
-    <string name="debug_report_preparing">Підготовка журналу…</string>
-    <string name="debug_report_what_went_wrong">Що пішло не так?</string>
-    <string name="debug_report_send">Надіслати</string>
-    <string name="debug_report_share_instead">Поділитися натомість</string>
-    <string name="debug_report_connect_hint">Підключіть обліковий запис Discord, щоб наш AI міг відповісти вам у гілці підтримки.</string>
-    <string name="debug_report_connect_discord">Підключити Discord</string>
-    <string name="debug_report_sending">Надсилання звіту…</string>
-    <string name="debug_report_success_title">Звіт надіслано</string>
-    <string name="debug_report_success_message">У нашому Discord відкрито гілку підтримки. Наш AI читає ваш лог і відповість там.</string>
-    <string name="debug_report_open_discord">Відкрити Discord</string>
-    <string name="debug_report_failed_title">Не вдалося надіслати звіт</string>
-    <string name="debug_report_failed_message">Звіт збережено на цьому пристрої. Повторіть спробу, коли знову будете в мережі, або поділіться логом.</string>
-    <string name="debug_report_retry">Повторити</string>
-    <string name="debug_report_share_log_title">Поділитися логом налагодження</string>
-    <string name="debug_report_discord_linked">Discord підключено</string>
-    <string name="debug_report_no_log">Для цього запуску лог налагодження не було записано.</string>
-    <string name="debug_offer_title">Отримайте допомогу AI з цим збоєм</string>
-    <string name="debug_offer_message">Сеанс завершився передчасно. Запустіть %1$s ще раз із налагоджувальним логуванням. Наш AI прочитає лог і підкаже, що змінити.</string>
-    <string name="debug_offer_confirm">Почати налагоджувальний запуск</string>
-    <string name="debug_prerun_title">Отримати допомогу AI</string>
-    <string name="debug_prerun_message_1">Запускає гру з журналом налагодження і після виходу надсилає журнал нашому AI в Discord. Грайте, доки не виникне проблема.</string>
-    <string name="debug_prerun_message_2">Відповіді AI доступні лише підписникам.</string>
-    <string name="debug_prerun_message_1_app">Запускає гру з журналом налагодження. Після виходу журнал надсилається нашому AI, а відповідь прийде в наш Discord або в застосунок, якщо ви ввійдете в обліковий запис GameNative. Грайте, доки не виникне проблема.</string>
-    <string name="debug_prerun_message_2_app">Перший аналіз безкоштовний. Для подальших відповідей потрібен план.</string>
-    <string name="debug_prerun_message_1_neutral">Гра запускається з журналом налагодження. Після виходу журнал надсилається нашому AI. Грайте, доки не виникне проблема.</string>
-    <string name="debug_trial_note">Доступний безкоштовний пробний період.</string>
-    <string name="debug_prerun_message_3">Будь-хто може поділитися звітом, щоб отримати допомогу людей.</string>
-    <string name="debug_paywall_title">Отримайте AI-підтримку з налагодження</string>
-    <string name="debug_paywall_pitch">Індивідуальні AI-патчі та збірки, які виправляють ваші ігри.</string>
-    <string name="debug_paywall_tier5_title">$5/місяць · Basic</string>
-    <string name="debug_paywall_tier5_body">1 індивідуальне виправлення на місяць, до 5 спроб на кожне.</string>
-    <string name="debug_paywall_tier10_title">$10/місяць · Pro</string>
-    <string name="debug_paywall_tier10_body">3 індивідуальні виправлення на місяць, швидші відповіді, перше місце в черзі.</string>
-    <string name="debug_paywall_cancel_anytime">Скасувати можна будь-коли. Діють ліміти чесного використання.</string>
-    <string name="debug_paywall_costs_note">Підписки покривають витрати на сервіс AI, завдяки якому працює ця функція.</string>
-    <string name="debug_paywall_already">Уже прихильник?</string>
-    <string name="debug_paywall_send_now">Я оформив підписку, надіслати зараз</string>
-    <string name="debug_paywall_not_now">Не зараз</string>
     <string name="diagnostics_share_title">Поділитися журналом діагностики</string>
     <string name="diagnostics_share_none">Журналу діагностики ще немає. Спершу скористайтеся \"Діагностичний запуск\".</string>
 
@@ -2520,37 +2116,8 @@
     <string name="toast_no_buttons_to_copy_appearance">Немає інших елементів для копіювання вигляду</string>
     <string name="toast_copied_button_appearance">Вигляд елемента скопійовано</string>
     <string name="toast_applied_button_appearance">Вигляд застосовано до всіх елементів</string>
-    <string name="rec_disclosure_title">Рекомендації ігор</string>
-    <string name="rec_disclosure_body">Для персональних рекомендацій ми надаємо ігри, у які ви граєте, сервісу GOG. Вимкнути можна будь-коли в Налаштуваннях.</string>
-    <string name="rec_disclosure_allow">Дозволити</string>
-    <string name="rec_disclosure_not_now">Не зараз</string>
-    <string name="rec_teaser_title">Відкрийте ігри для вашого пристрою</string>
-    <string name="rec_teaser_subtitle">Торкніться, щоб переглянути</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Спонсовано</string>
-    <string name="featured_action_wishlist">Список бажань</string>
-    <string name="featured_action_wishlist_on">До списку бажань у %1$s</string>
-    <string name="featured_action_wishlisted">У списку бажаного</string>
-    <string name="featured_action_get_demo">Отримати демо</string>
-    <string name="featured_action_in_library">У бібліотеці</string>
-    <string name="featured_action_failed">Не вдалося виконати в застосунку — відкривається сторінка крамниці</string>
-    <string name="featured_action_preorder">Передзамовити</string>
-    <string name="featured_action_preorder_on">Передзамовити у %1$s</string>
-    <string name="featured_action_buy">Придбати</string>
-    <string name="featured_action_buy_on">Придбати у %1$s</string>
-    <string name="featured_action_notify">Сповістити мене</string>
-    <string name="featured_action_visit">Докладніше</string>
-    <string name="featured_status_coming_soon_title">Незабаром</string>
-    <string name="featured_status_coming_soon_body">Додайте до списку бажань, щоб отримати сповіщення про вихід</string>
-    <string name="featured_status_early_access_title">Ранній доступ</string>
-    <string name="featured_status_early_access_body">Уже доступно в ранньому доступі</string>
-    <string name="featured_status_preorder_title">Передзамовити зараз</string>
-    <string name="featured_status_preorder_body">Передзамовте, щоб бути готовим до виходу</string>
-    <string name="featured_status_out_now_title">Уже вийшло</string>
-    <string name="featured_status_out_now_body">Доступно зараз</string>
-    <string name="tab_recommended">Рекомендовані</string>
-    <string name="gog_rec_empty">Додайте або пограйте в ігри, щоб отримати рекомендації GOG на основі вашої бібліотеки.</string>
     <!-- Steam achievements -->
     <string name="achievements">Досягнення</string>
     <string name="achievements_all_title">Всі досягнення</string>
@@ -2750,7 +2317,6 @@
     <string name="nexus_plan_ambiguous_case">неоднозначні варіанти регістру вже існують</string>
     <string name="nexus_plan_blocked">Автоматичне застосування заблоковано, доки для кожного встановлюваного файлу не підтверджено місце призначення.</string>
     <string name="nexus_plan_export">Поділитися діагностикою</string>
-    <string name="nexus_reconfiguration_preview">Попередній перегляд переналаштування</string>
     <string name="nexus_reconfiguration_summary">Додано: %1$d • змінено: %2$d • переміщено: %3$d • застаріло: %4$d</string>
     <string name="nexus_choose_package_variant">Виберіть варіант пакета</string>
     <string name="nexus_confirm_risky_game_root_files">Ці файли в папці гри перевірено</string>
@@ -2823,8 +2389,6 @@
     <string name="faster_external_loading_subtitle">Може значно пришвидшити запуск ігор із зовнішнього накопичувача, але може спричиняти проблеми в деяких іграх</string>
     <string name="disable_libredirect_title">Вимкнути libredirect</string>
     <string name="disable_libredirect_subtitle">Може підвищити продуктивність, але також може спричинити неочікувані проблеми</string>
-    <string name="disable_epic_overlay_title">Вимкнути оверлей Epic</string>
-    <string name="disable_epic_overlay_subtitle">Вимикає оверлей EOS і рендерер CEF, щоб запобігти вильотам через вичерпання пам\'яті в деяких іграх</string>
     <string name="binding_mode_simultaneous">Одночасно</string>
     <string name="binding_mode_sequence">Послідовно</string>
     <string name="binding_sequence_delay_ms">Затримка послідовності (мс)</string>
@@ -2840,22 +2404,6 @@
     <string name="xr_open_composite_toggle">Сумісність зі SteamVR (OpenVR)</string>
     <string name="xr_open_composite_toggle_desc">Запускає ігри, створені для SteamVR, через OpenComposite. Увімкніть, якщо гра повідомляє, що SteamVR не запущено, або залишається пласкою з увімкненим VR-режимом.</string>
     <string name="xr_render_scale">Масштаб рендерингу VR</string>
-    <string name="settings_hide_ai_title">Приховати функції ШІ</string>
-    <string name="settings_hide_ai_subtitle">Приховує необов\'язкову допомогу ШІ у налагодженні</string>
-    <string name="settings_info_boot_ads_title">Спонсорські екрани завантаження</string>
-    <string name="settings_info_boot_ads_subtitle">Якщо залишити це увімкненим, ви підтримаєте розробку GameNative. Це ніколи не сповільнює запуск ігор і жодним чином на вас не впливає.</string>
-    <string name="settings_info_boot_recs_title">Рекомендації ігор на екранах завантаження</string>
-    <string name="settings_info_boot_recs_subtitle">Показувати гру, яка може вам сподобатися, під час запуску, якщо немає картки спонсора.</string>
-    <string name="boot_rec_badge">Рекомендовано для вас</string>
-    <string name="boot_ad_close_cd">Закрити цю картку</string>
-    <string name="boot_ad_sheet_title_sponsored">Про спонсорські картки</string>
-    <string name="boot_ad_sheet_title_rec">Про рекомендації</string>
-    <string name="boot_ad_sheet_body_sponsored">Спонсорські картки допомагають фінансувати роботу над GameNative на повну ставку. Це можна змінити будь-коли в Налаштуваннях.</string>
-    <string name="boot_ad_sheet_body_rec">Рекомендації добираються за іграми, у які ви граєте. Це можна змінити будь-коли в Налаштуваннях.</string>
-    <string name="boot_ad_close_one">Закрити цю</string>
-    <string name="boot_ad_turn_off_sponsored">Вимкнути спонсорські картки</string>
-    <string name="boot_ad_turn_off_rec">Вимкнути рекомендації</string>
-    <string name="boot_ad_not_now">Не зараз</string>
     <string name="boot_quiz_win_default">Правильно!</string>
     <string name="boot_quiz_lose_default">Правильна відповідь: %1$s</string>
     <string name="gyro_aiming">Гіроскопічне прицілювання</string>
@@ -2951,143 +2499,4 @@
     <string name="control_profile_failed">Не вдалося виконати операцію з профілем керування: %1$s</string>
     <string name="control_profile_delete_title">Видалити профіль керування?</string>
     <string name="control_profile_delete_message">Видалити «%1$s» з бібліотеки? Ігри, уже налаштовані з ним, збережуть своє керування.</string>
-    <string name="sort_compatibility">Сумісність</string>
-    <string name="community_compatibility_details">Подробиці</string>
-    <string name="community_compatibility_expanded">Розгорнуто</string>
-    <string name="community_compatibility_collapsed">Згорнуто</string>
-    <string name="community_compatibility_short_disclaimer">Результати спільноти не є гарантією.</string>
-    <string name="community_compatibility_unreliable_short">Нестабільні результати; можливість грати не підтверджена.</string>
-    <string name="community_compatibility_performance_caution">Повідомлена продуктивність може бути обмеженою.</string>
-    <string name="community_compatibility_checking_short">Перевірка…</string>
-    <string name="community_compatibility_unavailable_short">Недоступно</string>
-    <string name="community_compatibility_unavailable">Не вдалося завантажити сумісність</string>
-    <string name="community_compatibility_missing_tier">У відповіді немає даних про обладнання, потрібних для застосування результату до вашого пристрою.</string>
-    <string name="community_compatibility_works">Працює добре</string>
-    <string name="community_compatibility_should">Працює</string>
-    <string name="community_compatibility_may">Може працювати</string>
-    <string name="community_compatibility_mixed">Нестабільно</string>
-    <string name="community_compatibility_wont">Не працює</string>
-    <string name="community_compatibility_unknown">Не перевірено</string>
-    <string name="community_compatibility_checking">Перевірка сумісності…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d оцінена спільна конфігурація з цієї моделі пристрою</item>
-        <item quantity="few">%1$d оцінені спільні конфігурації з цієї моделі пристрою</item>
-        <item quantity="many">%1$d оцінених спільних конфігурацій з цієї моделі пристрою</item>
-        <item quantity="other">%1$d оціненої спільної конфігурації з цієї моделі пристрою</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d оцінена спільна конфігурація з вашим GPU</item>
-        <item quantity="few">%1$d оцінені спільні конфігурації з вашим GPU</item>
-        <item quantity="many">%1$d оцінених спільних конфігурацій з вашим GPU</item>
-        <item quantity="other">%1$d оціненої спільної конфігурації з вашим GPU</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">Не знайдено спільних конфігурацій для вашого обладнання</string>
-    <string name="community_compatibility_configs_unavailable">Не вдалося завантажити частину даних про сумісність. Показано доступні дані.</string>
-    <string name="community_compatibility_retry">Повторити</string>
-    <string name="community_compatibility_fps_median">Медіанна частота: %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s на вашій моделі пристрою.</string>
-    <string name="community_compatibility_fps_soc">%1$s із тим самим чипсетом.</string>
-    <string name="community_compatibility_fps_gpu">%1$s із вашим GPU.</string>
-    <string name="community_compatibility_fps_family">%1$s із сумісними GPU.</string>
-    <string name="community_compatibility_view_reports">Конфігурації</string>
-    <string name="community_config_install_before_apply">Установіть цю гру перед застосуванням конфігурації спільноти.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу на вашій моделі пристрою.</item>
-        <item quantity="few">На основі %1$d записаних сеансів на вашій моделі пристрою.</item>
-        <item quantity="many">На основі %1$d записаних сеансів на вашій моделі пристрою.</item>
-        <item quantity="other">На основі %1$d записаного сеансу на вашій моделі пристрою.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу з тим самим чипсетом.</item>
-        <item quantity="few">На основі %1$d записаних сеансів з тим самим чипсетом.</item>
-        <item quantity="many">На основі %1$d записаних сеансів з тим самим чипсетом.</item>
-        <item quantity="other">На основі %1$d записаного сеансу з тим самим чипсетом.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу з вашим GPU.</item>
-        <item quantity="few">На основі %1$d записаних сеансів з вашим GPU.</item>
-        <item quantity="many">На основі %1$d записаних сеансів з вашим GPU.</item>
-        <item quantity="other">На основі %1$d записаного сеансу з вашим GPU.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">На основі %1$d записаного сеансу у вашій родині GPU.</item>
-        <item quantity="few">На основі %1$d записаних сеансів у вашій родині GPU.</item>
-        <item quantity="many">На основі %1$d записаних сеансів у вашій родині GPU.</item>
-        <item quantity="other">На основі %1$d записаного сеансу у вашій родині GPU.</item>
-    </plurals>
-    <string name="debug_prerun_instruction">Що зробити в цьому запуску: %1$s</string>
-    <plurals name="debug_prerun_min_minutes">
-        <item quantity="one">Не закривайте гру щонайменше %1$d хвилину.</item>
-        <item quantity="few">Не закривайте гру щонайменше %1$d хвилини.</item>
-        <item quantity="many">Не закривайте гру щонайменше %1$d хвилин.</item>
-        <item quantity="other">Не закривайте гру щонайменше %1$d хвилини.</item>
-    </plurals>
-    <string name="support_suggestion_title">Запропоновані налаштування</string>
-    <string name="support_suggestion_not_applicable">Ця версія застосунку не може застосувати ці зміни. Ви можете змінити їх вручну в налаштуваннях гри.</string>
-    <string name="support_suggestion_no_game">Установіть гру на цей пристрій, щоб застосувати ці зміни.</string>
-    <string name="support_suggestion_change">%1$s: %2$s → %3$s</string>
-    <string name="support_suggestion_changed_since">Ваше поточне значення — %1$s. У звіті було %2$s.</string>
-    <string name="support_suggestion_run_record">Наступний запуск також запише: %1$s</string>
-    <string name="support_suggestion_run_channels">канали журналу Wine %1$s</string>
-    <string name="support_suggestion_run_env">значення налагодження %1$s</string>
-    <string name="support_suggestion_run_wrapper_diag">діагностику графічної обгортки</string>
-    <string name="support_suggestion_apply_and_run">Застосувати й запустити</string>
-    <string name="support_suggestion_apply_only">Лише застосувати</string>
-    <string name="support_suggestion_restore">Повернути попередні налаштування</string>
-    <string name="support_suggestion_confirm_title">Змінити ці налаштування?</string>
-    <string name="support_suggestion_confirm_message">Спочатку застосунок збереже поточні значення. Їх можна повернути з цієї картки.</string>
-    <string name="support_suggestion_confirm_run">Після зміни застосунок запустить гру в режимі налагодження.</string>
-    <string name="support_suggestion_confirm_warning">Це змінює версію Wine або графічний драйвер. Якщо гра працюватиме гірше, поверніть попередні налаштування.</string>
-    <string name="support_suggestion_confirm">Застосувати</string>
-    <string name="support_suggestion_restore_confirm_title">Повернути попередні налаштування?</string>
-    <string name="support_suggestion_restore_confirm_message">Застосунок поверне значення, які замінили ці зміни.</string>
-    <string name="support_suggestion_restore_confirm">Повернути</string>
-    <string name="support_suggestion_installing">Установлення %1$s</string>
-    <string name="support_suggestion_applied">Налаштування змінено.</string>
-    <string name="support_suggestion_restored">Попередні налаштування повернуто.</string>
-    <string name="support_suggestion_failed">Не вдалося змінити налаштування. %1$s</string>
-    <string name="support_suggestion_missing">Ці компоненти недоступні на цьому пристрої: %1$s</string>
-    <string name="support_progress_next">Ваш наступний.</string>
-    <string name="support_progress_eta_soon">Відповідь очікується зовсім скоро.</string>
-    <string name="support_progress_analysing">AI читає ваші журнали</string>
-    <string name="support_progress_analysing_elapsed">AI читає ваші журнали (%1$d хв)</string>
-    <string name="support_progress_building">AI збирає індивідуальне виправлення для вашого пристрою. Це може зайняти 10 хвилин або більше.</string>
-    <string name="support_progress_building_elapsed">AI збирає індивідуальне виправлення для вашого пристрою (%1$d хв). Це може зайняти 10 хвилин або більше.</string>
-    <string name="support_progress_failed">Аналіз не завершився. Надішліть звіт ще раз, щоб спробувати знову.</string>
-    <string name="support_progress_retry">Спробувати знову</string>
-    <string name="support_stage_queued">У черзі</string>
-    <string name="support_stage_queued_eta">У черзі · близько %1$d хв</string>
-    <string name="support_stage_analysing">Аналіз</string>
-    <string name="support_stage_analysing_elapsed">Аналіз · %1$d хв</string>
-    <string name="support_stage_building">Збирання виправлення</string>
-    <string name="support_stage_failed">Аналіз не вдався</string>
-    <plurals name="support_progress_ahead">
-        <item quantity="one">Перед вашим %1$d звіт.</item>
-        <item quantity="few">Перед вашим %1$d звіти.</item>
-        <item quantity="many">Перед вашим %1$d звітів.</item>
-        <item quantity="other">Перед вашим %1$d звіту.</item>
-    </plurals>
-    <plurals name="support_progress_eta_minutes">
-        <item quantity="one">Відповідь очікується приблизно за %1$d хвилину.</item>
-        <item quantity="few">Відповідь очікується приблизно за %1$d хвилини.</item>
-        <item quantity="many">Відповідь очікується приблизно за %1$d хвилин.</item>
-        <item quantity="other">Відповідь очікується приблизно за %1$d хвилини.</item>
-    </plurals>
-    <string name="support_reply_ready">Відповідь у розділі «Допомога AI» готова</string>
-    <string name="support_reply_open">Відкрити</string>
-    <string name="support_wait_channel_name">Статус відповіді «Допомога AI»</string>
-    <string name="support_wait_channel_description">Показується, поки GameNative чекає на відповідь на ваш звіт.</string>
-    <string name="support_replies_channel_name">Відповіді «Допомога AI»</string>
-    <string name="support_replies_channel_description">Повідомляє, коли відповідь на ваш звіт готова.</string>
-    <string name="support_wait_title">Очікування відповіді «Допомога AI»</string>
-    <string name="support_wait_text">Звіт надіслано. Ми повідомимо, коли відповідь буде готова.</string>
-    <string name="support_wait_stop">Зупинити</string>
-    <string name="support_reply_ready_tap">Торкніться, щоб прочитати.</string>
-    <string name="support_notify_me">Сповістити, коли надійде відповідь</string>
-    <string name="support_files_listing">Список папки: %1$s</string>
-    <string name="support_files_listing_missing">Папку не знайдено: %1$s</string>
-    <string name="support_files_send_listing">Надіслати список</string>
-    <string name="support_files_listing_sending">Надсилання списку %1$s</string>
-    <string name="support_files_listing_sent">Список надіслано (елементів: %1$d)</string>
-    <string name="support_files_listing_failed">Не вдалося надіслати список %1$s. %2$s</string>
 </resources>

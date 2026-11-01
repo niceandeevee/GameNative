@@ -7,8 +7,6 @@ enum class Marker(val fileName: String ) {
     STEAM_DLL_RESTORED(".steam_dll_restored"),
     STEAM_COLDCLIENT_USED(".steam_coldclient_used"),
     VCREDIST_INSTALLED(".vcredist_installed"),
-    GOG_SCRIPT_INSTALLED(".gog_script_installed"),
-    GOG_SUPPORT_INSTALLED(".gog_support_installed"),
     STEAM_INSTALL_SCRIPT_INSTALLED(".steam_install_script_installed"),
     STEAM_CEG_WRAPPED(".steam_ceg_wrapped"),
     PHYSX_INSTALLED(".physx_installed"),

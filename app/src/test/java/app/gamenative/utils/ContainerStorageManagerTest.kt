@@ -24,9 +24,6 @@ class ContainerStorageManagerTest {
     fun detectGameSource_onlyRecognizesKnownPrefixes() {
         assertEquals(GameSource.STEAM, ContainerStorageManager.detectGameSource("STEAM_123"))
         assertEquals(GameSource.CUSTOM_GAME, ContainerStorageManager.detectGameSource("CUSTOM_GAME_42"))
-        assertEquals(GameSource.GOG, ContainerStorageManager.detectGameSource("GOG_7"))
-        assertEquals(GameSource.EPIC, ContainerStorageManager.detectGameSource("EPIC_8"))
-        assertEquals(GameSource.AMAZON, ContainerStorageManager.detectGameSource("AMAZON_9"))
         assertNull(ContainerStorageManager.detectGameSource("12345"))
     }
 

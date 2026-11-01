@@ -4,9 +4,6 @@ import android.content.Context
 import app.gamenative.R
 import app.gamenative.data.GameSource
 import app.gamenative.utils.launchdependencies.BionicDefaultProtonDependency
-import app.gamenative.utils.launchdependencies.EpicOverlayDependency
-import app.gamenative.utils.launchdependencies.EpicSdkUpdateDependency
-import app.gamenative.utils.launchdependencies.GogScriptInterpreterDependency
 import app.gamenative.utils.launchdependencies.LaunchDependencyCallbacks
 import app.gamenative.utils.launchdependencies.LaunchDependency
 import app.gamenative.utils.launchdependencies.BionicSteamAssetsDependency
@@ -24,9 +21,6 @@ class LaunchDependencies {
     companion object {
         private val launchDependencies: List<LaunchDependency> = listOf(
             BionicDefaultProtonDependency,
-            GogScriptInterpreterDependency,
-            EpicOverlayDependency,
-            EpicSdkUpdateDependency,
             BionicSteamAssetsDependency,
             RockstarHelperDependency,
         )

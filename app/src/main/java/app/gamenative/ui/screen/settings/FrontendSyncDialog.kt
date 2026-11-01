@@ -38,9 +38,6 @@ import app.gamenative.ui.components.rememberCustomGameFolderPicker
 fun FrontendSyncDialog(onDismiss: () -> Unit) {
     val sources = listOf(
         GameSource.STEAM to stringResource(R.string.frontend_sync_source_steam),
-        GameSource.EPIC to stringResource(R.string.frontend_sync_source_epic),
-        GameSource.GOG to stringResource(R.string.frontend_sync_source_gog),
-        GameSource.AMAZON to stringResource(R.string.frontend_sync_source_amazon),
         GameSource.CUSTOM_GAME to stringResource(R.string.frontend_sync_source_custom),
     )
     // Buffered changes: source → (newPath, deleteOldFiles). Applied only on OK.

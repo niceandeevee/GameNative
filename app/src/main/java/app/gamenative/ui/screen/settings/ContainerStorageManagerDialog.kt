@@ -926,9 +926,6 @@ private fun sizeBreakdown(entry: ContainerStorageManager.Entry): String {
 private fun gameSourceLabel(gameSource: GameSource?): String = when (gameSource) {
     GameSource.STEAM -> stringResource(R.string.library_source_steam)
     GameSource.CUSTOM_GAME -> stringResource(R.string.library_source_custom)
-    GameSource.GOG -> stringResource(R.string.tab_gog)
-    GameSource.EPIC -> stringResource(R.string.tab_epic)
-    GameSource.AMAZON -> stringResource(R.string.tab_amazon)
     null -> stringResource(R.string.container_storage_source_unknown)
 }
 

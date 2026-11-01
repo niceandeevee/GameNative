@@ -40,34 +40,6 @@
     <string name="steam_uninstall_success">%1$s はアンインストールされました</string>
     <string name="steam_uninstall_failed">ゲームのアンインストールに失敗しました</string>
     <string name="deleting">削除中…</string>
-    <string name="amazon_uninstall_game_title">ゲームをアンインストールする</string>
-    <string name="amazon_uninstall_confirmation_message">%1$s をアンインストールしてもよろしいですか?この操作は元に戻すことができません。</string>
-    <string name="amazon_install_game_title">ゲームをダウンロード</string>
-    <string name="amazon_install_confirmation_message">インストールされるアプリには次のスペース要件があります。続行しますか?\n\n\tダウンロード サイズ: %1$s\n\t利用可能なスペース: %2$s</string>
-    <string name="amazon_verify_files_title">ファイルの検証</string>
-    <string name="amazon_verify_files_message">これにより、インストールされているすべてのファイルがダウンロード マニフェストと照合してチェックされ、欠落または破損したファイルが検出されます。\n\n大規模なゲームの場合、これには時間がかかる場合があります。</string>
-    <string name="amazon_verify_confirm">確認する</string>
-    <string name="amazon_verify_in_progress">ファイルを検証しています…これには時間がかかる場合があります。</string>
-    <string name="amazon_verify_success">すべてのファイルが正常に検証されました。\n\n%1$d / %2$d ファイルは OK。</string>
-    <string name="amazon_verify_failed_detail">検証で問題が見つかりました。\n\n%1$d / %2$d ファイル OK\n%3$d がありません\n%4$d サイズが一致しません\n%5$d ハッシュが一致しません\n\nゲームを再インストールして、破損したファイルを修正してください。</string>
-    <string name="amazon_verify_error">検証に失敗しました: %1$s</string>
-    <string name="gog_uninstall_game_title">ゲームをアンインストールする</string>
-    <string name="gog_uninstall_confirmation_message">%1$s をアンインストールしてもよろしいですか?この操作は元に戻すことができません。</string>
-    <string name="gog_install_game_title">ゲームをダウンロード</string>
-    <string name="gog_install_confirmation_message">インストールされるアプリには次のスペース要件があります。続行しますか?\n\n\tダウンロード サイズ: %1$s\n\t利用可能なスペース: %2$s</string>
-    <string name="epic_uninstall_game_title">ゲームをアンインストールする</string>
-    <string name="epic_uninstall_game_message">%1$s をアンインストールしてもよろしいですか?この操作は元に戻すことができません。</string>
-    <string name="epic_install_game_title">ゲームをダウンロード</string>
-    <string name="epic_install_game_message">インストールされるアプリには次のスペース要件があります。続行しますか?\n\n\tダウンロード サイズ: %1$s\n\tディスク上のサイズ: %2$s\n\t利用可能なスペース: %3$s</string>
-    <string name="epic_game_not_found">ゲームが見つかりません</string>
-    <string name="epic_starting_download">ダウンロードを開始しています: %1$s</string>
-    <string name="epic_starting_download_with_dlcs">ダウンロード開始: %1$s + DLC</string>
-    <string name="epic_download_failed">ダウンロードの開始に失敗しました: %1$s</string>
-    <string name="epic_download_error">ダウンロード エラー: %1$s</string>
-    <string name="epic_cancel_download_message">アプリのダウンロードをキャンセルしてもよろしいですか?</string>
-    <string name="epic_delete_download_message">このゲームのダウンロードデータをすべて削除しますか?</string>
-    <string name="epic_uninstall_failed">アンインストールに失敗しました: %1$s</string>
-    <string name="epic_uninstall_error">アンインストール エラー: %1$s</string>
     <string name="steam_never">一度もない</string>
     <string name="steam_continue">続ける</string>
     <string name="header_img_desc">アプリのヘッダー画像</string>
@@ -119,9 +91,6 @@
     <!-- Library Tabs -->
     <string name="tab_all">すべて</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">インストール済み</string>
     <string name="tab_local">カスタム</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -378,9 +347,7 @@
     <string name="performance_hud">パフォーマンス HUD</string>
     <string name="performance_hud_description">ゲーム内のオーバーレイを表示または非表示にします。</string>
     <string name="performance_hud_fps_limiter">FPSリミッター</string>
-    <string name="performance_hud_fps_limiter_description">ゲーム内のフレームレートを制限します。最大: %1$d Hz。</string>
     <string name="performance_hud_fps_limiter_target">ターゲットFPS</string>
-    <string name="performance_hud_fps_limiter_off">無制限</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">ベースフレームレートを制限します。画面上のレートは上限×LSFG倍率です。</string>
     <string name="performance_hud_presets">プリセット</string>
@@ -690,9 +657,6 @@
     <string name="add_custom_game_dont_show_again">\'このダイアログを再度表示しないでください</string>
     <string name="base_app_shortcut_created">ショートカットが作成されました</string>
     <string name="base_app_shortcut_failed">ショートカットの作成に失敗しました: %s</string>
-    <string name="base_app_images_fetched">画像が正常に取得されました</string>
-    <string name="base_app_game_folder_not_found">ゲームフォルダーが見つかりません</string>
-    <string name="base_app_images_fetch_failed">画像の取得に失敗しました: %s</string>
     <string name="base_app_exported">輸出済み</string>
     <string name="base_app_export_failed">エクスポートに失敗しました: %s</string>
     <string name="base_app_export_cancelled">エクスポートがキャンセルされました</string>
@@ -723,13 +687,9 @@
 
 
     <!--Game Feedback Dialog -->
-    <string name="game_feedback_game_run">ゲームはどうやって進行しましたか？</string>
-    <string name="game_feedback_issues_question">発生した問題を選択してください:</string>
 
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">ヘルプ &amp; サポート</string>
-    <string name="hall_of_fame">殿堂</string>
     <string name="go_online">オンラインにする</string>
     <string name="go_offline">オフラインにする</string>
     <string name="log_out">ログアウト</string>
@@ -761,7 +721,6 @@
     <string name="pulseaudio_low_latency">PulseAudio 低レイテンシーモード</string>
     <string name="microphone_input">マイク入力</string>
     <string name="microphone_input_description">デバイスのマイクを録音デバイスとして Wine/Proton に公開します。マイクの権限が必要です。</string>
-    <string name="show_fps">FPS を表示</string>
     <string name="portrait_mode">ポートレートモード</string>
     <string name="portrait_mode_description">8BitDo FlipPad / GameSir Pocket Taco タイプ コントローラー用</string>
     <string name="portrait_below_cutout">カメラホールの下に表示</string>
@@ -794,8 +753,6 @@
     <string name="achievement_position_top_right">右上</string>
     <string name="achievement_position_bottom_left">左下</string>
     <string name="achievement_position_bottom_right">右下</string>
-    <string name="allow_steam_updates">Steam アップデートを許可する</string>
-    <string name="allow_steam_updates_description">Steamを最新バージョンにアップデートします。パフォーマンスが大幅に低下します。</string>
     <string name="steam_type">Steamタイプ</string>
 
     <!-- Container Configuration: Graphics -->
@@ -969,7 +926,6 @@
     <string name="select_wine_debug_channels">Wine デバッグ チャネルの選択</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">何が起こったのか説明してください</string>
-    <string name="get_support_on_discord">Discord でサポートを受ける</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">ドライバーマネージャー</string>
@@ -1008,150 +964,12 @@
     <string name="settings_accounts_signed_out">サインインしていません</string>
     <string name="settings_accounts_ea_title">EA アカウント</string>
     <string name="settings_accounts_rockstar_title">Rockstar アカウント</string>
-    <string name="gamenative_account_title">GameNative アカウント</string>
-    <string name="gamenative_account_sign_in">サインイン</string>
-    <string name="gamenative_account_sign_in_subtitle">サインインすると、プランの確認とサブスクリプションの管理ができます。</string>
-    <string name="gamenative_account_loading">アカウント情報を読み込んでいます。</string>
-    <string name="gamenative_account_load_failed">アカウント情報を読み込めませんでした。選択して再試行してください。</string>
-    <string name="gamenative_account_plan">プラン: %1$s</string>
-    <string name="gamenative_account_plan_none">プランなし</string>
-    <string name="gamenative_account_plan_basic">Basic</string>
-    <string name="gamenative_account_plan_pro">Pro</string>
-    <string name="gamenative_account_plan_patron">Patron</string>
-    <string name="gamenative_account_manage_subscription">サブスクリプションを管理</string>
-    <string name="gamenative_account_manage_subscription_subtitle">ブラウザーで請求ページを開きます。</string>
-    <string name="gamenative_account_manage_subscription_opening">請求ページを開いています。</string>
-    <string name="gamenative_account_manage_subscription_none">このアカウントには管理するサブスクリプションがありません。</string>
-    <string name="gamenative_account_managed_discord">このプランは Discord から提供されています。Discord で管理してください。</string>
-    <string name="gamenative_account_managed_kofi">このプランは Ko-fi から提供されています。Ko-fi で管理してください。</string>
-    <string name="gamenative_account_manage_subscription_failed">請求ページを開けませんでした。しばらくしてからもう一度お試しください。</string>
-    <string name="gamenative_account_sign_out">サインアウト</string>
-    <string name="gamenative_account_sign_out_subtitle">このデバイスで GameNative アカウントからサインアウトします。</string>
-    <string name="gamenative_account_discord">Discord</string>
-    <string name="gamenative_account_discord_not_connected">未接続 › 接続</string>
-    <string name="gamenative_account_discord_connected">接続済み › 接続解除</string>
-    <string name="gamenative_account_discord_connected_as">%1$s として接続済み › 接続解除</string>
-    <string name="gamenative_account_discord_link_scan">スマートフォンでこのコードをスキャンするか、別の端末でこのアドレスを開いて Discord を連携してください。</string>
-    <string name="gamenative_account_discord_link_this_device">またはこの端末で開く</string>
-    <string name="gamenative_account_discord_link_waiting">Discord の連携が完了するのを待っています。</string>
-    <string name="gamenative_account_discord_link_starting">コードを準備しています。</string>
-    <string name="gamenative_account_discord_link_expired">このコードは期限切れです。新しいコードを取得するには「再試行」を選択してください。</string>
-    <string name="gamenative_account_discord_link_failed">現在 Discord と連携できません。接続を確認して、もう一度お試しください。</string>
-    <string name="gamenative_account_discord_link_connected_as">%1$s として接続済み</string>
-    <string name="gamenative_account_discord_link_no_browser">Discord を開くブラウザが見つかりません。別の端末でコードをスキャンしてください。</string>
-    <string name="gamenative_sign_in_title">GameNative にサインイン</string>
-    <string name="gamenative_sign_in_scan">スマートフォンでこのコードをスキャンしてサインインしてください。このデバイスでサインインすることもできます。</string>
-    <string name="gamenative_sign_in_code">コード: %1$s</string>
-    <string name="gamenative_sign_in_this_device">このデバイスでサインイン</string>
-    <string name="gamenative_sign_in_waiting">サインインの完了を待っています。</string>
-    <string name="gamenative_sign_in_starting">サインインコードを準備しています。</string>
-    <string name="gamenative_sign_in_expired">このサインインコードは期限切れです。「再試行」を選択して新しいコードを取得してください。</string>
-    <string name="gamenative_sign_in_failed">現在サインインできません。接続を確認して、もう一度お試しください。</string>
-    <string name="gamenative_sign_in_try_again">再試行</string>
-    <string name="gamenative_sign_in_success">GameNative にサインインしました。</string>
-    <string name="gamenative_sign_in_no_browser">サインインページを開くブラウザーが見つかりませんでした。代わりに別のデバイスでコードをスキャンしてください。</string>
-    <string name="support_title">AI ヘルプ</string>
-    <string name="support_subtitle">GameNative AI サポートとの会話</string>
-    <string name="support_refresh">更新</string>
-    <string name="support_signed_out_title">ゲームについてサポートを受ける</string>
-    <string name="support_signed_out_body">GameNative アカウントにサインインすると、サポートの会話を確認し、ゲームの問題について AI と話すことができます。</string>
-    <string name="support_signed_out_discord">Discord でもサポートを受けられます</string>
-    <string name="support_empty_title">まだ会話はありません</string>
-    <string name="support_empty_body">会話を始めるには、ライブラリのゲームで「AI のサポートを受ける」を選んでください。問題が起きるまでプレイしてからゲームを閉じ、何が起きたかを説明してください。</string>
-    <string name="support_state_waiting">返信待ち</string>
-    <string name="support_state_answered">回答済み</string>
-    <string name="support_state_solved">解決済み</string>
-    <string name="support_state_not_solved">未解決</string>
-    <string name="support_started">開始日 %1$s</string>
-    <string name="support_last_activity">最終アクティビティ %1$s</string>
-    <string name="support_problem_network">接続できませんでした。接続を確認して、もう一度お試しください。</string>
-    <string name="support_problem_unavailable">アプリ内のサポートチャットはまだ利用できません。それまでは、AI サポートは Discord で行われます。</string>
-    <string name="support_problem_unauthorized">GameNative アカウントを確認できませんでした。後でもう一度お試しいただくか、設定でサインアウトしてから再度サインインしてください。</string>
-    <string name="support_problem_rate_limited">短時間に多くの送信がありました。しばらく待ってから、もう一度お試しください。</string>
-    <string name="support_problem_not_found">この会話は見つかりませんでした。</string>
-    <string name="support_problem_server">こちら側で問題が発生しました。数分後にもう一度お試しください。</string>
-    <string name="support_problem_too_long">メッセージが長すぎます。短くしてから、もう一度お試しください。</string>
-    <string name="support_problem_too_large">このログは大きすぎて送信できません。</string>
-    <string name="support_problem_no_logs">このデバイスには、このゲームの新しいログがありません。新しいデバッグ実行を開始してログを記録してください。</string>
-    <string name="support_problem_locked">この会話でさらにメッセージを送るには、プランが必要です。</string>
-    <string name="support_problem_already_answered">結果はすでにお知らせいただいています。</string>
-    <string name="support_label_you">あなた</string>
-    <string name="support_label_report">あなたのレポート</string>
-    <string name="support_label_ai">GameNative AI</string>
-    <string name="support_label_staff">%1$s · GameNative チーム</string>
-    <string name="support_label_team">GameNative チーム</string>
-    <string name="support_analysing_first">AI がログを分析しています。通常は数分かかります。この画面を離れても大丈夫です。戻ってきたときに返信が表示されます。</string>
-    <string name="support_analysing_followup">返信を待っています。通常は数分かかります。</string>
-    <string name="support_outcome_question">これで問題は解決しましたか？</string>
-    <string name="support_outcome_worked">解決した</string>
-    <string name="support_outcome_broken">まだ直らない</string>
-    <string name="support_outcome_recorded_worked">解決したとお知らせいただきました。ありがとうございます。</string>
-    <string name="support_outcome_recorded_broken">まだ解決していないとお知らせいただきました。現在の状況を下に返信するか、新しいログを送信してください。</string>
-    <string name="support_notice_moved">この会話は Pro サポートで続きます。</string>
-    <string name="support_upgrade_title">続けるにはプランが必要です</string>
-    <string name="support_upgrade_reason_trial_used">最初の分析は無料でした。返信してこの問題について AI と話し続けるには、プランを選んでください。</string>
-    <string name="support_upgrade_reason_reply_cap">本日の公正利用の上限に達しました。数時間後にリセットされます。</string>
-    <plurals name="support_fair_use_resets_in_hours">
-        <item quantity="other">本日のフェアユース上限に達しました。%1$d時間後にリセットされます。</item>
-    </plurals>
-    <string name="support_upgrade_reply_cap_pro_hint">Pro のレポートはキューを待たずに処理されます。</string>
-    <string name="support_limit_title">本日の公正利用の上限に達しました</string>
-    <string name="support_upgrade_reason_required">AI の返信には GameNative のサブスクリプションが必要です。すでに Discord または Ko-fi でサブスクリプションに登録している場合は、設定で Discord を連携してください。</string>
-    <string name="support_see_plans">プランを見る</string>
-    <string name="support_plan_basic_title">$5/月 · Basic</string>
-    <string name="support_plan_basic_body">ゲームを動かす。もっと快適に動かす。</string>
-    <string name="support_checkout_scan">このコードをスマートフォンでスキャンして、購入手続きを完了してください。このデバイスで完了することもできます。</string>
-    <string name="support_checkout_waiting">完了したら、ここに戻ってください。プランは自動的に更新されます。</string>
-    <string name="support_checkout_open">このデバイスで開く</string>
-    <string name="support_checkout_no_browser">購入ページを開くブラウザが見つかりませんでした。代わりに別のデバイスでコードをスキャンしてください。</string>
-    <string name="support_checkout_failed">購入ページを開けませんでした。接続を確認して、もう一度お試しください。</string>
-    <string name="support_checkout_done">完了</string>
     <string name="main_thank_you_message_play">今すぐメンバーになりましょう。メンバー特典:\n\n• ゲームを動かすための AI サポート\n• 新リリースへの早期アクセス\n• Discordのプレミアムロールと限定チャンネル\n• …その他多数\n\n月額%1$sから</string>
-    <string name="support_plan_pro_title_priced">%1$s/月 · Pro</string>
-    <string name="support_plan_basic_title_priced">%1$s/月 · Basic</string>
-    <string name="membership_plans_pitch">メンバーは、ゲームを動かすための AI サポート、新リリースへの早期アクセス、Discord のプレミアムロールを利用できます。</string>
-    <string name="membership_plans_title">メンバーになる</string>
-    <string name="support_already_member">すでにメンバーですか？サインイン</string>
-    <string name="support_checkout_expired">この購入手続きは期限切れです。すでに支払済みの場合は、使用したメールアドレスでサインインするとプランが表示されます。</string>
-    <string name="support_play_unavailable">Google Play の課金は現在利用できません。後でもう一度お試しください。</string>
-    <string name="support_checkout_waiting_guest">支払い後、そのページでサインインしてアカウントを作成してください。プランはここで自動的に有効になります。</string>
-    <string name="gamenative_account_managed_play">このプランは Google Play から提供されています。Play ストアで管理してください。</string>
-    <string name="support_already_subscribed">このアカウントにはすでにサブスクリプションがあります。プランは請求ページで変更できます。</string>
-    <string name="support_plan_active">プランが有効になりました。</string>
-    <string name="support_plan_pending">プランはまだ準備中です。1 分後にもう一度お試しください。</string>
-    <string name="support_composer_hint">返信を入力</string>
-    <string name="support_composer_analysing">しばらくお待ちください。AI がまだログを読んでいます。回答が届いたら返信できます。</string>
-    <string name="support_send_logs">ログを送信</string>
-    <string name="support_new_debug_run">新しいデバッグ実行</string>
-    <string name="support_fix_request_action">カスタム修正を依頼</string>
-    <string name="support_fix_request_title">カスタム修正を依頼</string>
-    <string name="support_fix_request_message">AI はこのゲームのファイルを変更したり、お使いのデバイス向けに新しいドライバーやエミュレーターをビルドしたりできます。すでにレポートを送信している場合は、そのレポートを今すぐ確認します。送信していない場合は、ゲームを一度実行して問題を計測します。</string>
-    <string name="support_fix_request_left">残りのカスタム修正: %2$d 回中 %1$d 回。</string>
-    <string name="support_fix_request_left_resets">残りのカスタム修正: %2$d 回中 %1$d 回（%3$s にリセット）。</string>
-    <string name="support_fix_request_run">修正を依頼</string>
-    <string name="support_fix_request_failed">カスタム修正を開始できませんでした。もう一度お試しください。</string>
-    <string name="support_fix_request_in_progress">このゲームのカスタム修正はすでに準備中です。</string>
-    <string name="support_fix_upgrade_reason">カスタム修正はすべてのプランに含まれています。</string>
-    <string name="support_fix_quota">現在、カスタム修正をすべて使い切りました。</string>
-    <string name="support_fix_quota_resets">カスタム修正をすべて使い切りました。%1$s にリセットされます。</string>
-    <string name="support_run_check_title">動作はどうでしたか？</string>
-    <string name="support_run_check_sent">ログを送信しました。</string>
-    <string name="support_run_check_failed">ログを送信できませんでした。</string>
-    <string name="support_run_check_answer_waiting">回答はログと一緒に送信されます。</string>
-    <string name="support_run_check_answer_failed">回答を送信できませんでした。</string>
-    <string name="support_run_check_offer">このゲームの前回の実行ログは送信されていません。</string>
-    <string name="support_run_check_send_last">前回の実行を送信</string>
-    <string name="support_uploading">ログをアップロードしています</string>
-    <string name="support_share_file">ファイルを開く</string>
-    <string name="debug_report_use_discord">代わりに Discord を使う</string>
-    <string name="debug_report_use_app">代わりにアプリ内チャットを使う</string>
     <string name="settings_emulation_orientations_title">画面方向</string>
     <string name="settings_emulation_orientations_subtitle">ゲーム画面をどの方向に回転できるかを選択する</string>
     <string name="settings_emulation_default_config_title">デフォルト設定の変更</string>
     <string name="settings_emulation_default_config_subtitle">各ゲームのコンテナの初期設定 (すでにインストールされているゲームには影響しません)</string>
     <string name="settings_emulation_default_config_dialog_title">デフォルトのコンテナ構成</string>
-    <string name="settings_emulation_auto_apply_known_config_title">既知の構成を自動適用する</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">初回起動時に Steam ゲームの推奨設定を自動的に適用する</string>
     <string name="settings_emulation_box64_presets_title">Box64 プリセット</string>
     <string name="settings_emulation_box64_presets_subtitle">Box64 プリセットの表示、変更、作成</string>
     <string name="settings_emulation_driver_manager_title">ドライバーマネージャー</string>
@@ -1184,18 +1002,12 @@
 
     <!-- Settings: Info Group -->
     <string name="settings_info_title">情報</string>
-    <string name="settings_info_send_tip_title">メンバーになる</string>
-    <string name="settings_info_send_tip_subtitle">ゲームを動かす AI サポート、リリースへの早期アクセスなど</string>
-    <string name="settings_info_ask_tip_title">メンバーシップのご案内</string>
-    <string name="settings_info_ask_tip_subtitle">GameNativeメンバーになるための案内を時々表示します</string>
     <string name="settings_info_source_title">ソースコード</string>
     <string name="settings_info_source_subtitle">このプロジェクトのソースコードを表示する</string>
     <string name="settings_info_libraries_title">使用するライブラリ</string>
     <string name="settings_info_libraries_subtitle">GameNative を可能にするテクノロジーをご覧ください</string>
     <string name="settings_info_privacy_title">プライバシーポリシー</string>
     <string name="settings_info_privacy_subtitle">GameNative\'s プライバシー ポリシーへのリンクを開きます</string>
-    <string name="settings_info_usage_analytics_title">使用状況分析</string>
-    <string name="settings_info_usage_analytics_subtitle">当社は個人情報を追跡することはありません。これを無効にすると、重要でない分析は停止されますが、コアとなるゲーム パフォーマンス データは、互換性を向上させるための正当な目的として引き続き収集されます。</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">インタフェース</string>
@@ -1290,7 +1102,6 @@
     <string name="login_password_hint">パスワードを入力してください</string>
     <string name="login_password_show">パスワードを表示</string>
     <string name="login_password_hide">パスワードを隠す</string>
-    <string name="login_remember_session">セッションを記憶する</string>
     <string name="login_sign_in">Steam でサインインする</string>
     <string name="login_qr_failed">QR コードが失敗しました</string>
     <string name="login_retry_qr">QRコードを再試行してください</string>
@@ -1322,8 +1133,6 @@
     <string name="library_reset_container_message">これにより、コンテナーがデフォルトの構成にリセットされます。</string>
     <string name="library_verify_files_title">ファイルの検証</string>
     <string name="library_verify_files_message">確認する前に、保存データがクラウドにアップロードまたはバックアップされていることを確認してください。そうしないと上書きされる可能性があります。</string>
-    <string name="library_update_title">アップデート</string>
-    <string name="library_update_message">更新する前に保存データがクラウドにアップロードまたはバックアップされていることを確認してください。そうしないと上書きされる可能性があります。</string>
     <string name="library_config_title">%s 構成</string>
 
     <!-- LibraryAppScreen: Toast Messages -->
@@ -1349,12 +1158,8 @@
     <string name="download_paused_wifi">ダウンロード一時停止 – Wi-Fi/LAN を待機中</string>
 
     <!-- PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">利用可能なアップデート</string>
-    <string name="main_update_available_message">新しいバージョン (%1$s) が利用可能になりました!%2$s</string>
     <string name="main_update_button">アップデート</string>
     <string name="main_later_button">後で</string>
-    <string name="main_update_failed_title">更新に失敗しました</string>
-    <string name="main_update_failed_message">アップデートのダウンロードまたはインストールに失敗しました。後でもう一度試してください。</string>
     <string name="launch_dependency_failed_title">起動依存関係のダウンロードに失敗しました</string>
     <string name="launch_dependency_failed_message">必要なコンポーネントのダウンロードに失敗しました。後でもう一度試してください。</string>
 
@@ -1363,14 +1168,8 @@
     <string name="main_recent_crash_message">申し訳ありません!\n\' が抱えていた最近の問題について知っていただければ幸いです。\nアプリ\'s の設定で最新のクラッシュ ログを表示およびエクスポートし、プロジェクト ZESC4ZZs リポジトリの Github の問題として添付できます。\nGithub リポジトリへのリンクも設定にあります。</string>
     <string name="main_thank_you_title">GameNativeを楽しんでいますか？</string>
     <string name="main_thank_you_message">今すぐメンバーになりましょう。メンバー特典:\n\n• ゲームを動かすための AI サポート\n• 新リリースへの早期アクセス\n• Discordのプレミアムロールと限定チャンネル\n• …その他多数\n\n月額$5から</string>
-    <string name="main_join_kofi">メンバーになる</string>
-    <string name="pitch_session_title">%1$sを楽しんでいますか？</string>
-    <string name="pitch_five_star_title">%1$sが快適に動いてよかったです！</string>
     <string name="main_share">共有</string>
     <string name="main_share_text">GameNative をチェックしてください - クラウド セーブを完全にサポートし、Android で PC Steam ゲームをプレイしましょう!\nhttps://gamenative.app\nコミュニティに参加してください: https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">ゲームはうまくいきましたか？</string>
-    <string name="main_discord_support_message">Discord に参加して、ゲームを修正したりパフォーマンスを向上させるためのサポートを受けてください。</string>
-    <string name="main_open_discord">Discordを開く</string>
 
     <!-- PluviaMain: Game Launch -->
     <string name="main_downloading_entry">%sをダウンロード中</string>
@@ -1447,23 +1246,8 @@
     <string name="libraries_message">Pluvia - github.com/oxters168/Pluvia\nJavaSteam - github.com/Longi94/JavaSteam\nWinlator &amp; Vortek - github.com/brunodev85/winlator\nWinlator Cmod - github.com/coffincolors/winlator\nWrapper - https://github.com/leegao/bionic-vulkan-wrapper &amp; https://github.com/pipetto-crypto/\nUbuntu RootFs - releases.ubuntu.com/focal</string>
 
     <!-- Supporters Dialog -->
-    <string name="supporters_art_credits">アートクレジット</string>
-    <string name="supporters_app_icon">アプリアイコン：ハチ</string>
-    <string name="supporters_alt_icon">代替アプリアイコン: rhapsody_mdr</string>
-    <string name="supporters_loading">サポーターを読み込み中…</string>
-    <string name="supporters_error">サポーターをロードできません</string>
-    <string name="supporters_members">メンバー</string>
-    <string name="supporters_supporters">サポーター</string>
-    <string name="supporters_none">まだサポーターはいません。</string>
-    <string name="supporters_anonymous">匿名</string>
 
     <!-- Chat Screen -->
-    <string name="chat_preview_warning">チャットはまだ初期の機能です。\n問題があればプロジェクト リポジトリで報告してください。</string>
-    <string name="chat_no_history">チャット履歴がありません</string>
-    <string name="chat_send_message">メッセージを送信する</string>
-    <string name="chat_send">送信</string>
-    <string name="chat_emoticons">絵文字</string>
-    <string name="chat_stickers">ステッカー</string>
 
     <!-- Library Components -->
     <string name="library_open">開く</string>
@@ -1472,80 +1256,14 @@
     <string name="library_not_installed">未インストール</string>
     <string name="library_family_shared">ファミリーシェアリング</string>
     <string name="library_shared_short">シェアリング</string>
-    <string name="library_compatible">互換性あり</string>
-    <string name="library_gpu_compatible">GPU互換性</string>
     <string name="library_compatibility_unknown">未確認</string>
-    <string name="library_not_compatible">互換性なし</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">既知の構成が GPU で動作する</string>
-    <string name="best_config_gpu_family_match">既知の構成は GPU で動作するはずです</string>
-    <string name="best_config_fallback_match">既知の構成は GPU で動作する可能性があります</string>
-    <string name="best_config_compatibility_unknown">既知の構成はありません</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">構成が正常に適用されました</string>
     <string name="best_config_known_config_invalid">既知の構成が無効です</string>
-    <string name="best_config_no_config_available">このゲームに最適な設定はありません</string>
-    <string name="best_config_fetch_failed">構成の取得に失敗しました。ネットワーク接続を確認してください。</string>
     <string name="best_config_apply_failed">構成の適用に失敗しました: %s</string>
-    <string name="community_config_title">コミュニティ設定</string>
-    <string name="community_config_close">コミュニティ設定を閉じる</string>
-    <string name="community_config_refresh">コミュニティ設定を更新</string>
-    <string name="community_config_retry">再試行</string>
-    <string name="community_config_unknown_error">不明なエラー</string>
-    <string name="community_config_unknown">不明</string>
-    <string name="community_config_load_failed">コミュニティ設定を読み込めませんでした: %1$s</string>
-    <string name="community_config_game_not_found">%1$s の互換性情報が見つかりませんでした</string>
-    <string name="community_config_gpu_unknown">GPU を利用できません</string>
-    <plurals name="community_config_result_count">
-        <item quantity="other">%1$d 件の設定</item>
-    </plurals>
-    <string name="community_config_highest_rated">評価順</string>
-    <string name="community_config_newest">新着順</string>
-    <string name="community_config_same_device">同じデバイス</string>
-    <string name="community_config_this_gpu">同じ GPU</string>
-    <string name="community_config_compatible_gpus">互換</string>
-    <string name="community_config_load_more">さらに読み込む</string>
-    <string name="community_config_no_device_results">このデバイス向けの設定は見つかりませんでした。</string>
-    <string name="community_config_no_gpu_results">この GPU 向けの設定は見つかりませんでした。</string>
-    <string name="community_config_no_compatible_results">互換 GPU の設定は見つかりませんでした。</string>
-    <string name="community_config_show_this_gpu">この GPU を表示</string>
-    <string name="community_config_show_compatible_gpus">互換 GPU を表示</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">設定の詳細</string>
-    <string name="community_config_other_gpu_warning">この結果は別の GPU を使用しています。GPU 固有のドライバーとラッパーの設定は適用されません。</string>
-    <string name="community_config_run_details">テスト実行</string>
-    <string name="community_config_rating">評価</string>
-    <string name="community_config_average_fps">平均 FPS</string>
-    <string name="community_config_device">デバイス</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">GameNative バージョン</string>
-    <string name="community_config_submitted">送信日時</string>
-    <string name="community_config_session_length">セッション時間</string>
-    <string name="community_config_game_store">ゲームストア</string>
-    <string name="community_config_custom_game">カスタムゲーム</string>
-    <string name="community_config_settings">設定</string>
-    <string name="community_config_additional_launch_settings">追加の起動設定</string>
-    <string name="community_config_apply_launch_arguments">起動引数を適用</string>
-    <string name="community_config_apply_environment_variables">環境変数を適用</string>
-    <string name="community_config_replaces_existing_value">現在の値を置き換えます</string>
-    <string name="community_config_dependencies">依存関係</string>
-    <string name="community_config_dependencies_apply_check">設定を適用するときに依存関係を確認します。</string>
-    <string name="community_config_no_downloads">現在、マニフェストからのダウンロードは必要ありません。</string>
-    <string name="community_config_downloads_required">次のコンポーネントは自動的にダウンロードされます:\n%1$s</string>
-    <string name="community_config_tags">タグ</string>
-    <string name="community_config_notes">メモ</string>
-    <string name="community_config_apply">設定を適用</string>
-    <string name="community_config_container">コンテナ</string>
-    <string name="community_config_wine">Wine または Proton</string>
-    <string name="community_config_emulator">エミュレーター</string>
-    <string name="community_config_wrapper">DirectX ラッパー</string>
-    <string name="community_config_box64_preset">Box64 プリセット</string>
-    <string name="community_config_driver">グラフィックスドライバー</string>
     <string name="best_config_missing_components_title">設定が適用されていません</string>
     <string name="best_config_missing_components_message">次の必須コンポーネントは使用できません:\n\n%1$s</string>
     <string name="best_config_apply_anyway">とにかく応募してください</string>
@@ -1574,9 +1292,6 @@
     <string name="library_source_custom">カスタム ゲーム</string>
     <string name="library_source_title">ソース</string>
     <string name="library_source_not_logged_in_steam">Steam にサインインしてライブラリを表示します</string>
-    <string name="library_source_not_logged_in_gog">GOG にサインインしてライブラリを表示します</string>
-    <string name="library_source_not_logged_in_epic">Epic にサインインしてライブラリを表示します</string>
-    <string name="library_source_not_logged_in_amazon">Amazonにサインインしてライブラリを表示します</string>
     <string name="library_source_no_custom_games">カスタム ゲームはまだ追加されていません</string>
     <string name="library_layout_title">レイアウト</string>
     <string name="library_options">オプション</string>
@@ -1643,7 +1358,6 @@
     <string name="contents_all_trusted">すべてのファイルは信頼されます。インストールする準備ができました。</string>
     <string name="contents_no_installed">このタイプにはインストールされたコンテンツがありません。</string>
     <string name="contents_delete">消去</string>
-    <string name="contents_review_confirm">このコンテンツには、信頼できるセット外のファイルが含まれています。確認して続行します。</string>
     <string name="contents_removed">%1$s を削除しました</string>
 
     <!-- Driver Manager -->
@@ -1736,10 +1450,6 @@
     <string name="auth_webview_title">認可</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">GOG 統合 (アルファ版)</string>
-    <string name="gog_settings_login_title">GOGにサインインする</string>
-    <string name="gog_settings_login_subtitle">GOG アカウントにサインインする</string>
-    <string name="gog_login_success_title">ログイン成功</string>
     <string name="rockstar_login_required_title">Rockstar へのサインインが必要です</string>
     <string name="rockstar_login_failed">Rockstar へのサインインに失敗しました: %1$s</string>
     <string name="rockstar_link_refused">この Rockstar アカウントは別の Steam アカウントにリンクされています。</string>
@@ -1757,52 +1467,16 @@
     <string name="rockstar_preparing">Rockstar ランチャーのサポートを準備中</string>
     <string name="rockstar_runtime_installing">Social Club ランタイムをインストール中</string>
     <string name="rockstar_installer_missing">ゲームファイルに Social Club のインストーラーがありません。Steam でゲームファイルを検証してから、もう一度起動してください。</string>
-    <string name="gog_login_cancel">キャンセル</string>
-    <string name="gog_settings_logout_title">GOGからサインアウトする</string>
-    <string name="gog_settings_logout_subtitle">GOG アカウントからサインアウトする</string>
-    <string name="gog_logout_confirm_title">GOGからログアウトしますか？</string>
-    <string name="gog_logout_confirm_message">これにより、GOG 認証情報が削除され、GOG ライブラリがこのデバイスからクリアされます。いつでも再度サインインできます。</string>
-    <string name="gog_logout_confirm">ログアウト</string>
-    <string name="gog_logout_success">GOGから正常にログアウトされました</string>
-    <string name="gog_logout_failed">ログアウトに失敗しました: %s</string>
-    <string name="gog_logout_in_progress">GOGからログアウトしています…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Epic Games連携</string>
-    <string name="epic_settings_login_title">Epicにサインイン</string>
-    <string name="epic_settings_login_subtitle">Epic Games アカウントにサインインします</string>
-    <string name="epic_login_success_title">ログイン成功</string>
-    <string name="epic_login_cancel">キャンセル</string>
-    <string name="epic_settings_logout_title">Epicからサインアウト</string>
-    <string name="epic_settings_logout_subtitle">Epic Games アカウントからサインアウトする</string>
-    <string name="epic_logout_confirm_title">Epic Games からログアウトしますか?</string>
-    <string name="epic_logout_confirm_message">これにより、Epic Games の認証情報が削除され、このデバイスから Epic Games ライブラリが消去されます。いつでも再度サインインできます。</string>
-    <string name="epic_logout_confirm">ログアウト</string>
-    <string name="epic_logout_success">Epic Games から正常にログアウトされました</string>
-    <string name="epic_logout_failed">ログアウトに失敗しました: %s</string>
-    <string name="epic_logout_in_progress">Epic Games からログアウトしています…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Amazon Gamesの統合 (アルファ版)</string>
-    <string name="amazon_settings_login_title">Amazon Gamesにサインインする</string>
-    <string name="amazon_settings_login_subtitle">Amazon Gamesアカウントにサインインする</string>
-    <string name="amazon_login_success_title">ログイン成功</string>
-    <string name="amazon_login_cancel">キャンセル</string>
-    <string name="amazon_settings_logout_title">Amazon Gamesからサインアウトする</string>
-    <string name="amazon_settings_logout_subtitle">Amazon Gamesアカウントからサインアウトする</string>
-    <string name="amazon_logout_confirm_title">Amazon Gamesからログアウトしますか?</string>
-    <string name="amazon_logout_confirm_message">これにより、Amazon Gamesの認証情報が削除され、このデバイスから Amazon ライブラリが消去されます。いつでも再度サインインできます。</string>
-    <string name="amazon_logout_confirm">ログアウト</string>
-    <string name="amazon_logout_success">Amazon Gamesから正常にログアウトしました</string>
-    <string name="amazon_logout_failed">ログアウトに失敗しました: %s</string>
-    <string name="amazon_logout_in_progress">Amazon Gamesからログアウトしています…</string>
     <string name="manifest_downloading_item">%1$s をダウンロード中...</string>
     <string name="manifest_download_failed">ダウンロードに失敗しました: %1$s</string>
     <string name="manifest_install_failed">%1$sのインストールに失敗しました</string>
     <string name="manifest_install_success">%1$sがインストールされました</string>
     <string name="manifest_content_untrusted">コンテンツは信頼できないため、インストールされませんでした。</string>
     <string name="manifest_type_mismatch">ダウンロードされたコンテンツが予期されたタイプと一致しません。</string>
-    <string name="manifest_glibc_not_supported">GLIBC ビルドはサポートされていません。</string>
 
     <!-- Workshop -->
     <string name="workshop_checking_mods">ワークショップの MOD を確認しています…</string>
@@ -1824,11 +1498,7 @@
     <string name="option_open_container">コンテナを開く</string>
     <string name="option_edit_container">コンテナの編集</string>
     <string name="option_reset_to_defaults">コンテナをリセットする</string>
-    <string name="option_get_support">サポートを受ける</string>
-    <string name="option_submit_feedback">フィードバックを送信する</string>
     <string name="option_reset_drm">DRMをリセットする</string>
-    <string name="option_use_known_config">既知の構成を使用する</string>
-    <string name="option_browse_community_configs">コミュニティ設定を参照</string>
     <string name="option_import_saves">セーブデータをインポート(取り込み)</string>
     <string name="option_export_saves">セーブデータをエクスポート(書き出し)</string>
     <string name="option_verify_files">ファイルの検証</string>
@@ -1839,15 +1509,11 @@
     <string name="option_browse_online_saves">オンライン保存を参照する</string>
     <string name="option_force_download_remote">リモート保存を強制的にダウンロードする</string>
     <string name="option_force_upload_local">ローカル保存を強制的にアップロードする</string>
-    <string name="option_fetch_game_images">ゲーム画像を取得する</string>
     <string name="option_test_graphics">テストグラフィックス</string>
     <string name="option_manage_dlc">DLCの管理</string>
     <string name="option_manage_workshop">ワークショップの管理</string>
     <!-- Recommendations -->
     <string name="recommended_badge">推奨</string>
-    <string name="recommended_buy_button">GOGで購入</string>
-    <string name="rec_buy_with_price">%1$s · GOGで購入</string>
-    <string name="recommended_support_message">このリンクから購入された場合、当社は手数料を受け取ります。</string>
     <string name="recommended_about_heading">このゲームについて</string>
     <string name="recommended_review_count">%1$s のレビューに基づく</string>
     <string name="library_store_media_page">%2$d 件中 %1$d</string>
@@ -1877,26 +1543,16 @@
     <string name="lsfg_backend_desc">Legacy はゲーム内で lsfg-vk レイヤーを実行します。Native は GameNative のレンダラーでフレーム生成を実行します。</string>
     <string name="lsfg_backend_legacy">Legacy（レイヤー）</string>
     <string name="lsfg_backend_native">Native（レンダラー）</string>
-    <string name="lsfg_not_supported">フレーム生成には Bionic コンテナが必要です</string>
     <string name="lsfg_install_prompt">Lossless Scaling がインストールされていません。タップしてインストールしてください。Adreno 6xx 以降でのみ動作確認されています。</string>
     <string name="lsfg_not_in_library">Lossless Scaling がSteamライブラリにありません</string>
     <string name="lsfg_install_title">Lossless Scaling をインストールしますか？</string>
     <string name="lsfg_install_message">これにより、Steam から Lossless Scaling がダウンロードされ、フレーム生成が有効になります。</string>
     <string name="lsfg_installing">Lossless Scaling をダウンロード中…</string>
     <string name="lsfg_performance_mode_desc">処理を早くするために品質を下げる</string>
-    <string name="settings_interface_show_recommendations_title">ゲームのおすすめを表示</string>
-    <string name="settings_interface_show_recommendations_subtitle">パーソナライズされたおすすめを表示します。オンのままにすると GameNative の支援につながります。</string>
     <string name="settings_interface_library_tabs_title">ライブラリのタブ</string>
     <string name="settings_interface_library_tabs_subtitle">ライブラリに表示するストアのタブを選択します。</string>
     <string name="settings_interface_library_tabs_none">ストアのタブなし</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">メインストーリー</string>
-    <string name="hltb_main_plus_extras">メイン + 追加要素</string>
-    <string name="hltb_completionist">コンプリート</string>
-    <string name="hltb_all_styles">すべてのスタイル</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">ネタバレを表示</string>
 
     <!-- Game Launch Tips -->
     <string name="game_launch_tip_1">初回起動時は起動に数分かかる場合があります</string>
@@ -1924,19 +1580,7 @@
     <string name="game_launch_tip_23">ヒント: Mali GPU をお持ちの場合は、システム ドライバーを使用してください。</string>
     <string name="game_launch_tip_24">ヒント: 空白の画面が表示されますか?メニューの \"%s\" オプションを使用して、ドライバーが正しく動作しているかどうかを確認してください。</string>
     <string name="game_launch_tip_25">ヒント: ゲームでマウスをクリックできない場合は、Proton x86-64 を使用してください。</string>
-    <string name="stats_key_runs">お使いのGPUでの成功した実行回数</string>
-    <string name="stats_key_reviews">5つ星レビュー（GPU / お使いのデバイス）</string>
-    <string name="stats_key_fps">予想FPS</string>
-    <string name="stats_key_session">お使いのデバイスでの最長セッション</string>
-    <string name="sort_fps">予想FPS</string>
-    <string name="sort_runs">成功した実行回数</string>
-    <string name="sort_reviews">5つ星レビュー（デバイス）</string>
-    <string name="sort_reviews_gpu">5つ星レビュー（GPU）</string>
     <string name="filter_expired">期限切れ</string>
-    <string name="filter_playable">プレイ可能（30+ FPS）</string>
-    <string name="filter_five_star_device">5つ星レビュー（デバイス）</string>
-    <string name="filter_five_star_gpu">5つ星レビュー（GPU）</string>
-    <string name="filter_proven_gpu">お使いのGPUで実証済み</string>
     <string name="vibration_intensity">振動の強さ</string>
     <string name="option_import_files">ファイルをインポート(取り込み)</string>
     <string name="option_export_files">ファイルをエクスポート(書き出し)</string>
@@ -2069,47 +1713,6 @@
     <string name="wrapper_quality_high">高（より鮮明な画像、RAM 使用量が多い）</string>
     <string name="option_play_with_diagnostics">診断の実行</string>
     <string name="option_share_diagnostics">診断を共有</string>
-    <string name="option_ai_debug_run">AI サポートを受ける</string>
-    <string name="debug_report_title">AI デバッグレポート</string>
-    <string name="debug_report_summary">%1$s · %2$s</string>
-    <string name="debug_report_preparing">ログを準備中…</string>
-    <string name="debug_report_what_went_wrong">何が起きましたか？</string>
-    <string name="debug_report_send">送信</string>
-    <string name="debug_report_share_instead">代わりに共有</string>
-    <string name="debug_report_connect_hint">Discord アカウントを連携すると、AI がサポートスレッドで返信できるようになります。</string>
-    <string name="debug_report_connect_discord">Discord を連携</string>
-    <string name="debug_report_sending">レポートを送信中…</string>
-    <string name="debug_report_success_title">レポートを送信しました</string>
-    <string name="debug_report_success_message">Discord にサポートスレッドが作成されました。AI がログを読んで、そちらで返信します。</string>
-    <string name="debug_report_open_discord">Discord を開く</string>
-    <string name="debug_report_failed_title">レポートを送信できませんでした</string>
-    <string name="debug_report_failed_message">レポートはこの端末に保存されています。オンラインに戻ったら再試行するか、代わりにログを共有してください。</string>
-    <string name="debug_report_retry">再試行</string>
-    <string name="debug_report_share_log_title">デバッグログを共有</string>
-    <string name="debug_report_discord_linked">Discord 連携済み</string>
-    <string name="debug_report_no_log">この実行ではデバッグログが取得されませんでした。</string>
-    <string name="debug_offer_title">このクラッシュについて AI のサポートを受ける</string>
-    <string name="debug_offer_message">セッションが途中で終了しました。デバッグログを有効にして %1$s をもう一度実行すると、AI がログを読んで変更すべき点をお伝えします。</string>
-    <string name="debug_offer_confirm">デバッグ実行を開始</string>
-    <string name="debug_prerun_title">AI のサポートを受ける</string>
-    <string name="debug_prerun_message_1">デバッグログ付きでゲームを起動し、終了時にログを Discord の AI に共有します。問題が発生するまでゲームをプレイしてください。</string>
-    <string name="debug_prerun_message_2">AI の返信はサブスク会員限定です。</string>
-    <string name="debug_prerun_message_1_app">デバッグログ付きでゲームを実行します。終了するとログが AI に送られ、回答は Discord に届きます。GameNative アカウントでサインインした場合はアプリに届きます。問題が発生するまでプレイしてください。</string>
-    <string name="debug_prerun_message_2_app">最初の分析は無料です。追加の返信にはプランが必要です。</string>
-    <string name="debug_prerun_message_1_neutral">デバッグログ付きでゲームを実行します。終了するとログが AI に送られます。問題が発生するまでプレイしてください。</string>
-    <string name="debug_trial_note">無料トライアルあり。</string>
-    <string name="debug_prerun_message_3">レポートは誰でも共有でき、人間のサポートを受けられます。</string>
-    <string name="debug_paywall_title">AI デバッグサポートを利用</string>
-    <string name="debug_paywall_pitch">ゲームを直すカスタム AI パッチとビルド。</string>
-    <string name="debug_paywall_tier5_title">$5/月 · Basic</string>
-    <string name="debug_paywall_tier5_body">カスタム修正は月 1 回、各最大 5 回まで試行。</string>
-    <string name="debug_paywall_tier10_title">$10/月 · Pro</string>
-    <string name="debug_paywall_tier10_body">カスタム修正は月 3 回、より速い返信、キューで最優先。</string>
-    <string name="debug_paywall_cancel_anytime">いつでも解約できます。フェアユース上限が適用されます。</string>
-    <string name="debug_paywall_costs_note">サブスクリプションは、この機能を支える AI サービスの費用に充てられます。</string>
-    <string name="debug_paywall_already">すでにサポーターですか？</string>
-    <string name="debug_paywall_send_now">加入済みです。今すぐ送信</string>
-    <string name="debug_paywall_not_now">今はしない</string>
     <string name="diagnostics_share_title">診断ログを共有</string>
     <string name="diagnostics_share_none">診断ログがまだありません。先に「診断実行」を使用してください。</string>
 
@@ -2485,37 +2088,8 @@
     <string name="toast_no_buttons_to_copy_appearance">外観をコピーできる他のコントロールがありません</string>
     <string name="toast_copied_button_appearance">コントロールの外観をコピーしました</string>
     <string name="toast_applied_button_appearance">すべてのコントロールに外観を適用しました</string>
-    <string name="rec_disclosure_title">ゲームのおすすめ</string>
-    <string name="rec_disclosure_body">パーソナライズされたおすすめのため、プレイしたゲームを GOG と共有します。設定でいつでもオフにできます。</string>
-    <string name="rec_disclosure_allow">許可</string>
-    <string name="rec_disclosure_not_now">あとで</string>
-    <string name="rec_teaser_title">あなたのデバイスに合うゲームを発見</string>
-    <string name="rec_teaser_subtitle">タップしてチェック</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">スポンサー</string>
-    <string name="featured_action_wishlist">ウィッシュリスト</string>
-    <string name="featured_action_wishlist_on">%1$s でウィッシュリストに追加</string>
-    <string name="featured_action_wishlisted">ウィッシュリスト追加済み</string>
-    <string name="featured_action_get_demo">デモを入手</string>
-    <string name="featured_action_in_library">ライブラリにあります</string>
-    <string name="featured_action_failed">アプリ内で完了できませんでした。ストアページを開きます</string>
-    <string name="featured_action_preorder">予約購入</string>
-    <string name="featured_action_preorder_on">%1$s で予約購入</string>
-    <string name="featured_action_buy">購入</string>
-    <string name="featured_action_buy_on">%1$s で購入</string>
-    <string name="featured_action_notify">通知を受け取る</string>
-    <string name="featured_action_visit">詳細を見る</string>
-    <string name="featured_status_coming_soon_title">近日公開</string>
-    <string name="featured_status_coming_soon_body">ウィッシュリストに追加すると、リリース時に通知されます</string>
-    <string name="featured_status_early_access_title">早期アクセス</string>
-    <string name="featured_status_early_access_body">早期アクセスで配信中</string>
-    <string name="featured_status_preorder_title">今すぐ予約購入</string>
-    <string name="featured_status_preorder_body">予約購入してリリースに備えよう</string>
-    <string name="featured_status_out_now_title">配信中</string>
-    <string name="featured_status_out_now_body">現在利用可能</string>
-    <string name="tab_recommended">おすすめ</string>
-    <string name="gog_rec_empty">ゲームを追加またはプレイすると、ライブラリに基づいたGOGのおすすめが表示されます。</string>
     <!-- Steam achievements -->
     <string name="achievements">実績</string>
     <string name="achievements_all_title">すべての実績</string>
@@ -2706,7 +2280,6 @@
     <string name="nexus_plan_ambiguous_case">大文字小文字だけが異なる曖昧な項目がすでに存在します</string>
     <string name="nexus_plan_blocked">インストール可能なすべてのファイルの配置先が確認されるまで、自動適用はブロックされます。</string>
     <string name="nexus_plan_export">診断情報を共有</string>
-    <string name="nexus_reconfiguration_preview">再設定のプレビュー</string>
     <string name="nexus_reconfiguration_summary">追加 %1$d • 変更 %2$d • 移動 %3$d • 古い出力 %4$d</string>
     <string name="nexus_choose_package_variant">パッケージのバリアントを選択</string>
     <string name="nexus_confirm_risky_game_root_files">ゲームフォルダのこれらのファイルを確認しました</string>
@@ -2779,8 +2352,6 @@
     <string name="faster_external_loading_subtitle">外部ストレージからのゲーム起動を大幅に高速化できますが、一部のゲームで問題が発生する可能性があります</string>
     <string name="disable_libredirect_title">libredirect を無効にする</string>
     <string name="disable_libredirect_subtitle">パフォーマンスが向上する場合がありますが、予期しない問題が発生する可能性もあります</string>
-    <string name="disable_epic_overlay_title">Epic オーバーレイを無効にする</string>
-    <string name="disable_epic_overlay_subtitle">EOS オーバーレイと CEF レンダラーを無効にして、一部のゲームでのメモリ不足によるクラッシュを防ぎます</string>
     <string name="binding_mode_simultaneous">同時</string>
     <string name="binding_mode_sequence">シーケンス</string>
     <string name="binding_sequence_delay_ms">シーケンス遅延 (ミリ秒)</string>
@@ -2796,22 +2367,6 @@
     <string name="xr_open_composite_toggle">SteamVR（OpenVR）互換</string>
     <string name="xr_open_composite_toggle_desc">SteamVR向けに作られたゲームをOpenCompositeで動かします。ゲームがSteamVRが起動していないと表示する場合や、VRモードでも平面のままの場合に有効にしてください。</string>
     <string name="xr_render_scale">VRレンダースケール</string>
-    <string name="settings_hide_ai_title">AI機能を非表示</string>
-    <string name="settings_hide_ai_subtitle">任意のAIデバッグ支援を非表示にします</string>
-    <string name="settings_info_boot_ads_title">スポンサー付きローディング画面</string>
-    <string name="settings_info_boot_ads_subtitle">オンのままにしておくと GameNative の開発を支援できます。ゲームの起動が遅くなることはなく、あなたに影響することも一切ありません。</string>
-    <string name="settings_info_boot_recs_title">ローディング画面におすすめゲームを表示</string>
-    <string name="settings_info_boot_recs_subtitle">スポンサーカードがないとき、ゲームの起動中におすすめのゲームを表示します。</string>
-    <string name="boot_rec_badge">あなたへのおすすめ</string>
-    <string name="boot_ad_close_cd">このカードを閉じる</string>
-    <string name="boot_ad_sheet_title_sponsored">スポンサーカードについて</string>
-    <string name="boot_ad_sheet_title_rec">おすすめについて</string>
-    <string name="boot_ad_sheet_body_sponsored">スポンサーカードは GameNative の専任開発を支えています。設定でいつでも変更できます。</string>
-    <string name="boot_ad_sheet_body_rec">おすすめはプレイしたゲームをもとに選ばれます。設定でいつでも変更できます。</string>
-    <string name="boot_ad_close_one">これを閉じる</string>
-    <string name="boot_ad_turn_off_sponsored">スポンサーカードをオフにする</string>
-    <string name="boot_ad_turn_off_rec">おすすめをオフにする</string>
-    <string name="boot_ad_not_now">今はしない</string>
     <string name="boot_quiz_win_default">正解！</string>
     <string name="boot_quiz_lose_default">正解は %1$s でした</string>
     <string name="gyro_aiming">ジャイロエイム</string>
@@ -2907,116 +2462,4 @@
     <string name="control_profile_failed">コントロールプロファイルの操作に失敗しました: %1$s</string>
     <string name="control_profile_delete_title">コントロールプロファイルを削除しますか？</string>
     <string name="control_profile_delete_message">ライブラリから「%1$s」を削除しますか？すでにこのプロファイルで設定されたゲームのコントロールは維持されます。</string>
-    <string name="sort_compatibility">互換性</string>
-    <string name="community_compatibility_details">詳細</string>
-    <string name="community_compatibility_expanded">展開済み</string>
-    <string name="community_compatibility_collapsed">折りたたみ済み</string>
-    <string name="community_compatibility_short_disclaimer">コミュニティの結果は動作を保証するものではありません。</string>
-    <string name="community_compatibility_unreliable_short">結果が不安定で、プレイできることは確認されていません。</string>
-    <string name="community_compatibility_performance_caution">報告されたパフォーマンスは限定的な可能性があります。</string>
-    <string name="community_compatibility_checking_short">確認中…</string>
-    <string name="community_compatibility_unavailable_short">利用不可</string>
-    <string name="community_compatibility_unavailable">互換性を読み込めませんでした</string>
-    <string name="community_compatibility_missing_tier">応答には、結果をお使いのデバイスに適用するためのハードウェア情報が含まれていません。</string>
-    <string name="community_compatibility_works">快適に動作</string>
-    <string name="community_compatibility_should">動作</string>
-    <string name="community_compatibility_may">動作の可能性あり</string>
-    <string name="community_compatibility_mixed">不安定</string>
-    <string name="community_compatibility_wont">動作不可</string>
-    <string name="community_compatibility_unknown">未検証</string>
-    <string name="community_compatibility_checking">互換性を確認中…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="other">このデバイスモデルの評価済み共有設定: %1$d 件</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="other">お使いの GPU の評価済み共有設定: %1$d 件</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">お使いのハードウェア向けの共有設定が見つかりません</string>
-    <string name="community_compatibility_configs_unavailable">一部の互換性データを読み込めませんでした。利用可能な情報を表示しています。</string>
-    <string name="community_compatibility_retry">再試行</string>
-    <string name="community_compatibility_fps_median">報告された中央値: %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s（お使いのデバイスモデル）。</string>
-    <string name="community_compatibility_fps_soc">%1$s（同じチップセット）。</string>
-    <string name="community_compatibility_fps_gpu">%1$s（お使いの GPU）。</string>
-    <string name="community_compatibility_fps_family">%1$s（互換性のある GPU）。</string>
-    <string name="community_compatibility_view_reports">設定を参照</string>
-    <string name="community_config_install_before_apply">コミュニティ設定を適用する前に、このゲームをインストールしてください。</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="other">お使いのデバイスモデルで記録された %1$d 回のセッションに基づきます。</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="other">同じチップセットで記録された %1$d 回のセッションに基づきます。</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="other">お使いの GPU で記録された %1$d 回のセッションに基づきます。</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="other">お使いの GPU ファミリーで記録された %1$d 回のセッションに基づきます。</item>
-    </plurals>
-    <string name="debug_prerun_instruction">この実行で行うこと: %1$s</string>
-    <plurals name="debug_prerun_min_minutes">
-        <item quantity="other">終了する前に、少なくとも%1$d分間ゲームを開いたままにしてください。</item>
-    </plurals>
-    <string name="support_suggestion_title">おすすめの設定</string>
-    <string name="support_suggestion_not_applicable">このバージョンのアプリではこの変更を適用できません。ゲーム設定で手動で変更できます。</string>
-    <string name="support_suggestion_no_game">この変更を適用するには、このデバイスにゲームをインストールしてください。</string>
-    <string name="support_suggestion_change">%1$s: %2$s → %3$s</string>
-    <string name="support_suggestion_changed_since">現在の値は %1$s です。レポートでは %2$s でした。</string>
-    <string name="support_suggestion_run_record">次の実行では次の内容も記録します: %1$s</string>
-    <string name="support_suggestion_run_channels">Wine ログチャンネル %1$s</string>
-    <string name="support_suggestion_run_env">デバッグ値 %1$s</string>
-    <string name="support_suggestion_run_wrapper_diag">グラフィックラッパーの診断</string>
-    <string name="support_suggestion_apply_and_run">適用して実行</string>
-    <string name="support_suggestion_apply_only">適用のみ</string>
-    <string name="support_suggestion_restore">以前の設定に戻す</string>
-    <string name="support_suggestion_confirm_title">これらの設定を変更しますか？</string>
-    <string name="support_suggestion_confirm_message">アプリは先に現在の値を保存します。このカードから元に戻せます。</string>
-    <string name="support_suggestion_confirm_run">変更後、アプリはゲームのデバッグ実行を開始します。</string>
-    <string name="support_suggestion_confirm_warning">Wine のバージョンまたはグラフィックドライバーが変わります。ゲームの動作が悪くなった場合は、以前の設定に戻してください。</string>
-    <string name="support_suggestion_confirm">適用</string>
-    <string name="support_suggestion_restore_confirm_title">以前の設定に戻しますか？</string>
-    <string name="support_suggestion_restore_confirm_message">アプリは、この変更で置き換えた値を元に戻します。</string>
-    <string name="support_suggestion_restore_confirm">元に戻す</string>
-    <string name="support_suggestion_installing">%1$s をインストール中</string>
-    <string name="support_suggestion_applied">設定を変更しました。</string>
-    <string name="support_suggestion_restored">以前の設定に戻しました。</string>
-    <string name="support_suggestion_failed">設定を変更できませんでした。%1$s</string>
-    <string name="support_suggestion_missing">次の項目はこのデバイスで利用できません: %1$s</string>
-    <string name="support_progress_next">次はあなたの番です。</string>
-    <string name="support_progress_eta_soon">まもなく返信が届く見込みです。</string>
-    <string name="support_progress_analysing">AIがログを読んでいます</string>
-    <string name="support_progress_analysing_elapsed">AIがログを読んでいます（%1$d分）</string>
-    <string name="support_progress_building">AIがお使いのデバイス向けにカスタム修正をビルドしています。10分以上かかることがあります。</string>
-    <string name="support_progress_building_elapsed">AIがお使いのデバイス向けにカスタム修正をビルドしています（%1$d分）。10分以上かかることがあります。</string>
-    <string name="support_progress_failed">分析が完了しませんでした。もう一度レポートを送信してください。</string>
-    <string name="support_progress_retry">再試行</string>
-    <string name="support_stage_queued">順番待ち</string>
-    <string name="support_stage_queued_eta">順番待ち · 約%1$d分</string>
-    <string name="support_stage_analysing">分析中</string>
-    <string name="support_stage_analysing_elapsed">分析中 · %1$d分</string>
-    <string name="support_stage_building">修正をビルド中</string>
-    <string name="support_stage_failed">分析に失敗しました</string>
-    <plurals name="support_progress_ahead">
-        <item quantity="other">あなたの前に%1$d件のレポートがあります。</item>
-    </plurals>
-    <plurals name="support_progress_eta_minutes">
-        <item quantity="other">約%1$d分で返信が届く見込みです。</item>
-    </plurals>
-    <string name="support_reply_ready">AI ヘルプからの返信が届きました</string>
-    <string name="support_reply_open">開く</string>
-    <string name="support_wait_channel_name">AI ヘルプ返信の状況</string>
-    <string name="support_wait_channel_description">GameNativeがレポートへの返信を待っている間に表示されます。</string>
-    <string name="support_replies_channel_name">AI ヘルプの返信</string>
-    <string name="support_replies_channel_description">レポートへの返信が届いたときにお知らせします。</string>
-    <string name="support_wait_title">AI ヘルプの返信を待っています</string>
-    <string name="support_wait_text">レポートを送信しました。返信が届いたらお知らせします。</string>
-    <string name="support_wait_stop">停止</string>
-    <string name="support_reply_ready_tap">タップして読む。</string>
-    <string name="support_notify_me">返信が届いたら通知する</string>
-    <string name="support_files_listing">フォルダー一覧: %1$s</string>
-    <string name="support_files_listing_missing">フォルダーが見つかりません: %1$s</string>
-    <string name="support_files_send_listing">一覧を送信</string>
-    <string name="support_files_listing_sending">%1$s の一覧を送信中</string>
-    <string name="support_files_listing_sent">一覧を送信しました (%1$d 件)</string>
-    <string name="support_files_listing_failed">%1$s の一覧を送信できませんでした。%2$s</string>
 </resources>

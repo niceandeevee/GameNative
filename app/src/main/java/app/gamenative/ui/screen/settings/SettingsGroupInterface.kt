@@ -84,7 +84,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import app.gamenative.utils.LocaleHelper
-import app.gamenative.service.epic.EpicAuthManager
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -93,15 +92,9 @@ import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 import app.gamenative.PluviaApp
 import app.gamenative.events.AndroidEvent
-import app.gamenative.ui.screen.auth.EpicOAuthActivity
-import app.gamenative.ui.screen.auth.GOGOAuthActivity
-import app.gamenative.ui.screen.auth.AmazonOAuthActivity
-import app.gamenative.service.amazon.AmazonAuthManager
-import app.gamenative.utils.PlatformOAuthHandlers
 import app.gamenative.utils.StorageUtils
 import app.gamenative.data.GameSource
 import app.gamenative.sync.FrontendSyncManager
-import app.gamenative.ui.util.PlatformAuthUiHelpers
 import app.gamenative.ui.util.SnackbarManager
 
 /** Icon button that triggers [FrontendSyncManager.resyncAll] and shows a spinner while syncing. */
@@ -189,70 +182,9 @@ fun SettingsGroupInterface(
         steamRegionsList.indexOfFirst { it.first == PrefManager.cellId }.takeIf { it >= 0 } ?: 0
     ) }
 
-    // GOG login state
-    var gogLoginLoading by rememberSaveable { mutableStateOf(false) }
-
-    // GOG library sync state
-    var gogLibrarySyncing by rememberSaveable { mutableStateOf(false) }
-    var gogLibrarySyncError by rememberSaveable { mutableStateOf<String?>(null) }
-    var gogLibrarySyncSuccess by rememberSaveable { mutableStateOf(false) }
-    var gogLibraryGameCount by rememberSaveable { mutableStateOf(0) }
-
-    // Epic login state
-    var epicLoginLoading by rememberSaveable { mutableStateOf(false) }
-
-    // Amazon login state
-    var amazonLoginLoading by rememberSaveable { mutableStateOf(false) }
-
-    // Epic logout confirmation dialog state
-    var showEpicLogoutDialog by rememberSaveable { mutableStateOf(false) }
-    var epicLogoutLoading by rememberSaveable { mutableStateOf(false) }
-
     var showFrontendSyncDialog by rememberSaveable { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
-    // Use Activity lifecycle scope for the OAuth result callback so it stays valid after
-    // returning from GOGOAuthActivity (composition may have been left → rememberCoroutineScope cancelled).
-    val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
-
-    // OAuth launchers are now provided by a parent composable so they can be
-    // reused from both Settings and the System Menu. Settings continues to
-    // derive its own loading state and toasts via callbacks in that parent.
-
-    // Listen for GOG OAuth callback (e.g. from event)
-    DisposableEffect(Unit) {
-        Timber.d("[SettingsGOG]: Setting up GOG auth code event listener")
-        val onGOGAuthCodeReceived: (AndroidEvent.GOGAuthCodeReceived) -> Unit = { event ->
-            Timber.i("[SettingsGOG]: ✓ Received GOG auth code event")
-
-            coroutineScope.launch {
-                PlatformOAuthHandlers.handleGogAuthentication(
-                    context = context,
-                    authCode = event.authCode,
-                    coroutineScope = coroutineScope,
-                    onLoadingChange = { gogLoginLoading = it },
-                    onError = { msg ->
-                        if (msg != null) {
-                            SnackbarManager.show(msg)
-                        }
-                    },
-                    onSuccess = { count ->
-                        gogLibraryGameCount = count
-                        SnackbarManager.show(context.getString(R.string.gog_login_success_title))
-                    },
-                    onDialogClose = { }
-                )
-            }
-        }
-
-        PluviaApp.events.on<AndroidEvent.GOGAuthCodeReceived, Unit>(onGOGAuthCodeReceived)
-        Timber.d("[SettingsGOG]: GOG auth code event listener registered")
-
-        onDispose {
-            PluviaApp.events.off<AndroidEvent.GOGAuthCodeReceived, Unit>(onGOGAuthCodeReceived)
-            Timber.d("[SettingsGOG]: GOG auth code event listener unregistered")
-        }
-    }
 
     SettingsGroup(modifier = Modifier.background(Color.Transparent)) {
         SettingsSwitch(
@@ -430,41 +362,6 @@ fun SettingsGroupInterface(
             },
         )
 
-        var hideAiFeatures by rememberSaveable { mutableStateOf(PrefManager.hideAiFeatures) }
-        SettingsSwitch(
-            colors = settingsTileColorsAlt(),
-            title = { Text(text = stringResource(R.string.settings_hide_ai_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_hide_ai_subtitle)) },
-            state = hideAiFeatures,
-            onCheckedChange = {
-                hideAiFeatures = it
-                PrefManager.hideAiFeatures = it
-            },
-        )
-
-        var bootScreenAds by rememberSaveable { mutableStateOf(PrefManager.bootScreenAdsEnabled) }
-        SettingsSwitch(
-            colors = settingsTileColorsAlt(),
-            title = { Text(text = stringResource(R.string.settings_info_boot_ads_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_info_boot_ads_subtitle)) },
-            state = bootScreenAds,
-            onCheckedChange = {
-                bootScreenAds = it
-                PrefManager.bootScreenAdsEnabled = it
-            },
-        )
-
-        var bootScreenRecs by rememberSaveable { mutableStateOf(PrefManager.bootScreenRecommendationsEnabled) }
-        SettingsSwitch(
-            colors = settingsTileColorsAlt(),
-            title = { Text(text = stringResource(R.string.settings_info_boot_recs_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_info_boot_recs_subtitle)) },
-            state = bootScreenRecs,
-            onCheckedChange = {
-                bootScreenRecs = it
-                PrefManager.bootScreenRecommendationsEnabled = it
-            },
-        )
 
         val configurableLibraryTabs = LibraryTab.configurableEntries.filter { it in LibraryTab.visibleEntries }
         val selectedLibraryTabIndices = configurableLibraryTabs.mapIndexedNotNull { index, tab ->
@@ -856,9 +753,6 @@ fun SettingsGroupInterface(
     if (showFrontendSyncDialog) {
         FrontendSyncDialog(onDismiss = { showFrontendSyncDialog = false })
     }
-
-    // GOG/Epic/Amazon login and logout flows (including loading dialogs and
-    // confirmations) are now owned by the System Menu and shared helpers.
 
 }
 

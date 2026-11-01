@@ -125,7 +125,6 @@ class PreInstallStepsTest {
         PreInstallSteps.markAllDone(container)
 
         val expectedMarkers = listOf(
-            Marker.GOG_SCRIPT_INSTALLED,
             Marker.UBISOFT_CONNECT_INSTALLED,
         )
         assertTrue(expectedMarkers.all { marker -> File(gameDir, marker.fileName).exists() })

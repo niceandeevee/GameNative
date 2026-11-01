@@ -41,26 +41,7 @@
     <string name="steam_uninstall_success">%1$s a été désinstallé</string>
     <string name="steam_uninstall_failed">Échec de la désinstallation du jeu</string>
     <string name="deleting">Suppression…</string>
-    <string name="amazon_uninstall_game_title">Désinstaller le jeu</string>
-    <string name="amazon_uninstall_confirmation_message">Êtes-vous sûr de vouloir désinstaller %1$s ? Cette action ne peut pas être annulée.</string>
-    <string name="amazon_install_game_title">Télécharger le jeu</string>
-    <string name="amazon_install_confirmation_message">L\'application en cours d\'installation nécessite l\'espace suivant. Voulez-vous continuer ?\n\n\tTaille du téléchargement : %1$s\n\tEspace disponible : %2$s</string>
-    <string name="amazon_verify_files_title">Vérifier les fichiers</string>
-    <string name="amazon_verify_files_message">Cela vérifiera tous les fichiers installés par rapport au manifeste de téléchargement pour détecter les fichiers manquants ou corrompus.\n\nCela peut prendre un certain temps pour les jeux volumineux.</string>
-    <string name="amazon_verify_confirm">Vérifier</string>
-    <string name="amazon_verify_in_progress">Vérification des fichiers… Cela peut prendre un certain temps.</string>
-    <string name="amazon_verify_success">Tous les fichiers ont été vérifiés avec succès.\n\n%1$d / %2$d fichiers OK.</string>
-    <string name="amazon_verify_failed_detail">La vérification a trouvé des problèmes.\n\n%1$d / %2$d fichiers OK\n%3$d manquants\n%4$d taille incorrecte\n%5$d hash incorrect\n\nRéinstallez le jeu pour réparer les fichiers corrompus.</string>
-    <string name="amazon_verify_error">La vérification a échoué : %1$s</string>
-    <string name="gog_uninstall_game_title">Désinstaller le jeu</string>
-    <string name="gog_uninstall_confirmation_message">Êtes-vous sûr de vouloir désinstaller %1$s ? Cette action ne peut pas être annulée.</string>
-    <string name="gog_install_game_title">Télécharger le jeu</string>
-    <string name="gog_install_confirmation_message">L\'application en cours d\'installation nécessite l\'espace suivant. Voulez-vous continuer ?\n\n\tTaille du téléchargement : %1$s\n\tEspace disponible : %2$s</string>
     <string name="steam_never">Jamais</string>
-    <string name="epic_cancel_download_message">Êtes-vous sûr de vouloir annuler le téléchargement de l\'application?</string>
-    <string name="epic_delete_download_message">Supprimer toutes les données téléchargées pour ce jeu?</string>
-    <string name="epic_uninstall_failed">Échec de la désinstallation: %1$s</string>
-    <string name="epic_uninstall_error">Erreur de désinstallation: %1$s</string>
     <string name="steam_continue">Continuer</string>
     <string name="header_img_desc">Image d\'en-tête de l\'application</string>
     <string name="download">Télécharger</string>
@@ -163,9 +144,6 @@
     <!-- Library Tabs -->
     <string name="tab_all">Tout</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_gog">GOG</string>
-    <string name="tab_epic">Epic</string>
-    <string name="tab_amazon">Amazon</string>
     <string name="tab_installed">Installé</string>
     <string name="tab_local">Personnalisé</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
@@ -408,9 +386,7 @@
     <string name="performance_hud">HUD de performance</string>
     <string name="performance_hud_description">Afficher ou masquer la surcouche en jeu.</string>
     <string name="performance_hud_fps_limiter">Limiteur de FPS</string>
-    <string name="performance_hud_fps_limiter_description">Limite la fréquence d’images en jeu. Max. : %1$d Hz.</string>
     <string name="performance_hud_fps_limiter_target">FPS cible</string>
-    <string name="performance_hud_fps_limiter_off">Illimité</string>
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">Limite la cadence de base. La cadence à l\'écran est la limite multipliée par le multiplicateur LSFG.</string>
     <string name="performance_hud_presets">Préréglages</string>
@@ -698,9 +674,6 @@
     <string name="add_custom_game_dont_show_again">Ne plus afficher ce dialogue</string>
     <string name="base_app_shortcut_created">Raccourci créé</string>
     <string name="base_app_shortcut_failed">Échec de la création du raccourci : %s</string>
-    <string name="base_app_images_fetched">Images récupérées avec succès</string>
-    <string name="base_app_game_folder_not_found">Dossier du jeu introuvable</string>
-    <string name="base_app_images_fetch_failed">Échec de la récupération des images : %s</string>
     <string name="base_app_exported">Exporté</string>
     <string name="base_app_export_failed">Échec de l\'exportation : %s</string>
     <string name="base_app_export_cancelled">Exportation annulée</string>
@@ -730,13 +703,9 @@
     <string name="connection_retry">Réessayer</string>
 
     <!--Game Feedback Dialog -->
-    <string name="game_feedback_game_run">Comment le jeu s\'est-il exécuté ?</string>
-    <string name="game_feedback_issues_question">Sélectionnez les problèmes rencontrés :</string>
 
 
     <!-- Profile & Menu -->
-    <string name="help_and_support">Aide et support</string>
-    <string name="hall_of_fame">Temple de la renommée</string>
     <string name="go_online">Se connecter</string>
     <string name="go_offline">Se déconnecter</string>
     <string name="log_out">Déconnexion</string>
@@ -768,7 +737,6 @@
     <string name="pulseaudio_low_latency">Mode faible latence PulseAudio</string>
     <string name="microphone_input">Entrée microphone</string>
     <string name="microphone_input_description">Expose le microphone de l\'appareil à Wine/Proton comme périphérique d\'enregistrement. Nécessite l\'autorisation du microphone.</string>
-    <string name="show_fps">Afficher les FPS</string>
     <string name="portrait_mode">Mode portrait</string>
     <string name="portrait_mode_description">Pour les manettes de type 8BitDo FlipPad/GameSir Pocket Taco</string>
     <string name="portrait_below_cutout">Garder sous l\'encoche de la caméra</string>
@@ -788,8 +756,6 @@
     <string name="launch_steam_client_beta">Lancer le client Steam</string>
     <string name="steam_offline_mode">Mode Hors Ligne Steam</string>
     <string name="steam_offline_mode_description">Lancer les jeux Steam en mode hors ligne</string>
-    <string name="epic_offline_mode">Mode Hors Ligne Epic</string>
-    <string name="epic_offline_mode_description">Lancer les jeux Epic en mode hors ligne</string>
     <string name="achievement_unlocked">Succès débloqué</string>
     <string name="settings_achievement_notification_position">Position de la notification de succès</string>
     <string name="achievement_position_top_left">En haut à gauche</string>
@@ -802,8 +768,6 @@
     <string name="steam_connecting">Connexion aux serveurs Steam… cela peut prendre une minute sur un réseau lent</string>
     <string name="steam_retrying_login">Nouvelle tentative de connexion à Steam…</string>
     <string name="launch_bionic_steam">Activer Bionic Steam expérimental</string>
-    <string name="allow_steam_updates">Autoriser les mises à jour Steam</string>
-    <string name="allow_steam_updates_description">Met à jour Steam vers la dernière version. Réduit considérablement les performances.</string>
     <string name="steam_type">Type Steam</string>
 
     <!-- Container Configuration: Graphics -->
@@ -1017,7 +981,6 @@
     <string name="select_wine_debug_channels">Sélectionner les canaux de débogage Wine</string>
     <string name="cpu_label">CPU%d</string>
     <string name="describe_what_happened">Décrivez ce qui s\'est passé</string>
-    <string name="get_support_on_discord">Obtenir de l\'aide sur Discord</string>
 
     <!-- Driver Manager -->
     <string name="driver_manager">Gestionnaire de pilotes</string>
@@ -1056,151 +1019,12 @@
     <string name="settings_accounts_signed_out">Non connecté</string>
     <string name="settings_accounts_ea_title">Compte EA</string>
     <string name="settings_accounts_rockstar_title">Compte Rockstar</string>
-    <string name="gamenative_account_title">Compte GameNative</string>
-    <string name="gamenative_account_sign_in">Se connecter</string>
-    <string name="gamenative_account_sign_in_subtitle">Connectez-vous pour voir votre offre et gérer votre abonnement.</string>
-    <string name="gamenative_account_loading">Chargement des informations de votre compte.</string>
-    <string name="gamenative_account_load_failed">Les informations de votre compte n\'ont pas pu être chargées. Sélectionnez pour réessayer.</string>
-    <string name="gamenative_account_plan">Offre : %1$s</string>
-    <string name="gamenative_account_plan_none">Aucune offre</string>
-    <string name="gamenative_account_plan_basic">Basic</string>
-    <string name="gamenative_account_plan_pro">Pro</string>
-    <string name="gamenative_account_plan_patron">Patron</string>
-    <string name="gamenative_account_manage_subscription">Gérer l\'abonnement</string>
-    <string name="gamenative_account_manage_subscription_subtitle">Ouvre la page de facturation dans votre navigateur.</string>
-    <string name="gamenative_account_manage_subscription_opening">Ouverture de la page de facturation.</string>
-    <string name="gamenative_account_manage_subscription_none">Ce compte n\'a aucun abonnement à gérer.</string>
-    <string name="gamenative_account_managed_discord">Votre offre vient de Discord. Gérez-la sur Discord.</string>
-    <string name="gamenative_account_managed_kofi">Votre offre vient de Ko-fi. Gérez-la sur Ko-fi.</string>
-    <string name="gamenative_account_manage_subscription_failed">La page de facturation n\'a pas pu être ouverte. Veuillez réessayer plus tard.</string>
-    <string name="gamenative_account_sign_out">Se déconnecter</string>
-    <string name="gamenative_account_sign_out_subtitle">Déconnectez votre compte GameNative de cet appareil.</string>
-    <string name="gamenative_account_discord">Discord</string>
-    <string name="gamenative_account_discord_not_connected">Non connecté › Connecter</string>
-    <string name="gamenative_account_discord_connected">Connecté › Déconnecter</string>
-    <string name="gamenative_account_discord_connected_as">Connecté en tant que %1$s › Déconnecter</string>
-    <string name="gamenative_account_discord_link_scan">Scannez ce code avec votre téléphone ou ouvrez cette adresse sur un autre appareil pour connecter Discord.</string>
-    <string name="gamenative_account_discord_link_this_device">Ou ouvrir sur cet appareil</string>
-    <string name="gamenative_account_discord_link_waiting">En attente de la connexion de Discord.</string>
-    <string name="gamenative_account_discord_link_starting">Préparation de votre code.</string>
-    <string name="gamenative_account_discord_link_expired">Ce code a expiré. Sélectionnez Réessayer pour obtenir un nouveau code.</string>
-    <string name="gamenative_account_discord_link_failed">La connexion à Discord n\'est pas disponible pour le moment. Vérifiez votre connexion et réessayez.</string>
-    <string name="gamenative_account_discord_link_connected_as">Connecté en tant que %1$s</string>
-    <string name="gamenative_account_discord_link_no_browser">Aucun navigateur trouvé pour ouvrir Discord. Scannez plutôt le code avec un autre appareil.</string>
-    <string name="gamenative_sign_in_title">Se connecter à GameNative</string>
-    <string name="gamenative_sign_in_scan">Scannez ce code avec votre téléphone pour vous connecter. Vous pouvez aussi vous connecter sur cet appareil.</string>
-    <string name="gamenative_sign_in_code">Code : %1$s</string>
-    <string name="gamenative_sign_in_this_device">Se connecter sur cet appareil</string>
-    <string name="gamenative_sign_in_waiting">En attente de la fin de votre connexion.</string>
-    <string name="gamenative_sign_in_starting">Préparation de votre code de connexion.</string>
-    <string name="gamenative_sign_in_expired">Ce code de connexion a expiré. Sélectionnez Réessayer pour obtenir un nouveau code.</string>
-    <string name="gamenative_sign_in_failed">La connexion n\'est pas disponible pour le moment. Vérifiez votre connexion et réessayez.</string>
-    <string name="gamenative_sign_in_try_again">Réessayer</string>
-    <string name="gamenative_sign_in_success">Vous êtes connecté à GameNative.</string>
-    <string name="gamenative_sign_in_no_browser">Aucun navigateur n\'a été trouvé pour ouvrir la page de connexion. Scannez plutôt le code avec un autre appareil.</string>
-    <string name="support_title">Aide AI</string>
-    <string name="support_subtitle">Vos conversations avec l\'assistance AI de GameNative</string>
-    <string name="support_refresh">Actualiser</string>
-    <string name="support_signed_out_title">Obtenez de l\'aide pour vos jeux</string>
-    <string name="support_signed_out_body">Connectez-vous à votre compte GameNative pour voir vos conversations d\'assistance et parler à notre AI des problèmes avec vos jeux.</string>
-    <string name="support_signed_out_discord">Vous pouvez aussi obtenir de l\'aide sur notre Discord</string>
-    <string name="support_empty_title">Aucune conversation pour l\'instant</string>
-    <string name="support_empty_body">Pour en commencer une, choisissez « Obtenez l\'aide de l\'AI » sur un jeu de votre bibliothèque. Jouez jusqu\'à ce que le problème se produise, fermez le jeu, puis décrivez ce qui s\'est mal passé.</string>
-    <string name="support_state_waiting">En attente de réponse</string>
-    <string name="support_state_answered">Répondu</string>
-    <string name="support_state_solved">Résolu</string>
-    <string name="support_state_not_solved">Non résolu</string>
-    <string name="support_started">Commencée le %1$s</string>
-    <string name="support_last_activity">Dernière activité %1$s</string>
-    <string name="support_problem_network">Connexion impossible. Vérifiez votre connexion et réessayez.</string>
-    <string name="support_problem_unavailable">Le chat d\'assistance dans l\'app n\'est pas encore disponible. En attendant, l\'aide de l\'AI se poursuit sur notre Discord.</string>
-    <string name="support_problem_unauthorized">Votre compte GameNative n\'a pas pu être confirmé. Réessayez plus tard, ou déconnectez-vous puis reconnectez-vous dans les Paramètres.</string>
-    <string name="support_problem_rate_limited">Vous avez envoyé beaucoup en peu de temps. Patientez un moment et réessayez.</string>
-    <string name="support_problem_not_found">Cette conversation est introuvable.</string>
-    <string name="support_problem_server">Un problème est survenu de notre côté. Réessayez dans quelques minutes.</string>
-    <string name="support_problem_too_long">Votre message est trop long. Raccourcissez-le et réessayez.</string>
-    <string name="support_problem_too_large">Ces journaux sont trop volumineux pour être envoyés.</string>
-    <string name="support_problem_no_logs">Il n\'y a pas de nouveaux journaux pour ce jeu sur cet appareil. Lancez une nouvelle session de débogage pour les enregistrer.</string>
-    <string name="support_problem_locked">Un abonnement est nécessaire pour envoyer d\'autres messages dans cette conversation.</string>
-    <string name="support_problem_already_answered">Vous nous avez déjà indiqué le résultat.</string>
-    <string name="support_label_you">Vous</string>
-    <string name="support_label_report">Votre rapport</string>
-    <string name="support_label_ai">GameNative AI</string>
-    <string name="support_label_staff">%1$s · Équipe GameNative</string>
-    <string name="support_label_team">Équipe GameNative</string>
-    <string name="support_analysing_first">Notre AI analyse vos journaux. Cela prend généralement quelques minutes. Vous pouvez quitter cet écran : la réponse sera ici à votre retour.</string>
-    <string name="support_analysing_followup">En attente de réponse. Cela prend généralement quelques minutes.</string>
-    <string name="support_outcome_question">Cela a-t-il résolu le problème ?</string>
-    <string name="support_outcome_worked">Ça a marché</string>
-    <string name="support_outcome_broken">Toujours en panne</string>
-    <string name="support_outcome_recorded_worked">Vous avez indiqué que la solution a fonctionné. Merci de nous l\'avoir dit.</string>
-    <string name="support_outcome_recorded_broken">Vous avez indiqué que le problème n\'est pas encore résolu. Répondez ci-dessous avec ce qui se passe maintenant, ou envoyez de nouveaux journaux.</string>
-    <string name="support_notice_moved">Cette conversation continue maintenant avec l\'assistance Pro.</string>
-    <string name="support_upgrade_title">Un abonnement est nécessaire pour continuer</string>
-    <string name="support_upgrade_reason_trial_used">Votre première analyse était gratuite. Pour répondre et continuer à parler de ce problème avec l\'AI, choisissez un abonnement.</string>
-    <string name="support_upgrade_reason_reply_cap">Vous avez atteint la limite d\'usage raisonnable d\'aujourd\'hui. Elle se réinitialise dans quelques heures.</string>
-    <plurals name="support_fair_use_resets_in_hours">
-        <item quantity="one">Vous avez atteint la limite d\'usage raisonnable d\'aujourd\'hui. Elle se réinitialise dans %1$d heure.</item>
-        <item quantity="other">Vous avez atteint la limite d\'usage raisonnable d\'aujourd\'hui. Elle se réinitialise dans %1$d heures.</item>
-    </plurals>
-    <string name="support_upgrade_reply_cap_pro_hint">Les rapports Pro passent avant la file d\'attente.</string>
-    <string name="support_limit_title">Limite d\'usage raisonnable du jour atteinte</string>
-    <string name="support_upgrade_reason_required">Les réponses de l\'AI nécessitent un abonnement GameNative. Si vous êtes déjà abonné via Discord ou Ko-fi, connectez Discord dans les Paramètres.</string>
-    <string name="support_see_plans">Voir les abonnements</string>
-    <string name="support_plan_basic_title">$5/mois · Basic</string>
-    <string name="support_plan_basic_body">Faites fonctionner vos jeux, ou faites-les mieux tourner.</string>
-    <string name="support_checkout_scan">Scannez ce code avec votre téléphone pour finaliser le paiement. Vous pouvez aussi le finaliser sur cet appareil.</string>
-    <string name="support_checkout_waiting">Une fois terminé, revenez ici. Votre abonnement se met à jour tout seul.</string>
-    <string name="support_checkout_open">Ouvrir sur cet appareil</string>
-    <string name="support_checkout_no_browser">Aucun navigateur n\'a été trouvé pour ouvrir la page de paiement. Scannez plutôt le code avec un autre appareil.</string>
-    <string name="support_checkout_failed">La page de paiement n\'a pas pu être ouverte. Vérifiez votre connexion et réessayez.</string>
-    <string name="support_checkout_done">Terminé</string>
     <string name="main_thank_you_message_play">Devenez membre dès aujourd\'hui. Les membres bénéficient de :\n\n• Aide par IA pour faire fonctionner vos jeux\n• Accès anticipé aux nouvelles versions\n• Rôles premium et salons exclusifs sur Discord\n• …et plus encore\n\nÀ partir de %1$s/mois</string>
-    <string name="support_plan_pro_title_priced">%1$s/mois · Pro</string>
-    <string name="support_plan_basic_title_priced">%1$s/mois · Basic</string>
-    <string name="membership_plans_pitch">Les membres bénéficient d\'une aide par IA pour faire fonctionner leurs jeux, d\'un accès anticipé aux nouvelles versions et de rôles premium sur Discord.</string>
-    <string name="membership_plans_title">Devenir membre</string>
-    <string name="support_already_member">Déjà membre ? Se connecter</string>
-    <string name="support_checkout_expired">Ce paiement a expiré. Si vous avez déjà payé, connectez-vous avec l\'e-mail utilisé et votre abonnement apparaîtra.</string>
-    <string name="support_play_unavailable">La facturation Google Play n\'est pas disponible pour le moment. Réessayez plus tard.</string>
-    <string name="support_checkout_waiting_guest">Après le paiement, connectez-vous sur cette page pour créer votre compte. Votre abonnement s\'active ici tout seul.</string>
-    <string name="gamenative_account_managed_play">Votre offre vient de Google Play. Gérez-la dans le Play Store.</string>
-    <string name="support_already_subscribed">Ce compte a déjà un abonnement. Vous pouvez changer d\'abonnement sur la page de facturation.</string>
-    <string name="support_plan_active">Votre abonnement est actif.</string>
-    <string name="support_plan_pending">Votre abonnement est en cours de mise en place. Réessayez dans une minute.</string>
-    <string name="support_composer_hint">Écrire une réponse</string>
-    <string name="support_composer_analysing">Veuillez patienter. L\'AI lit encore vos journaux. Vous pourrez répondre après sa réponse.</string>
-    <string name="support_send_logs">Envoyer les journaux</string>
-    <string name="support_new_debug_run">Nouvelle session de débogage</string>
-    <string name="support_fix_request_action">Demander un correctif personnalisé</string>
-    <string name="support_fix_request_title">Demander un correctif personnalisé</string>
-    <string name="support_fix_request_message">L\'AI peut modifier les fichiers de ce jeu ou compiler un nouveau pilote ou émulateur pour votre appareil. Si vous avez déjà envoyé un rapport, elle l\'examine maintenant. Sinon, elle lance le jeu une fois pour mesurer le problème.</string>
-    <string name="support_fix_request_left">Correctifs personnalisés restants : %1$d sur %2$d.</string>
-    <string name="support_fix_request_left_resets">Correctifs personnalisés restants : %1$d sur %2$d (réinitialisation le %3$s).</string>
-    <string name="support_fix_request_run">Demander le correctif</string>
-    <string name="support_fix_request_failed">Impossible de démarrer un correctif personnalisé. Veuillez réessayer.</string>
-    <string name="support_fix_request_in_progress">Un correctif personnalisé est déjà en préparation pour ce jeu.</string>
-    <string name="support_fix_upgrade_reason">Les correctifs personnalisés sont inclus dans tous les abonnements.</string>
-    <string name="support_fix_quota">Vous avez utilisé tous vos correctifs personnalisés pour le moment.</string>
-    <string name="support_fix_quota_resets">Vous avez utilisé tous vos correctifs personnalisés. Ils seront réinitialisés le %1$s.</string>
-    <string name="support_run_check_title">Comment ça s\'est passé ?</string>
-    <string name="support_run_check_sent">Votre journal a été envoyé.</string>
-    <string name="support_run_check_failed">Votre journal n\'a pas pu être envoyé.</string>
-    <string name="support_run_check_answer_waiting">Votre réponse sera envoyée avec le journal.</string>
-    <string name="support_run_check_answer_failed">Votre réponse n\'a pas pu être envoyée.</string>
-    <string name="support_run_check_offer">Le journal de votre dernière session de ce jeu n\'a pas été envoyé.</string>
-    <string name="support_run_check_send_last">Envoyer la dernière session</string>
-    <string name="support_uploading">Envoi de vos journaux</string>
-    <string name="support_share_file">Ouvrir le fichier</string>
-    <string name="debug_report_use_discord">Utiliser Discord à la place</string>
-    <string name="debug_report_use_app">Utiliser le chat dans l\'app à la place</string>
     <string name="settings_emulation_orientations_title">Orientations autorisées</string>
     <string name="settings_emulation_orientations_subtitle">Choisir les orientations vers lesquelles pivoter en jeu</string>
     <string name="settings_emulation_default_config_title">Modifier la configuration par défaut</string>
     <string name="settings_emulation_default_config_subtitle">Les paramètres de conteneur initiaux pour chaque jeu (n\'affecte pas les jeux déjà installés)</string>
     <string name="settings_emulation_default_config_dialog_title">Configuration de conteneur par défaut</string>
-    <string name="settings_emulation_auto_apply_known_config_title">Appliquer automatiquement la configuration connue</string>
-    <string name="settings_emulation_auto_apply_known_config_subtitle">Appliquer automatiquement les paramètres recommandés pour les jeux Steam au premier lancement</string>
     <string name="settings_emulation_box64_presets_title">Préréglages Box64</string>
     <string name="settings_emulation_box64_presets_subtitle">Voir, modifier et créer des préréglages Box64</string>
     <string name="settings_emulation_driver_manager_title">Gestionnaire de pilotes</string>
@@ -1233,18 +1057,12 @@
 
     <!-- Settings: Info Group -->
     <string name="settings_info_title">Informations</string>
-    <string name="settings_info_send_tip_title">Devenir membre</string>
-    <string name="settings_info_send_tip_subtitle">Aide par IA pour vos jeux, accès anticipé aux versions et plus encore</string>
-    <string name="settings_info_ask_tip_title">Offres d\'adhésion</string>
-    <string name="settings_info_ask_tip_subtitle">Afficher occasionnellement des offres pour devenir membre de GameNative</string>
     <string name="settings_info_source_title">Code source</string>
     <string name="settings_info_source_subtitle">Voir le code source de ce projet</string>
     <string name="settings_info_libraries_title">Bibliothèques utilisées</string>
     <string name="settings_info_libraries_subtitle">Voir les technologies qui rendent GameNative possible</string>
     <string name="settings_info_privacy_title">Politique de confidentialité</string>
     <string name="settings_info_privacy_subtitle">Ouvre un lien vers la politique de confidentialité de GameNative</string>
-    <string name="settings_info_usage_analytics_title">Analyses d\'utilisation</string>
-    <string name="settings_info_usage_analytics_subtitle">Nous ne collectons jamais de données personnelles. La désactivation arrête les analyses non essentielles, cependant les données de performance de jeu sont toujours collectées dans le cadre d\'un intérêt légitime pour améliorer la compatibilité.</string>
 
     <!-- Settings: Interface Group -->
     <string name="settings_interface_title">Interface</string>
@@ -1284,7 +1102,6 @@
     <string name="login_password_hint">Entrez votre mot de passe</string>
     <string name="login_password_show">Afficher le mot de passe</string>
     <string name="login_password_hide">Masquer le mot de passe</string>
-    <string name="login_remember_session">Se souvenir de la session</string>
     <string name="login_sign_in">Se connecter avec Steam</string>
     <string name="login_qr_failed">Échec du code QR</string>
     <string name="login_retry_qr">Réessayer le code QR</string>
@@ -1316,8 +1133,6 @@
     <string name="library_reset_container_message">Cela réinitialisera votre conteneur à la configuration par défaut.</string>
     <string name="library_verify_files_title">Vérifier les fichiers</string>
     <string name="library_verify_files_message">Veuillez vous assurer que vos sauvegardes sont téléchargées dans le cloud ou sauvegardées avant de vérifier, car elles peuvent être écrasées.</string>
-    <string name="library_update_title">Mettre à jour</string>
-    <string name="library_update_message">Veuillez vous assurer que vos sauvegardes sont téléchargées dans le cloud ou sauvegardées avant de mettre à jour, car elles peuvent être écrasées.</string>
     <string name="library_config_title">Configuration %s</string>
 
     <!-- LibraryAppScreen: Toast Messages -->
@@ -1341,12 +1156,8 @@
     <string name="download_paused_wifi">Téléchargement en pause – en attente du Wi-Fi/LAN</string>
 
     <!-- PluviaMain: Update & App Info -->
-    <string name="main_update_available_title">Mise à jour disponible</string>
-    <string name="main_update_available_message">Une nouvelle version (%1$s) est disponible !%2$s</string>
     <string name="main_update_button">Mettre à jour</string>
     <string name="main_later_button">Plus tard</string>
-    <string name="main_update_failed_title">Échec de la mise à jour</string>
-    <string name="main_update_failed_message">Échec du téléchargement ou de l\'installation de la mise à jour. Veuillez réessayer plus tard.</string>
     <string name="launch_dependency_failed_title">Échec du téléchargement de la dépendance de lancement</string>
     <string name="launch_dependency_failed_message">Échec du téléchargement d\'un composant requis. Veuillez réessayer plus tard.</string>
 
@@ -1355,14 +1166,8 @@
     <string name="main_recent_crash_message">Désolé pour ça !\nIl serait utile de connaître le problème récent que vous avez rencontré.\nVous pouvez consulter et exporter le journal de plantage le plus récent dans les paramètres de l\'application et le joindre comme problème Github dans le dépôt du projet.\nLe lien vers le dépôt Github se trouve également dans les paramètres !</string>
     <string name="main_thank_you_title">Vous appréciez GameNative ?</string>
     <string name="main_thank_you_message">Devenez membre dès aujourd\'hui. Les membres bénéficient de :\n\n• Aide par IA pour faire fonctionner vos jeux\n• Accès anticipé aux nouvelles versions\n• Rôles premium et salons exclusifs sur Discord\n• …et plus encore\n\nÀ partir de 5 $/mois</string>
-    <string name="main_join_kofi">Devenir membre</string>
-    <string name="pitch_session_title">Vous appréciez %1$s ?</string>
-    <string name="pitch_five_star_title">Ravi que %1$s ait bien tourné !</string>
     <string name="main_share">Partager</string>
     <string name="main_share_text">Découvrez GameNative - jouez à vos jeux Steam PC sur Android, avec support complet des sauvegardes cloud !\nhttps://gamenative.app\nRejoignez la communauté : https://discord.gg/2hKv4VfZfE</string>
-    <string name="main_discord_support_title">Le jeu a-t-il fonctionné ?</string>
-    <string name="main_discord_support_message">Rejoignez le Discord pour obtenir de l\'aide pour réparer votre jeu ou améliorer les performances.</string>
-    <string name="main_open_discord">Ouvrir Discord</string>
     <string name="main_downloading_entry">Téléchargement de %s</string>
 
     <!-- PluviaMain: Game Launch -->
@@ -1434,23 +1239,8 @@
     <string name="libraries_message">Pluvia - github.com/oxters168/Pluvia\nJavaSteam - github.com/Longi94/JavaSteam\nWinlator &amp; Vortek - github.com/brunodev85/winlator\nWinlator Cmod - github.com/coffincolors/winlator\nWrapper - https://github.com/leegao/bionic-vulkan-wrapper &amp; https://github.com/pipetto-crypto/\nUbuntu RootFs - releases.ubuntu.com/focal</string>
 
     <!-- Supporters Dialog -->
-    <string name="supporters_art_credits">Crédits artistiques</string>
-    <string name="supporters_app_icon">Icône de l\'app : Hachi</string>
-    <string name="supporters_alt_icon">Icône alternative de l\'app : rhapsody_mdr</string>
-    <string name="supporters_loading">Chargement des supporters…</string>
-    <string name="supporters_error">Impossible de charger les supporters</string>
-    <string name="supporters_members">Membres</string>
-    <string name="supporters_supporters">Supporters</string>
-    <string name="supporters_none">Aucun supporter pour le moment.</string>
-    <string name="supporters_anonymous">Anonyme</string>
 
     <!-- Chat Screen -->
-    <string name="chat_preview_warning">Le chat est encore une fonctionnalité en développement.\nVeuillez signaler tout problème dans le dépôt du projet.</string>
-    <string name="chat_no_history">Aucun historique de chat</string>
-    <string name="chat_send_message">Envoyer un message</string>
-    <string name="chat_send">Envoyer</string>
-    <string name="chat_emoticons">Émoticônes</string>
-    <string name="chat_stickers">Autocollants</string>
 
     <!-- Library Components -->
     <string name="library_open">Ouvrir</string>
@@ -1459,85 +1249,18 @@
     <string name="library_not_installed">Non installé</string>
     <string name="library_family_shared">Partagé en famille</string>
     <string name="library_shared_short">Partagé</string>
-    <string name="library_compatible">Compatible</string>
-    <string name="library_gpu_compatible">Compatible GPU</string>
     <string name="library_compatibility_unknown">Compatibilité inconnue</string>
-    <string name="library_not_compatible">Non compatible</string>
 
     <!-- Best Config Compatibility Messages -->
-    <string name="best_config_exact_gpu_match">Configuration connue fonctionne sur votre appareil</string>
-    <string name="best_config_gpu_family_match">Configuration connue devrait fonctionner sur votre appareil</string>
-    <string name="best_config_fallback_match">Configuration connue pourrait fonctionner sur votre appareil</string>
-    <string name="best_config_compatibility_unknown">Aucune configuration connue</string>
 
     <!-- Best Config Toast Messages -->
     <string name="best_config_applied_successfully">Configuration appliquée avec succès</string>
     <string name="best_config_missing_components_title">Configuration non appliquée</string>
     <string name="best_config_missing_components_message">Les composants requis suivants ne sont pas disponibles sur cet appareil :\n\n%1$s\n\nInstallez les composants manquants et réessayez.</string>
     <string name="best_config_known_config_invalid">Configuration connue invalide</string>
-    <string name="best_config_no_config_available">Aucune meilleure configuration disponible pour ce jeu</string>
-    <string name="best_config_fetch_failed">Échec de la récupération de la configuration. Vérifiez votre connexion réseau.</string>
     <string name="best_config_apply_anyway">Appliquer quand même</string>
     <string name="best_config_applied_with_defaults">Configuration appliquée, composants manquants remplacés par les valeurs par défaut</string>
     <string name="best_config_apply_failed">Échec de l\'application de la configuration : %s</string>
-    <string name="community_config_title">Configurations de la communauté</string>
-    <string name="community_config_close">Fermer les configurations de la communauté</string>
-    <string name="community_config_refresh">Actualiser les configurations de la communauté</string>
-    <string name="community_config_retry">Réessayer</string>
-    <string name="community_config_unknown_error">Erreur inconnue</string>
-    <string name="community_config_unknown">Inconnu</string>
-    <string name="community_config_load_failed">Impossible de charger les configurations de la communauté : %1$s</string>
-    <string name="community_config_game_not_found">Aucune entrée de compatibilité trouvée pour %1$s</string>
-    <string name="community_config_gpu_unknown">GPU indisponible</string>
-    <plurals name="community_config_result_count">
-        <item quantity="one">%1$d configuration</item>
-        <item quantity="other">%1$d configurations</item>
-    </plurals>
-    <string name="community_config_highest_rated">Les mieux notées</string>
-    <string name="community_config_newest">Les plus récentes</string>
-    <string name="community_config_same_device">Même appareil</string>
-    <string name="community_config_this_gpu">Même GPU</string>
-    <string name="community_config_compatible_gpus">Compatibles</string>
-    <string name="community_config_load_more">Charger plus</string>
-    <string name="community_config_no_device_results">Aucune configuration trouvée pour cet appareil.</string>
-    <string name="community_config_no_gpu_results">Aucune configuration trouvée pour ce GPU.</string>
-    <string name="community_config_no_compatible_results">Aucune configuration trouvée pour les GPU compatibles.</string>
-    <string name="community_config_show_this_gpu">Afficher ce GPU</string>
-    <string name="community_config_show_compatible_gpus">Afficher les GPU compatibles</string>
-    <string name="community_config_rating_value">%1$d/5</string>
-    <string name="community_config_fps_value">%1$s FPS</string>
-    <string name="community_config_details_title">Détails de la configuration</string>
-    <string name="community_config_other_gpu_warning">Ce résultat utilise un autre GPU. Les paramètres du pilote et du wrapper propres au GPU ne seront pas appliqués.</string>
-    <string name="community_config_run_details">Exécution de test</string>
-    <string name="community_config_rating">Note</string>
-    <string name="community_config_average_fps">FPS moyens</string>
-    <string name="community_config_device">Appareil</string>
-    <string name="community_config_gpu">GPU</string>
-    <string name="community_config_android">Android</string>
-    <string name="community_config_soc">SoC</string>
-    <string name="community_config_app_version">Version de GameNative</string>
-    <string name="community_config_submitted">Envoyée</string>
-    <string name="community_config_session_length">Durée de la session</string>
-    <string name="community_config_game_store">Boutique du jeu</string>
-    <string name="community_config_custom_game">Jeu personnalisé</string>
-    <string name="community_config_settings">Paramètres</string>
-    <string name="community_config_additional_launch_settings">Paramètres de lancement supplémentaires</string>
-    <string name="community_config_apply_launch_arguments">Appliquer les arguments de lancement</string>
-    <string name="community_config_apply_environment_variables">Appliquer les variables d’environnement</string>
-    <string name="community_config_replaces_existing_value">Remplace la valeur actuelle</string>
-    <string name="community_config_dependencies">Dépendances</string>
-    <string name="community_config_dependencies_apply_check">Les dépendances seront vérifiées lors de l’application de la configuration.</string>
-    <string name="community_config_no_downloads">Aucun téléchargement depuis le manifeste n’est actuellement requis.</string>
-    <string name="community_config_downloads_required">Ces composants seront téléchargés automatiquement :\n%1$s</string>
-    <string name="community_config_tags">Étiquettes</string>
-    <string name="community_config_notes">Notes</string>
-    <string name="community_config_apply">Appliquer la configuration</string>
-    <string name="community_config_container">Conteneur</string>
-    <string name="community_config_wine">Wine ou Proton</string>
-    <string name="community_config_emulator">Émulateur</string>
-    <string name="community_config_wrapper">Wrapper DirectX</string>
-    <string name="community_config_box64_preset">Préréglage Box64</string>
-    <string name="community_config_driver">Pilote graphique</string>
     <string name="import_config">Importer la configuration</string>
     <string name="export_config">Exporter la configuration</string>
     <string name="library_app_type">Type d\'app</string>
@@ -1621,7 +1344,6 @@
     <string name="contents_all_trusted">Tous les fichiers sont fiables. Prêt à installer.</string>
     <string name="contents_no_installed">Aucun contenu installé pour ce type.</string>
     <string name="contents_delete">Supprimer</string>
-    <string name="contents_review_confirm">Ce contenu inclut des fichiers en dehors de l\'ensemble de confiance. Vérifiez et confirmez pour continuer.</string>
     <string name="contents_removed">%1$s supprimé</string>
 
     <!-- Driver Manager -->
@@ -1714,10 +1436,6 @@
     <string name="auth_webview_title">Autorisation</string>
 
     <!-- GOG Integration -->
-    <string name="gog_integration_title">Intégration GOG (Alpha)</string>
-    <string name="gog_settings_login_title">Se connecter à GOG</string>
-    <string name="gog_settings_login_subtitle">Connectez-vous à votre compte GOG</string>
-    <string name="gog_login_success_title">Connexion réussie</string>
     <string name="rockstar_login_required_title">Connexion Rockstar requise</string>
     <string name="rockstar_login_failed">Échec de la connexion Rockstar : %1$s</string>
     <string name="rockstar_link_refused">Ce compte Rockstar est lié à un autre compte Steam.</string>
@@ -1735,68 +1453,20 @@
     <string name="rockstar_preparing">Préparation de la prise en charge du launcher Rockstar</string>
     <string name="rockstar_runtime_installing">Installation de l\'environnement Social Club</string>
     <string name="rockstar_installer_missing">L\'installateur Social Club est absent des fichiers du jeu. Vérifiez les fichiers du jeu dans Steam et réessayez.</string>
-    <string name="gog_login_cancel">Annuler</string>
-    <string name="gog_settings_logout_title">Se déconnecter de GOG</string>
-    <string name="gog_settings_logout_subtitle">Se déconnecter de votre compte GOG</string>
-    <string name="gog_logout_confirm_title">Se déconnecter de GOG ?</string>
-    <string name="gog_logout_confirm_message">Cela supprimera vos identifiants GOG et effacera votre bibliothèque GOG de cet appareil. Vous pouvez vous reconnecter à tout moment.</string>
-    <string name="gog_logout_confirm">Déconnexion</string>
-    <string name="gog_logout_success">Déconnecté de GOG avec succès</string>
-    <string name="gog_logout_failed">Échec de la déconnexion : %s</string>
-    <string name="gog_logout_in_progress">Déconnexion de GOG…</string>
 
     <!-- Epic Games Integration -->
-    <string name="epic_integration_title">Intégration Epic Games</string>
-    <string name="epic_settings_login_title">Se connecter à Epic</string>
-    <string name="epic_settings_login_subtitle">Connectez-vous à votre compte Epic Games</string>
-    <string name="epic_login_success_title">Connexion réussie</string>
-    <string name="epic_login_cancel">Annuler</string>
-    <string name="epic_settings_logout_title">Se déconnecter d\'Epic</string>
-    <string name="epic_settings_logout_subtitle">Déconnectez votre compte Epic Games</string>
-    <string name="epic_logout_confirm_title">Se déconnecter d\'Epic Games ?</string>
-    <string name="epic_logout_confirm_message">Cela supprimera vos identifiants Epic Games et effacera votre bibliothèque Epic Games de cet appareil. Vous pouvez vous reconnecter à tout moment.</string>
-    <string name="epic_logout_confirm">Déconnexion</string>
-    <string name="epic_logout_success">Déconnecté d\'Epic Games avec succès</string>
-    <string name="epic_logout_failed">Échec de la déconnexion : %s</string>
-    <string name="epic_logout_in_progress">Déconnexion d\'Epic Games…</string>
 
     <!-- Amazon Games Integration -->
-    <string name="amazon_integration_title">Intégration Amazon Games (Alpha)</string>
-    <string name="amazon_settings_login_title">Se connecter à Amazon Games</string>
-    <string name="amazon_settings_login_subtitle">Connectez-vous à votre compte Amazon Games</string>
-    <string name="amazon_login_success_title">Connexion réussie</string>
-    <string name="amazon_login_cancel">Annuler</string>
-    <string name="amazon_settings_logout_title">Se déconnecter d\'Amazon Games</string>
-    <string name="amazon_settings_logout_subtitle">Se déconnecter de votre compte Amazon Games</string>
-    <string name="amazon_logout_confirm_title">Se déconnecter d\'Amazon Games ?</string>
-    <string name="amazon_logout_confirm_message">Cela supprimera vos identifiants Amazon Games et effacera votre bibliothèque Amazon de cet appareil. Vous pouvez vous reconnecter à tout moment.</string>
-    <string name="amazon_logout_confirm">Déconnexion</string>
-    <string name="amazon_logout_success">Déconnecté d\'Amazon Games avec succès</string>
-    <string name="amazon_logout_failed">Échec de la déconnexion : %s</string>
-    <string name="amazon_logout_in_progress">Déconnexion d\'Amazon Games…</string>
 
     <!-- Epic Install/Uninstall -->
-    <string name="epic_uninstall_game_title">Désinstaller le jeu</string>
-    <string name="epic_uninstall_game_message">Êtes-vous sûr de vouloir désinstaller %1$s ? Cette action ne peut pas être annulée.</string>
-    <string name="epic_install_game_title">Télécharger le jeu</string>
-    <string name="epic_install_game_message">L\'application en cours d\'installation nécessite l\'espace suivant. Voulez-vous continuer ?\n\n\tTaille du téléchargement : %1$s\n\tTaille sur le disque : %2$s\n\tEspace disponible : %3$s</string>
-    <string name="epic_game_not_found">Jeu non trouvé</string>
-    <string name="epic_starting_download">Début du téléchargement : %1$s</string>
-    <string name="epic_starting_download_with_dlcs">Début du téléchargement : %1$s + DLC</string>
-    <string name="epic_download_failed">Échec du démarrage du téléchargement : %1$s</string>
-    <string name="epic_download_error">Erreur de téléchargement : %1$s</string>
     <string name="manifest_downloading_item">Téléchargement de %1$s…</string>
     <string name="manifest_download_failed">Échec du téléchargement : %1$s</string>
     <string name="manifest_install_failed">Échec de l’installation de %1$s</string>
     <string name="manifest_install_success">%1$s installé</string>
     <string name="manifest_content_untrusted">Le contenu n’est pas fiable et n’a pas été installé.</string>
     <string name="manifest_type_mismatch">Le contenu téléchargé ne correspond pas au type attendu.</string>
-    <string name="manifest_glibc_not_supported">Les builds GLIBC ne sont pas pris en charge.</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">Connectez-vous pour accéder à votre bibliothèque Steam.</string>
-    <string name="library_source_not_logged_in_gog">Connectez-vous pour accéder à votre bibliothèque GOG.</string>
-    <string name="library_source_not_logged_in_epic">Connectez-vous pour accéder à votre bibliothèque Epic.</string>
-    <string name="library_source_not_logged_in_amazon">Connectez-vous pour accéder à votre bibliothèque Amazon.</string>
     <string name="library_source_no_custom_games">Vous n\'avez ajouté aucun jeu personnalisé.</string>
     <string name="download_failed_title">Échec du téléchargement</string>
     <string name="download_failed_message">Un fichier requis n\'a pas pu être téléchargé. Veuillez vérifier votre connexion réseau et réessayer.</string>
@@ -1821,17 +1491,10 @@
     <string name="option_open_container">Ouvrir le conteneur</string>
     <string name="option_edit_container">Modifier le conteneur</string>
     <string name="option_reset_to_defaults">Réinitialiser le conteneur</string>
-    <string name="option_get_support">Obtenir de l\'aide</string>
-    <string name="option_submit_feedback">Envoyer un commentaire</string>
     <string name="option_reset_drm">Réinitialiser le DRM</string>
-    <string name="option_use_known_config">Utiliser la configuration connue</string>
-    <string name="option_browse_community_configs">Parcourir les configurations de la communauté</string>
 
     <!-- Recommendations -->
     <string name="recommended_badge">Recommandé</string>
-    <string name="recommended_buy_button">Acheter sur GOG</string>
-    <string name="rec_buy_with_price">%1$s · Acheter sur GOG</string>
-    <string name="recommended_support_message">Nous percevons une commission sur les achats effectués via ce lien.</string>
     <string name="recommended_about_heading">À propos de ce jeu</string>
     <string name="recommended_review_count">Basé sur %1$s avis</string>
     <string name="library_store_media_page">%1$d sur %2$d</string>
@@ -1847,8 +1510,6 @@
     <string name="review_mixed">Mitigé</string>
     <string name="review_mostly_negative">Plutôt négatif</string>
     <string name="review_overwhelmingly_negative">Extrêmement négatif</string>
-    <string name="settings_interface_show_recommendations_title">Afficher les recommandations de jeux</string>
-    <string name="settings_interface_show_recommendations_subtitle">Affiche des recommandations personnalisées. Le laisser activé aide à soutenir GameNative.</string>
     <string name="settings_interface_library_tabs_title">Onglets de la bibliothèque</string>
     <string name="settings_interface_library_tabs_subtitle">Choisissez les onglets de boutiques affichés dans la bibliothèque.</string>
     <string name="settings_interface_library_tabs_none">Aucun onglet de boutique</string>
@@ -1867,18 +1528,10 @@
     <string name="option_browse_online_saves">Parcourir les sauvegardes en ligne</string>
     <string name="option_force_download_remote">Forcer le téléchargement des sauvegardes distantes</string>
     <string name="option_force_upload_local">Forcer l\'envoi des sauvegardes locales</string>
-    <string name="option_fetch_game_images">Récupérer les images du jeu</string>
     <string name="option_test_graphics">Tester les graphismes</string>
     <string name="option_manage_dlc">Gérer les DLC</string>
     <string name="option_manage_workshop">Gérer le Workshop</string>
     <!-- HLTB (How Long To Beat) -->
-    <string name="hltb_main_story">Histoire principale</string>
-    <string name="hltb_main_plus_extras">Principal + Extras</string>
-    <string name="hltb_completionist">Complétiste</string>
-    <string name="hltb_all_styles">Tous les styles</string>
-    <string name="hltb_hours_value">%sh</string>
-    <string name="hltb_section_title">HLTB</string>
-    <string name="hltb_show_spoilers">Afficher les spoilers</string>
 
     <!-- LSFG-VK frame generation -->
     <string name="lsfg_tab_title">LSFG-VK</string>
@@ -1894,7 +1547,6 @@
     <string name="lsfg_backend_desc">Legacy exécute la couche lsfg-vk dans le jeu ; Natif exécute la génération d\'images dans le moteur de rendu GameNative</string>
     <string name="lsfg_backend_legacy">Legacy (couche)</string>
     <string name="lsfg_backend_native">Natif (rendu)</string>
-    <string name="lsfg_not_supported">La génération d\'images nécessite un conteneur Bionic</string>
     <string name="lsfg_install_prompt">Lossless Scaling n\'est pas installé. Appuyez pour installer. Fonctionne uniquement sur Adreno 6xx et supérieur, à notre connaissance.</string>
     <string name="lsfg_not_in_library">Lossless Scaling n\'est pas dans votre bibliothèque Steam</string>
     <string name="lsfg_install_title">Installer Lossless Scaling ?</string>
@@ -1934,9 +1586,6 @@
     <string name="settings_interface_frontend_sync_subtitle">Exporter automatiquement les jeux installés pour les frontends de bibliothèque</string>
     <string name="frontend_sync_dialog_title">Synchronisation frontend</string>
     <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_epic">Epic Games</string>
-    <string name="frontend_sync_source_gog">GOG</string>
-    <string name="frontend_sync_source_amazon">Amazon Games</string>
     <string name="frontend_sync_source_custom">Jeux personnalisés</string>
     <string name="frontend_sync_not_set">Non défini</string>
     <string name="frontend_sync_clear_confirm_title">Supprimer les anciens fichiers d’export ?</string>
@@ -1979,19 +1628,7 @@
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
     <string name="screen_effects_launch_sharpness">Netteté au lancement</string>
     <string name="screen_effects_launch_sharpness_note">CAS et DLS sont appliqués via vkBasalt et prennent effet au prochain lancement du jeu.</string>
-    <string name="stats_key_runs">Lancements réussis sur votre GPU</string>
-    <string name="stats_key_reviews">Avis 5 étoiles (votre GPU / votre appareil)</string>
-    <string name="stats_key_fps">FPS attendus</string>
-    <string name="stats_key_session">Session la plus longue sur votre appareil</string>
-    <string name="sort_fps">FPS attendus</string>
-    <string name="sort_runs">Lancements réussis</string>
-    <string name="sort_reviews">Avis 5 étoiles (appareil)</string>
-    <string name="sort_reviews_gpu">Avis 5 étoiles (GPU)</string>
     <string name="filter_expired">Expiré</string>
-    <string name="filter_playable">Jouable (30+ FPS)</string>
-    <string name="filter_five_star_device">Avis 5 étoiles sur l\'appareil</string>
-    <string name="filter_five_star_gpu">Avis 5 étoiles sur le GPU</string>
-    <string name="filter_proven_gpu">Éprouvé sur votre GPU</string>
     <string name="vibration_intensity">Intensité des vibrations</string>
     <string name="option_import_files">Importer des fichiers</string>
     <string name="option_export_files">Exporter des fichiers</string>
@@ -2124,47 +1761,6 @@
     <string name="wrapper_quality_high">Élevé (images plus nettes, utilise plus de RAM)</string>
     <string name="option_play_with_diagnostics">Exécution de diagnostic</string>
     <string name="option_share_diagnostics">Partager le diagnostic</string>
-    <string name="option_ai_debug_run">Obtenir de l\'aide AI</string>
-    <string name="debug_report_title">Rapport de débogage AI</string>
-    <string name="debug_report_summary">%1$s · %2$s</string>
-    <string name="debug_report_preparing">Préparation de votre journal…</string>
-    <string name="debug_report_what_went_wrong">Qu\'est-ce qui n\'a pas fonctionné ?</string>
-    <string name="debug_report_send">Envoyer</string>
-    <string name="debug_report_share_instead">Partager à la place</string>
-    <string name="debug_report_connect_hint">Connectez votre compte Discord pour que notre AI puisse vous répondre dans un fil de support.</string>
-    <string name="debug_report_connect_discord">Connecter Discord</string>
-    <string name="debug_report_sending">Envoi de votre rapport…</string>
-    <string name="debug_report_success_title">Rapport envoyé</string>
-    <string name="debug_report_success_message">Un fil de support a été ouvert sur notre Discord. Notre AI lit votre journal et vous y répondra.</string>
-    <string name="debug_report_open_discord">Ouvrir Discord</string>
-    <string name="debug_report_failed_title">Impossible d\'envoyer le rapport</string>
-    <string name="debug_report_failed_message">Votre rapport est enregistré sur cet appareil. Réessayez une fois de nouveau en ligne, ou partagez le journal à la place.</string>
-    <string name="debug_report_retry">Réessayer</string>
-    <string name="debug_report_share_log_title">Partager le journal de débogage</string>
-    <string name="debug_report_discord_linked">Discord connecté</string>
-    <string name="debug_report_no_log">Aucun journal de débogage n\'a été capturé pour cette exécution.</string>
-    <string name="debug_offer_title">Obtenez l\'aide de l\'AI pour ce plantage</string>
-    <string name="debug_offer_message">Cette session s\'est terminée prématurément. Relancez %1$s avec la journalisation de débogage : notre AI lira le journal et vous dira quoi changer.</string>
-    <string name="debug_offer_confirm">Démarrer l\'exécution de débogage</string>
-    <string name="debug_prerun_title">Obtenez l\'aide de l\'AI</string>
-    <string name="debug_prerun_message_1">Lance le jeu avec les journaux de débogage et les partage avec notre AI sur Discord quand vous quittez. Jouez jusqu\'à ce que le problème se produise.</string>
-    <string name="debug_prerun_message_2">Les réponses de l\'AI sont réservées aux abonnés.</string>
-    <string name="debug_prerun_message_1_app">Lance le jeu avec les journaux de débogage. Quand vous quittez, le journal est envoyé à notre AI, et la réponse arrive sur notre Discord, ou dans l\'app si vous vous connectez avec un compte GameNative. Jouez jusqu\'à ce que le problème se produise.</string>
-    <string name="debug_prerun_message_2_app">La première analyse est gratuite. Les réponses suivantes nécessitent un abonnement.</string>
-    <string name="debug_prerun_message_1_neutral">Le jeu se lance avec les journaux de débogage. Quand vous quittez, le journal est envoyé à notre AI. Jouez jusqu\'à ce que le problème se produise.</string>
-    <string name="debug_trial_note">Essai gratuit disponible.</string>
-    <string name="debug_prerun_message_3">Tout le monde peut partager le rapport pour obtenir de l\'aide humaine.</string>
-    <string name="debug_paywall_title">Obtenez une assistance de débogage AI</string>
-    <string name="debug_paywall_pitch">Des correctifs et des builds AI sur mesure qui réparent vos jeux.</string>
-    <string name="debug_paywall_tier5_title">$5/mois · Basic</string>
-    <string name="debug_paywall_tier5_body">1 correctif personnalisé par mois, jusqu\'à 5 essais chacun.</string>
-    <string name="debug_paywall_tier10_title">$10/mois · Pro</string>
-    <string name="debug_paywall_tier10_body">3 correctifs personnalisés par mois, des réponses plus rapides, en tête de file.</string>
-    <string name="debug_paywall_cancel_anytime">Annulable à tout moment. Des limites d\'usage raisonnable s\'appliquent.</string>
-    <string name="debug_paywall_costs_note">Les abonnements couvrent les coûts du service AI qui rend cette fonction possible.</string>
-    <string name="debug_paywall_already">Déjà supporter ?</string>
-    <string name="debug_paywall_send_now">Je me suis abonné, envoyer maintenant</string>
-    <string name="debug_paywall_not_now">Pas maintenant</string>
     <string name="diagnostics_share_title">Partager le journal de diagnostic</string>
     <string name="diagnostics_share_none">Aucun journal de diagnostic. Utilisez d\'abord \"Exécution de diagnostic\".</string>
 
@@ -2540,37 +2136,8 @@
     <string name="toast_no_buttons_to_copy_appearance">Aucun autre contrôle disponible pour copier apparence</string>
     <string name="toast_copied_button_appearance">Apparence du contrôle copiée</string>
     <string name="toast_applied_button_appearance">Apparence appliquée à tous les contrôles</string>
-    <string name="rec_disclosure_title">Recommandations de jeux</string>
-    <string name="rec_disclosure_body">Pour des recommandations personnalisées, nous partageons les jeux auxquels vous jouez avec GOG. Désactivable à tout moment dans les Paramètres.</string>
-    <string name="rec_disclosure_allow">Autoriser</string>
-    <string name="rec_disclosure_not_now">Pas maintenant</string>
-    <string name="rec_teaser_title">Découvrez des jeux pour votre appareil</string>
-    <string name="rec_teaser_subtitle">Appuyez pour jeter un œil</string>
 
     <!-- Sponsorship (featured slot) -->
-    <string name="featured_badge">Sponsorisé</string>
-    <string name="featured_action_wishlist">Liste de souhaits</string>
-    <string name="featured_action_wishlist_on">Ajouter sur %1$s</string>
-    <string name="featured_action_wishlisted">Dans la liste de souhaits</string>
-    <string name="featured_action_get_demo">Obtenir la démo</string>
-    <string name="featured_action_in_library">Dans la bibliothèque</string>
-    <string name="featured_action_failed">Impossible dans l\'application – ouverture de la page de la boutique</string>
-    <string name="featured_action_preorder">Précommander</string>
-    <string name="featured_action_preorder_on">Précommander sur %1$s</string>
-    <string name="featured_action_buy">Acheter</string>
-    <string name="featured_action_buy_on">Acheter sur %1$s</string>
-    <string name="featured_action_notify">Me prévenir</string>
-    <string name="featured_action_visit">En savoir plus</string>
-    <string name="featured_status_coming_soon_title">Bientôt disponible</string>
-    <string name="featured_status_coming_soon_body">Ajoutez-le à vos souhaits pour être averti dès sa sortie</string>
-    <string name="featured_status_early_access_title">Accès anticipé</string>
-    <string name="featured_status_early_access_body">Disponible dès maintenant en accès anticipé</string>
-    <string name="featured_status_preorder_title">Précommander</string>
-    <string name="featured_status_preorder_body">Précommandez pour être prêt au lancement</string>
-    <string name="featured_status_out_now_title">Disponible</string>
-    <string name="featured_status_out_now_body">Disponible maintenant</string>
-    <string name="tab_recommended">Recommandés</string>
-    <string name="gog_rec_empty">Ajoutez ou lancez des jeux pour obtenir des recommandations GOG basées sur votre bibliothèque.</string>
     <!-- Steam achievements -->
     <string name="achievements">Succès</string>
     <string name="achievements_all_title">Tous les succès</string>
@@ -2746,7 +2313,6 @@
     <string name="nexus_plan_ambiguous_case">des variantes de casse ambiguës existent déjà</string>
     <string name="nexus_plan_blocked">L’application automatique est bloquée tant que chaque fichier installable n’a pas de destination vérifiée.</string>
     <string name="nexus_plan_export">Partager le diagnostic</string>
-    <string name="nexus_reconfiguration_preview">Aperçu de la reconfiguration</string>
     <string name="nexus_reconfiguration_summary">%1$d ajoutés • %2$d modifiés • %3$d déplacés • %4$d obsolètes</string>
     <string name="nexus_choose_package_variant">Choisir une variante du paquet</string>
     <string name="nexus_confirm_risky_game_root_files">J’ai vérifié ces fichiers du dossier du jeu</string>
@@ -2819,8 +2385,6 @@
     <string name="faster_external_loading_subtitle">Peut accélérer considérablement le démarrage des jeux depuis le stockage externe, mais peut causer des problèmes dans certains jeux</string>
     <string name="disable_libredirect_title">Désactiver libredirect</string>
     <string name="disable_libredirect_subtitle">Peut améliorer les performances, mais peut aussi causer des problèmes inattendus</string>
-    <string name="disable_epic_overlay_title">Désactiver l\'overlay Epic</string>
-    <string name="disable_epic_overlay_subtitle">Désactive l\'overlay EOS et le moteur de rendu CEF pour éviter les plantages par manque de mémoire dans certains jeux</string>
     <string name="binding_mode_simultaneous">Simultané</string>
     <string name="binding_mode_sequence">Séquence</string>
     <string name="binding_sequence_delay_ms">Délai de séquence (ms)</string>
@@ -2836,22 +2400,6 @@
     <string name="xr_open_composite_toggle">Compatibilité SteamVR (OpenVR)</string>
     <string name="xr_open_composite_toggle_desc">Fait passer les jeux conçus pour SteamVR par OpenComposite. À activer si le jeu indique que SteamVR n’est pas lancé ou reste à plat avec le mode VR activé.</string>
     <string name="xr_render_scale">Échelle de rendu VR</string>
-    <string name="settings_hide_ai_title">Masquer les fonctions IA</string>
-    <string name="settings_hide_ai_subtitle">Masque l\'aide au débogage par IA optionnelle</string>
-    <string name="settings_info_boot_ads_title">Écrans de chargement sponsorisés</string>
-    <string name="settings_info_boot_ads_subtitle">Laisser cette option activée aide à soutenir le développement de GameNative. Cela ne ralentit jamais le lancement des jeux et ne vous affecte en aucune façon.</string>
-    <string name="settings_info_boot_recs_title">Recommandations de jeux sur les écrans de chargement</string>
-    <string name="settings_info_boot_recs_subtitle">Afficher un jeu qui pourrait vous plaire pendant le démarrage, en l\'absence de carte sponsorisée.</string>
-    <string name="boot_rec_badge">Recommandé pour vous</string>
-    <string name="boot_ad_close_cd">Fermer cette carte</string>
-    <string name="boot_ad_sheet_title_sponsored">À propos des cartes sponsorisées</string>
-    <string name="boot_ad_sheet_title_rec">À propos des recommandations</string>
-    <string name="boot_ad_sheet_body_sponsored">Les cartes sponsorisées aident à financer le travail à plein temps sur GameNative. Vous pouvez modifier ce choix à tout moment dans les Paramètres.</string>
-    <string name="boot_ad_sheet_body_rec">Les recommandations sont choisies selon les jeux auxquels vous jouez. Vous pouvez modifier ce choix à tout moment dans les Paramètres.</string>
-    <string name="boot_ad_close_one">Fermer celle-ci</string>
-    <string name="boot_ad_turn_off_sponsored">Désactiver les cartes sponsorisées</string>
-    <string name="boot_ad_turn_off_rec">Désactiver les recommandations</string>
-    <string name="boot_ad_not_now">Pas maintenant</string>
     <string name="boot_quiz_win_default">Correct !</string>
     <string name="boot_quiz_lose_default">La réponse était %1$s</string>
     <string name="gyro_aiming">Visée gyroscopique</string>
@@ -2947,125 +2495,4 @@
     <string name="control_profile_failed">Échec de l’opération sur le profil de commandes : %1$s</string>
     <string name="control_profile_delete_title">Supprimer le profil de commandes ?</string>
     <string name="control_profile_delete_message">Retirer « %1$s » de la bibliothèque ? Les jeux déjà configurés avec ce profil conserveront leurs commandes.</string>
-    <string name="sort_compatibility">Compatibilité</string>
-    <string name="community_compatibility_details">Détails</string>
-    <string name="community_compatibility_expanded">Développé</string>
-    <string name="community_compatibility_collapsed">Réduit</string>
-    <string name="community_compatibility_short_disclaimer">Les résultats de la communauté ne sont pas une garantie.</string>
-    <string name="community_compatibility_unreliable_short">Résultats peu fiables ; la jouabilité n’est pas confirmée.</string>
-    <string name="community_compatibility_performance_caution">Les performances signalées peuvent être limitées.</string>
-    <string name="community_compatibility_checking_short">Vérification…</string>
-    <string name="community_compatibility_unavailable_short">Indisponible</string>
-    <string name="community_compatibility_unavailable">Impossible de charger la compatibilité</string>
-    <string name="community_compatibility_missing_tier">La réponse ne contient pas les données matérielles nécessaires pour appliquer le résultat à votre appareil.</string>
-    <string name="community_compatibility_works">Fonctionne bien</string>
-    <string name="community_compatibility_should">Fonctionne</string>
-    <string name="community_compatibility_may">Peut fonctionner</string>
-    <string name="community_compatibility_mixed">Peu fiable</string>
-    <string name="community_compatibility_wont">Ne fonctionne pas</string>
-    <string name="community_compatibility_unknown">Non testé</string>
-    <string name="community_compatibility_checking">Vérification de la compatibilité…</string>
-    <plurals name="community_compatibility_device_evidence">
-        <item quantity="one">%1$d configuration partagée évaluée de ce modèle d’appareil</item>
-        <item quantity="other">%1$d configurations partagées évaluées de ce modèle d’appareil</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_evidence">
-        <item quantity="one">%1$d configuration partagée évaluée avec votre GPU</item>
-        <item quantity="other">%1$d configurations partagées évaluées avec votre GPU</item>
-    </plurals>
-    <string name="community_compatibility_no_reports">Aucune configuration partagée trouvée pour votre matériel</string>
-    <string name="community_compatibility_configs_unavailable">Certaines données de compatibilité n’ont pas pu être chargées. Affichage des données disponibles.</string>
-    <string name="community_compatibility_retry">Réessayer</string>
-    <string name="community_compatibility_fps_median">Médiane signalée : %1$d FPS</string>
-    <string name="community_compatibility_fps_device">%1$s sur votre modèle d’appareil.</string>
-    <string name="community_compatibility_fps_soc">%1$s avec le même chipset.</string>
-    <string name="community_compatibility_fps_gpu">%1$s avec votre GPU.</string>
-    <string name="community_compatibility_fps_family">%1$s avec des GPU compatibles.</string>
-    <string name="community_compatibility_view_reports">Configurations</string>
-    <string name="community_config_install_before_apply">Installez ce jeu avant d’appliquer une configuration de la communauté.</string>
-    <plurals name="community_compatibility_model_sessions">
-        <item quantity="one">Selon %1$d session enregistrée sur votre modèle d’appareil.</item>
-        <item quantity="other">Selon %1$d sessions enregistrées sur votre modèle d’appareil.</item>
-    </plurals>
-    <plurals name="community_compatibility_soc_sessions">
-        <item quantity="one">Selon %1$d session enregistrée avec le même chipset.</item>
-        <item quantity="other">Selon %1$d sessions enregistrées avec le même chipset.</item>
-    </plurals>
-    <plurals name="community_compatibility_gpu_sessions">
-        <item quantity="one">Selon %1$d session enregistrée avec votre GPU.</item>
-        <item quantity="other">Selon %1$d sessions enregistrées avec votre GPU.</item>
-    </plurals>
-    <plurals name="community_compatibility_family_sessions">
-        <item quantity="one">Selon %1$d session enregistrée dans votre famille de GPU.</item>
-        <item quantity="other">Selon %1$d sessions enregistrées dans votre famille de GPU.</item>
-    </plurals>
-    <string name="debug_prerun_instruction">À faire pendant cette session : %1$s</string>
-    <plurals name="debug_prerun_min_minutes">
-        <item quantity="one">Gardez le jeu ouvert au moins %1$d minute avant de quitter.</item>
-        <item quantity="other">Gardez le jeu ouvert au moins %1$d minutes avant de quitter.</item>
-    </plurals>
-    <string name="support_suggestion_title">Paramètres suggérés</string>
-    <string name="support_suggestion_not_applicable">Cette version de l\'application ne peut pas appliquer ces changements. Vous pouvez les modifier à la main dans les paramètres du jeu.</string>
-    <string name="support_suggestion_no_game">Installez le jeu sur cet appareil pour appliquer ces changements.</string>
-    <string name="support_suggestion_change">%1$s : %2$s → %3$s</string>
-    <string name="support_suggestion_changed_since">Votre valeur actuelle est %1$s. Le rapport indiquait %2$s.</string>
-    <string name="support_suggestion_run_record">La prochaine session enregistrera aussi : %1$s</string>
-    <string name="support_suggestion_run_channels">canaux de journal Wine %1$s</string>
-    <string name="support_suggestion_run_env">valeurs de débogage %1$s</string>
-    <string name="support_suggestion_run_wrapper_diag">diagnostic du wrapper graphique</string>
-    <string name="support_suggestion_apply_and_run">Appliquer et lancer</string>
-    <string name="support_suggestion_apply_only">Appliquer seulement</string>
-    <string name="support_suggestion_restore">Restaurer les paramètres précédents</string>
-    <string name="support_suggestion_confirm_title">Modifier ces paramètres ?</string>
-    <string name="support_suggestion_confirm_message">L\'application enregistre d\'abord vos valeurs actuelles. Vous pouvez les restaurer depuis cette carte.</string>
-    <string name="support_suggestion_confirm_run">Après le changement, l\'application lance une session de débogage du jeu.</string>
-    <string name="support_suggestion_confirm_warning">Ceci change la version de Wine ou le pilote graphique. Si le jeu fonctionne moins bien, restaurez les paramètres précédents.</string>
-    <string name="support_suggestion_confirm">Appliquer</string>
-    <string name="support_suggestion_restore_confirm_title">Restaurer les paramètres précédents ?</string>
-    <string name="support_suggestion_restore_confirm_message">L\'application remet les valeurs que ces changements ont remplacées.</string>
-    <string name="support_suggestion_restore_confirm">Restaurer</string>
-    <string name="support_suggestion_installing">Installation de %1$s</string>
-    <string name="support_suggestion_applied">Les paramètres sont modifiés.</string>
-    <string name="support_suggestion_restored">Les paramètres précédents sont rétablis.</string>
-    <string name="support_suggestion_failed">Impossible de modifier les paramètres. %1$s</string>
-    <string name="support_suggestion_missing">Ces éléments ne sont pas disponibles sur cet appareil : %1$s</string>
-    <string name="support_progress_next">Le vôtre est le suivant.</string>
-    <string name="support_progress_eta_soon">Réponse attendue très bientôt.</string>
-    <string name="support_progress_analysing">L\'AI lit vos journaux</string>
-    <string name="support_progress_analysing_elapsed">L\'AI lit vos journaux (%1$d min)</string>
-    <string name="support_progress_building">L\'AI compile un correctif personnalisé pour votre appareil. Cela peut prendre 10 minutes ou plus.</string>
-    <string name="support_progress_building_elapsed">L\'AI compile un correctif personnalisé pour votre appareil (%1$d min). Cela peut prendre 10 minutes ou plus.</string>
-    <string name="support_progress_failed">L\'analyse ne s\'est pas terminée. Renvoyez votre rapport pour réessayer.</string>
-    <string name="support_progress_retry">Réessayer</string>
-    <string name="support_stage_queued">En file d\'attente</string>
-    <string name="support_stage_queued_eta">En file d\'attente · environ %1$d min</string>
-    <string name="support_stage_analysing">Analyse en cours</string>
-    <string name="support_stage_analysing_elapsed">Analyse en cours · %1$d min</string>
-    <string name="support_stage_building">Création d\'un correctif</string>
-    <string name="support_stage_failed">Échec de l\'analyse</string>
-    <plurals name="support_progress_ahead">
-        <item quantity="one">%1$d rapport passe avant le vôtre.</item>
-        <item quantity="other">%1$d rapports passent avant le vôtre.</item>
-    </plurals>
-    <plurals name="support_progress_eta_minutes">
-        <item quantity="one">Réponse attendue dans environ %1$d minute.</item>
-        <item quantity="other">Réponse attendue dans environ %1$d minutes.</item>
-    </plurals>
-    <string name="support_reply_ready">Votre réponse de l\'Aide AI est prête</string>
-    <string name="support_reply_open">Ouvrir</string>
-    <string name="support_wait_channel_name">État de la réponse de l\'Aide AI</string>
-    <string name="support_wait_channel_description">S\'affiche pendant que GameNative attend une réponse à votre rapport.</string>
-    <string name="support_replies_channel_name">Réponses de l\'Aide AI</string>
-    <string name="support_replies_channel_description">Vous prévient quand la réponse à votre rapport est prête.</string>
-    <string name="support_wait_title">En attente de la réponse de l\'Aide AI</string>
-    <string name="support_wait_text">Votre rapport a été envoyé. Nous vous préviendrons quand la réponse sera prête.</string>
-    <string name="support_wait_stop">Arrêter</string>
-    <string name="support_reply_ready_tap">Touchez pour la lire.</string>
-    <string name="support_notify_me">Me prévenir quand la réponse arrive</string>
-    <string name="support_files_listing">Liste du dossier : %1$s</string>
-    <string name="support_files_listing_missing">Dossier introuvable : %1$s</string>
-    <string name="support_files_send_listing">Envoyer la liste</string>
-    <string name="support_files_listing_sending">Envoi de la liste de %1$s</string>
-    <string name="support_files_listing_sent">Liste envoyée (%1$d éléments)</string>
-    <string name="support_files_listing_failed">La liste de %1$s n\'a pas pu être envoyée. %2$s</string>
 </resources>

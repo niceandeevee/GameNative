@@ -5,7 +5,6 @@ import androidx.room.Room
 import app.gamenative.db.DATABASE_NAME
 import app.gamenative.db.PluviaDatabase
 import app.gamenative.db.dao.AppInfoDao
-import app.gamenative.db.dao.AmazonGameDao
 import app.gamenative.db.dao.CachedLicenseDao
 import app.gamenative.db.dao.DownloadingAppInfoDao
 import app.gamenative.db.dao.EncryptedAppTicketDao
@@ -17,6 +16,7 @@ import app.gamenative.db.migration.ROOM_MIGRATION_V23_to_V24
 import app.gamenative.db.migration.ROOM_MIGRATION_V24_to_V25
 import app.gamenative.db.migration.ROOM_MIGRATION_V26_to_V27
 import app.gamenative.db.migration.ROOM_MIGRATION_V28_to_V29
+import app.gamenative.db.migration.ROOM_MIGRATION_V29_to_V30
 import app.gamenative.db.migration.ROOM_MIGRATION_V7_to_V8
 import dagger.Module
 import dagger.Provides
@@ -40,6 +40,7 @@ class DatabaseModule {
                 ROOM_MIGRATION_V24_to_V25,
                 ROOM_MIGRATION_V26_to_V27,
                 ROOM_MIGRATION_V28_to_V29,
+                ROOM_MIGRATION_V29_to_V30,
             )
             .build()
     }
@@ -80,17 +81,8 @@ class DatabaseModule {
     @Singleton
     fun provideEncryptedAppTicketDao(db: PluviaDatabase): EncryptedAppTicketDao = db.encryptedAppTicketDao()
 
-    @Provides
-    @Singleton
-    fun provideGOGGameDao(db: PluviaDatabase) = db.gogGameDao()
 
-    @Provides
-    @Singleton
-    fun provideEpicGameDao(db: PluviaDatabase) = db.epicGameDao()
 
-    @Provides
-    @Singleton
-    fun provideAmazonGameDao(db: PluviaDatabase) = db.amazonGameDao()
 
     @Provides
     @Singleton

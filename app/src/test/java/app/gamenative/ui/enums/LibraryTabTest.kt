@@ -7,30 +7,15 @@ import org.junit.Test
 
 class LibraryTabTest {
     private val supported = listOf(
-        LibraryTab.RECOMMENDED,
         LibraryTab.ALL,
         LibraryTab.FAVORITES,
         LibraryTab.STEAM,
-        LibraryTab.GOG,
-        LibraryTab.EPIC,
-        LibraryTab.AMAZON,
         LibraryTab.LOCAL,
     )
 
     @Test
-    fun normalizeVisibleTabs_usesSupportedTabOrder() {
-        val result = LibraryTab.normalizeVisibleTabs("v2:GOG,ALL,STEAM", supported)
-
-        assertEquals(
-            listOf(
-                LibraryTab.ALL,
-                LibraryTab.FAVORITES,
-                LibraryTab.STEAM,
-                LibraryTab.GOG,
-                LibraryTab.LOCAL,
-            ),
-            result,
-        )
+    fun visibleEntries_areAllTabsInDeclarationOrder() {
+        assertEquals(supported, LibraryTab.visibleEntries)
     }
 
     @Test
@@ -42,13 +27,13 @@ class LibraryTabTest {
 
     @Test
     fun normalizeVisibleTabs_keepsFixedTabsVisibleAndDropsInvalidValues() {
-        val result = LibraryTab.normalizeVisibleTabs("v2:UNKNOWN,STEAM,STEAM", supported)
+        // GOG / RECOMMENDED were tabs in older builds: saved selections naming them are ignored
+        val result = LibraryTab.normalizeVisibleTabs("v2:UNKNOWN,GOG,RECOMMENDED", supported)
 
         assertEquals(
             listOf(
                 LibraryTab.ALL,
                 LibraryTab.FAVORITES,
-                LibraryTab.STEAM,
                 LibraryTab.LOCAL,
             ),
             result,
@@ -66,8 +51,6 @@ class LibraryTabTest {
             listOf(
                 LibraryTab.ALL,
                 LibraryTab.FAVORITES,
-                LibraryTab.GOG,
-                LibraryTab.AMAZON,
                 LibraryTab.LOCAL,
             ),
             result,
@@ -84,10 +67,8 @@ class LibraryTabTest {
     @Test
     fun serializeVisibleTabs_roundTripsSelection() {
         val visibleTabs = listOf(
-            LibraryTab.RECOMMENDED,
             LibraryTab.ALL,
             LibraryTab.FAVORITES,
-            LibraryTab.GOG,
             LibraryTab.LOCAL,
         )
 
@@ -100,19 +81,16 @@ class LibraryTabTest {
     }
 
     @Test
-    fun configurableEntries_containsRecommendedAndStoreTabs() {
-        assertEquals(
-            listOf(LibraryTab.RECOMMENDED, LibraryTab.STEAM, LibraryTab.GOG, LibraryTab.EPIC, LibraryTab.AMAZON),
-            LibraryTab.configurableEntries,
-        )
+    fun configurableEntries_containsOnlySteam() {
+        assertEquals(listOf(LibraryTab.STEAM), LibraryTab.configurableEntries)
     }
 
     @Test
     fun traversalUsesOnlyEffectiveVisibleTabs() {
-        val visible = listOf(LibraryTab.ALL, LibraryTab.GOG)
+        val visible = listOf(LibraryTab.ALL, LibraryTab.STEAM)
 
-        assertEquals(LibraryTab.GOG, LibraryTab.ALL.next(visible))
-        assertEquals(LibraryTab.ALL, LibraryTab.GOG.next(visible))
-        assertEquals(LibraryTab.GOG, LibraryTab.ALL.previous(visible))
+        assertEquals(LibraryTab.STEAM, LibraryTab.ALL.next(visible))
+        assertEquals(LibraryTab.ALL, LibraryTab.STEAM.next(visible))
+        assertEquals(LibraryTab.STEAM, LibraryTab.ALL.previous(visible))
     }
 }

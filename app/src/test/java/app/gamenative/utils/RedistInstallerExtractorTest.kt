@@ -161,7 +161,7 @@ class RedistInstallerExtractorTest {
         val notes = installer("elsewhere/redist/readme.txt", ByteArray(4))
         File(gameDir, "_CommonRedist/vcredist/2022").mkdirs()
         val layout = File(gameDir, "_CommonRedist/vcredist/2022/VC_redist.x64.exe").apply { writeBytes(ByteArray(4)) }
-        val container = Container("GOG_123").apply {
+        val container = Container("CUSTOM_GAME_123").apply {
             putExtra(
                 RedistInstallerExtractor.INSTALLERS_EXTRA,
                 "${listed.absolutePath}\n\n/does/not/exist.exe\n${notes.absolutePath}\n${layout.absolutePath}\n",
@@ -275,8 +275,8 @@ class RedistInstallerExtractorTest {
         x64.writeBytes(ByteArray(4))
         File(gameDir, "_CommonRedist/vcredist/2022/readme.txt").writeText("x")
 
-        assertEquals(listOf(x86, x64), RedistInstallerExtractor.installersFor(Container("GOG_42"), gameDir))
-        assertEquals(emptyList<File>(), RedistInstallerExtractor.installersFor(Container("GOG_42"), null))
+        assertEquals(listOf(x86, x64), RedistInstallerExtractor.installersFor(Container("CUSTOM_GAME_42"), gameDir))
+        assertEquals(emptyList<File>(), RedistInstallerExtractor.installersFor(Container("CUSTOM_GAME_42"), null))
     }
 
     private fun place(installers: List<File>, family: String, members: Map<String, ByteArray>): List<String> =
