@@ -99,7 +99,17 @@ public class XServer {
     }
 
     public boolean isRelativeMouseMovement() {
-        return relativeMouseMovement || forceRelativeMouseMovement;
+        return relativeMouseMovement || (forceRelativeMouseMovement && isGameCursorHidden());
+    }
+
+    /**
+     * The game's own cursor is hidden (mouselook). Forced relative input only applies then: with
+     * the cursor shown (menus) movement must go through the X pointer, which is what draws it.
+     */
+    private boolean isGameCursorHidden() {
+        Window pointWindow = inputDeviceManager.getPointWindow();
+        Cursor cursor = pointWindow != null ? pointWindow.attributes.getCursor() : null;
+        return cursor != null && !cursor.isVisible();
     }
 
     public void setForceRelativeMouseMovement(boolean force) {

@@ -24,10 +24,14 @@ class ContainerSettingDefaultFix(
     ): Boolean {
         val appliedExtra = "${setting}DefaultFixApplied"
         return try {
-            if (container.getExtra(appliedExtra) == value) {
+            val current = read(container)
+            // Applied before and still present: keep whatever is set now (the user may have
+            // changed it). Re-apply only when the setting is gone, e.g. a Windows-components
+            // list rebuilt without this entry.
+            if (container.getExtra(appliedExtra) == value && current != null) {
                 return true
             }
-            if (!read(container).equals(value, ignoreCase = true)) {
+            if (!current.equals(value, ignoreCase = true)) {
                 write(container, value)
                 Timber.tag("GameFixes").i("Set $setting '$value' for game $gameId")
             }
@@ -52,7 +56,7 @@ class ContainerSettingDefaultFix(
         /** One entry of the Windows components list ("1" = native DLLs, "0" = Wine's builtin). */
         fun winComponent(name: String, value: String) = ContainerSettingDefaultFix(
             "winComponent_$name", value,
-            { KeyValueSet(it.winComponents).get(name) },
+            { KeyValueSet(it.winComponents).get(name, null) },
             { c, v -> c.winComponents = KeyValueSet(c.winComponents).put(name, v).toString() },
         )
     }
