@@ -31,20 +31,20 @@ class StatsAchievementsGenerator {
 
         for ((appId, appData) in parsedSchema) {
             if (appData !is Map<*, *>) continue
-            val sch = appData as Map<String, Any>
-            val statInfo = sch["stats"] as? Map<String, Any> ?: continue
+            val sch = appData.vdfMap() ?: continue
+            val statInfo = sch["stats"].vdfMap() ?: continue
 
             for ((statKey, statData) in statInfo) {
                 if (statData !is Map<*, *>) continue
-                val stat = statData as Map<String, Any>
+                val stat = statData.vdfMap() ?: continue
                 val statType = stat["type"]?.toString() ?: continue
 
                 if (statType == StatType.STAT_TYPE_BITS || statType == StatType.ACHIEVEMENTS) {
-                    val bits = stat["bits"] as? Map<String, Any> ?: continue
+                    val bits = stat["bits"].vdfMap() ?: continue
                     for ((achNumKey, achData) in bits) {
                         if (achData !is Map<*, *>) continue
-                        val ach = achData as Map<String, Any>
-                        val display = ach["display"] as? Map<String, Any> ?: emptyMap()
+                        val ach = achData.vdfMap() ?: continue
+                        val display = ach["display"].vdfMap() ?: emptyMap()
 
                         val achievementBuilder = mutableMapOf<String, Any>()
                         achievementBuilder["hidden"] = 0
@@ -102,13 +102,13 @@ class StatsAchievementsGenerator {
 
                         val achievement = Achievement(
                             name = achievementBuilder["name"]?.toString() ?: "",
-                            displayName = achievementBuilder["displayName"] as? Map<String, String>,
-                            description = achievementBuilder["description"] as? Map<String, String>,
+                            displayName = achievementBuilder["displayName"].vdfStringMap(),
+                            description = achievementBuilder["description"].vdfStringMap(),
                             hidden = (achievementBuilder["hidden"] as? Number)?.toInt() ?: 0,
                             icon = achievementBuilder["icon"]?.toString(),
                             iconGray = achievementBuilder["icon_gray"]?.toString(),
                             icongray = achievementBuilder["icongray"]?.toString(),
-                            progress = achievementBuilder["progress"] as? Map<String, Any>
+                            progress = achievementBuilder["progress"].vdfMap()
                         )
                         achievementsOut.add(achievement)
                     }
@@ -367,3 +367,10 @@ class StatsAchievementsGenerator {
         )
     }
 }
+
+// VDF trees are untyped nested maps with string keys; these are the only casts into typed maps.
+@Suppress("UNCHECKED_CAST")
+internal fun Any?.vdfMap(): Map<String, Any>? = this as? Map<String, Any>
+
+@Suppress("UNCHECKED_CAST")
+internal fun Any?.vdfStringMap(): Map<String, String>? = this as? Map<String, String>

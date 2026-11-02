@@ -6,7 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.Surface;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
@@ -38,7 +37,7 @@ class GyroController implements SensorEventListener {
     private final Sensor gyroscopeSensor;
     private final Sensor orientationSensor;
     private final Listener listener;
-    private final WindowManager windowManager;
+    private final android.hardware.display.DisplayManager displayManager;
     private final float[] rotationMatrix = new float[9];
     private final float[] remappedRotationMatrix = new float[9];
     private final float[] orientationAngles = new float[3];
@@ -90,7 +89,7 @@ class GyroController implements SensorEventListener {
         orientationSensor = gameRotationSensor != null || sensorManager == null
                 ? gameRotationSensor
                 : sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        displayManager = (android.hardware.display.DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
     }
 
     boolean isAvailable() {
@@ -222,8 +221,9 @@ class GyroController implements SensorEventListener {
         if (event.sensor.getType() != activeSensor.getType()) return;
 
         int rotation = Surface.ROTATION_0;
-        if (windowManager != null && windowManager.getDefaultDisplay() != null) {
-            rotation = windowManager.getDefaultDisplay().getRotation();
+        android.view.Display display = displayManager != null ? displayManager.getDisplay(android.view.Display.DEFAULT_DISPLAY) : null;
+        if (display != null) {
+            rotation = display.getRotation();
         }
         if (lastDisplayRotation != -1 && lastDisplayRotation != rotation) clearOutput();
         lastDisplayRotation = rotation;

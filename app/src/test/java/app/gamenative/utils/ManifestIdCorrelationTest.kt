@@ -45,7 +45,7 @@ class ManifestIdCorrelationTest {
     }
 
     private fun locateManifestFile(): File {
-        val workingDir = File(System.getProperty("user.dir"))
+        val workingDir = File(System.getProperty("user.dir")!!)
         val direct = File(workingDir, "manifest.json")
         if (direct.exists()) return direct
         val parent = workingDir.parentFile

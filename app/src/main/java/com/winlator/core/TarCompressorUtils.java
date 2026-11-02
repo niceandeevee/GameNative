@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -29,7 +28,7 @@ import java.io.OutputStream;
 public abstract class TarCompressorUtils {
     public enum Type {XZ, ZSTD}
 
-    private static void addFile(ArchiveOutputStream tar, File file, String entryName) {
+    private static void addFile(TarArchiveOutputStream tar, File file, String entryName) {
         try {
             tar.putArchiveEntry(tar.createArchiveEntry(file, entryName));
             try (BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file), StreamUtils.BUFFER_SIZE)) {
@@ -42,7 +41,7 @@ public abstract class TarCompressorUtils {
         }
     }
 
-    private static void addLinkFile(ArchiveOutputStream tar, File file, String entryName) {
+    private static void addLinkFile(TarArchiveOutputStream tar, File file, String entryName) {
         try {
             TarArchiveEntry entry = new TarArchiveEntry(entryName, TarConstants.LF_SYMLINK);
             entry.setLinkName(FileUtils.readSymlink(file));
@@ -54,7 +53,7 @@ public abstract class TarCompressorUtils {
         }
     }
 
-    private static void addDirectory(ArchiveOutputStream tar, File folder, String basePath) throws IOException {
+    private static void addDirectory(TarArchiveOutputStream tar, File folder, String basePath) throws IOException {
         File[] files = folder.listFiles();
         if (files == null) return;
         for (File file : files) {
@@ -228,6 +227,7 @@ public abstract class TarCompressorUtils {
         return null;
     }
 
+    @SuppressWarnings("deprecation") // the level-taking constructors are the simplest form; behaviour is unchanged
     private static OutputStream getCompressorOutputStream(Type type, File destination, int level) throws IOException {
         if (type == Type.XZ) {
             return new XZCompressorOutputStream(new BufferedOutputStream(new FileOutputStream(destination), StreamUtils.BUFFER_SIZE), level);

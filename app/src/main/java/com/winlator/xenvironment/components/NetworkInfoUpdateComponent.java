@@ -1,12 +1,9 @@
 package com.winlator.xenvironment.components;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
+import android.net.LinkProperties;
+import android.net.Network;
 import android.util.Log;
 
 import com.winlator.core.FileUtils;
@@ -18,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class NetworkInfoUpdateComponent extends EnvironmentComponent {
-    private BroadcastReceiver broadcastReceiver;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
     public void start() {
@@ -27,32 +24,42 @@ public class NetworkInfoUpdateComponent extends EnvironmentComponent {
         final NetworkHelper networkHelper = new NetworkHelper(context);
         updateIFAddrsFile(networkHelper.getIFAddresses());
         updateEtcHostsFile(networkHelper.getIPv4Address());
-        this.broadcastReceiver = new BroadcastReceiver() { // from class: com.winlator.xenvironment.components.NetworkInfoUpdateComponent.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                NetworkInfoUpdateComponent.this.updateIFAddrsFile(networkHelper.getIFAddresses());
-                NetworkInfoUpdateComponent.this.updateEtcHostsFile(networkHelper.getIPv4Address());
+        ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
+        if (connectivityManager == null) return;
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            private void refresh() {
+                updateIFAddrsFile(networkHelper.getIFAddresses());
+                updateEtcHostsFile(networkHelper.getIPv4Address());
             }
+
+            @Override
+            public void onAvailable(Network network) { refresh(); }
+
+            @Override
+            public void onLost(Network network) { refresh(); }
+
+            @Override
+            public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) { refresh(); }
         };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(this.broadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            context.registerReceiver(this.broadcastReceiver, filter);
+        try {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+        } catch (RuntimeException e) {
+            Log.e("NetworkInfoUpdateComponent", "Failed to register network callback: " + e);
+            networkCallback = null;
         }
     }
 
     @Override
     public void stop() {
         Log.d("NetworkInfoUpdateComponent", "Stopping...");
-        if (broadcastReceiver != null) {
+        if (networkCallback != null) {
             try {
-                environment.getContext().unregisterReceiver(broadcastReceiver);
-            } catch(Exception e) {
-                Log.e("NetworkInfoUpdateComponent", "Failed to unregister broadcast receiver: " + e);
+                ConnectivityManager connectivityManager = environment.getContext().getSystemService(ConnectivityManager.class);
+                if (connectivityManager != null) connectivityManager.unregisterNetworkCallback(networkCallback);
+            } catch (Exception e) {
+                Log.e("NetworkInfoUpdateComponent", "Failed to unregister network callback: " + e);
             }
-            broadcastReceiver = null;
+            networkCallback = null;
         }
     }
 

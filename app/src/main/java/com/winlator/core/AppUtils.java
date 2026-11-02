@@ -70,11 +70,6 @@ public abstract class AppUtils {
         Runtime.getRuntime().exit(0);
     }
 
-     public static void showKeyboard(Context activity) {
-         final InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-     }
-
     /** Parses "WxH" to {w, h}, or null if unset or malformed. */
     public static int[] parseScreenSize(String size) {
         if (size == null) return null;
@@ -86,46 +81,6 @@ public abstract class AppUtils {
             return (w > 0 && h > 0) ? new int[] { w, h } : null;
         } catch (NumberFormatException e) {
             return null;
-        }
-    }
-
-    public static void hideSystemUI(final Activity activity) {
-        hideSystemUI(activity, true);
-    }
-    public static void hideSystemUI(final Activity activity, Boolean hide) {
-        Window window = activity.getWindow();
-        final View decorView = window.getDecorView();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            window.setDecorFitsSystemWindows(false);
-            final WindowInsetsController insetsController = decorView.getWindowInsetsController();
-            if (insetsController != null) {
-                if (hide) {
-                    insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                    insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-                } else {
-                    insetsController.show(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                    insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
-                }
-            }
-        }
-        else {
-            final int flags;
-            if (hide) {
-                flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            } else {
-                flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            }
-
-            decorView.setSystemUiVisibility(flags);
-            decorView.setOnSystemUiVisibilityChangeListener((visibility) -> {
-                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) decorView.setSystemUiVisibility(flags);
-            });
         }
     }
 
@@ -241,7 +196,7 @@ public abstract class AppUtils {
     public static int getVersionCode(Context context) {
         try {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
+            return (int) pInfo.getLongVersionCode();
         }
         catch (PackageManager.NameNotFoundException e) {
             return 0;

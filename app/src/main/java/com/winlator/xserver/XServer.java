@@ -400,6 +400,7 @@ public class XServer {
         registerExtension(new XInput2Extension(),   nextEventId, nextErrorId);
     }
 
+    @SuppressWarnings("unchecked") // callers ask for the extension type registered under the opcode
     public <T extends Extension> T getExtension(int opcode) {
         return (T)extensions.get(opcode);
     }

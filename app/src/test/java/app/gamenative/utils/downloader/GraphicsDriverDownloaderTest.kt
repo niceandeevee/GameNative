@@ -16,6 +16,8 @@ import org.robolectric.RobolectricTestRunner
 import timber.log.Timber
 import java.io.File
 
+private val lenientJson = Json { ignoreUnknownKeys = true }
+
 /**
  * Test suite for GraphicsDriverDownloader functionality.
  * Tests downloading, caching, and fallback to bundled assets.
@@ -49,7 +51,7 @@ class GraphicsDriverDownloaderTest {
         assertNotNull("${GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE} should exist in assets", manifestJson)
         assertTrue("Manifest should not be empty", manifestJson.isNotEmpty())
 
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         assertTrue("Graphics driver components list should not be empty", manifest.components.isNotEmpty())
@@ -63,7 +65,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testTurnipComponentsExist() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val turnipComponents = listOf(
@@ -85,7 +87,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testVortekComponentsExist() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val vortekComponents = listOf("vortek-2.0", "vortek-2.1")
@@ -99,7 +101,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testZinkAndVirglComponentsExist() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val components = listOf("zink-22.2.5", "virgl-23.1.9")
@@ -113,7 +115,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testAdrenotoolsComponentsExist() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val adrenotoolsComponents = listOf(
@@ -132,7 +134,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testWrapperComponentsExist() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val wrapperComponents = listOf(
@@ -151,7 +153,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testExtraComponentsExist() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val extraComponents = listOf("extra_libs", "zink_dlls", "libvulkan_wrapper")
@@ -165,7 +167,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testGraphicsDriverUrlFormat() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -253,7 +255,7 @@ class GraphicsDriverDownloaderTest {
 
         // Load manifest to get component name
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
         val component = manifest.components.find { it.id == componentId }!!
 
@@ -292,7 +294,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testAllManifestComponentsHaveValidUrls() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val validDomains = listOf(
@@ -314,7 +316,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testComponentNamingConsistency() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -329,15 +331,15 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testNoOverlapWithOtherDownloaders() {
         val graphicsDriverJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val graphicsDriverManifest = Json { ignoreUnknownKeys = true }
+        val graphicsDriverManifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(graphicsDriverJson)
 
         val dxwrapperJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val dxwrapperManifest = Json { ignoreUnknownKeys = true }
+        val dxwrapperManifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(dxwrapperJson)
 
         val wincomponentJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val wincomponentManifest = Json { ignoreUnknownKeys = true }
+        val wincomponentManifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(wincomponentJson)
 
         val graphicsDriverIds = graphicsDriverManifest.components.map { it.id }.toSet()
@@ -360,7 +362,7 @@ class GraphicsDriverDownloaderTest {
     @Test
     fun testLibvulkanWrapperHasTarXzExtension() {
         val manifestJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(manifestJson)
 
         val libvulkanComponent = manifest.components.find { it.id == "libvulkan_wrapper" }

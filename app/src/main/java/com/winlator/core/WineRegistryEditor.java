@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.function.ToIntFunction;
 
 public class WineRegistryEditor implements Closeable {
     private final File file;
@@ -345,12 +344,7 @@ public class WineRegistryEditor implements Closeable {
             valueLocations.add(valueLocation);
             i2++;
         }
-        valueLocations.sort(Comparator.comparingInt(new ToIntFunction() {
-            @Override
-            public final int applyAsInt(Object obj) {
-                return ((WineRegistryEditor.Location) obj).start;
-            }
-        }));
+        valueLocations.sort(Comparator.comparingInt(location -> location.start));
         char[] buffer = new char[65536];
         boolean success = false;
         File tempFile = FileUtils.createTempFile(this.file.getParentFile(), FileUtils.getBasename(this.file.getPath()));

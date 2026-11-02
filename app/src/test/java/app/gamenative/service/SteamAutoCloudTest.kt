@@ -681,7 +681,7 @@ class SteamAutoCloudTest {
             for (i in args.indices) {
                 val a = args[i]
                 if (a is List<*> && a.all { it is String }) {
-                    val list = a as List<String>
+                    val list = (a as List<*>).map { it as String }
                     if (capturedFilesToUpload.isEmpty()) capturedFilesToUpload.add(list)
                     else capturedFilesToDelete.add(list)
                 }
@@ -807,7 +807,7 @@ class SteamAutoCloudTest {
             for (i in args.indices) {
                 val a = args[i]
                 if (a is List<*> && a.all { it is String }) {
-                    val list = a as List<String>
+                    val list = (a as List<*>).map { it as String }
                     if (capturedFilesToUpload.isEmpty()) capturedFilesToUpload.add(list)
                     else capturedFilesToDelete.add(list)
                 }
@@ -1472,7 +1472,7 @@ class SteamAutoCloudTest {
             for (i in args.indices) {
                 val a = args[i]
                 if (a is List<*> && a.all { it is String }) {
-                    val list = a as List<String>
+                    val list = (a as List<*>).map { it as String }
                     if (capturedFilesToUpload.isEmpty()) capturedFilesToUpload.add(list)
                     else capturedFilesToDelete.add(list)
                 }
@@ -1606,7 +1606,7 @@ class SteamAutoCloudTest {
             for (i in args.indices) {
                 val a = args[i]
                 if (a is List<*> && a.all { it is String } && capturedFilesToUpload.isEmpty()) {
-                    capturedFilesToUpload.add(a as List<String>)
+                    capturedFilesToUpload.add((a as List<*>).map { it as String })
                 }
             }
             CompletableFuture.completedFuture(mockUploadBatchResponse)
@@ -1713,7 +1713,7 @@ class SteamAutoCloudTest {
             for (i in args.indices) {
                 val a = args[i]
                 if (a is List<*> && a.all { it is String } && capturedFilesToUpload.isEmpty()) {
-                    capturedFilesToUpload.add(a as List<String>)
+                    capturedFilesToUpload.add((a as List<*>).map { it as String })
                 }
             }
             CompletableFuture.completedFuture(mockUploadBatchResponse)
@@ -2049,7 +2049,7 @@ class SteamAutoCloudTest {
             for (i in args.indices) {
                 val a = args[i]
                 if (a is List<*> && a.all { it is String } && capturedFilesToUpload.isEmpty()) {
-                    capturedFilesToUpload.add(a as List<String>)
+                    capturedFilesToUpload.add((a as List<*>).map { it as String })
                 }
             }
             CompletableFuture.completedFuture(mockUploadBatchResponse)
@@ -3564,7 +3564,7 @@ class SteamAutoCloudTest {
         val userdataRoot = File(tempDir, "userdata-download-portal2")
         val cloudContent = "portal 2 save".toByteArray()
         val expectedSave = File(appDir, "portal2/save/76561198840814476/universe_01.sav")
-        expectedSave.parentFile.mkdirs()
+        expectedSave.parentFile?.mkdirs()
 
         val appUnderTest = db.steamAppDao().findApp(steamAppId)!!
             .copy(

@@ -16,6 +16,8 @@ import org.robolectric.RobolectricTestRunner
 import timber.log.Timber
 import java.io.File
 
+private val lenientJson = Json { ignoreUnknownKeys = true }
+
 /**
  * Test suite for DXWrapperDownloader functionality.
  * Tests downloading, caching, and fallback to bundled assets.
@@ -49,7 +51,7 @@ class DXWrapperDownloaderTest {
         assertNotNull("${DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE} should exist in assets", manifestJson)
         assertTrue("Manifest should not be empty", manifestJson.isNotEmpty())
 
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
 
         assertTrue("DXWrapper components list should not be empty", manifest.components.isNotEmpty())
@@ -63,7 +65,7 @@ class DXWrapperDownloaderTest {
     @Test
     fun testDXVKComponentsExist() {
         val manifestJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
 
         val dxvkComponents = listOf(
@@ -86,7 +88,7 @@ class DXWrapperDownloaderTest {
     @Test
     fun testVKD3DComponentsExist() {
         val manifestJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
 
         val vkd3dComponents = listOf(
@@ -106,7 +108,7 @@ class DXWrapperDownloaderTest {
     @Test
     fun testD8VKComponentExists() {
         val manifestJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
 
         val component = manifest.components.find { it.id == "d8vk-1.0" }
@@ -117,7 +119,7 @@ class DXWrapperDownloaderTest {
     @Test
     fun testDXWrapperUrlFormat() {
         val manifestJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -210,7 +212,7 @@ class DXWrapperDownloaderTest {
 
         // Load manifest to get component name
         val manifestJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
         val component = manifest.components.find { it.id == componentId }!!
 
@@ -249,7 +251,7 @@ class DXWrapperDownloaderTest {
     @Test
     fun testAllManifestComponentsHaveValidUrls() {
         val manifestJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
 
         val validDomains = listOf(
@@ -271,7 +273,7 @@ class DXWrapperDownloaderTest {
     @Test
     fun testComponentNamingConsistency() {
         val manifestJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -293,11 +295,11 @@ class DXWrapperDownloaderTest {
     @Test
     fun testNoOverlapWithWinComponents() {
         val dxwrapperJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val dxwrapperManifest = Json { ignoreUnknownKeys = true }
+        val dxwrapperManifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(dxwrapperJson)
 
         val wincomponentJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val wincomponentManifest = Json { ignoreUnknownKeys = true }
+        val wincomponentManifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(wincomponentJson)
 
         val dxwrapperIds = dxwrapperManifest.components.map { it.id }.toSet()

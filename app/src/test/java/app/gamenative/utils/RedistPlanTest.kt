@@ -24,7 +24,7 @@ class RedistPlanTest {
 
     @Test
     fun `resolve walks segments case insensitively and rejects parent segments`() {
-        val target = File(tmp.root, "Game/_CommonRedist/DirectX/DXSETUP.exe").apply { parentFile.mkdirs(); writeText("x") }
+        val target = File(tmp.root, "Game/_CommonRedist/DirectX/DXSETUP.exe").apply { parentFile?.mkdirs(); writeText("x") }
         val game = File(tmp.root, "Game")
 
         assertEquals(target, RedistPaths.resolve(game, "_commonredist\\directx\\dxsetup.exe"))

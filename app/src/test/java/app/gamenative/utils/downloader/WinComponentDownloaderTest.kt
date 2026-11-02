@@ -16,6 +16,8 @@ import org.robolectric.RobolectricTestRunner
 import timber.log.Timber
 import java.io.File
 
+private val lenientJson = Json { ignoreUnknownKeys = true }
+
 /**
  * Test suite for WinComponentDownloader functionality.
  * Tests downloading, caching, and fallback to bundled assets.
@@ -49,7 +51,7 @@ class WinComponentDownloaderTest {
         assertNotNull("${WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE} should exist in assets", manifestJson)
         assertTrue("Manifest should not be empty", manifestJson.isNotEmpty())
 
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(manifestJson)
 
         assertTrue("Wincomponents list should not be empty", manifest.components.isNotEmpty())
@@ -63,7 +65,7 @@ class WinComponentDownloaderTest {
     @Test
     fun testRequiredWinComponentsExist() {
         val manifestJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(manifestJson)
 
         val requiredComponents = listOf(
@@ -84,7 +86,7 @@ class WinComponentDownloaderTest {
     @Test
     fun testOptionalWinComponentsExist() {
         val manifestJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(manifestJson)
 
         val optionalComponents = listOf(
@@ -106,7 +108,7 @@ class WinComponentDownloaderTest {
     @Test
     fun testWinComponentUrlFormat() {
         val manifestJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -200,7 +202,7 @@ class WinComponentDownloaderTest {
 
         // Create a mock cached file
         cacheDir.mkdirs()
-        val manifestVersion = Json { ignoreUnknownKeys = true }.decodeFromString<WinComponentDownloader.WinComponentManifest>(
+        val manifestVersion = lenientJson.decodeFromString<WinComponentDownloader.WinComponentManifest>(
             context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
         ).version
         val cachedFile = File(cacheDir, "$componentId-v$manifestVersion.tzst")
@@ -239,7 +241,7 @@ class WinComponentDownloaderTest {
     @Test
     fun testAllManifestComponentsHaveValidUrls() {
         val manifestJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(manifestJson)
 
         val validDomains = listOf(
@@ -261,7 +263,7 @@ class WinComponentDownloaderTest {
     @Test
     fun testComponentNamingConsistency() {
         val manifestJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(manifestJson)
 
         manifest.components.forEach { component ->

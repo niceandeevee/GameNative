@@ -60,7 +60,7 @@ public class XEnvironment implements Iterable<EnvironmentComponent> {
 
     public <T extends EnvironmentComponent> T getComponent(Class<T> componentClass) {
         for (EnvironmentComponent component : components) {
-            if (component.getClass() == componentClass) return (T)component;
+            if (component.getClass() == componentClass) return componentClass.cast(component);
         }
         return null;
     }
