@@ -601,7 +601,6 @@
 	<string name="name">Nume</string>
 	<string name="value">Valoare</string>
 	<string name="no_more_known_variables">Nu mai există variabile cunoscute</string>
-	<string name="container_variant">Variantă container</string>
 	<string name="wine_version">Versiune Wine</string>
 	<string name="exec_arguments">Argumente exec</string>
 	<string name="exec_arguments_example">Exemplu: -dx11</string>
@@ -650,8 +649,6 @@
 	<string name="exposed_vulkan_extensions">Extensii Vulkan expuse</string>
 	<string name="max_device_memory">Memorie maximă dispozitiv</string>
 	<string name="use_adrenotools_turnip">Folosește Adrenotools Turnip</string>
-	<string name="vulkan_version">Versiune Vulkan</string>
-	<string name="image_cache_size">Dimensiune cache imagini</string>
 	<string name="dx_wrapper">Wrapper DX</string>
     <string name="display_renderer">Renderer de afișaj</string>
     <string name="sf_compat_mode">Mod de compatibilitate</string>
@@ -983,7 +980,6 @@
 
 	<!-- PluviaMain: Game Launch -->
 	<string name="main_downloading_steam">Se descarcă Steam...</string>
-	<string name="main_installing_glibc">Se instalează componente glibc...</string>
 	<string name="main_installing_bionic">Se instalează componente Bionic...</string>
 	<string name="main_loading">Se încarcă...</string>
 

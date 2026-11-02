@@ -4,7 +4,6 @@ import android.content.Context
 import com.winlator.contents.AdrenotoolsManager
 import com.winlator.contents.ContentProfile
 import com.winlator.contents.ContentsManager
-import com.winlator.core.GPUHelper
 import com.winlator.core.StringUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -203,7 +202,6 @@ object ManifestComponentHelper {
     }
 
     data class DxvkContext(
-        val isVortekLike: Boolean,
         val labels: List<String>,
         val ids: List<String>,
         val muted: List<Boolean>,
@@ -229,33 +227,12 @@ object ManifestComponentHelper {
         dxvkVersionsBase: List<String>,
         dxvkOptions: VersionOptionList,
     ): DxvkContext {
-        val driverType = StringUtils.parseIdentifier(
-            graphicsDrivers.getOrNull(graphicsDriverIndex).orEmpty(),
-        )
-        val isVortekLike = containerVariant.equals("glibc", ignoreCase = true) &&
-            driverType in listOf("vortek", "adreno", "sd-8-elite")
-
         val isVKD3D = StringUtils.parseIdentifier(
             dxWrappers.getOrNull(dxWrapperIndex).orEmpty(),
         ) == "vkd3d"
-        val constrainedLabels = listOf("1.10.3", "1.10.9-sarek", "1.9.2", "async-1.10.3")
-        val constrainedIds = constrainedLabels.map { StringUtils.parseIdentifier(it) }
-        val useConstrained =
-            !inspectionMode && isVortekLike &&
-                GPUHelper.vkGetApiVersionSafe() < GPUHelper.vkMakeVersion(1, 3, 0)
-
-        val labels =
-            if (useConstrained) constrainedLabels
-            else if (isBionicVariant) dxvkOptions.labels
-            else dxvkVersionsBase
-        val ids =
-            if (useConstrained) constrainedIds
-            else if (isBionicVariant) dxvkOptions.ids
-            else dxvkVersionsBase.map { StringUtils.parseIdentifier(it) }
-        val muted =
-            if (useConstrained) List(labels.size) { false }
-            else if (isBionicVariant) dxvkOptions.muted
-            else emptyList()
+        val labels = if (isBionicVariant) dxvkOptions.labels else dxvkVersionsBase
+        val ids = if (isBionicVariant) dxvkOptions.ids else dxvkVersionsBase.map { StringUtils.parseIdentifier(it) }
+        val muted = if (isBionicVariant) dxvkOptions.muted else emptyList()
 
         val (finalLabels, finalIds, finalMuted) = if (isVKD3D) {
             val allowedIndices = ids.mapIndexedNotNull { index, id ->
@@ -275,7 +252,7 @@ object ManifestComponentHelper {
         }
 
         // Always return DXVK options regardless of wrapper selection (allows DXVK config even when VKD3D is selected)
-        return DxvkContext(isVortekLike, finalLabels, finalIds, finalMuted)
+        return DxvkContext(finalLabels, finalIds, finalMuted)
     }
 
     fun versionExists(version: String, available: List<String>): Boolean {

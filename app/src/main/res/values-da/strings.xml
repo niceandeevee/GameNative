@@ -476,7 +476,6 @@
     <string name="name">Navn</string>
     <string name="value">Værdi</string>
     <string name="no_more_known_variables">Ingen flere kendte variabler</string>
-    <string name="container_variant">Container-variant</string>
     <string name="wine_version">Wine-version</string>
     <string name="exec_arguments">Kørselsargumenter</string>
     <string name="exec_arguments_example">Eksempel: -dx11</string>
@@ -520,8 +519,6 @@
     <string name="exposed_vulkan_extensions">Eksponerede Vulkan-udvidelser</string>
     <string name="max_device_memory">Maksimal enhedshukommelse</string>
     <string name="use_adrenotools_turnip">Brug Adrenotools Turnip</string>
-    <string name="vulkan_version">Vulkan-version</string>
-    <string name="image_cache_size">Billedcache-størrelse</string>
     <string name="dx_wrapper">DX-wrapper</string>
     <string name="display_renderer">Display-renderer</string>
     <string name="sf_compat_mode">Kompatibilitetstilstand</string>
@@ -851,7 +848,6 @@
     <string name="steam_agreement_message">Steam kræver, at du accepterer denne aftale, før du spiller.</string>
     <string name="steam_agreement_accept">Accepter</string>
     <string name="steam_agreement_decline">Afvis</string>
-    <string name="main_installing_glibc">Installerer glibc-komponenter...</string>
     <string name="main_installing_bionic">Installerer Bionic-komponenter...</string>
     <string name="main_loading">Indlæser...</string>
 

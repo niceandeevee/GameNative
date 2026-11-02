@@ -599,7 +599,6 @@
     <string name="name">Назва</string>
     <string name="value">Значення</string>
     <string name="no_more_known_variables">Більше немає відомих змінних</string>
-    <string name="container_variant">Варіант контейнера</string>
     <string name="wine_version">Версія Wine</string>
     <string name="exec_arguments">Параметри запуску</string>
     <string name="exec_arguments_example">Наприклад: -dx11</string>
@@ -648,8 +647,6 @@
     <string name="exposed_vulkan_extensions">Відкриті розширення Vulkan</string>
     <string name="max_device_memory">Максимальна пам\'ять пристрою</string>
     <string name="use_adrenotools_turnip">Використовувати Adrenotools Turnip</string>
-    <string name="vulkan_version">Версія Vulkan</string>
-    <string name="image_cache_size">Розмір кешу</string>
     <string name="dx_wrapper">DX Wrapper</string>
     <string name="display_renderer">Рендерер відображення</string>
     <string name="sf_compat_mode">Режим сумісності</string>
@@ -988,7 +985,6 @@
     <string name="steam_agreement_message">Steam вимагає прийняти цю угоду перед початком гри.</string>
     <string name="steam_agreement_accept">Прийняти</string>
     <string name="steam_agreement_decline">Відхилити</string>
-    <string name="main_installing_glibc">Інсталяція компонентів glibc...</string>
     <string name="main_installing_bionic">Інсталяція компонентів Bionic...</string>
     <string name="main_loading">Завантаження...</string>
 

@@ -213,7 +213,6 @@ import com.winlator.xenvironment.ImageFs
 import com.winlator.xenvironment.XEnvironment
 import com.winlator.xenvironment.components.ALSAServerComponent
 import com.winlator.xenvironment.components.BionicProgramLauncherComponent
-import com.winlator.xenvironment.components.GlibcProgramLauncherComponent
 import com.winlator.xenvironment.components.GuestProgramLauncherComponent
 import com.winlator.xenvironment.components.NetworkInfoUpdateComponent
 import com.winlator.xenvironment.components.MicrophoneComponent
@@ -1966,15 +1965,13 @@ fun XServerScreen(
             }
             ui.performanceHudHost = frameLayout
             val appId = appId
-            val usrGlibc: Boolean = container.getContainerVariant().equals(Container.GLIBC, ignoreCase = true)
-            val mouseDragCompatibility = GameInputCompatibility.needsMouseDragCompatibility(appId, usrGlibc)
+            val mouseDragCompatibility = GameInputCompatibility.needsMouseDragCompatibility(appId)
             val existingXServer =
                 PluviaApp.xEnvironment
                     ?.getComponent<XServerComponent>(XServerComponent::class.java)
                     ?.xServer
             val xServerToUse = existingXServer ?: XServer(
                 ScreenInfo(xServerState.value.screenSize),
-                usrGlibc,
                 mouseDragCompatibility,
             )
             xServerToUse.setForceRelativeMouseMovement(GameInputCompatibility.needsWin32RelativeMouse(appId))
@@ -4047,7 +4044,6 @@ private fun shiftXEnvironmentToContext(
         )
         environment.addComponent(virglComponent)
     }
-    environment.addComponent(xEnvironment.getComponent<GlibcProgramLauncherComponent>(GlibcProgramLauncherComponent::class.java))
 
     FileUtils.clear(XEnvironment.getTmpDir(context))
     sysVSharedMemoryComponent.start()
@@ -4277,27 +4273,15 @@ private fun setupXEnvironment(
     val rootPath = imageFs.getRootDir().getPath()
     FileUtils.clear(imageFs.getTmpDir())
 
-    val usrGlibc: Boolean = container.getContainerVariant().equals(Container.GLIBC, ignoreCase = true)
-    val guestProgramLauncherComponent = if (usrGlibc) {
-        Timber.i("Setting guestProgramLauncherComponent to GlibcProgramLauncherComponent")
-        GlibcProgramLauncherComponent(
-            contentsManager,
-            contentsManager.getProfileByEntryName(container.wineVersion),
-        )
-    }
-    else {
-        Timber.i("Setting guestProgramLauncherComponent to BionicProgramLauncherComponent")
-        BionicProgramLauncherComponent(
-            contentsManager,
-            contentsManager.getProfileByEntryName(container.wineVersion),
-        )
-    }
+    val guestProgramLauncherComponent = BionicProgramLauncherComponent(
+        contentsManager,
+        contentsManager.getProfileByEntryName(container.wineVersion),
+    )
 
     // The guest command/env follows the session arm, not the container's raw choice: an X11 session
     // (open-container/setup) on a gamescope container must not wrap the command with gamescope or
     // export its env.
-    (guestProgramLauncherComponent as? BionicProgramLauncherComponent)
-        ?.setGamescopeModeOverride(!isX11Display)
+    guestProgramLauncherComponent.setGamescopeModeOverride(!isX11Display)
 
     var preInstallCommands: List<PreInstallSteps.PreInstallCommand> = emptyList()
     var gameExecutable = ""
@@ -5579,31 +5563,7 @@ private suspend fun applyGeneralPatches(
     Timber.i("Applying general patches")
     val rootDir = imageFs.getRootDir()
     val contentsManager = ContentsManager(context)
-    if (container.containerVariant.equals(Container.GLIBC)) {
-        FileUtils.delete(File(rootDir, "/opt/apps"))
-        val downloaded = File(imageFs.getFilesDir(), "imagefs_patches_gamenative.tzst")
-        Timber.i("Extracting imagefs_patches_gamenative.tzst")
-        if (Arrays.asList<String?>(*context.getAssets().list("")).contains("imagefs_patches_gamenative.tzst") == true) {
-            TarCompressorUtils.extract(
-                TarCompressorUtils.Type.ZSTD,
-                context.assets,
-                "imagefs_patches_gamenative.tzst",
-                rootDir,
-                onExtractFileListener,
-            )
-        } else if (downloaded.exists()){
-            TarCompressorUtils.extract(
-                TarCompressorUtils.Type.ZSTD,
-                downloaded,
-                rootDir,
-                onExtractFileListener,
-            );
-        }
-        Timber.i("Extracting WFM from container_pattern_common.tzst")
-        check(containerManager.extractContainerPatternCommonWfm(rootDir, onExtractFileListener)) {
-            "Failed to extract WFM from container_pattern_common.tzst"
-        }
-    } else if (!container.isOverlay) {
+    if (!container.isOverlay) {
         Timber.i("Extracting container_pattern_common.tzst")
         containerManager.extractContainerPatternCommon(rootDir, onExtractFileListener)
     }
@@ -5840,43 +5800,6 @@ private fun restoreOriginalDllFiles(
             ContainerFiles.removeOverride(upperDir, "drive_c/windows/system32/$dll")
             ContainerFiles.removeOverride(upperDir, "drive_c/windows/syswow64/$dll")
         }
-    } else if (container.containerVariant.equals(Container.GLIBC)) {
-        val cacheDir = File(rootDir, ImageFs.CACHE_PATH + "/original_dlls")
-        val contentsManager = ContentsManager(context)
-        if (cacheDir.isDirectory) {
-            val windowsDir = File(rootDir, ImageFs.WINEPREFIX + "/drive_c/windows")
-            val dirnames = cacheDir.list()
-            var filesCopied = 0
-
-            for (dll in dlls) {
-                var success = false
-                for (dirname in dirnames!!) {
-                    val srcFile = File(cacheDir, "$dirname/$dll")
-                    val dstFile = File(windowsDir, "$dirname/$dll")
-                    if (FileUtils.copy(srcFile, dstFile)) success = true
-                }
-                if (success) filesCopied++
-            }
-
-            if (filesCopied == dlls.size) return
-        }
-
-        containerManager.extractContainerPatternFile(
-            container.wineVersion, contentsManager, container.rootDir,
-            object : OnExtractFileListener {
-                override fun onExtractFile(file: File, size: Long): File? {
-                    val path = file.path
-                    if (path.contains("system32/") || path.contains("syswow64/")) {
-                        for (dll in dlls) {
-                            if (path.endsWith("system32/$dll") || path.endsWith("syswow64/$dll")) return file
-                        }
-                    }
-                    return null
-                }
-            },
-        )
-
-        if (!container.isOverlay) cloneOriginalDllFiles(imageFs, *dlls)
     } else {
         val windowsDir = File(rootDir, ImageFs.WINEPREFIX + "/drive_c/windows")
         var system32dlls: File? = null
@@ -6011,362 +5934,195 @@ private suspend fun extractGraphicsDriverFiles(
     firstTimeBoot: Boolean,
     vkbasaltConfig: String,
 ) {
-    if (container.containerVariant.equals(Container.GLIBC)) {
-        // Get the configured driver version or use default
-        val turnipVersion =
-            container.graphicsDriverVersion.takeIf { it.isNotEmpty() && graphicsDriver == "turnip" } ?: DefaultVersion.TURNIP
-        val virglVersion = container.graphicsDriverVersion.takeIf { it.isNotEmpty() && graphicsDriver == "virgl" } ?: DefaultVersion.VIRGL
-        val zinkVersion = container.graphicsDriverVersion.takeIf { it.isNotEmpty() && graphicsDriver == "zink" } ?: DefaultVersion.ZINK
-        val adrenoVersion =
-            container.graphicsDriverVersion.takeIf { it.isNotEmpty() && graphicsDriver == "adreno" } ?: DefaultVersion.ADRENO
-        val sd8EliteVersion =
-            container.graphicsDriverVersion.takeIf { it.isNotEmpty() && graphicsDriver == "sd-8-elite" } ?: DefaultVersion.SD8ELITE
+    var adrenoToolsDriverId: String? = ""
+    val selectedDriverVersion: String?
+    val graphicsDriverConfig = KeyValueSet(container.getGraphicsDriverConfig())
+    val imageFs = ImageFs.find(context)
 
-        var cacheId = graphicsDriver
-        if (graphicsDriver == "turnip") {
-            cacheId += "-" + turnipVersion + "-" + zinkVersion
-            if (GPUInformation.isAdreno710_720_732(context)) {
-                val userEnvVars = EnvVars(container.envVars)
-                val tuDebug = userEnvVars.get("TU_DEBUG")
-                if (!tuDebug.contains("gmem")) userEnvVars.put("TU_DEBUG", (if (!tuDebug.isEmpty()) "$tuDebug," else "") + "gmem")
-                container.envVars = userEnvVars.toString()
-            } else if (turnipVersion == "25.2.0" || turnipVersion == "25.3.0") {
-                envVars.put("TU_DEBUG", "sysmem");
-            }
-        } else if (graphicsDriver == "virgl") {
-            cacheId += "-" + DefaultVersion.VIRGL
-        } else if (graphicsDriver == "vortek" || graphicsDriver == "adreno" || graphicsDriver == "sd-8-elite") {
-            cacheId += "-" + DefaultVersion.VORTEK
+    val currentWrapperVersion: String? = graphicsDriverConfig.get("version", DefaultVersion.WRAPPER)
+    val isAdrenotoolsTurnip: String? = graphicsDriverConfig.get("adrenotoolsTurnip", "1") // Default to "1"
+
+    selectedDriverVersion = currentWrapperVersion
+
+    adrenoToolsDriverId =
+        if (selectedDriverVersion!!.contains(DefaultVersion.WRAPPER)) DefaultVersion.WRAPPER else selectedDriverVersion
+    Log.d("GraphicsDriverExtraction", "Adrenotools DriverID: " + adrenoToolsDriverId)
+
+    val rootDir: File? = imageFs.getRootDir()
+
+    if (dxwrapper.contains("dxvk")) {
+        DXVKHelper.setEnvVars(context, dxwrapperConfig, envVars)
+        val version = dxwrapperConfig.get("version")
+        if (version == "1.11.1-sarek") {
+            Timber.tag("GraphicsDriverExtraction").d("Disabling Wrapper PATCH_OPCONSTCOMP SPIR-V pass")
+            envVars.put("WRAPPER_NO_PATCH_OPCONSTCOMP", "1")
         }
+    } else if (dxwrapper.contains("vkd3d")) {
+        DXVKHelper.setVKD3DEnvVars(context, dxwrapperConfig, envVars)
+    }
 
-        val imageFs = ImageFs.find(context)
-        val configDir = imageFs.configDir
-        val sentinel = File(configDir, ".current_graphics_driver")   // lives in shared tree
-        val onDiskId = sentinel.takeIf { it.exists() }?.readText() ?: ""
-        val changed = ALWAYS_REEXTRACT || cacheId != container.getExtra("graphicsDriver") || cacheId != onDiskId
-        Timber.i("Changed is " + changed + " will re-extract drivers accordingly.")
-        val rootDir = imageFs.rootDir
-        envVars.put("vblank_mode", "0")
+    val useDRI3: Boolean = container.isUseDRI3
+    if (!useDRI3) {
+        envVars.put("MESA_VK_WSI_DEBUG", "sw")
+    }
 
-        if (changed) {
-            FileUtils.delete(File(imageFs.lib32Dir, "libvulkan_freedreno.so"))
-            FileUtils.delete(File(imageFs.lib64Dir, "libvulkan_freedreno.so"))
-            FileUtils.delete(File(imageFs.lib64Dir, "libvulkan_vortek.so"))
-            FileUtils.delete(File(imageFs.lib32Dir, "libvulkan_vortek.so"))
-            FileUtils.delete(File(imageFs.lib32Dir, "libGL.so.1.7.0"))
-            FileUtils.delete(File(imageFs.lib64Dir, "libGL.so.1.7.0"))
-            val vulkanICDDir = File(rootDir, "/usr/share/vulkan/icd.d")
-            FileUtils.delete(vulkanICDDir)
-            vulkanICDDir.mkdirs()
-            container.putExtra("graphicsDriver", cacheId)
-            container.saveData()
-            if (!sentinel.exists()) {
-                sentinel.parentFile?.mkdirs()
-                sentinel.createNewFile()
-            }
-            sentinel.writeText(cacheId)
-        }
-        if (dxwrapper.contains("dxvk")) {
-            DXVKHelper.setEnvVars(context, dxwrapperConfig, envVars)
-        } else if (dxwrapper.contains("vkd3d")) {
-            DXVKHelper.setVKD3DEnvVars(context, dxwrapperConfig, envVars)
-        }
+    if (currentWrapperVersion.lowercase(Locale.getDefault())
+            .contains("turnip") && isAdrenotoolsTurnip == "0"
+    ) envVars.put("VK_ICD_FILENAMES", imageFs.getShareDir().path + "/vulkan/icd.d/freedreno_icd.aarch64.json")
+    else envVars.put("VK_ICD_FILENAMES", imageFs.getShareDir().path + "/vulkan/icd.d/wrapper_icd.aarch64.json")
+    envVars.put("GALLIUM_DRIVER", "zink")
+    envVars.put("LIBGL_KOPPER_DISABLE", "true")
 
-        if (graphicsDriver == "turnip") {
-            envVars.put("GALLIUM_DRIVER", "zink")
-            envVars.put("TU_OVERRIDE_HEAP_SIZE", "4096")
-            if (!envVars.has("MESA_VK_WSI_PRESENT_MODE")) envVars.put("MESA_VK_WSI_PRESENT_MODE", "mailbox")
-            envVars.put("vblank_mode", "0")
+    if (currentWrapperVersion.lowercase(Locale.getDefault()).contains("turnip")
+        && GPUInformation.isAdreno710_720_732(context)) {
+        var tuDebug = envVars.get("TU_DEBUG").replace("sysmem", "gmem")
+        if (!tuDebug.contains("gmem")) tuDebug = (if (tuDebug.isEmpty()) "" else "$tuDebug,") + "gmem"
+        envVars.put("TU_DEBUG", tuDebug)
+    }
 
-            if (!GPUInformation.isAdreno6xx(context) && !GPUInformation.isAdreno710_720_732(context)) {
-                val userEnvVars = EnvVars(container.envVars)
-                val tuDebug = userEnvVars.get("TU_DEBUG")
-                if (!tuDebug.contains("sysmem")) userEnvVars.put("TU_DEBUG", (if (!tuDebug.isEmpty()) "$tuDebug," else "") + "sysmem")
-                container.envVars = userEnvVars.toString()
-            }
+    // 1. Get the main WRAPPER selection (e.g., "Wrapper-v2") from the class field.
+    val mainWrapperSelection: String = graphicsDriver
 
-            if (changed) {
-                extractGraphicsDriverComponent(context, "turnip-$turnipVersion", rootDir)
-                extractGraphicsDriverComponent(context, "zink-$zinkVersion", rootDir)
-            }
-        } else if (graphicsDriver == "virgl") {
-            envVars.put("GALLIUM_DRIVER", "virpipe")
-            envVars.put("VIRGL_NO_READBACK", "true")
-            envVars.put("VIRGL_SERVER_PATH", imageFs.getRootDir().getPath() + UnixSocketConfig.VIRGL_SERVER_PATH)
-            envVars.put("MESA_EXTENSION_OVERRIDE", "-GL_EXT_vertex_array_bgra")
-            envVars.put("MESA_GL_VERSION_OVERRIDE", "3.1")
-            envVars.put("vblank_mode", "0")
-            if (changed) {
-                extractGraphicsDriverComponent(context, "virgl-$virglVersion", rootDir)
-            }
-        } else if (graphicsDriver == "vortek") {
-            Timber.i("Setting Vortek env vars")
-            envVars.put("GALLIUM_DRIVER", "zink")
-            envVars.put("ZINK_CONTEXT_THREADED", "1")
-            envVars.put("MESA_GL_VERSION_OVERRIDE", "3.3")
-            envVars.put("WINEVKUSEPLACEDADDR", "1")
-            envVars.put("VORTEK_SERVER_PATH", imageFs.getRootDir().getPath() + UnixSocketConfig.VORTEK_SERVER_PATH)
-            Timber.i("dxwrapper is " + dxwrapper)
-            if (dxwrapper.contains("dxvk")) {
-                envVars.put("WINE_D3D_CONFIG", "renderer=gdi")
-            }
-            if (changed) {
-                extractGraphicsDriverComponent(context, "vortek-2.1", rootDir)
-                extractGraphicsDriverComponent(context, "zink-22.2.5", rootDir)
-            }
-        } else if (graphicsDriver == "adreno" || graphicsDriver == "sd-8-elite") {
-            val assetZip = if (graphicsDriver == "adreno") "Adreno_${adrenoVersion}_adpkg.zip" else "SD8Elite_${sd8EliteVersion}.zip"
+    // 2. Get the WRAPPER that was last saved to the container's settings.
+    val lastInstalledMainWrapper = container.getExtra("lastInstalledMainWrapper")
 
-            val componentRoot = com.winlator.core.GeneralComponents.getComponentDir(
-                com.winlator.core.GeneralComponents.Type.ADRENOTOOLS_DRIVER,
-                context,
-            )
-
-            // Download or get cached core driver
-            val driverFile = CoreDriverDownloader.ensureCoreDriverAvailable(context, assetZip) { progress ->
-                Timber.d("Downloading core driver $assetZip: ${(progress * 100).toInt()}%")
-            }
-
-            // Read manifest name from zip to determine folder name
-            val identifier = if (driverFile != null) {
-                // Modern variant: read from downloaded file
-                com.winlator.core.FileUtils.readZipManifestNameFromFile(driverFile) ?: assetZip.substringBeforeLast('.')
-            } else {
-                // Legacy variant: read from assets
-                readZipManifestNameFromAssets(context, assetZip) ?: assetZip.substringBeforeLast('.')
-            }
-
-            // Only (re)extract if changed
-            val adrenoCacheId = "${graphicsDriver}-${identifier}"
-            val needsExtract = changed || adrenoCacheId != container.getExtra("graphicsDriverAdreno")
-
-            if (needsExtract) {
-                val destinationDir = File(componentRoot.toString())
-                if (destinationDir.isDirectory) {
-                    FileUtils.delete(destinationDir)
-                }
-                destinationDir.mkdirs()
-
-                if (driverFile != null) {
-                    // Modern variant: extract from downloaded file
-                    Timber.d("Extracting core driver from downloaded file: ${driverFile.absolutePath}")
-                    com.winlator.core.FileUtils.extractZipFromFile(driverFile, destinationDir)
+    // 3. Check if we need to extract a new wrapper file. ALWAYS_REEXTRACT is skipped when the
+    // files from the last extraction are provably untouched (see ExtractionFingerprint).
+    val wrapperSignature = listOf(
+        mainWrapperSelection,
+        container.wineVersion,
+        AppUtils.getVersionCode(context).toString(),
+    ).joinToString("|")
+    val wrapperIntact = ALWAYS_REEXTRACT && !firstTimeBoot &&
+        mainWrapperSelection == lastInstalledMainWrapper &&
+        ExtractionFingerprint.isIntact(container, "wrapper", wrapperSignature)
+    if ((ALWAYS_REEXTRACT && !wrapperIntact) || firstTimeBoot || mainWrapperSelection != lastInstalledMainWrapper) {
+        // We only extract if the selection is actually a wrapper file.
+        if (mainWrapperSelection.lowercase(Locale.getDefault()).startsWith("wrapper")) {
+            ExtractionFingerprint.clear(container, "wrapper")
+            val recorder = ExtractionFingerprint.Recorder(null)
+            var usedContentProfile = false
+            val wrapperComponentId = mainWrapperSelection.lowercase(Locale.getDefault())
+            Log.d("GraphicsDriverExtraction", "WRAPPER selection changed or first boot. Extracting: $wrapperComponentId")
+            try {
+                val wrapperContentsManager = ContentsManager(context)
+                val wrapperProfile: ContentProfile? =
+                    wrapperContentsManager.getProfileByEntryName(wrapperComponentId)
+                if (wrapperProfile != null) {
+                    Timber.d("Applying user-defined wrapper content profile: $wrapperComponentId")
+                    wrapperContentsManager.applyContent(wrapperProfile)
+                    usedContentProfile = true
                 } else {
-                    // Legacy variant: extract from assets
-                    Timber.d("Extracting core driver from bundled assets: $assetZip")
-                    com.winlator.core.FileUtils.extractZipFromAssets(context, assetZip, destinationDir)
+                    extractGraphicsDriverComponent(context, wrapperComponentId, rootDir!!, recorder)
                 }
-
-                val targetLibName = "vulkan.adreno.so"
-
-                // Update cache and only the adrenotoolsDriver key within graphics driver config
-                container.putExtra("graphicsDriverAdreno", adrenoCacheId)
+                // After success, save the new version so we don't re-extract next time.
+                container.putExtra("lastInstalledMainWrapper", mainWrapperSelection)
                 container.saveData()
+            } catch (e: Exception) {
+                throw IllegalStateException(
+                    "Failed to install graphics driver '$wrapperComponentId'. An internet connection is required the first time this driver is used.",
+                    e,
+                )
             }
-            envVars.put("GALLIUM_DRIVER", "zink")
-            envVars.put("ZINK_CONTEXT_THREADED", "1")
-            envVars.put("MESA_GL_VERSION_OVERRIDE", "3.3")
-            envVars.put("WINEVKUSEPLACEDADDR", "1")
-            envVars.put("VORTEK_SERVER_PATH", imageFs.getRootDir().getPath() + UnixSocketConfig.VORTEK_SERVER_PATH)
-            Timber.i("dxwrapper is " + dxwrapper)
-            if (dxwrapper.contains("dxvk")) {
-                envVars.put("WINE_D3D_CONFIG", "renderer=gdi")
+            Log.d("XServerDisplayActivity", "First time container boot, extracting extra_libs.tzst")
+            extractGraphicsDriverComponent(context, "extra_libs", rootDir!!, recorder)
+            val renderer = GPUInformation.getRenderer(null, null)
+            if (container.wineVersion.contains("arm64ec") && renderer?.contains("Mali") != true) {
+                extractGraphicsDriverComponent(
+                    context,
+                    "zink_dlls",
+                    File(rootDir, ImageFs.WINEPREFIX + "/drive_c/windows"),
+                    recorder,
+                )
             }
-            if (changed) {
-                extractGraphicsDriverComponent(context, "vortek-2.1", rootDir)
-                extractGraphicsDriverComponent(context, "zink-22.2.5", rootDir)
+            // Content profiles write outside the extract listener, so they can't be verified; keep
+            // re-extracting those every launch as before.
+            if (!usedContentProfile && !recorder.failed) {
+                ExtractionFingerprint.save(container, "wrapper", wrapperSignature, recorder.files.filter { !it.isDirectory })
             }
-        }
-    } else {
-        var adrenoToolsDriverId: String? = ""
-        val selectedDriverVersion: String?
-        val graphicsDriverConfig = KeyValueSet(container.getGraphicsDriverConfig())
-        val imageFs = ImageFs.find(context)
-
-        val currentWrapperVersion: String? = graphicsDriverConfig.get("version", DefaultVersion.WRAPPER)
-        val isAdrenotoolsTurnip: String? = graphicsDriverConfig.get("adrenotoolsTurnip", "1") // Default to "1"
-
-        selectedDriverVersion = currentWrapperVersion
-
-        adrenoToolsDriverId =
-            if (selectedDriverVersion!!.contains(DefaultVersion.WRAPPER)) DefaultVersion.WRAPPER else selectedDriverVersion
-        Log.d("GraphicsDriverExtraction", "Adrenotools DriverID: " + adrenoToolsDriverId)
-
-        val rootDir: File? = imageFs.getRootDir()
-
-        if (dxwrapper.contains("dxvk")) {
-            DXVKHelper.setEnvVars(context, dxwrapperConfig, envVars)
-            val version = dxwrapperConfig.get("version")
-            if (version == "1.11.1-sarek") {
-                Timber.tag("GraphicsDriverExtraction").d("Disabling Wrapper PATCH_OPCONSTCOMP SPIR-V pass")
-                envVars.put("WRAPPER_NO_PATCH_OPCONSTCOMP", "1")
-            }
-        } else if (dxwrapper.contains("vkd3d")) {
-            DXVKHelper.setVKD3DEnvVars(context, dxwrapperConfig, envVars)
-        }
-
-        val useDRI3: Boolean = container.isUseDRI3
-        if (!useDRI3) {
-            envVars.put("MESA_VK_WSI_DEBUG", "sw")
-        }
-
-        if (currentWrapperVersion.lowercase(Locale.getDefault())
-                .contains("turnip") && isAdrenotoolsTurnip == "0"
-        ) envVars.put("VK_ICD_FILENAMES", imageFs.getShareDir().path + "/vulkan/icd.d/freedreno_icd.aarch64.json")
-        else envVars.put("VK_ICD_FILENAMES", imageFs.getShareDir().path + "/vulkan/icd.d/wrapper_icd.aarch64.json")
-        envVars.put("GALLIUM_DRIVER", "zink")
-        envVars.put("LIBGL_KOPPER_DISABLE", "true")
-
-        if (currentWrapperVersion.lowercase(Locale.getDefault()).contains("turnip")
-            && GPUInformation.isAdreno710_720_732(context)) {
-            var tuDebug = envVars.get("TU_DEBUG").replace("sysmem", "gmem")
-            if (!tuDebug.contains("gmem")) tuDebug = (if (tuDebug.isEmpty()) "" else "$tuDebug,") + "gmem"
-            envVars.put("TU_DEBUG", tuDebug)
-        }
-
-        // 1. Get the main WRAPPER selection (e.g., "Wrapper-v2") from the class field.
-        val mainWrapperSelection: String = graphicsDriver
-
-        // 2. Get the WRAPPER that was last saved to the container's settings.
-        val lastInstalledMainWrapper = container.getExtra("lastInstalledMainWrapper")
-
-        // 3. Check if we need to extract a new wrapper file. ALWAYS_REEXTRACT is skipped when the
-        // files from the last extraction are provably untouched (see ExtractionFingerprint).
-        val wrapperSignature = listOf(
-            mainWrapperSelection,
-            container.wineVersion,
-            AppUtils.getVersionCode(context).toString(),
-        ).joinToString("|")
-        val wrapperIntact = ALWAYS_REEXTRACT && !firstTimeBoot &&
-            mainWrapperSelection == lastInstalledMainWrapper &&
-            ExtractionFingerprint.isIntact(container, "wrapper", wrapperSignature)
-        if ((ALWAYS_REEXTRACT && !wrapperIntact) || firstTimeBoot || mainWrapperSelection != lastInstalledMainWrapper) {
-            // We only extract if the selection is actually a wrapper file.
-            if (mainWrapperSelection.lowercase(Locale.getDefault()).startsWith("wrapper")) {
-                ExtractionFingerprint.clear(container, "wrapper")
-                val recorder = ExtractionFingerprint.Recorder(null)
-                var usedContentProfile = false
-                val wrapperComponentId = mainWrapperSelection.lowercase(Locale.getDefault())
-                Log.d("GraphicsDriverExtraction", "WRAPPER selection changed or first boot. Extracting: $wrapperComponentId")
-                try {
-                    val wrapperContentsManager = ContentsManager(context)
-                    val wrapperProfile: ContentProfile? =
-                        wrapperContentsManager.getProfileByEntryName(wrapperComponentId)
-                    if (wrapperProfile != null) {
-                        Timber.d("Applying user-defined wrapper content profile: $wrapperComponentId")
-                        wrapperContentsManager.applyContent(wrapperProfile)
-                        usedContentProfile = true
-                    } else {
-                        extractGraphicsDriverComponent(context, wrapperComponentId, rootDir!!, recorder)
-                    }
-                    // After success, save the new version so we don't re-extract next time.
-                    container.putExtra("lastInstalledMainWrapper", mainWrapperSelection)
-                    container.saveData()
-                } catch (e: Exception) {
-                    throw IllegalStateException(
-                        "Failed to install graphics driver '$wrapperComponentId'. An internet connection is required the first time this driver is used.",
-                        e,
-                    )
-                }
-                Log.d("XServerDisplayActivity", "First time container boot, extracting extra_libs.tzst")
-                extractGraphicsDriverComponent(context, "extra_libs", rootDir!!, recorder)
-                val renderer = GPUInformation.getRenderer(null, null)
-                if (container.wineVersion.contains("arm64ec") && renderer?.contains("Mali") != true) {
-                    extractGraphicsDriverComponent(
-                        context,
-                        "zink_dlls",
-                        File(rootDir, ImageFs.WINEPREFIX + "/drive_c/windows"),
-                        recorder,
-                    )
-                }
-                // Content profiles write outside the extract listener, so they can't be verified; keep
-                // re-extracting those every launch as before.
-                if (!usedContentProfile && !recorder.failed) {
-                    ExtractionFingerprint.save(container, "wrapper", wrapperSignature, recorder.files.filter { !it.isDirectory })
-                }
-            }
-        }
-
-        if (!adrenoToolsDriverId.equals("System", ignoreCase = true)) {
-            val adrenotoolsManager: AdrenotoolsManager = AdrenotoolsManager(context)
-            adrenotoolsManager.setDriverById(envVars, imageFs, adrenoToolsDriverId)
-        }
-
-        var vulkanVersion = graphicsDriverConfig.get("vulkanVersion") ?: "1.0"
-        val vulkanVersionPatch = GPUHelper.vkVersionPatch()
-
-        vulkanVersion = "$vulkanVersion.$vulkanVersionPatch"
-        envVars.put("WRAPPER_VK_VERSION", vulkanVersion)
-
-        val blacklistedExtensions: String? = graphicsDriverConfig.get("blacklistedExtensions")
-        envVars.put("WRAPPER_EXTENSION_BLACKLIST", blacklistedExtensions)
-
-        val gpuName = graphicsDriverConfig.get("gpuName")
-        if (gpuName != "Device") {
-            envVars.put("WRAPPER_DEVICE_NAME", GPUInformation.getCardNameFromGPUName(context, gpuName))
-            envVars.put("WRAPPER_DEVICE_ID", GPUInformation.getDeviceIdFromGPUName(context, gpuName))
-            envVars.put("WRAPPER_VENDOR_ID", GPUInformation.getVendorIdFromGPUName(context, gpuName))
-        }
-
-        val maxDeviceMemory: String? = graphicsDriverConfig.get("maxDeviceMemory", "0")
-        if ((maxDeviceMemory?.toIntOrNull() ?: 0) > 0)
-            envVars.put("WRAPPER_VMEM_MAX_SIZE", maxDeviceMemory)
-
-        val presentMode = graphicsDriverConfig.get("presentMode")
-        if (presentMode.contains("immediate")) {
-            envVars.put("WRAPPER_MAX_IMAGE_COUNT", "1")
-        }
-        envVars.put("MESA_VK_WSI_PRESENT_MODE", presentMode)
-
-        val resourceType = graphicsDriverConfig.get("resourceType")
-        envVars.put("WRAPPER_RESOURCE_TYPE", resourceType)
-
-        val syncFrame = graphicsDriverConfig.get("syncFrame")
-        if (syncFrame == "1") envVars.put("MESA_VK_WSI_DEBUG", "forcesync")
-
-        val disablePresentWait = graphicsDriverConfig.get("disablePresentWait")
-        envVars.put("WRAPPER_DISABLE_PRESENT_WAIT", disablePresentWait)
-
-        val isWrapperGamenative = graphicsDriver.equals("wrapper-gamenative", ignoreCase = true)
-        val vendorId = GPUInformation.getVendorID(null, null)
-        val isAdreno = vendorId == 0x5143
-        val isXclipse = vendorId == 0x144D
-        val excludeBcnCompute = isAdreno || (isWrapperGamenative && isXclipse)
-        val bcnEmulation = graphicsDriverConfig.get("bcnEmulation")
-        val bcnEmulationType = graphicsDriverConfig.get("bcnEmulationType")
-        when (bcnEmulation) {
-            "auto" -> {
-                if (bcnEmulationType.equals("compute") && !excludeBcnCompute) {
-                    envVars.put("ENABLE_BCN_COMPUTE", "1");
-                    envVars.put("BCN_COMPUTE_AUTO", "1");
-                }
-                envVars.put("WRAPPER_EMULATE_BCN", "3");
-            }
-            "full" -> {
-                if (bcnEmulationType.equals("compute") && !excludeBcnCompute) {
-                    envVars.put("ENABLE_BCN_COMPUTE", "1");
-                    envVars.put("BCN_COMPUTE_AUTO", "0");
-                }
-                envVars.put("WRAPPER_EMULATE_BCN", "2");
-            }
-            "none" -> envVars.put("WRAPPER_EMULATE_BCN", "0")
-            else -> envVars.put("WRAPPER_EMULATE_BCN", "1")
-        }
-
-        val bcnEmulationCache = graphicsDriverConfig.get("bcnEmulationCache")
-        envVars.put("WRAPPER_USE_BCN_CACHE", bcnEmulationCache)
-
-        val transcoder = graphicsDriverConfig.get("transcoder", "cpu")
-        envVars.put("WRAPPER_BCN_GPU", if (transcoder.equals("gpu", ignoreCase = true)) "1" else "0")
-
-        val wrapperQuality = graphicsDriverConfig.get("quality", "low")
-        envVars.put("WRAPPER_ASTC_BLOCK", if (wrapperQuality.equals("high", ignoreCase = true)) "4x4" else "8x8")
-
-        if (!vkbasaltConfig.isEmpty()) {
-            envVars.put("ENABLE_VKBASALT", "1")
-            envVars.put("VKBASALT_CONFIG", vkbasaltConfig)
         }
     }
+
+    if (!adrenoToolsDriverId.equals("System", ignoreCase = true)) {
+        val adrenotoolsManager: AdrenotoolsManager = AdrenotoolsManager(context)
+        adrenotoolsManager.setDriverById(envVars, imageFs, adrenoToolsDriverId)
+    }
+
+    var vulkanVersion = graphicsDriverConfig.get("vulkanVersion") ?: "1.0"
+    val vulkanVersionPatch = GPUHelper.vkVersionPatch()
+
+    vulkanVersion = "$vulkanVersion.$vulkanVersionPatch"
+    envVars.put("WRAPPER_VK_VERSION", vulkanVersion)
+
+    val blacklistedExtensions: String? = graphicsDriverConfig.get("blacklistedExtensions")
+    envVars.put("WRAPPER_EXTENSION_BLACKLIST", blacklistedExtensions)
+
+    val gpuName = graphicsDriverConfig.get("gpuName")
+    if (gpuName != "Device") {
+        envVars.put("WRAPPER_DEVICE_NAME", GPUInformation.getCardNameFromGPUName(context, gpuName))
+        envVars.put("WRAPPER_DEVICE_ID", GPUInformation.getDeviceIdFromGPUName(context, gpuName))
+        envVars.put("WRAPPER_VENDOR_ID", GPUInformation.getVendorIdFromGPUName(context, gpuName))
+    }
+
+    val maxDeviceMemory: String? = graphicsDriverConfig.get("maxDeviceMemory", "0")
+    if ((maxDeviceMemory?.toIntOrNull() ?: 0) > 0)
+        envVars.put("WRAPPER_VMEM_MAX_SIZE", maxDeviceMemory)
+
+    val presentMode = graphicsDriverConfig.get("presentMode")
+    if (presentMode.contains("immediate")) {
+        envVars.put("WRAPPER_MAX_IMAGE_COUNT", "1")
+    }
+    envVars.put("MESA_VK_WSI_PRESENT_MODE", presentMode)
+
+    val resourceType = graphicsDriverConfig.get("resourceType")
+    envVars.put("WRAPPER_RESOURCE_TYPE", resourceType)
+
+    val syncFrame = graphicsDriverConfig.get("syncFrame")
+    if (syncFrame == "1") envVars.put("MESA_VK_WSI_DEBUG", "forcesync")
+
+    val disablePresentWait = graphicsDriverConfig.get("disablePresentWait")
+    envVars.put("WRAPPER_DISABLE_PRESENT_WAIT", disablePresentWait)
+
+    val isWrapperGamenative = graphicsDriver.equals("wrapper-gamenative", ignoreCase = true)
+    val vendorId = GPUInformation.getVendorID(null, null)
+    val isAdreno = vendorId == 0x5143
+    val isXclipse = vendorId == 0x144D
+    val excludeBcnCompute = isAdreno || (isWrapperGamenative && isXclipse)
+    val bcnEmulation = graphicsDriverConfig.get("bcnEmulation")
+    val bcnEmulationType = graphicsDriverConfig.get("bcnEmulationType")
+    when (bcnEmulation) {
+        "auto" -> {
+            if (bcnEmulationType.equals("compute") && !excludeBcnCompute) {
+                envVars.put("ENABLE_BCN_COMPUTE", "1");
+                envVars.put("BCN_COMPUTE_AUTO", "1");
+            }
+            envVars.put("WRAPPER_EMULATE_BCN", "3");
+        }
+        "full" -> {
+            if (bcnEmulationType.equals("compute") && !excludeBcnCompute) {
+                envVars.put("ENABLE_BCN_COMPUTE", "1");
+                envVars.put("BCN_COMPUTE_AUTO", "0");
+            }
+            envVars.put("WRAPPER_EMULATE_BCN", "2");
+        }
+        "none" -> envVars.put("WRAPPER_EMULATE_BCN", "0")
+        else -> envVars.put("WRAPPER_EMULATE_BCN", "1")
+    }
+
+    val bcnEmulationCache = graphicsDriverConfig.get("bcnEmulationCache")
+    envVars.put("WRAPPER_USE_BCN_CACHE", bcnEmulationCache)
+
+    val transcoder = graphicsDriverConfig.get("transcoder", "cpu")
+    envVars.put("WRAPPER_BCN_GPU", if (transcoder.equals("gpu", ignoreCase = true)) "1" else "0")
+
+    val wrapperQuality = graphicsDriverConfig.get("quality", "low")
+    envVars.put("WRAPPER_ASTC_BLOCK", if (wrapperQuality.equals("high", ignoreCase = true)) "4x4" else "8x8")
+
+    if (!vkbasaltConfig.isEmpty()) {
+        envVars.put("ENABLE_VKBASALT", "1")
+        envVars.put("VKBASALT_CONFIG", vkbasaltConfig)
+    }
+
 }
 
 private fun buildVkBasaltConfig(

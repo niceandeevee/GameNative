@@ -15,8 +15,7 @@ object GameInputCompatibility {
      * Enables narrowly scoped XGE support and sub-pixel mouse-drag accumulation
      * for games whose Windows pointer state diverges from the visible X11 cursor.
      */
-    fun needsMouseDragCompatibility(appId: String, useGlibcContainer: Boolean): Boolean =
-        !useGlibcContainer && appId in mouseDragCompatibilityGames
+    fun needsMouseDragCompatibility(appId: String): Boolean = appId in mouseDragCompatibilityGames
 
     /** Whether injected mouse movement should always go to Wine as relative Win32 input. */
     fun needsWin32RelativeMouse(appId: String): Boolean = appId in win32RelativeMouseGames

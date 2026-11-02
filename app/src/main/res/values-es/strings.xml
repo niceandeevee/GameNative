@@ -633,7 +633,6 @@
     <string name="name">Nombre</string>
     <string name="value">Valor</string>
     <string name="no_more_known_variables">No hay más variables conocidas.</string>
-    <string name="container_variant">Variante del contenedor</string>
     <string name="wine_version">Versión de Wine</string>
     <string name="exec_arguments">Argumentos de ejecución</string>
     <string name="exec_arguments_example">Ejemplo: -dx11</string>
@@ -682,8 +681,6 @@
     <string name="exposed_vulkan_extensions">Extensiones Vulkan expuestas</string>
     <string name="max_device_memory">Memoria máxima del dispositivo</string>
     <string name="use_adrenotools_turnip">Usar Adrenotools Turnip</string>
-    <string name="vulkan_version">Versión de Vulkan</string>
-    <string name="image_cache_size">Tamaño de la caché de imágenes</string>
     <string name="dx_wrapper">Wrapper de DX</string>
     <string name="display_renderer">Renderizador de pantalla</string>
     <string name="sf_compat_mode">Modo de compatibilidad</string>
@@ -989,7 +986,6 @@
     <string name="steam_agreement_accept">Aceptar</string>
     <string name="steam_agreement_decline">Rechazar</string>
 
-    <string name="main_installing_glibc">Instalando componentes de glibc…</string>
     <string name="main_installing_bionic">Instalando componentes de Bionic…</string>
     <string name="main_loading">Cargando…</string>
 

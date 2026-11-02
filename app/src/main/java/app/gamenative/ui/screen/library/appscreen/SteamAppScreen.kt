@@ -689,10 +689,8 @@ class SteamAppScreen : BaseAppScreen() {
             onClick = {
                 scope.launch {
                     val container = withContext(Dispatchers.IO) { ContainerUtils.getOrCreateContainer(context, appId) }
-                    val variant = container.containerVariant
-
                     if (!SteamService.isImageFsInstalled(context)) {
-                        if (!SteamService.isImageFsInstallable(context, variant)) {
+                        if (!SteamService.isImageFsInstallable(context)) {
                             showInstallDialog(
                                 gameId,
                                 MessageDialogState(
@@ -1289,13 +1287,10 @@ class SteamAppScreen : BaseAppScreen() {
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 val container = ContainerUtils.getOrCreateContainer(context, libraryItem.appId)
-                                val variant = container.containerVariant
-
-                                if (!SteamService.isImageFsInstallable(context, variant)) {
+                                if (!SteamService.isImageFsInstallable(context)) {
                                     SteamService.downloadImageFs(
                                         onDownloadProgress = { /* TODO: Update loading dialog progress */ },
                                         this,
-                                        variant = variant,
                                         context = context,
                                     ).await()
                                 }

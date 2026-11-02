@@ -594,7 +594,6 @@
     <string name="name">名前</string>
     <string name="value">値</string>
     <string name="no_more_known_variables">既知の変数はもうありません</string>
-    <string name="container_variant">コンテナのバリアント</string>
     <string name="wine_version">Wineバージョン</string>
     <string name="exec_arguments">実行引数</string>
     <string name="exec_arguments_example">例: -dx11</string>
@@ -644,8 +643,6 @@
     <string name="exposed_vulkan_extensions">公開された Vulkan 拡張機能</string>
     <string name="max_device_memory">最大デバイスメモリ</string>
     <string name="use_adrenotools_turnip">Adrenotools Turnipを使用する</string>
-    <string name="vulkan_version">Vulkanバージョン</string>
-    <string name="image_cache_size">画像キャッシュサイズ</string>
     <string name="dx_wrapper">DXラッパー</string>
     <string name="display_renderer">ディスプレイレンダラー</string>
     <string name="sf_compat_mode">互換モード</string>
@@ -1001,7 +998,6 @@
     <string name="steam_agreement_accept">同意する</string>
     <string name="steam_agreement_decline">同意しない</string>
 
-    <string name="main_installing_glibc">glibc コンポーネントをインストールしています...</string>
     <string name="main_installing_bionic">Bionic コンポーネントをインストールしています...</string>
     <string name="main_loading">読み込み中...</string>
     <string name="download_failed_title">ダウンロードに失敗しました</string>

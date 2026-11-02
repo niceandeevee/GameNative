@@ -599,7 +599,6 @@
     <string name="name">이름</string>
     <string name="value">값</string>
     <string name="no_more_known_variables">알려진 변수가 더 이상 없음</string>
-    <string name="container_variant">컨테이너 변형</string>
     <string name="wine_version">Wine 버전</string>
     <string name="exec_arguments">실행 인수</string>
     <string name="exec_arguments_example">예: -dx11</string>
@@ -647,8 +646,6 @@
     <string name="exposed_vulkan_extensions">노출된 Vulkan 확장</string>
     <string name="max_device_memory">최대 장치 메모리</string>
     <string name="use_adrenotools_turnip">Adrenotools Turnip 사용</string>
-    <string name="vulkan_version">Vulkan 버전</string>
-    <string name="image_cache_size">이미지 캐시 크기</string>
     <string name="dx_wrapper">DX Wrapper</string>
     <string name="display_renderer">디스플레이 렌더러</string>
     <string name="sf_compat_mode">호환 모드</string>
@@ -981,7 +978,6 @@
     <string name="steam_agreement_message">플레이하기 전에 Steam에서 이 계약에 동의해야 합니다.</string>
     <string name="steam_agreement_accept">동의</string>
     <string name="steam_agreement_decline">거부</string>
-    <string name="main_installing_glibc">glibc 구성 요소 설치 중...</string>
     <string name="main_installing_bionic">Bionic 구성 요소 설치 중...</string>
     <string name="main_loading">로딩 중...</string>
 

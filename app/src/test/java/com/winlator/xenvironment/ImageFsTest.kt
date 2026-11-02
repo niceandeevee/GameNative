@@ -83,8 +83,8 @@ class ImageFsTest {
 
     @Test
     fun `getVariant returns stored value`() {
-        imageFs().createVariantFile("glibc")
-        assertEquals("glibc", imageFs().variant)
+        imageFs().createVariantFile("bionic")
+        assertEquals("bionic", imageFs().variant)
     }
 
     // ── getVersion ────────────────────────────────────────────────────────────

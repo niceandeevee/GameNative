@@ -191,27 +191,6 @@ class BestConfigServiceTest {
     }
 
     @Test
-    fun testFallbackMatch_glibcContainer() {
-        val bestConfig = parseBestConfig(detectiveDotsonMaliResponse)
-        val matchType = getMatchType(detectiveDotsonMaliResponse)
-
-        assertEquals("fallback_match", matchType)
-
-        val result = runBlocking { BestConfigService.parseConfigToContainerData(context, bestConfig, matchType, matchType != "fallback_match") }
-
-        assertNotNull("Result should not be null", result)
-        assertTrue("Result should not be empty", result!!.isNotEmpty())
-
-        // For fallback_match with applyKnownConfig=false, only executablePath and useLegacyDRM should be in the map
-        assertTrue("executablePath should be in map", result.containsKey("executablePath") || result.containsKey("useLegacyDRM"))
-
-        // Excluded fields should NOT be in the map for fallback_match
-        assertFalse("graphicsDriver should NOT be in map for fallback_match", result.containsKey("graphicsDriver"))
-        assertFalse("dxwrapper should NOT be in map for fallback_match", result.containsKey("dxwrapper"))
-        assertFalse("dxwrapperConfig should NOT be in map for fallback_match", result.containsKey("dxwrapperConfig"))
-    }
-
-    @Test
     fun testFallbackMatch_bionicContainer() {
         val bestConfig = parseBestConfig(dota2MaliResponse)
         val matchType = getMatchType(dota2MaliResponse)
@@ -668,8 +647,8 @@ class BestConfigServiceTest {
         printContainerData(cs2AdrenoResult, "CS2-Adreno735")
         println()
 
-        // Test 2: Detective Dotson + Mali-G57 MC2 (fallback_match, glibc)
-        println("2. Detective Dotson + Mali-G57 MC2 (fallback_match, glibc)")
+        // Test 2: Detective Dotson + Mali-G57 MC2 (fallback_match, non-bionic)
+        println("2. Detective Dotson + Mali-G57 MC2 (fallback_match, non-bionic)")
         val detectiveMali = parseBestConfig(detectiveDotsonMaliResponse)
         val detectiveMaliMatch = getMatchType(detectiveDotsonMaliResponse)
         val detectiveMaliResult = runBlocking { BestConfigService.parseConfigToContainerData(context, detectiveMali, detectiveMaliMatch, detectiveMaliMatch != "fallback_match") }
@@ -722,8 +701,8 @@ class BestConfigServiceTest {
         printContainerData(dota2XClipseResult, "Dota2-XClipse-Fallback")
         println()
 
-        // Test 8: Hades II + Adreno (TM) 835 (gpu_family_match, glibc)
-        println("8. Hades II + Adreno (TM) 835 (gpu_family_match, glibc)")
+        // Test 8: Hades II + Adreno (TM) 835 (gpu_family_match, non-bionic)
+        println("8. Hades II + Adreno (TM) 835 (gpu_family_match, non-bionic)")
         val hades2Adreno835 = parseBestConfig(hades2Adreno835FamilyMatchResponse)
         val hades2Adreno835Match = getMatchType(hades2Adreno835FamilyMatchResponse)
         val hades2Adreno835Result = runBlocking { BestConfigService.parseConfigToContainerData(context, hades2Adreno835, hades2Adreno835Match, hades2Adreno835Match != "fallback_match") }
@@ -764,9 +743,9 @@ class BestConfigServiceTest {
         assertTrue("Dota2 Adreno835 family result should not be empty", dota2Adreno835Result?.isNotEmpty() == true)
         assertNotNull("Dota2 XClipse fallback result should not be null", dota2XClipseResult)
         assertTrue("Dota2 XClipse fallback result should not be empty", dota2XClipseResult?.isNotEmpty() == true)
-        // Modern flavor rejects glibc — the hades2-Adreno835 fixture is glibc, so it returns empty there.
+        // Only bionic configs are accepted; the hades2-Adreno835 fixture is not bionic, so it returns empty.
         if (true) {
-            assertTrue("Hades2 Adreno835 family glibc result should be empty on modern", hades2Adreno835Result.isNullOrEmpty())
+            assertTrue("Hades2 Adreno835 non-bionic result should be empty", hades2Adreno835Result.isNullOrEmpty())
         } else {
             assertTrue("Hades2 Adreno835 family result should not be empty", hades2Adreno835Result?.isNotEmpty() == true) // wineVersion filled in for glibc
         }

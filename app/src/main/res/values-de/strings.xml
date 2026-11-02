@@ -582,7 +582,6 @@
     <string name="name">Name</string>
     <string name="value">Wert</string>
     <string name="no_more_known_variables">Keine weiteren bekannten Variablen</string>
-    <string name="container_variant">Container-Variante</string>
     <string name="wine_version">Wine-Version</string>
     <string name="exec_arguments">Startparameter</string>
     <string name="exec_arguments_example">Beispiel: -dx11</string>
@@ -629,8 +628,6 @@
     <string name="exposed_vulkan_extensions">Sichtbare Vulkan-Erweiterungen</string>
     <string name="max_device_memory">Max. Gerätespeicher</string>
     <string name="use_adrenotools_turnip">Adrenotools Turnip verwenden</string>
-    <string name="vulkan_version">Vulkan-Version</string>
-    <string name="image_cache_size">Bildcache-Größe</string>
     <string name="dx_wrapper">DX-Wrapper</string>
     <string name="display_renderer">Display-Renderer</string>
     <string name="sf_compat_mode">Kompatibilitätsmodus</string>
@@ -947,7 +944,6 @@
     <string name="steam_agreement_message">Steam verlangt, dass du diese Vereinbarung akzeptierst, bevor du spielst.</string>
     <string name="steam_agreement_accept">Akzeptieren</string>
     <string name="steam_agreement_decline">Ablehnen</string>
-    <string name="main_installing_glibc">GLIBC-Komponenten werden installiert…</string>
     <string name="main_installing_bionic">Bionic-Komponenten werden installiert…</string>
     <string name="main_loading">Lädt…</string>
     <!-- PluviaMain: Session Conflicts -->

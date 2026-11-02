@@ -478,7 +478,6 @@ fun WineProtonManagerDialog(open: Boolean, onDismiss: () -> Unit) {
                 val tmpDir = ContentsManager.getTmpDir(ctx)
                 val binaryVariant = detectBinaryVariant(tmpDir)
 
-                //! We currently are not supporting GLIBC but we will in future.
                 if (binaryVariant == "glibc") {
                     val errorMsg = ctx.getString(R.string.wine_proton_glibc_incompatible)
                     withContext(Dispatchers.Main) {

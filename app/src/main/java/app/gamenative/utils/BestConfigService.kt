@@ -154,12 +154,10 @@ object BestConfigService {
         // Get resource arrays (same as ContainerConfigDialog)
         val dxvkVersions = context.resources.getStringArray(R.array.dxvk_version_entries).toList()
         val vkd3dVersions = context.resources.getStringArray(R.array.vkd3d_version_entries).toList()
-        val box64Versions = context.resources.getStringArray(R.array.box64_version_entries).toList()
         val box64BionicVersions = context.resources.getStringArray(R.array.box64_bionic_version_entries).toList()
         val wowBox64Versions = context.resources.getStringArray(R.array.wowbox64_version_entries).toList()
         val fexcoreVersions = context.resources.getStringArray(R.array.fexcore_version_entries).toList()
         val bionicWineEntries = context.resources.getStringArray(R.array.bionic_wine_entries).toList()
-        val glibcWineEntries = context.resources.getStringArray(R.array.glibc_wine_entries).toList()
         val installed = ManifestComponentHelper.loadInstalledContentLists(context)
         val manifest = ManifestRepository.loadManifest(context)
 
@@ -224,11 +222,6 @@ object BestConfigService {
             installedContent.box64,
             manifestBox64,
         )
-        val availableBox64Glibc = ManifestComponentHelper.buildAvailableVersions(
-            box64Versions,
-            installedContent.box64,
-            manifestBox64,
-        )
         val availableWowBox64 = ManifestComponentHelper.buildAvailableVersions(
             wowBox64Versions,
             installedContent.wowBox64,
@@ -241,11 +234,6 @@ object BestConfigService {
         )
         val availableWineBionic = ManifestComponentHelper.buildAvailableVersions(
             bionicWineEntries,
-            installedContent.wine + installedContent.proton,
-            manifestWine + manifestProton,
-        )
-        val availableWineGlibc = ManifestComponentHelper.buildAvailableVersions(
-            glibcWineEntries,
             installedContent.wine + installedContent.proton,
             manifestWine + manifestProton,
         )
@@ -277,18 +265,10 @@ object BestConfigService {
             }
         }
 
-        // Validate Box64 version (check separately based on container variant)
-        if (usesNativeBox64(wineVersion) && box64Version.isNotEmpty() && containerVariant.isNotEmpty()) {
-            val box64VersionsToCheck = when {
-                containerVariant.equals(Container.BIONIC, ignoreCase = true) -> availableBox64Bionic
-                containerVariant.equals(Container.GLIBC, ignoreCase = true) -> availableBox64Glibc
-                else -> {
-                    Timber.tag("BestConfigService").w("Unknown container variant '$containerVariant', defaulting to glibc Box64 versions")
-                    availableBox64Glibc
-                }
-            }
-            if (!ManifestComponentHelper.versionExists(box64Version, box64VersionsToCheck)) {
-                Timber.tag("BestConfigService").w("Box64 version $box64Version not found in $containerVariant variant")
+        // Validate Box64 version
+        if (usesNativeBox64(wineVersion) && box64Version.isNotEmpty()) {
+            if (!ManifestComponentHelper.versionExists(box64Version, availableBox64Bionic)) {
+                Timber.tag("BestConfigService").w("Box64 version $box64Version not found")
                 missing.add("Box64 $box64Version")
             }
         }
@@ -307,18 +287,10 @@ object BestConfigService {
             missing.add("FEXCore $fexcoreVersion")
         }
 
-        // Validate Wine/Proton version (check separately based on container variant)
-        if (wineVersion.isNotEmpty() && containerVariant.isNotEmpty()) {
-            val wineVersionsToCheck = when {
-                containerVariant.equals(Container.BIONIC, ignoreCase = true) -> availableWineBionic
-                containerVariant.equals(Container.GLIBC, ignoreCase = true) -> availableWineGlibc
-                else -> {
-                    Timber.tag("BestConfigService").w("Unknown container variant '$containerVariant', checking against all wine versions")
-                    (availableWineBionic + availableWineGlibc).distinct()
-                }
-            }
-            if (!ManifestComponentHelper.versionExists(wineVersion, wineVersionsToCheck)) {
-                Timber.tag("BestConfigService").w("Wine version $wineVersion not found in $containerVariant variant")
+        // Validate Wine/Proton version
+        if (wineVersion.isNotEmpty()) {
+            if (!ManifestComponentHelper.versionExists(wineVersion, availableWineBionic)) {
+                Timber.tag("BestConfigService").w("Wine version $wineVersion not found")
                 missing.add("Wine $wineVersion")
             }
         }
@@ -431,11 +403,9 @@ object BestConfigService {
         val baseDxvk = context.resources.getStringArray(R.array.dxvk_version_entries).toList()
         val baseVkd3d = context.resources.getStringArray(R.array.vkd3d_version_entries).toList()
         val baseBox64Bionic = context.resources.getStringArray(R.array.box64_bionic_version_entries).toList()
-        val baseBox64Glibc = context.resources.getStringArray(R.array.box64_version_entries).toList()
         val baseWowBox64 = context.resources.getStringArray(R.array.wowbox64_version_entries).toList()
         val baseFexcore = context.resources.getStringArray(R.array.fexcore_version_entries).toList()
         val baseWineBionic = context.resources.getStringArray(R.array.bionic_wine_entries).toList()
-        val baseWineGlibc = context.resources.getStringArray(R.array.glibc_wine_entries).toList()
         val baseDrivers = ManifestComponentHelper.bundledGraphicsDriverBase(
             context.resources.getStringArray(R.array.wrapper_graphics_driver_version_entries).toList(),
         )
@@ -455,11 +425,6 @@ object BestConfigService {
             installed = installedContent.box64,
             manifest = emptyList(),
         )
-        val locallyAvailableBox64Glibc = ManifestComponentHelper.buildAvailableVersions(
-            base = baseBox64Glibc,
-            installed = installedContent.box64,
-            manifest = emptyList(),
-        )
         val locallyAvailableWowBox64 = ManifestComponentHelper.buildAvailableVersions(
             base = baseWowBox64,
             installed = installedContent.wowBox64,
@@ -472,11 +437,6 @@ object BestConfigService {
         )
         val locallyAvailableWineBionic = ManifestComponentHelper.buildAvailableVersions(
             base = baseWineBionic,
-            installed = installedContent.wine + installedContent.proton,
-            manifest = emptyList(),
-        )
-        val locallyAvailableWineGlibc = ManifestComponentHelper.buildAvailableVersions(
-            base = baseWineGlibc,
             installed = installedContent.wine + installedContent.proton,
             manifest = emptyList(),
         )
@@ -517,13 +477,8 @@ object BestConfigService {
             }
         }
 
-        if (usesNativeBox64(wineVersion) && box64Version.isNotEmpty() && containerVariant.isNotEmpty()) {
-            val locallyAvailableBox64 = when {
-                containerVariant.equals(Container.BIONIC, ignoreCase = true) -> locallyAvailableBox64Bionic
-                containerVariant.equals(Container.GLIBC, ignoreCase = true) -> locallyAvailableBox64Glibc
-                else -> locallyAvailableBox64Glibc
-            }
-            if (!ManifestComponentHelper.versionExists(box64Version, locallyAvailableBox64)) {
+        if (usesNativeBox64(wineVersion) && box64Version.isNotEmpty()) {
+            if (!ManifestComponentHelper.versionExists(box64Version, locallyAvailableBox64Bionic)) {
                 val entry = ManifestComponentHelper.findManifestEntryForVersion(box64Version, manifestBox64)
                 if (entry != null) {
                     addRequest(entry, ContentProfile.ContentType.CONTENT_TYPE_BOX64)
@@ -549,13 +504,8 @@ object BestConfigService {
             }
         }
 
-        if (wineVersion.isNotEmpty() && containerVariant.isNotEmpty()) {
-            val locallyAvailableWine = when {
-                containerVariant.equals(Container.BIONIC, ignoreCase = true) -> locallyAvailableWineBionic
-                containerVariant.equals(Container.GLIBC, ignoreCase = true) -> locallyAvailableWineGlibc
-                else -> (locallyAvailableWineBionic + locallyAvailableWineGlibc).distinct()
-            }
-            if (!ManifestComponentHelper.versionExists(wineVersion, locallyAvailableWine)) {
+        if (wineVersion.isNotEmpty()) {
+            if (!ManifestComponentHelper.versionExists(wineVersion, locallyAvailableWineBionic)) {
                 val wineEntry = ManifestComponentHelper.findManifestEntryForVersion(wineVersion, manifestWine)
                 val protonEntry = if (wineEntry == null) {
                     ManifestComponentHelper.findManifestEntryForVersion(wineVersion, manifestProton)
@@ -590,7 +540,6 @@ object BestConfigService {
     /**
      * Replace missing component versions in filteredJson with defaults so config can still be applied.
      */
-    private const val GLIBC_DEFAULT_BOX64 = "0.3.6"
 
     /** A missing Box64 / WoWBox64 / FEXCore build (not a preset) from [validateComponentVersions]. */
     private fun isEmulatorVersion(entry: String): Boolean =
@@ -617,8 +566,7 @@ object BestConfigService {
                     filteredJson.put("fexcorePreset", PrefManager.fexcorePreset)
                 }
                 entry.startsWith("Box64 ") || entry.startsWith("WoWBox64 ") -> {
-                    val glibc = filteredJson.optString("containerVariant", "").equals(Container.GLIBC, ignoreCase = true)
-                    filteredJson.put("box64Version", if (glibc && entry.startsWith("Box64 ")) GLIBC_DEFAULT_BOX64 else DefaultVersion.BOX64)
+                    filteredJson.put("box64Version", DefaultVersion.BOX64)
                 }
                 entry.startsWith("FEXCore ") -> {
                     filteredJson.put("fexcoreVersion", DefaultVersion.FEXCORE)
@@ -693,21 +641,15 @@ object BestConfigService {
 
                 val containerVariant = originalJson.optString("containerVariant", "")
 
-                // glibc is not supported on the modern flavor — reject the entire config so neither
-                // server best-config responses nor JSON imports can switch a container to glibc.
-                if (containerVariant.equals(Container.GLIBC, ignoreCase = true)) {
-                    Timber.tag("BestConfigService").w("Rejecting glibc containerVariant on modern flavor")
+                // Only bionic containers exist: a config naming any other variant is rejected whole.
+                if (containerVariant.isNotEmpty() && !containerVariant.equals(Container.BIONIC, ignoreCase = true)) {
+                    Timber.tag("BestConfigService").w("Rejecting unsupported containerVariant '$containerVariant'")
                     return ParsedConfigResult(emptyMap())
                 }
 
                 if (!originalJson.has("wineVersion") || originalJson.isNull("wineVersion")) {
-                    if (containerVariant.equals(Container.GLIBC, ignoreCase = true)) {
-                        originalJson.put("wineVersion", "wine-9.2-x86_64")
-                    }
-                    else {
-                        Timber.tag("BestConfigService").w("wineVersion is missing or null in original config, returning empty map")
-                        return ParsedConfigResult(emptyMap())
-                    }
+                    Timber.tag("BestConfigService").w("wineVersion is missing or null in original config, returning empty map")
+                    return ParsedConfigResult(emptyMap())
                 }
                 if (!originalJson.has("dxwrapper") || originalJson.isNull("dxwrapper")) {
                     Timber.tag("BestConfigService").w("dxwrapper is missing or null in original config, returning empty map")

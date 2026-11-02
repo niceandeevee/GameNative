@@ -1623,20 +1623,9 @@ fun preLaunchApp(
         }
 
         try {
-            if (!SteamService.isImageFsInstallable(context, container.containerVariant)) {
+            if (!SteamService.isImageFsInstallable(context)) {
                 setLoadingMessage("Downloading first-time files")
                 SteamService.downloadImageFs(
-                    onDownloadProgress = { setLoadingProgress(it / 1.0f) },
-                    this,
-                    variant = container.containerVariant,
-                    context = context,
-                ).await()
-            }
-            if (container.containerVariant.equals(Container.GLIBC) &&
-                !SteamService.isFileInstallable(context, "imagefs_patches_gamenative.tzst")
-            ) {
-                setLoadingMessage("Downloading Wine")
-                SteamService.downloadImageFsPatches(
                     onDownloadProgress = { setLoadingProgress(it / 1.0f) },
                     this,
                     context = context,
@@ -1814,12 +1803,7 @@ fun preLaunchApp(
             return@launch
         }
 
-        val loadingMessage = if (container.containerVariant.equals(Container.GLIBC)) {
-            context.getString(R.string.main_installing_glibc)
-        } else {
-            context.getString(R.string.main_installing_bionic)
-        }
-        setLoadingMessage(loadingMessage)
+        setLoadingMessage(context.getString(R.string.main_installing_bionic))
         val imageFsInstallSuccess =
             ImageFsInstaller.installIfNeededFuture(context, context.assets, container) { progress ->
                 setLoadingProgress(progress / 100f)

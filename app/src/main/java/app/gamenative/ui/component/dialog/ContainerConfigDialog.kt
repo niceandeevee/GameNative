@@ -150,7 +150,6 @@ private data class ContainerConfigDialogStaticData(
     val mouseWarps: List<String>,
     val externalDisplayModes: List<String>,
     val winCompOpts: List<String>,
-    val box64Versions: List<String>,
     val wowBox64VersionsBase: List<String>,
     val box64BionicVersionsBase: List<String>,
     val box64Presets: List<Box86_64Preset>,
@@ -166,9 +165,7 @@ private data class ContainerConfigDialogStaticData(
     val vortekVersions: List<String>,
     val adrenoVersions: List<String>,
     val sd8EliteVersions: List<String>,
-    val containerVariants: List<String>,
     val bionicWineEntriesBase: List<String>,
-    val glibcWineEntriesBase: List<String>,
     val emulatorEntries: List<String>,
     val bionicGraphicsDrivers: List<String>,
     val baseWrapperVersions: List<String>,
@@ -180,8 +177,6 @@ private fun rememberContainerConfigDialogStaticData(): ContainerConfigDialogStat
     val context = LocalContext.current
     val sharpnessEffects = stringArrayResource(R.array.vkbasalt_sharpness_entries).toList()
     val sharpnessEffectLabels = stringArrayResource(R.array.vkbasalt_sharpness_labels).toList()
-    val containerVariants = stringArrayResource(R.array.container_variant_entries).toList()
-        .filterNot { it.equals(Container.GLIBC, ignoreCase = true) }
 
     return ContainerConfigDialogStaticData(
         screenSizes = stringArrayResource(R.array.screen_size_entries).toList(),
@@ -209,7 +204,6 @@ private fun rememberContainerConfigDialogStaticData(): ContainerConfigDialogStat
             stringResource(R.string.external_display_mode_hybrid),
         ),
         winCompOpts = stringArrayResource(R.array.win_component_entries).toList(),
-        box64Versions = stringArrayResource(R.array.box64_version_entries).toList(),
         wowBox64VersionsBase = stringArrayResource(R.array.wowbox64_version_entries).toList(),
         box64BionicVersionsBase = stringArrayResource(R.array.box64_bionic_version_entries).toList(),
         box64Presets = Box86_64PresetManager.getPresets("box64", context),
@@ -225,9 +219,7 @@ private fun rememberContainerConfigDialogStaticData(): ContainerConfigDialogStat
         vortekVersions = stringArrayResource(R.array.vortek_version_entries).toList(),
         adrenoVersions = stringArrayResource(R.array.adreno_version_entries).toList(),
         sd8EliteVersions = stringArrayResource(R.array.sd8elite_version_entries).toList(),
-        containerVariants = containerVariants,
         bionicWineEntriesBase = stringArrayResource(R.array.bionic_wine_entries).toList(),
-        glibcWineEntriesBase = stringArrayResource(R.array.glibc_wine_entries).toList(),
         emulatorEntries = stringArrayResource(R.array.emulator_entries).toList(),
         bionicGraphicsDrivers = stringArrayResource(R.array.bionic_graphics_driver_entries).toList(),
         baseWrapperVersions = ManifestComponentHelper.bundledGraphicsDriverBase(
@@ -293,7 +285,6 @@ fun ContainerConfigDialog(
         val mouseWarps = staticData.mouseWarps
         val externalDisplayModes = staticData.externalDisplayModes
         val winCompOpts = staticData.winCompOpts
-        val box64Versions = staticData.box64Versions
         val wowBox64VersionsBase = staticData.wowBox64VersionsBase
         val box64BionicVersionsBase = staticData.box64BionicVersionsBase
         val box64Presets = staticData.box64Presets
@@ -309,13 +300,9 @@ fun ContainerConfigDialog(
         val vortekVersions = staticData.vortekVersions
         val adrenoVersions = staticData.adrenoVersions
         val sd8EliteVersions = staticData.sd8EliteVersions
-        val containerVariants = staticData.containerVariants
         val bionicWineEntriesBase = staticData.bionicWineEntriesBase
-        val glibcWineEntriesBase = staticData.glibcWineEntriesBase
         val bionicWineEntriesRef = remember { mutableStateOf(bionicWineEntriesBase) }
         var bionicWineEntries by bionicWineEntriesRef
-        val glibcWineEntriesRef = remember { mutableStateOf(glibcWineEntriesBase) }
-        var glibcWineEntries by glibcWineEntriesRef
         val emulatorEntries = staticData.emulatorEntries
         val bionicGraphicsDrivers = staticData.bionicGraphicsDrivers
         val baseWrapperVersions = staticData.baseWrapperVersions
@@ -383,9 +370,6 @@ fun ContainerConfigDialog(
         val vkd3dOptions = remember(vkd3dVersionsBase, installedVkd3d, manifestVkd3d) {
             ManifestComponentHelper.buildVersionOptionList(vkd3dVersionsBase, installedVkd3d, manifestVkd3d)
         }
-        val box64Options = remember(box64Versions, installedBox64, manifestBox64) {
-            ManifestComponentHelper.buildVersionOptionList(box64Versions, installedBox64, manifestBox64)
-        }
         val box64BionicOptions = remember(box64BionicVersionsBase, installedBox64, manifestBox64) {
             ManifestComponentHelper.buildVersionOptionList(box64BionicVersionsBase, installedBox64, manifestBox64)
         }
@@ -403,15 +387,8 @@ fun ContainerConfigDialog(
             ManifestComponentHelper.filterManifestByVariant(manifestWine, "bionic") +
                 ManifestComponentHelper.filterManifestByVariant(manifestProton, "bionic")
         }
-        val glibcWineManifest = remember(manifestWine, manifestProton) {
-            ManifestComponentHelper.filterManifestByVariant(manifestWine, "glibc") +
-                ManifestComponentHelper.filterManifestByVariant(manifestProton, "glibc")
-        }
         val bionicWineOptions = remember(bionicWineEntriesBase, installedWine, installedProton, bionicWineManifest) {
             ManifestComponentHelper.buildVersionOptionList(bionicWineEntriesBase, installedWine + installedProton, bionicWineManifest)
-        }
-        val glibcWineOptions = remember(glibcWineEntriesBase, glibcWineManifest) {
-            ManifestComponentHelper.buildVersionOptionList(glibcWineEntriesBase, emptyList(), glibcWineManifest)
         }
 
         val dxvkManifestById = remember(manifestDxvk) {
@@ -435,9 +412,6 @@ fun ContainerConfigDialog(
         val bionicWineManifestById = remember(bionicWineManifest) {
             bionicWineManifest.associateBy { it.id }
         }
-        val glibcWineManifestById = remember(glibcWineManifest) {
-            glibcWineManifest.associateBy { it.id }
-        }
 
         suspend fun refreshInstalledLists() {
             val availabilityUpdated = ManifestComponentHelper.loadComponentAvailability(context)
@@ -447,7 +421,6 @@ fun ContainerConfigDialog(
 
             wrapperVersions = (baseWrapperVersions + availabilityUpdated.installedDrivers).distinct()
             bionicWineEntries = (bionicWineEntriesBase + installed.proton + installed.wine).distinct()
-            glibcWineEntries = glibcWineEntriesBase
         }
 
         LaunchedEffect(Unit) {
@@ -770,23 +743,17 @@ fun ContainerConfigDialog(
         }
 
         fun getVersionsForBox64(): VersionOptionList {
-            return if (config.containerVariant.equals(Container.GLIBC, ignoreCase = true)) {
-                box64Options
-            } else if (config.wineVersion.contains("x86_64", true)) {
+            return if (config.wineVersion.contains("x86_64", true)) {
                 box64BionicOptions
             } else if (config.wineVersion.contains("arm64ec", true)) {
                 wowBox64Options
             } else {
-                box64Options
+                box64BionicOptions
             }
         }
 
         fun getStartupSelectionOptions(): List<String> {
-            if (config.containerVariant.equals(Container.GLIBC)) {
-                return startupSelectionEntries
-            } else {
-                return startupSelectionEntries.subList(0, 2)
-            }
+            return startupSelectionEntries.subList(0, 2)
         }
         val dxWrapperIndexRef = rememberSaveable {
             val driverIndex = dxWrappers.indexOfFirst { StringUtils.parseIdentifier(it) == config.dxwrapper }
@@ -804,7 +771,7 @@ fun ContainerConfigDialog(
         // VKD3D version control (forced depending on driver)
         fun vkd3dForcedVersion(): String {
             val driverType = StringUtils.parseIdentifier(graphicsDrivers[graphicsDriverIndex])
-            val isVortekLike = config.containerVariant.equals(Container.GLIBC) && driverType == "vortek" || driverType == "adreno" || driverType == "sd-8-elite"
+            val isVortekLike = driverType == "adreno" || driverType == "sd-8-elite"
             return if (isVortekLike) "2.6" else "2.14.1"
         }
 
@@ -869,9 +836,7 @@ fun ContainerConfigDialog(
 
             // Ensure index within range or default
             val selectedVersion = context.ids.getOrNull(dxvkVersionIndex).orEmpty()
-            val version = if (selectedVersion.isEmpty()) {
-                if (context.isVortekLike) "async-1.10.3" else DefaultVersion.DXVK
-            } else selectedVersion
+            val version = selectedVersion.ifEmpty { DefaultVersion.DXVK }
             val envSet = EnvVars(config.envVars)
             // Update dxwrapperConfig version regardless of wrapper type (allows DXVK config even when VKD3D is selected)
             val kvs = KeyValueSet(config.dxwrapperConfig)
@@ -1039,7 +1004,6 @@ fun ContainerConfigDialog(
             config = configState,
             graphicsDrivers = graphicsDriversRef,
             bionicWineEntries = bionicWineEntriesRef,
-            glibcWineEntries = glibcWineEntriesRef,
             wrapperVersions = wrapperVersionsRef,
             dxvkVersionsAll = dxvkVersionsAllRef,
             componentAvailability = componentAvailabilityRef,
@@ -1105,7 +1069,6 @@ fun ContainerConfigDialog(
             mouseWarps = mouseWarps,
             externalDisplayModes = externalDisplayModes,
             winCompOpts = winCompOpts,
-            box64Versions = box64Versions,
             wowBox64VersionsBase = wowBox64VersionsBase,
             box64BionicVersionsBase = box64BionicVersionsBase,
             fexcoreVersionsBase = fexcoreVersionsBase,
@@ -1119,22 +1082,18 @@ fun ContainerConfigDialog(
             vortekVersions = vortekVersions,
             adrenoVersions = adrenoVersions,
             sd8EliteVersions = sd8EliteVersions,
-            containerVariants = containerVariants,
             bionicWineEntriesBase = bionicWineEntriesBase,
-            glibcWineEntriesBase = glibcWineEntriesBase,
             emulatorEntries = emulatorEntries,
             bionicGraphicsDrivers = bionicGraphicsDriversMerged,
             baseWrapperVersions = baseWrapperVersions,
             languages = languages,
             dxvkOptions = dxvkOptions,
             vkd3dOptions = vkd3dOptions,
-            box64Options = box64Options,
             box64BionicOptions = box64BionicOptions,
             wowBox64Options = wowBox64Options,
             fexcoreOptions = fexcoreOptions,
             wrapperOptions = wrapperOptions,
             bionicWineOptions = bionicWineOptions,
-            glibcWineOptions = glibcWineOptions,
             dxvkManifestById = dxvkManifestById,
             vkd3dManifestById = vkd3dManifestById,
             box64ManifestById = box64ManifestById,
@@ -1142,7 +1101,6 @@ fun ContainerConfigDialog(
             fexcoreManifestById = fexcoreManifestById,
             wrapperManifestById = wrapperManifestById,
             bionicWineManifestById = bionicWineManifestById,
-            glibcWineManifestById = glibcWineManifestById,
             gpuCards = gpuCards,
             box64Presets = box64Presets,
             fexcorePresets = fexcorePresets,
@@ -1341,7 +1299,7 @@ private fun Preview_ContainerConfigDialog() {
             box86Preset = Box86_64Preset.COMPATIBILITY,
             box64Preset = Box86_64Preset.COMPATIBILITY,
             desktopTheme = WineThemeManager.DEFAULT_DESKTOP_THEME,
-            containerVariant = "glibc",
+            containerVariant = Container.BIONIC,
             wineVersion = MAIN_WINE_VERSION.identifier(),
             emulator = "FEXCore",
             fexcoreVersion = DefaultVersion.FEXCORE,

@@ -590,7 +590,6 @@
     <string name="name">名称</string>
     <string name="value">值</string>
     <string name="no_more_known_variables">没有更多已知环境变量</string>
-    <string name="container_variant">容器变体</string>
     <string name="wine_version">Wine版本</string>
     <string name="exec_arguments">执行参数</string>
     <string name="exec_arguments_example">例如：-dx11</string>
@@ -639,8 +638,6 @@
     <string name="exposed_vulkan_extensions">启用 Vulkan 扩展功能</string>
     <string name="max_device_memory">最大内存容量</string>
     <string name="use_adrenotools_turnip">使用 Adrenotools Turnip</string>
-    <string name="vulkan_version">Vulkan 版本</string>
-    <string name="image_cache_size">图像缓存大小</string>
     <string name="dx_wrapper">DX 封装器</string>
     <string name="sf_compat_mode">兼容模式</string>
     <string name="sf_compat_mode_description">关闭以提升性能。开启以修正颜色反转并防止崩溃。</string>
@@ -972,7 +969,6 @@
     <string name="steam_agreement_message">Steam 要求你在游玩前接受此协议。</string>
     <string name="steam_agreement_accept">接受</string>
     <string name="steam_agreement_decline">拒绝</string>
-    <string name="main_installing_glibc">安装 glibc 组件...</string>
     <string name="main_installing_bionic">安装Bionic组件中...</string>
     <string name="main_loading">加载中...</string>
 

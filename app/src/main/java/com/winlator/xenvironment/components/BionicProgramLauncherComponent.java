@@ -438,7 +438,6 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
             command = getFinalCommand(winePath, emulator, envVars, imageFs.getBinDir(), guestExecutable, gamescopeMode);
         }
 
-        // **Maybe remove this: Set execute permissions for box64 if necessary (Glibc/Proot artifact)
         File box64File = new File(rootDir, "/usr/bin/box64");
         if (box64File.exists()) {
             FileUtils.chmod(box64File, 0755);

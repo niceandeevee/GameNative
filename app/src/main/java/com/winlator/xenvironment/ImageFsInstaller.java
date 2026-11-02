@@ -124,7 +124,7 @@ public abstract class ImageFsInstaller {
             ensureBionicLib(context, rootDir);
 
             final byte compressionRatio = 22;
-            String imagefsFile = containerVariant.equals(Container.GLIBC) ? "imagefs_gamenative.txz" : "imagefs_bionic.txz";
+            String imagefsFile = "imagefs_bionic.txz";
             File downloaded = new File(imageFs.getFilesDir(), imagefsFile);
 
 
@@ -273,13 +273,9 @@ public abstract class ImageFsInstaller {
 
         // Get bundled versions from resource arrays
         String[] bionicWineEntries = context.getResources().getStringArray(R.array.bionic_wine_entries);
-        String[] glibcWineEntries = context.getResources().getStringArray(R.array.glibc_wine_entries);
 
         // Check if it's a bundled version
         for (String version : bionicWineEntries) {
-            if (lowerName.equals(version.toLowerCase())) return false;
-        }
-        for (String version : glibcWineEntries) {
             if (lowerName.equals(version.toLowerCase())) return false;
         }
 

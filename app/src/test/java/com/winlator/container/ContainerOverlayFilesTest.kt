@@ -152,7 +152,7 @@ class ContainerOverlayFilesTest {
         write(upper, "drive_c/windows/system32/a.dll", "u")
         val container = bionicContainer(root).apply {
             basePrefix = base.absolutePath
-            containerVariant = Container.GLIBC
+            containerVariant = "legacy"
         }
 
         assertTrue(ContainerFiles.deleteWithWhiteout(container, "drive_c/windows/system32/a.dll"))
@@ -332,7 +332,7 @@ class ContainerOverlayFilesTest {
         val container = bionicContainer(root).apply { basePrefix = base.absolutePath }
 
         assertEquals("base-a", ContainerFiles.resolve(container, "drive_c/windows/system32/a.dll")!!.readText())
-        container.containerVariant = Container.GLIBC
+        container.containerVariant = "legacy"
         assertNull(ContainerFiles.resolve(container, "drive_c/windows/system32/a.dll"))
     }
 

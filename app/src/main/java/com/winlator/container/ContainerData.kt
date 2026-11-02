@@ -45,7 +45,7 @@ data class ContainerData(
     val box86Preset: String = Box86_64Preset.COMPATIBILITY,
     val box64Preset: String = Box86_64Preset.COMPATIBILITY,
     val desktopTheme: String = WineThemeManager.DEFAULT_DESKTOP_THEME,
-    // container runtime variant (glibc or bionic)
+    // container runtime variant (always bionic)
     val containerVariant: String = Container.DEFAULT_VARIANT,
     // wine version identifier (used for bionic variant), defaults to main wine
     val wineVersion: String = WineInfo.MAIN_WINE_VERSION.identifier(),

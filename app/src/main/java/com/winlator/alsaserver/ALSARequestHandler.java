@@ -53,29 +53,14 @@ public class ALSARequestHandler implements RequestHandler {
                 createSharedMemory(alsaClient, outputStream);
                 return true;
             case RequestCodes.WRITE:
-                if (alsaClient.isGlibc()) {
-                    ByteBuffer sharedBuffer = alsaClient.getSharedBuffer();
-
-                    if (sharedBuffer != null) {
-                        copySharedBuffer(alsaClient, requestLength, outputStream);
-                        alsaClient.writeDataToTrack(alsaClient.getAuxBuffer());
-                        sharedBuffer.putInt(0, alsaClient.pointer());
-                        return true;
-                    }
-                    if (inputStream.available() < requestLength) {
-                        return false;
-                    }
+                ByteBuffer sharedBuffer = alsaClient.getSharedBuffer();
+                if (sharedBuffer != null) {
+                    sharedBuffer.limit(requestLength);
+                    alsaClient.writeDataToTrack(sharedBuffer);
+                }
+                else {
+                    if (inputStream.available() < requestLength) return false;
                     alsaClient.writeDataToTrack(inputStream.readByteBuffer(requestLength));
-                } else {
-                    ByteBuffer sharedBuffer = alsaClient.getSharedBuffer();
-                    if (sharedBuffer != null) {
-                        sharedBuffer.limit(requestLength);
-                        alsaClient.writeDataToTrack(sharedBuffer);
-                    }
-                    else {
-                        if (inputStream.available() < requestLength) return false;
-                        alsaClient.writeDataToTrack(inputStream.readByteBuffer(requestLength));
-                    }
                 }
                 return true;
             case RequestCodes.DRAIN:
@@ -109,17 +94,6 @@ public class ALSARequestHandler implements RequestHandler {
                 }
             default:
                 return true;
-        }
-    }
-
-    private void copySharedBuffer(ALSAClient alsaClient, int requestLength, XOutputStream outputStream) throws IOException {
-        ByteBuffer sharedBuffer = alsaClient.getSharedBuffer();
-        ByteBuffer auxBuffer = alsaClient.getAuxBuffer();
-        auxBuffer.position(0).limit(requestLength);
-        sharedBuffer.position(4).limit(requestLength + 4);
-        auxBuffer.put(sharedBuffer);
-        try (XStreamLock lock = outputStream.lock()){
-            outputStream.writeByte((byte) 1);
         }
     }
 

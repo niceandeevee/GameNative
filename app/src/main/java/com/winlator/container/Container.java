@@ -73,7 +73,6 @@ public class Container {
     public static final String STEAM_TYPE_LIGHT = "light";
     public static final String STEAM_TYPE_ULTRALIGHT = "ultralight";
     public static final String STEAM_TYPE_HEADLESS = "headless";
-    public static final String GLIBC = "glibc";
     public static final String BIONIC = "bionic";
     public static final byte MAX_DRIVE_LETTERS = 8;
     public final String id;

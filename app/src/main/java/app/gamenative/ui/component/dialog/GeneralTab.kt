@@ -74,8 +74,6 @@ fun GeneralTabContent(
     }
 
     val graphicsDrivers = state.graphicsDrivers.value
-    val glibcWineEntries = state.glibcWineEntries.value
-    val bionicWineEntries = state.bionicWineEntries.value
     val suspendBehaviorEntries = listOf(
         stringResource(R.string.suspend_behavior_manual),
         stringResource(R.string.suspend_behavior_auto),
@@ -159,124 +157,31 @@ fun GeneralTabContent(
 
     SettingsGroup() {
         run {
-            val variantIndex = rememberSaveable {
-                mutableIntStateOf(
-                    state.containerVariants.indexOfFirst { it.equals(config.containerVariant, true) }.coerceAtLeast(0)
-                )
-            }
+            val wineIndex = state.bionicWineOptions.ids.indexOfFirst { it == config.wineVersion }.coerceAtLeast(0)
             SettingsListDropdown(
                 colors = settingsTileColors(),
-                title = { Text(text = stringResource(R.string.container_variant)) },
-                value = variantIndex.value,
-                items = state.containerVariants,
+                title = { Text(text = stringResource(R.string.wine_version)) },
+                value = wineIndex,
+                items = state.bionicWineOptions.labels,
+                itemMuted = state.bionicWineOptions.muted,
                 onItemSelected = { idx ->
-                    variantIndex.value = idx
-                    val newVariant = state.containerVariants[idx]
-                    if (newVariant.equals(Container.GLIBC, ignoreCase = true)) {
-                        val defaultDriver = Container.DEFAULT_GRAPHICS_DRIVER
-                        val newCfg = KeyValueSet(config.graphicsDriverConfig).apply {
-                            put("version", "")
-                            put("syncFrame", "0")
-                            put("disablePresentWait", get("disablePresentWait").ifEmpty { "0" })
-                            if (get("presentMode").isEmpty()) put("presentMode", "mailbox")
-                            if (get("resourceType").isEmpty()) put("resourceType", "auto")
-                            if (get("bcnEmulation").isEmpty()) put("bcnEmulation", "auto")
-                            if (get("bcnEmulationType").isEmpty()) put("bcnEmulationType", "compute")
-                            if (get("bcnEmulationCache").isEmpty()) put("bcnEmulationCache", "0")
-                            put("adrenotoolsTurnip", "1")
+                    val selectedId = state.bionicWineOptions.ids.getOrNull(idx).orEmpty()
+                    val isManifestNotInstalled = state.bionicWineOptions.muted.getOrNull(idx) == true
+                    val manifestEntry = state.bionicWineManifestById[selectedId]
+                    if (isManifestNotInstalled && manifestEntry != null) {
+                        val expectedType = if (selectedId.startsWith("proton", true)) {
+                            ContentProfile.ContentType.CONTENT_TYPE_PROTON
+                        } else {
+                            ContentProfile.ContentType.CONTENT_TYPE_WINE
                         }
-                        state.graphicsDriverIndex.value =
-                            graphicsDrivers.indexOfFirst { StringUtils.parseIdentifier(it) == defaultDriver }.coerceAtLeast(0)
-                        state.graphicsDriverVersionIndex.value = 0
-                        state.syncEveryFrameChecked.value = false
-                        state.disablePresentWaitChecked.value = newCfg.get("disablePresentWait", "0") == "1"
-                        state.bcnEmulationCacheEnabled.value = newCfg.get("bcnEmulationCache", "0") == "1"
-                        state.adrenotoolsTurnipChecked.value = true
-
-                        val defaultGlibcWine = glibcWineEntries.firstOrNull() ?: Container.DEFAULT_WINE_VERSION
-                        state.config.value = config.copy(
-                            containerVariant = newVariant,
-                            wineVersion = defaultGlibcWine,
-                            graphicsDriver = defaultDriver,
-                            graphicsDriverVersion = "",
-                            graphicsDriverConfig = newCfg.toString(),
-                            box64Version = "0.3.6",
-                        )
-                    } else {
-                        val defaultBionicDriver = StringUtils.parseIdentifier(state.bionicGraphicsDrivers.first())
-                        val newWine = if (config.wineVersion == (glibcWineEntries.firstOrNull() ?: Container.DEFAULT_WINE_VERSION))
-                            bionicWineEntries.firstOrNull() ?: config.wineVersion
-                        else config.wineVersion
-                        val newCfg = KeyValueSet(config.graphicsDriverConfig).apply {
-                            put("version", DefaultVersion.WRAPPER)
-                            put("syncFrame", "0")
-                            put("adrenotoolsTurnip", "1")
-                            put("disablePresentWait", get("disablePresentWait").ifEmpty { "0" })
-                            if (get("exposedDeviceExtensions").isEmpty()) put("exposedDeviceExtensions", "all")
-                            if (get("maxDeviceMemory").isEmpty()) put("maxDeviceMemory", "4096")
-                            if (get("presentMode").isEmpty()) put("presentMode", "mailbox")
-                            if (get("resourceType").isEmpty()) put("resourceType", "auto")
-                            if (get("bcnEmulation").isEmpty()) put("bcnEmulation", "auto")
-                            if (get("bcnEmulationType").isEmpty()) put("bcnEmulationType", "compute")
-                            if (get("bcnEmulationCache").isEmpty()) put("bcnEmulationCache", "0")
+                        state.launchManifestContentInstall(manifestEntry, expectedType) {
+                            state.config.value = config.copy(wineVersion = selectedId)
                         }
-                        state.bionicDriverIndex.value = 0
-                        state.wrapperVersionIndex.value = state.wrapperOptions.ids
-                            .indexOfFirst { it.equals(DefaultVersion.WRAPPER, true) }
-                            .let { if (it >= 0) it else 0 }
-                        state.syncEveryFrameChecked.value = false
-                        state.disablePresentWaitChecked.value = newCfg.get("disablePresentWait", "0") == "1"
-                        state.bcnEmulationCacheEnabled.value = newCfg.get("bcnEmulationCache", "0") == "1"
-                        state.adrenotoolsTurnipChecked.value = true
-                        state.maxDeviceMemoryIndex.value =
-                            listOf("0", "512", "1024", "2048", "4096").indexOf("4096").coerceAtLeast(0)
-
-                        val currentConfig = KeyValueSet(config.dxwrapperConfig)
-                        currentConfig.put("version", "async-1.10.3")
-                        currentConfig.put("async", "1")
-                        currentConfig.put("asyncCache", "0")
-                        state.config.value = config.copy(dxwrapperConfig = currentConfig.toString())
-
-                        state.config.value = config.copy(
-                            containerVariant = newVariant,
-                            wineVersion = newWine,
-                            graphicsDriver = defaultBionicDriver,
-                            graphicsDriverVersion = "",
-                            graphicsDriverConfig = newCfg.toString(),
-                            box64Version = "0.3.7",
-                            dxwrapperConfig = currentConfig.toString(),
-                        )
+                        return@SettingsListDropdown
                     }
+                    state.config.value = config.copy(wineVersion = selectedId.ifEmpty { state.bionicWineOptions.labels[idx] })
                 },
             )
-            if (config.containerVariant.equals(Container.BIONIC, ignoreCase = true)) {
-                val wineIndex = state.bionicWineOptions.ids.indexOfFirst { it == config.wineVersion }.coerceAtLeast(0)
-                SettingsListDropdown(
-                    colors = settingsTileColors(),
-                    title = { Text(text = stringResource(R.string.wine_version)) },
-                    value = wineIndex,
-                    items = state.bionicWineOptions.labels,
-                    itemMuted = state.bionicWineOptions.muted,
-                    onItemSelected = { idx ->
-                        val selectedId = state.bionicWineOptions.ids.getOrNull(idx).orEmpty()
-                        val isManifestNotInstalled = state.bionicWineOptions.muted.getOrNull(idx) == true
-                        val manifestEntry = state.bionicWineManifestById[selectedId]
-                        if (isManifestNotInstalled && manifestEntry != null) {
-                            val expectedType = if (selectedId.startsWith("proton", true)) {
-                                ContentProfile.ContentType.CONTENT_TYPE_PROTON
-                            } else {
-                                ContentProfile.ContentType.CONTENT_TYPE_WINE
-                            }
-                            state.launchManifestContentInstall(manifestEntry, expectedType) {
-                                state.config.value = config.copy(wineVersion = selectedId)
-                            }
-                            return@SettingsListDropdown
-                        }
-                        state.config.value = config.copy(wineVersion = selectedId.ifEmpty { state.bionicWineOptions.labels[idx] })
-                    },
-                )
-
-            }
         }
         ExecutablePathDropdown(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
