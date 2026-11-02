@@ -176,7 +176,7 @@ jobs:
           echo "APK size: $(du -h "$apk" | cut -f1)"
 
       - name: Upload APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.meta.outputs.artifact }}
           path: dist/*.apk
