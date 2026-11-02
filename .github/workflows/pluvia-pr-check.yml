@@ -6,7 +6,6 @@ on:
     paths-ignore:
       - '**.md'
       - '.gitignore'
-      - 'keyvalues/**'
       - 'media/**'
       - '.github/ISSUE_TEMPLATE/**'
 

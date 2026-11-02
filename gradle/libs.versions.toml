@@ -28,6 +28,7 @@ mockk = "1.13.5" # https://mvnrepository.com/artifact/io.mockk/mockk
 mockwebserver = "5.1.0"
 navigation-compose = "2.8.6" # https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
 orgJson = "20231013"
+protobuf = "4.31.1" # https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
 robolectric = "4.14" # https://mvnrepository.com/artifact/org.robolectric/robolectric
 room-runtime = "2.8.4" # https://mvnrepository.com/artifact/androidx.room/room-runtime
 settings = "2.10.0" # https://github.com/alorma/Compose-Settings/releases
@@ -71,6 +72,7 @@ libarchive-android = { module = "me.zhanghai.android.libarchive:library", versio
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material-kolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "materialKolor" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 orgJson = { module = "org.json:json", version.ref = "orgJson" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 zstd-jni = { group = "com.github.luben", name = "zstd-jni", version.ref = "zstd-jni" }

@@ -5,7 +5,6 @@ Project(Pluvia)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -Wno-unused-function -Wimplicit-function-declaration")
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -s")
 
-#add_subdirectory(proot)
 add_subdirectory(virglrenderer)
 add_subdirectory(lsfg-vk-android/thirdparty/dxbc EXCLUDE_FROM_ALL)
 add_subdirectory(patchelf)

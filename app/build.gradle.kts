@@ -212,6 +212,9 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.zxing)
 
+    // Google Protobufs (JavaSteam's messages extend them)
+    implementation(libs.protobuf.java)
+
     // Hilt
     implementation(libs.bundles.hilt)
 
