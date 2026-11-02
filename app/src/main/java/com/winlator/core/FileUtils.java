@@ -196,8 +196,23 @@ public abstract class FileUtils {
      */
     public static boolean copyIfChanged(File source, File target) {
         if (!source.isFile()) return false;
-        if (target.isFile() && target.length() == source.length() && target.lastModified() == source.lastModified()) {
-            return true;
+        if (target.isFile()) {
+            // A hardlink to the source shares its length and mtime but must still become its own copy;
+            // writing through it would also corrupt the source.
+            boolean sameFile;
+            try {
+                sameFile = java.nio.file.Files.isSameFile(source.toPath(), target.toPath());
+            }
+            catch (IOException e) {
+                sameFile = false;
+            }
+            if (sameFile) {
+                //noinspection ResultOfMethodCallIgnored
+                target.delete();
+            }
+            else if (target.length() == source.length() && target.lastModified() == source.lastModified()) {
+                return true;
+            }
         }
         if (!copy(source, target)) return false;
         //noinspection ResultOfMethodCallIgnored
