@@ -355,11 +355,11 @@ public abstract class WindowRequests {
         }
 
         if (dstWindow == null) {
-            client.xServer.onClientWarpPointer(client.xServer.pointer.getX() + dstX, client.xServer.pointer.getY() + dstY);
+            client.xServer.pointer.setPosition(client.xServer.pointer.getX() + dstX, client.xServer.pointer.getY() + dstY);
         }
         else {
             short[] localPoint = dstWindow.localPointToRoot(dstX, dstY);
-            client.xServer.onClientWarpPointer(localPoint[0], localPoint[1]);
+            client.xServer.pointer.setPosition(localPoint[0], localPoint[1]);
         }
     }
 
