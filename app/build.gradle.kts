@@ -54,8 +54,8 @@ android {
         }
 
         proguardFiles(
-            // Not proguard-android-optimize.txt: optimizing R8 broke zstd-jni (archive extraction
-            // hung on boot) and achievement loading on device. Shrinking without optimization only.
+            // Not proguard-android-optimize.txt: optimizing R8 (with AGP 8.8's R8) broke zstd-jni
+            // (archive extraction hung on boot) and achievement loading on device.
             getDefaultProguardFile("proguard-android.txt"),
             "proguard-rules.pro",
         )
