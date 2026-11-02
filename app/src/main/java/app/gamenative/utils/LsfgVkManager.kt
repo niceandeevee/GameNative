@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.Choreographer
-import android.view.WindowManager
 import java.util.concurrent.Executors
 import app.gamenative.BuildConfig
 import app.gamenative.PluviaApp
@@ -232,10 +231,7 @@ object LsfgVkManager {
                 if (vsyncClockHandler !== handler) return
                 Choreographer.getInstance().postFrameCallback { frameTimeNanos ->
                     if (vsyncClockHandler !== handler) return@postFrameCallback
-                    val refreshRate = runCatching {
-                        (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)
-                            ?.defaultDisplay?.refreshRate
-                    }.getOrNull()?.takeIf { it > 1f } ?: 60f
+                    val refreshRate = displayRefreshRate(context)
                     val periodNs = (1_000_000_000.0 / refreshRate).toLong()
                     vsyncWriteExecutor.execute {
                         runCatching {
@@ -341,8 +337,8 @@ object LsfgVkManager {
     }
 
     private fun displayRefreshRate(context: Context): Float = runCatching {
-        (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)
-            ?.defaultDisplay?.refreshRate
+        (context.getSystemService(Context.DISPLAY_SERVICE) as? android.hardware.display.DisplayManager)
+            ?.getDisplay(android.view.Display.DEFAULT_DISPLAY)?.refreshRate
     }.getOrNull()?.takeIf { it > 1f } ?: 60f
 
     /**

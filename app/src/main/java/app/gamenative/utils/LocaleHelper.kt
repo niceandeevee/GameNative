@@ -63,18 +63,9 @@ object LocaleHelper {
      * Handles language codes with region (e.g., "pt-BR", "zh-CN").
      */
     private fun getLocaleFromCode(languageCode: String): Locale {
-        return when {
-            languageCode.contains("-") -> {
-                val parts = languageCode.split("-")
-                if (parts.size == 2) {
-                    Locale(parts[0], parts[1])
-                } else {
-                    Locale(parts[0])
-                }
-            }
-            else -> Locale(languageCode)
-        }
+        return Locale.forLanguageTag(languageCode)
     }
+
 
     /**
      * Get the display name for a language code.

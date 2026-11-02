@@ -656,13 +656,11 @@
     <string name="show_controller_debug_menu_subtitle">Afficher le panneau en direct des emplacements de contrôleurs P1-P4 dans le menu rapide en jeu</string>
     <string name="disable_mouse_input">Désactiver l\'entrée souris</string>
     <string name="touchscreen_mode">Mode écran tactile</string>
-    <string name="touchscreen_mode_description">Pour les visual novels et jeux de stratégie en temps réel</string>
     <string name="shooter_mode_toggle">Mode tireur</string>
     <string name="shooter_mode_on">Activer la souris</string>
     <string name="shooter_mode_off">Activer les sticks</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">Paramètres des gestes</string>
     <string name="gesture_settings_title">Paramètres des gestes tactiles</string>
     <string name="gesture_tap">Appui</string>
     <string name="gesture_drag">Glisser le doigt</string>

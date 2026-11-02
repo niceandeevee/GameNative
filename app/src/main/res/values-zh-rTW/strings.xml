@@ -647,13 +647,11 @@
     <string name="show_controller_debug_menu_subtitle">在遊戲內快速選單中顯示 P1-P4 控制器插槽即時面板</string>
     <string name="disable_mouse_input">停用滑鼠輸入</string>
     <string name="touchscreen_mode">觸屏模式</string>
-    <string name="touchscreen_mode_description">適用於視覺小說與即時戰略遊戲</string>
     <string name="shooter_mode_toggle">射擊模式</string>
     <string name="shooter_mode_on">啟用滑鼠</string>
     <string name="shooter_mode_off">啟用搖桿</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">手勢設定</string>
     <string name="gesture_settings_title">觸控手勢設定</string>
     <string name="gesture_tap">點擊</string>
     <string name="gesture_drag">拖曳</string>

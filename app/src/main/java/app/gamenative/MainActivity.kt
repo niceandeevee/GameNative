@@ -670,7 +670,7 @@ class MainActivity : ComponentActivity() {
     private fun applyImmersiveMode() {
         if (desiredSystemUiVisible) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                window.setDecorFitsSystemWindows(true)
+                androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, true)
                 window.insetsController?.show(
                     android.view.WindowInsets.Type.statusBars() or
                         android.view.WindowInsets.Type.navigationBars(),
@@ -686,7 +686,7 @@ class MainActivity : ComponentActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Use WindowInsetsController for Android 11+
-            window.setDecorFitsSystemWindows(false) // TODO: look into the proper way of doing this
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
             window.insetsController?.let { controller ->
                 controller.hide(
                     android.view.WindowInsets.Type.statusBars() or

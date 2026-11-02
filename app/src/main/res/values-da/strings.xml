@@ -546,13 +546,11 @@
     <string name="show_controller_debug_menu_subtitle">Vis det live P1-P4-controller-slotpanel i hurtigmenuen i spillet</string>
     <string name="disable_mouse_input">Deaktivér musinput</string>
     <string name="touchscreen_mode">Touchskærmstilstand</string>
-    <string name="touchscreen_mode_description">Til visuelle romaner og RTS-spil</string>
     <string name="shooter_mode_toggle">Shooter-tilstand</string>
     <string name="shooter_mode_on">Aktiver mus</string>
     <string name="shooter_mode_off">Aktiver sticks</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">Gestusindstillinger</string>
     <string name="gesture_settings_title">Touch-gestusindstillinger</string>
     <string name="gesture_tap">Tryk</string>
     <string name="gesture_drag">Træk finger</string>

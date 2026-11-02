@@ -59,7 +59,7 @@ object EaHelperArchive {
             ZstdCompressorInputStream(raw).use { zstd ->
                 TarArchiveInputStream(zstd).use { tar ->
                     while (true) {
-                        val entry = tar.nextTarEntry ?: break
+                        val entry = tar.nextEntry ?: break
                         if (entry.isFile && File(entry.name).name == name) {
                             target.outputStream().use { tar.copyTo(it) }
                             return

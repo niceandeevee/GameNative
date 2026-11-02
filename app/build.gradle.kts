@@ -48,24 +48,6 @@ android {
         )
 
         // Localization support - specify which languages to include
-        resourceConfigurations += listOf(
-            "en",      // English (default)
-            "es",      // Spanish
-            "da",      // Danish
-            "pt-rBR",  // Portuguese (Brazilian)
-            "zh-rTW",  // Traditional Chinese
-            "zh-rCN",  // Simplified Chinese
-            "fr",      // French
-            "de",      // German
-            "uk",      // Ukrainian
-            "it",      // Italian
-            "ro",      // Română
-            "pl",      // Polish
-            "ru",      // Russian
-            "ko",      // Korean
-            "ja",      // Japanese
-            // TODO: Add more languages here using the ISO 639-1 locale code with regional qualifiers (e.g., "pt-rPT" for European Portuguese)
-        )
 
         vectorDrawables {
             useSupportLibrary = true
@@ -112,6 +94,13 @@ android {
         jvmTarget = "17"
     }
 
+    // Keep only the app's own translations (drops library locales such as AppCompat's).
+    androidResources {
+        localeFilters += listOf(
+            "en", "es", "da", "pt-BR", "zh-TW", "zh-CN", "fr", "de", "uk", "it", "ro", "pl", "ru", "ko", "ja",
+        )
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -139,13 +128,6 @@ android {
                 it.testLogging { events("failed") }
             }
         }
-    }
-
-    lint {
-        // Locale files ship full AndroidX appcompat (abc_*) translations that aren't in the
-        // default locale. These extra translations are harmless and pre-existing; without this
-        // the release-only lintVital pass fails on 150+ ExtraTranslation errors.
-        disable += "ExtraTranslation"
     }
 
     // Configure Assets to be used in different variants
@@ -240,4 +222,8 @@ dependencies {
 
     // Samsung Performance SDK
     implementation(files("src/main/lib/perfsdk-v1.0.0.jar"))
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
 }

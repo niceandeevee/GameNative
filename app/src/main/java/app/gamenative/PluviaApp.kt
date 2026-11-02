@@ -218,8 +218,15 @@ class PluviaApp : Application() {
         fun getDisplayHdrCapabilities(): Display.HdrCapabilities? {
             return try {
                 val displayManager = instance.getSystemService(DISPLAY_SERVICE) as? DisplayManager
-                val caps = displayManager?.getDisplay(Display.DEFAULT_DISPLAY)?.hdrCapabilities
-                if (caps == null || caps.supportedHdrTypes.isEmpty()) null else caps
+                val display = displayManager?.getDisplay(Display.DEFAULT_DISPLAY)
+                val caps = display?.hdrCapabilities
+                val hdrTypes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    display?.mode?.supportedHdrTypes
+                } else {
+                    @Suppress("DEPRECATION")
+                    caps?.supportedHdrTypes
+                }
+                if (caps == null || hdrTypes == null || hdrTypes.isEmpty()) null else caps
             } catch (e: Exception) {
                 Timber.e(e, "Failed to read display HDR capabilities")
                 null

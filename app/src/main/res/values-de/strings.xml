@@ -634,13 +634,11 @@
     <string name="show_controller_debug_menu_subtitle">Live-P1-P4-Controller-Slot-Panel im Schnellmenü im Spiel anzeigen</string>
     <string name="disable_mouse_input">Mauseingabe deaktivieren</string>
     <string name="touchscreen_mode">Touchscreen-Modus</string>
-    <string name="touchscreen_mode_description">Für Visual Novels und RTS-Spiele</string>
     <string name="shooter_mode_toggle">Shooter-Modus</string>
     <string name="shooter_mode_on">Maus aktivieren</string>
     <string name="shooter_mode_off">Sticks aktivieren</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">Gesten-Einstellungen</string>
     <string name="gesture_settings_title">Touch-Gesten-Einstellungen</string>
     <string name="gesture_tap">Tippen</string>
     <string name="gesture_drag">Finger ziehen</string>

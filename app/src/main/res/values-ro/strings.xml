@@ -652,13 +652,11 @@
 	<string name="show_controller_debug_menu_subtitle">Afișează panoul live cu sloturile controllerelor P1-P4 în meniul rapid din joc</string>
 	<string name="disable_mouse_input">Dezactivează input-ul de mouse</string>
 	<string name="touchscreen_mode">Mod touchscreen</string>
-	<string name="touchscreen_mode_description">Pentru visual novels și jocuri RTS</string>
 	<string name="shooter_mode_toggle">Mod shooter</string>
 	<string name="shooter_mode_on">Activează mouse-ul</string>
 	<string name="shooter_mode_off">Activează stick-urile</string>
 
 	<!-- Gesture Settings Dialog -->
-	<string name="gesture_settings">Setări gesturi</string>
 	<string name="gesture_settings_title">Setări gesturi touch</string>
 	<string name="gesture_tap">Atingere</string>
 	<string name="gesture_drag">Trage cu degetul</string>

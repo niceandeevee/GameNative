@@ -546,13 +546,11 @@
     <string name="show_controller_debug_menu_subtitle">Mostra o painel ao vivo dos slots de controle P1-P4 no menu rápido do jogo</string>
     <string name="disable_mouse_input">Desabilitar entrada do mouse</string>
     <string name="touchscreen_mode">Modo Touchscreen</string>
-    <string name="touchscreen_mode_description">Para visual novels e jogos de estratégia em tempo real</string>
     <string name="shooter_mode_toggle">Modo tiro</string>
     <string name="shooter_mode_on">Ativar mouse</string>
     <string name="shooter_mode_off">Ativar sticks</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">Configurações de gestos</string>
     <string name="gesture_settings_title">Configurações de gestos touch</string>
     <string name="gesture_tap">Toque</string>
     <string name="gesture_drag">Arrastar dedo</string>

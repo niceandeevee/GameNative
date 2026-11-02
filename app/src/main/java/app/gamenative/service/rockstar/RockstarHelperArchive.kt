@@ -69,7 +69,7 @@ object RockstarHelperArchive {
             ZstdCompressorInputStream(raw).use { zstd ->
                 TarArchiveInputStream(zstd).use { tar ->
                     while (true) {
-                        val entry = tar.nextTarEntry ?: break
+                        val entry = tar.nextEntry ?: break
                         if (!entry.isFile) continue
                         val name = File(entry.name).name
                         if (name.isEmpty() || name == "." || name == "..") continue

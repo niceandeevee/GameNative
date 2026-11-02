@@ -689,13 +689,11 @@
     <string name="show_controller_debug_menu_subtitle">Muestra el panel en vivo de ranuras de mando P1-P4 en el menú rápido del juego</string>
     <string name="disable_mouse_input">Desactivar entrada de ratón</string>
     <string name="touchscreen_mode">Modo de pantalla táctil</string>
-    <string name="touchscreen_mode_description">Para novelas visuales y juegos de estrategia en tiempo real.</string>
     <string name="shooter_mode_toggle">Modo tirador</string>
     <string name="shooter_mode_on">Activar ratón</string>
     <string name="shooter_mode_off">Activar sticks</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">Configuración de gestos</string>
     <string name="gesture_settings_title">Configuración de gestos táctiles</string>
     <string name="gesture_tap">Toque</string>
     <string name="gesture_drag">Arrastrar dedo</string>

@@ -1181,9 +1181,9 @@ fun XServerScreen(
                         (anchor.display?.displayId ?: Display.DEFAULT_DISPLAY) != Display.DEFAULT_DISPLAY
 
                     if (isExternalDisplaySession) {
-                        ui.imeInputReceiver?.showKeyboard() ?: imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                        ui.imeInputReceiver?.showKeyboard() ?: forceShowIme(imm)
                     } else {
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                        forceShowIme(imm)
                     }
                 }
                 if (Build.VERSION.SDK_INT > 29) {
@@ -2053,9 +2053,9 @@ fun XServerScreen(
                             (anchor.display?.displayId ?: android.view.Display.DEFAULT_DISPLAY) != android.view.Display.DEFAULT_DISPLAY
                         if (isExternalDisplaySession) {
                             ui.imeInputReceiver?.showKeyboard()
-                                ?: imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                                ?: forceShowIme(imm)
                         } else {
-                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                            forceShowIme(imm)
                         }
                     }
                 }
@@ -3386,6 +3386,14 @@ private fun ScLiveEditorDialogs(
 
 /** Lives outside XServerScreen because that composable sits at the dex verifier's 255-register
  * limit — its FocusRequester/effect locals tripped a runtime VerifyError when inlined there. */
+
+// The game surface is not a text editor, so showSoftInput() would not open the IME; only the
+// legacy forced toggle does.
+@Suppress("DEPRECATION")
+private fun forceShowIme(imm: InputMethodManager) {
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+}
+
 @Composable
 private fun ManualResumeOverlay(onResume: () -> Unit) {
     Box(
