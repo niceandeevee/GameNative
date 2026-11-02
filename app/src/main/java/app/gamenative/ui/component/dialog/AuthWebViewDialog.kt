@@ -109,8 +109,6 @@ fun AuthWebViewDialog(
                                     // Secure defaults: no file/content access to limit OAuth surface
                                     allowFileAccess = false
                                     allowContentAccess = false
-                                    allowFileAccessFromFileURLs = false
-                                    allowUniversalAccessFromFileURLs = false
                                     mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
                                 }
 
@@ -129,11 +127,6 @@ fun AuthWebViewDialog(
                                         return super.shouldOverrideUrlLoading(view, request)
                                     }
 
-                                    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                                        handleUrl(url)
-                                        return super.shouldOverrideUrlLoading(view, url)
-                                    }
-
                                     override fun onPageFinished(view: WebView?, url: String?) {
                                         super.onPageFinished(view, url)
                                         Timber.d("Auth WebView page finished loading: ${redactUrlForLogging(url)}")
@@ -144,12 +137,14 @@ fun AuthWebViewDialog(
 
                                     override fun onReceivedError(
                                         view: WebView?,
-                                        errorCode: Int,
-                                        description: String?,
-                                        failingUrl: String?
+                                        request: WebResourceRequest?,
+                                        error: android.webkit.WebResourceError?,
                                     ) {
-                                        super.onReceivedError(view, errorCode, description, failingUrl)
-                                        Timber.e("Auth WebView error: $errorCode - $description for URL: ${redactUrlForLogging(failingUrl)}")
+                                        super.onReceivedError(view, request, error)
+                                        Timber.e(
+                                            "Auth WebView error: ${error?.errorCode} - ${error?.description} for URL: " +
+                                                redactUrlForLogging(request?.url?.toString()),
+                                        )
                                     }
                                 }
 

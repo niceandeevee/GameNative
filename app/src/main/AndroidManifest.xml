@@ -29,17 +29,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
 
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" tools:node="remove" />
-
     <application
         android:name=".PluviaApp"
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
-        android:extractNativeLibs="true"
         android:icon="${icon}"
         android:isGame="true"
         android:label="@string/app_name"

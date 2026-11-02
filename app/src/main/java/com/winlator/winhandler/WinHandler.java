@@ -284,7 +284,7 @@ public class WinHandler {
         this.running = false;
         this.dinputMapperType = (byte) 1;
         this.preferredInputApi = PreferredInputApi.BOTH;
-        this.gamepadClients = new CopyOnWriteArrayList();
+        this.gamepadClients = new CopyOnWriteArrayList<>();
         this.xinputProcesses = new ArrayList<>();
         this.xServer = xServer;
         this.xServerView = xServerView;
@@ -1072,10 +1072,35 @@ public class WinHandler {
         rumbleKeepaliveThread.start();
     }
 
+    private static Vibrator deviceVibrator(InputDevice device) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            return device.getVibratorManager().getDefaultVibrator();
+        }
+        return legacyDeviceVibrator(device);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Vibrator legacyDeviceVibrator(InputDevice device) {
+        return device.getVibrator();
+    }
+
+    private static Vibrator phoneVibrator(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            android.os.VibratorManager manager = context.getSystemService(android.os.VibratorManager.class);
+            return manager != null ? manager.getDefaultVibrator() : null;
+        }
+        return legacyPhoneVibrator(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Vibrator legacyPhoneVibrator(Context context) {
+        return (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+    }
+
     private void rearmControllerVibration(int slot) {
         controllerRumbleAppliedMs[slot] = 0;
         InputDevice device = InputDevice.getDevice(rumbleDeviceIds[slot]);
-        Vibrator controllerVibrator = device != null ? device.getVibrator() : null;
+        Vibrator controllerVibrator = device != null ? deviceVibrator(device) : null;
         if (controllerVibrator != null && controllerVibrator.hasVibrator()) {
             controllerVibrator.vibrate(VibrationEffect.createOneShot(CONTROLLER_RUMBLE_DURATION_MS, controllerRumbleAmplitude[slot]));
             controllerRumbleAppliedMs[slot] = SystemClock.uptimeMillis();
@@ -1146,7 +1171,7 @@ public class WinHandler {
         // --- Step 2: Attempt to vibrate the physical controller first ---
         InputDevice device = InputDevice.getDevice(deviceId);
         if (device != null) {
-            Vibrator controllerVibrator = device.getVibrator();
+            Vibrator controllerVibrator = deviceVibrator(device);
             if (controllerVibrator != null && controllerVibrator.hasVibrator()) {
                 controllerVibrator.vibrate(VibrationEffect.createOneShot(CONTROLLER_RUMBLE_DURATION_MS, amplitude));
                 controllerRumbleAmplitude[slot] = amplitude;
@@ -1158,7 +1183,7 @@ public class WinHandler {
         // --- Step 3: Fallback to phone vibration only for a real controller without rumble.
         if (!controllerVibrated && device != null) {
             Log.w("WinHandler", "No physical controller vibrator found, falling back to device vibration.");
-            Vibrator phoneVibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+            Vibrator phoneVibrator = phoneVibrator(activity);
             if (phoneVibrator != null && phoneVibrator.hasVibrator()) {
                 int finalPhoneAmplitude = getPhoneRumbleAmplitude(amplitude);
                 if (finalPhoneAmplitude > 0) {
@@ -1169,7 +1194,7 @@ public class WinHandler {
         } else if (device == null) {
             long now = SystemClock.uptimeMillis();
             if (now - lastStandalonePhoneRumbleMs >= STANDALONE_PHONE_RUMBLE_THROTTLE_MS) {
-                Vibrator phoneVibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+                Vibrator phoneVibrator = phoneVibrator(activity);
                 if (phoneVibrator != null && phoneVibrator.hasVibrator()) {
                     int finalPhoneAmplitude = getPhoneRumbleAmplitude(amplitude);
                     if (finalPhoneAmplitude > 0) {
@@ -1206,13 +1231,13 @@ public class WinHandler {
         // Attempt to stop the physical controller's vibration if it exists
         InputDevice device = InputDevice.getDevice(deviceId);
         if (device != null) {
-            Vibrator vibrator = device.getVibrator();
+            Vibrator vibrator = deviceVibrator(device);
             if (vibrator != null && vibrator.hasVibrator()) {
                 vibrator.cancel();
             }
         }
         // Always attempt to stop the phone's vibration
-        Vibrator phoneVibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator phoneVibrator = phoneVibrator(activity);
         if (phoneVibrator != null) {
             phoneVibrator.cancel();
         }

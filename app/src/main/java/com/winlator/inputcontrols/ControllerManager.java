@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
-import android.preference.PreferenceManager;
 import android.util.SparseArray;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -84,7 +83,7 @@ public class ControllerManager {
      */
     public void init(Context context) {
         this.context = context.getApplicationContext();
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+        this.preferences = this.context.getSharedPreferences(this.context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
         this.inputManager = (InputManager) this.context.getSystemService(Context.INPUT_SERVICE);
 
         // On startup, we load saved settings and scan for connected devices.

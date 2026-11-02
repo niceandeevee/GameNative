@@ -202,6 +202,7 @@ import com.winlator.container.ContainerManager
 import app.gamenative.statsgen.StatType
 import app.gamenative.statsgen.StatsAchievementsGenerator
 import app.gamenative.statsgen.VdfParser
+import app.gamenative.statsgen.vdfMap
 import app.gamenative.utils.DownloadSpeedConfig
 import app.gamenative.utils.CustomGameScanner
 import java.nio.ByteBuffer
@@ -931,11 +932,11 @@ class SteamService : Service(), IChallengeUrlChanged {
                 fromParentRows.add(it)
                 ids.add(it)
             }
-            svc.appDao.findDownloadableDLCApps(appId).orEmpty().forEach {
+            svc.appDao.findDownloadableDLCApps(appId).forEach {
                 fromLicensedRows.add(it.id)
                 ids.add(it.id)
             }
-            svc.appDao.findHiddenDLCApps(appId).orEmpty().forEach {
+            svc.appDao.findHiddenDLCApps(appId).forEach {
                 fromLicensedRows.add(it.id)
                 ids.add(it.id)
             }
@@ -1617,7 +1618,6 @@ class SteamService : Service(), IChallengeUrlChanged {
             val archOk = when (depot.osArch) {
                 OSArch.Arch64, OSArch.Unknown -> true
                 OSArch.Arch32 -> !prefer64Bit
-                else -> false
             }
             if (!archOk) return false
             // 4. DLC you actually own
@@ -2918,14 +2918,6 @@ class SteamService : Service(), IChallengeUrlChanged {
                                             }
 
                                             val downloadBody = downloadResponse.body
-                                            if (downloadBody == null) {
-                                                Timber.w(
-                                                    "Empty body for steam controller config " +
-                                                        publishedFileId,
-                                                )
-                                                return@use
-                                            }
-
                                             configFile.outputStream().use { output ->
                                                 downloadBody.byteStream().use { input ->
                                                     input.copyTo(output)
@@ -4317,10 +4309,9 @@ class SteamService : Service(), IChallengeUrlChanged {
                     val parsedSchema = VdfParser().binaryLoads(userStats.schema.toByteArray())
                     for ((_, appData) in parsedSchema) {
                         if (appData !is Map<*, *>) continue
-                        val statInfo = (appData as Map<String, Any>)["stats"] as? Map<String, Any> ?: continue
+                        val statInfo = appData.vdfMap()?.get("stats").vdfMap() ?: continue
                         for ((statKey, statData) in statInfo) {
-                            if (statData !is Map<*, *>) continue
-                            val stat = statData as Map<String, Any>
+                            val stat = statData.vdfMap() ?: continue
                             val statType = stat["type"]?.toString() ?: continue
                             if (statType == StatType.STAT_TYPE_BITS || statType == StatType.ACHIEVEMENTS) continue
                             val name = stat["name"]?.toString()?.lowercase() ?: continue

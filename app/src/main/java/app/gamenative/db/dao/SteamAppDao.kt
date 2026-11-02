@@ -160,7 +160,7 @@ interface SteamAppDao {
             "       REPLACE(REPLACE(license.app_ids, '[', ','), ']', ',') LIKE ('%,' || app.id || ',%') " +
             ")"
     )
-    suspend fun findDownloadableDLCApps(appId: Int): List<SteamApp>?
+    suspend fun findDownloadableDLCApps(appId: Int): List<SteamApp>
 
     @Query("SELECT * FROM steam_app AS app WHERE dlc_for_app_id = :appId AND depots = '{}' AND " +
             " EXISTS (" +
@@ -169,7 +169,7 @@ interface SteamAppDao {
             "       REPLACE(REPLACE(license.app_ids, '[', ','), ']', ',') LIKE ('%,' || app.id || ',%') " +
             ")"
     )
-    suspend fun findHiddenDLCApps(appId: Int): List<SteamApp>?
+    suspend fun findHiddenDLCApps(appId: Int): List<SteamApp>
 
     /** All local DLC app IDs for a parent app, regardless of license (catalog only). */
     @Query("SELECT id FROM steam_app WHERE dlc_for_app_id = :appId")

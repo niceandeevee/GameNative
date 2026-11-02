@@ -601,7 +601,7 @@ object CustomGameScanner {
             File(appDir, "CustomGames"),
         )
         val src = File(folderPath)
-        if (src.parentFile !in sharedRoots || !src.isDirectory) return folderPath
+        if (src.parentFile?.let { it in sharedRoots } != true || !src.isDirectory) return folderPath
         if (GameMetadataManager.getAppId(src) == null) return folderPath
         val dst = File(internalRootPath, src.name)
         if (dst.exists()) {

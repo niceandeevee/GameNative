@@ -26,7 +26,7 @@ class CaseInsensitiveFileSystemTest {
 
     @Before
     fun setUp() {
-        tmpDir = createTempDir("depot_test")
+        tmpDir = kotlin.io.path.createTempDirectory("depot_test").toFile()
         fs = CaseInsensitiveFileSystem()
     }
 
@@ -123,7 +123,7 @@ class CaseInsensitiveFileSystemTest {
 
     @Test
     fun `chunk staging paths are redirected and cleaned up on both sides`() {
-        val redirectDir = createTempDir("chunk_redirect")
+        val redirectDir = kotlin.io.path.createTempDirectory("chunk_redirect").toFile()
         try {
             val redirectFs = CaseInsensitiveFileSystem(
                 chunkStagingRedirect = redirectDir.toOkioPath(),

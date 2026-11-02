@@ -81,7 +81,6 @@ object GameFixesRegistry {
                     .firstOrNull { it[1] == path }?.get(0) ?: GAME_DRIVE_LETTER
                 path to "$letter:\\"
             }
-            else -> null
         }
     }
 

@@ -1181,9 +1181,9 @@ fun XServerScreen(
                         (anchor.display?.displayId ?: Display.DEFAULT_DISPLAY) != Display.DEFAULT_DISPLAY
 
                     if (isExternalDisplaySession) {
-                        ui.imeInputReceiver?.showKeyboard() ?: imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                        ui.imeInputReceiver?.showKeyboard() ?: forceShowIme(imm)
                     } else {
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                        forceShowIme(imm)
                     }
                 }
                 if (Build.VERSION.SDK_INT > 29) {
@@ -2053,9 +2053,9 @@ fun XServerScreen(
                             (anchor.display?.displayId ?: android.view.Display.DEFAULT_DISPLAY) != android.view.Display.DEFAULT_DISPLAY
                         if (isExternalDisplaySession) {
                             ui.imeInputReceiver?.showKeyboard()
-                                ?: imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                                ?: forceShowIme(imm)
                         } else {
-                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                            forceShowIme(imm)
                         }
                     }
                 }
@@ -3386,6 +3386,14 @@ private fun ScLiveEditorDialogs(
 
 /** Lives outside XServerScreen because that composable sits at the dex verifier's 255-register
  * limit — its FocusRequester/effect locals tripped a runtime VerifyError when inlined there. */
+
+// The game surface is not a text editor, so showSoftInput() would not open the IME; only the
+// legacy forced toggle does.
+@Suppress("DEPRECATION")
+private fun forceShowIme(imm: InputMethodManager) {
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+}
+
 @Composable
 private fun ManualResumeOverlay(onResume: () -> Unit) {
     Box(
@@ -4286,129 +4294,127 @@ private fun setupXEnvironment(
     var preInstallCommands: List<PreInstallSteps.PreInstallCommand> = emptyList()
     var gameExecutable = ""
 
-    if (container != null) {
-        try {
-            GameFixesRegistry.applyFor(context, appId, container)
-        } catch (e: Exception) {
-            Timber.tag("GameFixes").w(e, "Game fixes failed before launch")
-        }
-        try {
-            SteamInstallScriptRegistry.applyForLaunch(container, appId)
-        } catch (e: Exception) {
-            Timber.w(e, "Install-script registry apply failed before launch")
-        }
-        if (container.startupSelection == Container.STARTUP_SELECTION_AGGRESSIVE) {
-            if (container.containerVariant.equals(Container.BIONIC)){
-                Timber.d("Incorrect startup selection detected. Reverting to essential startup selection")
-                container.startupSelection = Container.STARTUP_SELECTION_ESSENTIAL
-                container.putExtra("startupSelection", java.lang.String.valueOf(Container.STARTUP_SELECTION_ESSENTIAL))
-                container.saveData()
-            } else {
-                xServer.winHandler.killProcess("services.exe");
-            }
-        }
-
-        val wow64Mode = container.isWoW64Mode
-        guestProgramLauncherComponent.setContainer(container);
-        guestProgramLauncherComponent.setWineInfo(xServerState.value.wineInfo);
-        if (guestProgramLauncherComponent is BionicProgramLauncherComponent && container.isLaunchBionicSteam) {
-            // Bionic-Steam mode publishes SteamGameId/SteamAppId from this value.
-            val numericAppId = runCatching { ContainerUtils.extractGameIdFromContainerId(appId) }.getOrNull()
-            if (numericAppId != null && numericAppId > 0) {
-                guestProgramLauncherComponent.setSteamAppId(numericAppId.toString())
-            }
-        }
-
-        var finalExecArgs: String
-        if (execArgs.isNullOrEmpty()) {
-            finalExecArgs = container.execArgs
+    try {
+        GameFixesRegistry.applyFor(context, appId, container)
+    } catch (e: Exception) {
+        Timber.tag("GameFixes").w(e, "Game fixes failed before launch")
+    }
+    try {
+        SteamInstallScriptRegistry.applyForLaunch(container, appId)
+    } catch (e: Exception) {
+        Timber.w(e, "Install-script registry apply failed before launch")
+    }
+    if (container.startupSelection == Container.STARTUP_SELECTION_AGGRESSIVE) {
+        if (container.containerVariant.equals(Container.BIONIC)){
+            Timber.d("Incorrect startup selection detected. Reverting to essential startup selection")
+            container.startupSelection = Container.STARTUP_SELECTION_ESSENTIAL
+            container.putExtra("startupSelection", java.lang.String.valueOf(Container.STARTUP_SELECTION_ESSENTIAL))
+            container.saveData()
         } else {
-            finalExecArgs = execArgs
-            for (drive in Container.drivesIterator(container.drives)) {
-                if (drive[1].isNotEmpty()) {
-                    finalExecArgs = finalExecArgs.replace(drive[1], "${drive[0]}:")
-                }
-            }
+            xServer.winHandler.killProcess("services.exe");
         }
+    }
 
-        gameExecutable = "wine explorer /desktop=shell," + xServer.screenInfo + " " +
-            getWineStartCommand(context, appId, container, bootToContainer, testGraphics, appLaunchInfo, envVars, guestProgramLauncherComponent, gameSource, offline) +
-            (if (finalExecArgs.isNotEmpty()) " $finalExecArgs" else "")
-        preInstallCommands = PreInstallSteps.getPreInstallCommands(
-            container,
-            appId,
-            gameSource,
-            xServer.screenInfo.toString(),
-            containerVariantChanged,
-        )
-        guestProgramLauncherComponent.guestExecutable =
-            preInstallCommands.firstOrNull()?.executable ?: gameExecutable
-        guestProgramLauncherComponent.isWoW64Mode = wow64Mode
-        // Set steam type for selecting appropriate box64rc
-        guestProgramLauncherComponent.setSteamType(container.getSteamType())
-        if (!container.isLaunchRealSteam && !container.isLaunchBionicSteam) envVars.put("PROTON_DISABLE_LSTEAMCLIENT", "1")
-
-        envVars.putAll(container.envVars)
-        if (container.isLoadMods && !bootToContainer && !testGraphics) ModDllOverrides.apply(container, envVars)
-        envVars.remove("DXVK_FRAME_RATE")
-        envVars.remove("VKD3D_FRAME_RATE")
-        if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
-        if (!envVars.has("_JAVA_OPTIONS")) envVars.put("_JAVA_OPTIONS", "-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:-UseZGC")
-
-        val graphicsDriverConfig = KeyValueSet(container.getGraphicsDriverConfig())
-        if (graphicsDriverConfig.get("version").lowercase(Locale.getDefault()).contains("gen8")) {
-            var tuDebug = envVars.get("TU_DEBUG")
-            if (!tuDebug.contains("nolrz")) tuDebug = (if (!tuDebug.isEmpty()) "$tuDebug," else "") + "nolrz"
-            envVars.put("TU_DEBUG", tuDebug)
+    val wow64Mode = container.isWoW64Mode
+    guestProgramLauncherComponent.setContainer(container);
+    guestProgramLauncherComponent.setWineInfo(xServerState.value.wineInfo);
+    if (container.isLaunchBionicSteam) {
+        // Bionic-Steam mode publishes SteamGameId/SteamAppId from this value.
+        val numericAppId = runCatching { ContainerUtils.extractGameIdFromContainerId(appId) }.getOrNull()
+        if (numericAppId != null && numericAppId > 0) {
+            guestProgramLauncherComponent.setSteamAppId(numericAppId.toString())
         }
+    }
 
-        // Timber.d("3 Container drives: ${container.drives}")
-        val bindingPaths = mutableListOf<String>()
-        for (drive in container.drivesIterator()) {
-            Timber.i("Binding drive ${drive[0]} with path of ${drive[1]}")
-            bindingPaths.add(drive[1])
-        }
-        guestProgramLauncherComponent.bindingPaths = bindingPaths.toTypedArray()
-        guestProgramLauncherComponent.box64Version = container.box64Version
-        guestProgramLauncherComponent.box64Preset = container.box64Preset
-        if (guestProgramLauncherComponent is BionicProgramLauncherComponent) {
-            guestProgramLauncherComponent.setFEXCorePreset(container.fexCorePreset)
-        }
-        guestProgramLauncherComponent.setPreUnpack {
-            unpackExecutableFile(
-                context = context,
-                needsUnpacking = container.isNeedsUnpacking,
-                container = container,
-                appId = appId,
-                appLaunchInfo = appLaunchInfo,
-                guestProgramLauncherComponent = guestProgramLauncherComponent,
-                containerVariantChanged = containerVariantChanged,
-                onError = onGameLaunchError
-            )
-            if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM && !bootToContainer) {
-                runSteamHostCegPass(appId, imageFs, guestProgramLauncherComponent, onGameLaunchError)
-            }
-            if (preInstallCommands.isNotEmpty()) {
-                PluviaApp.events.emit(AndroidEvent.SetBootingSplashText("Installing prerequisites..."))
-            } else if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM && !bootToContainer) {
-                PluviaApp.events.emit(AndroidEvent.SetBootingSplashText(context.getString(R.string.steam_starting)))
-                SteamHostStatusWatch.start(context, imageFs, onGameLaunchError)
-            } else {
-                PluviaApp.events.emit(AndroidEvent.SetBootingSplashText("Launching game..."))
-            }
-        }
-
-        val enableGstreamer = container.isGstreamerWorkaround()
-
-        if (enableGstreamer) {
-            for (envVar in Container.MEDIACONV_ENV_VARS) {
-                val parts: Array<String?> = envVar.split("=".toRegex(), limit = 2).toTypedArray()
-                if (parts.size == 2) {
-                    envVars.put(parts[0], parts[1])
-                }
+    var finalExecArgs: String
+    if (execArgs.isNullOrEmpty()) {
+        finalExecArgs = container.execArgs
+    } else {
+        finalExecArgs = execArgs
+        for (drive in Container.drivesIterator(container.drives)) {
+            if (drive[1].isNotEmpty()) {
+                finalExecArgs = finalExecArgs.replace(drive[1], "${drive[0]}:")
             }
         }
     }
+
+    gameExecutable = "wine explorer /desktop=shell," + xServer.screenInfo + " " +
+        getWineStartCommand(context, appId, container, bootToContainer, testGraphics, appLaunchInfo, envVars, guestProgramLauncherComponent, gameSource, offline) +
+        (if (finalExecArgs.isNotEmpty()) " $finalExecArgs" else "")
+    preInstallCommands = PreInstallSteps.getPreInstallCommands(
+        container,
+        appId,
+        gameSource,
+        xServer.screenInfo.toString(),
+        containerVariantChanged,
+    )
+    guestProgramLauncherComponent.guestExecutable =
+        preInstallCommands.firstOrNull()?.executable ?: gameExecutable
+    guestProgramLauncherComponent.isWoW64Mode = wow64Mode
+    // Set steam type for selecting appropriate box64rc
+    guestProgramLauncherComponent.setSteamType(container.getSteamType())
+    if (!container.isLaunchRealSteam && !container.isLaunchBionicSteam) envVars.put("PROTON_DISABLE_LSTEAMCLIENT", "1")
+
+    envVars.putAll(container.envVars)
+    if (container.isLoadMods && !bootToContainer && !testGraphics) ModDllOverrides.apply(container, envVars)
+    envVars.remove("DXVK_FRAME_RATE")
+    envVars.remove("VKD3D_FRAME_RATE")
+    if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
+    if (!envVars.has("_JAVA_OPTIONS")) envVars.put("_JAVA_OPTIONS", "-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:-UseZGC")
+
+    val graphicsDriverConfig = KeyValueSet(container.getGraphicsDriverConfig())
+    if (graphicsDriverConfig.get("version").lowercase(Locale.getDefault()).contains("gen8")) {
+        var tuDebug = envVars.get("TU_DEBUG")
+        if (!tuDebug.contains("nolrz")) tuDebug = (if (!tuDebug.isEmpty()) "$tuDebug," else "") + "nolrz"
+        envVars.put("TU_DEBUG", tuDebug)
+    }
+
+    // Timber.d("3 Container drives: ${container.drives}")
+    val bindingPaths = mutableListOf<String>()
+    for (drive in container.drivesIterator()) {
+        Timber.i("Binding drive ${drive[0]} with path of ${drive[1]}")
+        bindingPaths.add(drive[1])
+    }
+    guestProgramLauncherComponent.bindingPaths = bindingPaths.toTypedArray()
+    guestProgramLauncherComponent.box64Version = container.box64Version
+    guestProgramLauncherComponent.box64Preset = container.box64Preset
+    guestProgramLauncherComponent.setFEXCorePreset(container.fexCorePreset)
+
+    guestProgramLauncherComponent.setPreUnpack {
+        unpackExecutableFile(
+            context = context,
+            needsUnpacking = container.isNeedsUnpacking,
+            container = container,
+            appId = appId,
+            appLaunchInfo = appLaunchInfo,
+            guestProgramLauncherComponent = guestProgramLauncherComponent,
+            containerVariantChanged = containerVariantChanged,
+            onError = onGameLaunchError
+        )
+        if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM && !bootToContainer) {
+            runSteamHostCegPass(appId, imageFs, guestProgramLauncherComponent, onGameLaunchError)
+        }
+        if (preInstallCommands.isNotEmpty()) {
+            PluviaApp.events.emit(AndroidEvent.SetBootingSplashText("Installing prerequisites..."))
+        } else if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM && !bootToContainer) {
+            PluviaApp.events.emit(AndroidEvent.SetBootingSplashText(context.getString(R.string.steam_starting)))
+            SteamHostStatusWatch.start(context, imageFs, onGameLaunchError)
+        } else {
+            PluviaApp.events.emit(AndroidEvent.SetBootingSplashText("Launching game..."))
+        }
+    }
+
+    val enableGstreamer = container.isGstreamerWorkaround()
+
+    if (enableGstreamer) {
+        for (envVar in Container.MEDIACONV_ENV_VARS) {
+            val parts: Array<String?> = envVar.split("=".toRegex(), limit = 2).toTypedArray()
+            if (parts.size == 2) {
+                envVars.put(parts[0], parts[1])
+            }
+        }
+    }
+
 
     val environment = XEnvironment(context, imageFs)
     environment.addComponent(
@@ -4558,43 +4564,41 @@ private fun setupXEnvironment(
     FEXCoreManager.ensureAppConfigOverrides(context)
 
     // Moved here, as guestProgramLauncherComponent.environment is setup after addComponent()
-    if (container != null) {
-        if (container.isLaunchRealSteam && !container.isLaunchHeadlessSteam) {
-            SteamTokenLogin(
-                steamId = PrefManager.steamUserSteamId64.toString(),
-                login = PrefManager.username,
-                token = PrefManager.refreshToken,
-                imageFs = imageFs,
-                guestProgramLauncherComponent = guestProgramLauncherComponent,
-            ).setupSteamFiles()
-        }
+    if (container.isLaunchRealSteam && !container.isLaunchHeadlessSteam) {
+        SteamTokenLogin(
+            steamId = PrefManager.steamUserSteamId64.toString(),
+            login = PrefManager.username,
+            token = PrefManager.refreshToken,
+            imageFs = imageFs,
+            guestProgramLauncherComponent = guestProgramLauncherComponent,
+        ).setupSteamFiles()
     }
 
+
     // Log container settings before starting
-    if (container != null) {
-        Timber.i("---- Launching Container ----")
-        Timber.i("ID: ${container.id}")
-        Timber.i("Name: ${container.name}")
-        Timber.i("Screen Size: ${container.screenSize}")
-        Timber.i("Graphics Driver: ${container.graphicsDriver}")
-        Timber.i("DX Wrapper: ${container.dxWrapper} (Config: '${container.dxWrapperConfig}')")
-        Timber.i("Audio Driver: ${container.audioDriver}")
-        Timber.i("WoW64 Mode: ${container.isWoW64Mode}")
-        Timber.i("Box64 Version: ${container.box64Version}")
-        Timber.i("Box64 Preset: ${container.box64Preset}")
-        Timber.i("FEXCore Preset: ${container.fexCorePreset}")
-        Timber.i("CPU List: ${container.cpuList}")
-        Timber.i("CPU List WoW64: ${container.cpuListWoW64}")
-        Timber.i("Env Vars (Container Base): ${EnvVarRedaction.redact(container.envVars)}") // Log base container vars
-        Timber.i("Env Vars (Final Guest): ${EnvVarRedaction.redact(envVars)}")   // Log the actual env vars being passed
-        Timber.i("Guest Executable: ${guestProgramLauncherComponent.guestExecutable}") // Log the command
-        Timber.i("---------------------------")
-    }
+    Timber.i("---- Launching Container ----")
+    Timber.i("ID: ${container.id}")
+    Timber.i("Name: ${container.name}")
+    Timber.i("Screen Size: ${container.screenSize}")
+    Timber.i("Graphics Driver: ${container.graphicsDriver}")
+    Timber.i("DX Wrapper: ${container.dxWrapper} (Config: '${container.dxWrapperConfig}')")
+    Timber.i("Audio Driver: ${container.audioDriver}")
+    Timber.i("WoW64 Mode: ${container.isWoW64Mode}")
+    Timber.i("Box64 Version: ${container.box64Version}")
+    Timber.i("Box64 Preset: ${container.box64Preset}")
+    Timber.i("FEXCore Preset: ${container.fexCorePreset}")
+    Timber.i("CPU List: ${container.cpuList}")
+    Timber.i("CPU List WoW64: ${container.cpuListWoW64}")
+    Timber.i("Env Vars (Container Base): ${EnvVarRedaction.redact(container.envVars)}") // Log base container vars
+    Timber.i("Env Vars (Final Guest): ${EnvVarRedaction.redact(envVars)}")   // Log the actual env vars being passed
+    Timber.i("Guest Executable: ${guestProgramLauncherComponent.guestExecutable}") // Log the command
+    Timber.i("---------------------------")
+
 
     // Request encrypted app ticket for Steam games at launch time
     val isCustomGame = gameSource == GameSource.CUSTOM_GAME
     val gameIdForTicket = ContainerUtils.extractGameIdFromContainerId(appId)
-    if (!bootToContainer && !isCustomGame && gameIdForTicket != null && !container.isLaunchRealSteam && !container.isLaunchBionicSteam) {
+    if (!bootToContainer && !isCustomGame && !container.isLaunchRealSteam && !container.isLaunchBionicSteam) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val ticket = SteamService.instance?.getEncryptedAppTicket(gameIdForTicket)
@@ -4624,7 +4628,7 @@ private fun setupXEnvironment(
     xServer.winHandler.start()
     try {
         environment.startEnvironmentComponents()
-        if (container != null && !bootToContainer) {
+        if (!bootToContainer) {
             CoroutineScope(Dispatchers.IO).launch { GameFileDetection.ensure(context, container) }
         }
     } catch (e: Exception) {
@@ -4640,16 +4644,16 @@ private fun setupXEnvironment(
 
     if (gameSource == GameSource.STEAM && container.isLaunchHeadlessSteam) {
         val gameIdInt = ContainerUtils.extractGameIdFromContainerId(appId)
-        if (gameIdInt != null && !bootToContainer) {
+        if (!bootToContainer) {
             PluviaApp.steamHostAchievementPoller = SteamHostAchievementPoller(gameIdInt, context).also { it.start() }
         }
     } else if (gameSource == GameSource.STEAM) {
         Timber.tag("achievements").d("Setting up achievements for Steam appID=$appId...")
         val gameIdInt = ContainerUtils.extractGameIdFromContainerId(appId)
-        val configDirectory = gameIdInt?.let { SteamService.findSteamSettingsDir(context, it) }
+        val configDirectory = SteamService.findSteamSettingsDir(context, gameIdInt)
         var cachedAchAppId = SteamService.cachedAchievementsAppId
 
-        if (gameIdInt != null && configDirectory != null) {
+        if (configDirectory != null) {
             // Re-generate achievements (it should keep the already existing ones if they're there).
             if (cachedAchAppId != gameIdInt && SteamService.isLoggedIn) {
                 try {

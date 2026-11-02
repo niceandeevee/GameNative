@@ -16,6 +16,8 @@ import org.robolectric.RobolectricTestRunner
 import timber.log.Timber
 import java.io.File
 
+private val lenientJson = Json { ignoreUnknownKeys = true }
+
 /**
  * Test suite for CoreDriverDownloader functionality.
  * Tests downloading, caching, and fallback to bundled assets for Adreno and SD8Elite drivers.
@@ -49,7 +51,7 @@ class CoreDriverDownloaderTest {
         assertNotNull("${CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE} should exist in assets", manifestJson)
         assertTrue("Manifest should not be empty", manifestJson.isNotEmpty())
 
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(manifestJson)
 
         assertTrue("Core driver components list should not be empty", manifest.components.isNotEmpty())
@@ -63,7 +65,7 @@ class CoreDriverDownloaderTest {
     @Test
     fun testAdrenoDriversExist() {
         val manifestJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(manifestJson)
 
         val adrenoDrivers = listOf(
@@ -83,7 +85,7 @@ class CoreDriverDownloaderTest {
     @Test
     fun testSD8EliteDriversExist() {
         val manifestJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(manifestJson)
 
         val sd8EliteDrivers = listOf(
@@ -103,7 +105,7 @@ class CoreDriverDownloaderTest {
     @Test
     fun testCoreDriverUrlFormat() {
         val manifestJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -233,7 +235,7 @@ class CoreDriverDownloaderTest {
     @Test
     fun testAllManifestComponentsHaveValidUrls() {
         val manifestJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(manifestJson)
 
         val validDomains = listOf(
@@ -255,7 +257,7 @@ class CoreDriverDownloaderTest {
     @Test
     fun testComponentNamingConsistency() {
         val manifestJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -277,19 +279,19 @@ class CoreDriverDownloaderTest {
     @Test
     fun testNoOverlapWithOtherDownloaders() {
         val coreDriverJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val coreDriverManifest = Json { ignoreUnknownKeys = true }
+        val coreDriverManifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(coreDriverJson)
 
         val graphicsDriverJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val graphicsDriverManifest = Json { ignoreUnknownKeys = true }
+        val graphicsDriverManifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(graphicsDriverJson)
 
         val dxwrapperJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val dxwrapperManifest = Json { ignoreUnknownKeys = true }
+        val dxwrapperManifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(dxwrapperJson)
 
         val wincomponentJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val wincomponentManifest = Json { ignoreUnknownKeys = true }
+        val wincomponentManifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(wincomponentJson)
 
         val coreDriverIds = coreDriverManifest.components.map { it.id }.toSet()
@@ -318,7 +320,7 @@ class CoreDriverDownloaderTest {
     @Test
     fun testAllComponentsAreZipFiles() {
         val manifestJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(manifestJson)
 
         manifest.components.forEach { component ->

@@ -77,7 +77,7 @@ class BestConfigServiceTest {
         // Initialize PrefManager
         PrefManager.init(context)
 
-        val workingDir = File(System.getProperty("user.dir"))
+        val workingDir = File(System.getProperty("user.dir")!!)
         val manifestFile = listOf(
             File(workingDir, "manifest.json"),
             File(workingDir.parentFile, "manifest.json"),

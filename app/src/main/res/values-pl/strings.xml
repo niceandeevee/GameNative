@@ -656,13 +656,11 @@
     <string name="show_controller_debug_menu_subtitle">Pokaż panel na żywo slotów kontrolerów P1-P4 w szybkim menu w grze</string>
     <string name="disable_mouse_input">Wyłącz wejście myszy</string>
     <string name="touchscreen_mode">Tryb ekranu dotykowego</string>
-    <string name="touchscreen_mode_description">Dla powieści wizualnych i gier RTS</string>
     <string name="shooter_mode_toggle">Tryb strzelanki</string>
     <string name="shooter_mode_on">Włącz mysz</string>
     <string name="shooter_mode_off">Włącz drążki</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">Ustawienia gestów</string>
     <string name="gesture_settings_title">Ustawienia gestów dotykowych</string>
     <string name="gesture_tap">Dotknięcie</string>
     <string name="gesture_drag">Przeciągnij palcem</string>

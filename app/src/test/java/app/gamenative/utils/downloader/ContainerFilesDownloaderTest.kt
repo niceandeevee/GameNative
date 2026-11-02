@@ -21,6 +21,8 @@ import org.robolectric.RobolectricTestRunner
 import timber.log.Timber
 import java.io.File
 
+private val lenientJson = Json { ignoreUnknownKeys = true }
+
 /**
  * Test suite for ContainerFilesDownloader functionality.
  * Tests downloading, caching, and fallback to bundled assets for container pattern files.
@@ -54,7 +56,7 @@ class ContainerFilesDownloaderTest {
         assertNotNull("${ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE} should exist in assets", manifestJson)
         assertTrue("Manifest should not be empty", manifestJson.isNotEmpty())
 
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         assertTrue("Container files list should not be empty", manifest.components.isNotEmpty())
@@ -68,7 +70,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testExtrasComponentExists() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         val component = manifest.components.find { it.id == "extras" }
@@ -81,7 +83,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testContainerPatternCommonExists() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         val component = manifest.components.find { it.id == "container_pattern_common" }
@@ -101,7 +103,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testCacheFileUsesManifestFilename() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         val component = manifest.components.first { it.id == "container_pattern_common" }
@@ -157,7 +159,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testContainerPatternGamenativeExists() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         val component = manifest.components.find { it.id == "container_pattern_gamenative" }
@@ -168,7 +170,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testProtonContainerPatternsExist() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         val protonPatterns = listOf(
@@ -186,7 +188,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testContainerFileUrlFormat() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -311,7 +313,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testAllManifestComponentsHaveValidUrls() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         val validDomains = listOf(
@@ -333,7 +335,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testComponentNamingConsistency() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         manifest.components.forEach { component ->
@@ -348,23 +350,23 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testNoOverlapWithOtherDownloaders() {
         val containerFilesJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val containerFilesManifest = Json { ignoreUnknownKeys = true }
+        val containerFilesManifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(containerFilesJson)
 
         val graphicsDriverJson = context.assets.open(GraphicsDriverDownloader.GRAPHICS_DRIVER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val graphicsDriverManifest = Json { ignoreUnknownKeys = true }
+        val graphicsDriverManifest = lenientJson
             .decodeFromString<GraphicsDriverDownloader.GraphicsDriverManifest>(graphicsDriverJson)
 
         val dxwrapperJson = context.assets.open(DXWrapperDownloader.DXWRAPPER_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val dxwrapperManifest = Json { ignoreUnknownKeys = true }
+        val dxwrapperManifest = lenientJson
             .decodeFromString<DXWrapperDownloader.DXWrapperManifest>(dxwrapperJson)
 
         val wincomponentJson = context.assets.open(WinComponentDownloader.WINCOMPONENTS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val wincomponentManifest = Json { ignoreUnknownKeys = true }
+        val wincomponentManifest = lenientJson
             .decodeFromString<WinComponentDownloader.WinComponentManifest>(wincomponentJson)
 
         val coreDriverJson = context.assets.open(CoreDriverDownloader.CORE_DRIVERS_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val coreDriverManifest = Json { ignoreUnknownKeys = true }
+        val coreDriverManifest = lenientJson
             .decodeFromString<CoreDriverDownloader.CoreDriverManifest>(coreDriverJson)
 
         val containerFilesIds = containerFilesManifest.components.map { it.id }.toSet()
@@ -394,7 +396,7 @@ class ContainerFilesDownloaderTest {
     @Test
     fun testAllComponentsAreTzstFiles() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
-        val manifest = Json { ignoreUnknownKeys = true }
+        val manifest = lenientJson
             .decodeFromString<ContainerFilesDownloader.ContainerFilesManifest>(manifestJson)
 
         manifest.components.forEach { component ->

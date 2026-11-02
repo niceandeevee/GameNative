@@ -6,7 +6,6 @@ import android.net.DhcpInfo;
 import android.net.LinkAddress;
 import android.net.LinkProperties;
 import android.net.Network;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.system.OsConstants;
 
@@ -106,14 +105,13 @@ public class NetworkHelper {
     }
 
     public boolean isConnected() {
-        NetworkInfo networkInfo = this.connectivityManager.getActiveNetworkInfo();
-        if (networkInfo == null) {
-            return false;
-        }
-        int type = networkInfo.getType();
-        if (networkInfo.isAvailable() && networkInfo.isConnectedOrConnecting()) {
-            return type == 1 || type == 9 || type == 0;
-        }
-        return false;
+        android.net.Network network = this.connectivityManager.getActiveNetwork();
+        if (network == null) return false;
+        android.net.NetworkCapabilities caps = this.connectivityManager.getNetworkCapabilities(network);
+        return caps != null
+            && (caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI)
+                || caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET)
+                || caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR));
     }
+
 }

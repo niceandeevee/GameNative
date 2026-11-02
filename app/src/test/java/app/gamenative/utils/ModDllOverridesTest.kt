@@ -10,7 +10,7 @@ class ModDllOverridesTest {
     @get:Rule val temp = TemporaryFolder()
 
     private fun file(path: String): File = File(temp.root, path).apply {
-        parentFile.mkdirs()
+        parentFile?.mkdirs()
         writeText("test")
     }
 
@@ -20,7 +20,7 @@ class ModDllOverridesTest {
         file("Game/Bin/dwrite.dll")
         file("Game/Bin/d3d11.dll")
         file("Game/dinput8.dll")
-        assertEquals(listOf("winhttp", "dwrite"), ModDllOverrides.detect(exe.parentFile))
+        assertEquals(listOf("winhttp", "dwrite"), ModDllOverrides.detect(exe.parentFile!!))
         assertTrue(ModDllOverrides.detect(File(temp.root, "missing")).isEmpty())
     }
 

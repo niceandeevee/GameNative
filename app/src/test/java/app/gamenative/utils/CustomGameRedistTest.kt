@@ -14,10 +14,10 @@ class CustomGameRedistTest {
     val tmp = TemporaryFolder()
 
     private fun touch(root: File, path: String): File =
-        File(root, path).apply { parentFile.mkdirs(); writeText("x") }
+        File(root, path).apply { parentFile?.mkdirs(); writeText("x") }
 
     private fun script(file: File, stepName: String, process: String) = file.apply {
-        parentFile.mkdirs()
+        parentFile?.mkdirs()
         writeText(
             """
             "InstallScript"

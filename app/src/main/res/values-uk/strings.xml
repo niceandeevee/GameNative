@@ -655,13 +655,11 @@
     <string name="show_controller_debug_menu_subtitle">Показувати живу панель слотів контролерів P1-P4 у швидкому меню гри</string>
     <string name="disable_mouse_input">Вимкнути введення мишею</string>
     <string name="touchscreen_mode">Режим сенсорного екрану</string>
-    <string name="touchscreen_mode_description">Для візуальних романів та ігор RTS</string>
     <string name="shooter_mode_toggle">Режим шутера</string>
     <string name="shooter_mode_on">Увімкнути мишу</string>
     <string name="shooter_mode_off">Увімкнути джойстики</string>
 
     <!-- Gesture Settings Dialog -->
-    <string name="gesture_settings">Налаштування жестів</string>
     <string name="gesture_settings_title">Налаштування сенсорних жестів</string>
     <string name="gesture_tap">Натискання</string>
     <string name="gesture_drag">Перетягування</string>

@@ -2,6 +2,7 @@ package com.winlator.container;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 // import com.winlator.R;
@@ -86,27 +87,12 @@ public class ContainerManager {
         FileUtils.symlink("./"+ImageFs.USER+"-"+container.id, file.getPath());
     }
 
-    public void createContainerAsync(String containerId, final JSONObject data, Callback<Container> callback) {
-        final Handler handler = new Handler();
-        Executors.newSingleThreadExecutor().execute(() -> {
-            final Container container = createContainer(containerId, data);
-            handler.post(() -> callback.call(container));
-        });
-    }
     public Future<Container> createContainerFuture(String containerId, final JSONObject data) {
         return Executors.newSingleThreadExecutor().submit(() -> createContainer(containerId, data));
     }
 
-    public void duplicateContainerAsync(Container container, Runnable callback) {
-        final Handler handler = new Handler();
-        Executors.newSingleThreadExecutor().execute(() -> {
-            duplicateContainer(container);
-            handler.post(callback);
-        });
-    }
-
     public void removeContainerAsync(Container container, Runnable callback) {
-        final Handler handler = new Handler();
+        final Handler handler = new Handler(Looper.myLooper());
         Executors.newSingleThreadExecutor().execute(() -> {
             removeContainer(container);
             handler.post(callback);

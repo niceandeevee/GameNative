@@ -48,24 +48,6 @@ android {
         )
 
         // Localization support - specify which languages to include
-        resourceConfigurations += listOf(
-            "en",      // English (default)
-            "es",      // Spanish
-            "da",      // Danish
-            "pt-rBR",  // Portuguese (Brazilian)
-            "zh-rTW",  // Traditional Chinese
-            "zh-rCN",  // Simplified Chinese
-            "fr",      // French
-            "de",      // German
-            "uk",      // Ukrainian
-            "it",      // Italian
-            "ro",      // Română
-            "pl",      // Polish
-            "ru",      // Russian
-            "ko",      // Korean
-            "ja",      // Japanese
-            // TODO: Add more languages here using the ISO 639-1 locale code with regional qualifiers (e.g., "pt-rPT" for European Portuguese)
-        )
 
         vectorDrawables {
             useSupportLibrary = true
@@ -112,6 +94,13 @@ android {
         jvmTarget = "17"
     }
 
+    // Keep only the app's own translations (drops library locales such as AppCompat's).
+    androidResources {
+        localeFilters += listOf(
+            "en", "es", "da", "pt-rBR", "zh-rTW", "zh-rCN", "fr", "de", "uk", "it", "ro", "pl", "ru", "ko", "ja",
+        )
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -137,15 +126,10 @@ android {
                 it.maxParallelForks = (project.findProperty("testForks") as String?)?.toIntOrNull() ?: 1
                 it.maxHeapSize = (project.findProperty("testHeap") as String?) ?: "4g"
                 it.testLogging { events("failed") }
+                // The mocking agent appends to the boot classpath, which disables CDS with a warning anyway.
+                it.jvmArgs("-Xshare:off")
             }
         }
-    }
-
-    lint {
-        // Locale files ship full AndroidX appcompat (abc_*) translations that aren't in the
-        // default locale. These extra translations are harmless and pre-existing; without this
-        // the release-only lintVital pass fails on 150+ ExtraTranslation errors.
-        disable += "ExtraTranslation"
     }
 
     // Configure Assets to be used in different variants
@@ -240,4 +224,8 @@ dependencies {
 
     // Samsung Performance SDK
     implementation(files("src/main/lib/perfsdk-v1.0.0.jar"))
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
 }

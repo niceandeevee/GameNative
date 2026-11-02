@@ -7,7 +7,7 @@ import java.util.Locale
 class SteamUtilsLanguageTest {
 
     private fun lang(language: String, country: String = "") =
-        SteamUtils.steamLanguageForAppLocale(Locale(language, country))
+        SteamUtils.steamLanguageForAppLocale(Locale.Builder().setLanguage(language).setRegion(country).build())
 
     @Test
     fun mapsSteamSpecificLanguages() {
