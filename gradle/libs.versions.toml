@@ -19,7 +19,6 @@ landscapistCoil = "2.4.6" # https://mvnrepository.com/artifact/com.github.skydov
 libarchive-android = "1.1.6" # https://mvnrepository.com/artifact/me.zhanghai.android.libarchive/library
 lifecycleRuntimeKtx = "2.8.7" # https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-runtime-ktx
 material = "1.12.0" # https://mvnrepository.com/artifact/com.google.android.material/material
-material3Adaptive = "1.0.0" # https://mvnrepository.com/artifact/androidx.compose.material3.adaptive/adaptive-layout
 material3Version = "1.3.1" # Minimum version for pull-to-refresh support
 materialKolor = "2.0.0" # https://mvnrepository.com/artifact/com.materialkolor/material-kolor-android
 mockito = "5.14.2" # https://mvnrepository.com/artifact/org.mockito/mockito-core
@@ -44,7 +43,6 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
-androidx-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "material3Adaptive" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-runtime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
@@ -128,7 +126,6 @@ compose = [
     "androidx-activity-compose",
     "androidx-material-icons",
     "androidx-material3",
-    "androidx-material3-adaptive-layout",
     "androidx-ui",
     "androidx-ui-graphics",
     "androidx-ui-tooling-preview",

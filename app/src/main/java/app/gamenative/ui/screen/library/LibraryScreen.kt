@@ -38,7 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.setValue
@@ -80,8 +79,6 @@ import app.gamenative.ui.component.GamepadAction
 import app.gamenative.ui.component.GamepadActionBar
 import app.gamenative.ui.component.GamepadButton
 import app.gamenative.ui.component.LibraryActions
-import app.gamenative.ui.components.rememberCustomGameFolderPicker
-import app.gamenative.ui.components.requestPermissionsForPath
 import app.gamenative.ui.data.LibraryState
 import app.gamenative.ui.enums.AppFilter
 import app.gamenative.ui.enums.LibraryTab
@@ -143,7 +140,6 @@ fun HomeLibraryScreen(
         onGoOnline = onGoOnline,
         onDownloadsClick = onDownloadsClick,
         onSourceToggle = viewModel::onSourceToggle,
-        onAddCustomGameFolder = viewModel::addCustomGameFolder,
         onSortOptionChanged = viewModel::onSortOptionChanged,
         onSteamCollectionToggle = viewModel::onSteamCollectionToggle,
         onClearSteamCollections = viewModel::onClearSteamCollections,
@@ -166,7 +162,7 @@ private fun isGameControllerConnected(): Boolean =
             sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
     }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LibraryScreenContent(
     state: LibraryState,
@@ -188,7 +184,6 @@ private fun LibraryScreenContent(
     onGoOnline: () -> Unit,
     onDownloadsClick: () -> Unit = {},
     onSourceToggle: (GameSource) -> Unit,
-    onAddCustomGameFolder: (String) -> Unit,
     onSortOptionChanged: (SortOption) -> Unit,
     onSteamCollectionToggle: (String) -> Unit,
     onClearSteamCollections: () -> Unit,
@@ -247,8 +242,6 @@ private fun LibraryScreenContent(
     }
 
     // Dialog state for add custom game prompt
-    var showAddCustomGameDialog by remember { mutableStateOf(false) }
-    var dontShowAgain by remember { mutableStateOf(false) }
     var previousAppCount by remember { mutableIntStateOf(state.appInfoList.size) }
     var controllerBootstrapNeeded by remember { mutableStateOf(true) }
     var rootHasFocus by remember { mutableStateOf(false) }
@@ -351,34 +344,6 @@ private fun LibraryScreenContent(
         toggleFavorite(context, item.appId, item.name)
         return true
     }
-
-    val storagePermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-    ) { }
-
-    val folderPicker = rememberCustomGameFolderPicker(
-        onPathSelected = { path ->
-            // When a folder is selected via OpenDocumentTree, the user has already granted
-            // URI permissions for that specific folder. We should verify we can access it
-            // rather than checking for broad storage permissions.
-            val folder = java.io.File(path)
-            val canAccess = try {
-                folder.exists() && (folder.isDirectory && folder.canRead())
-            } catch (e: Exception) {
-                false
-            }
-
-            // Only request permissions if we can't access the folder AND it's outside the sandbox
-            // (folders selected via OpenDocumentTree should already be accessible)
-            if (!canAccess && !CustomGameScanner.hasStoragePermission(context, path)) {
-                requestPermissionsForPath(context, path, storagePermissionLauncher)
-            }
-            onAddCustomGameFolder(path)
-        },
-        onFailure = { message ->
-            SnackbarManager.show(message)
-        },
-    )
 
     // Modern add path: import the picked folder into app-owned storage via the SAF grant,
     // since the map-in-place flow needs MANAGE_EXTERNAL_STORAGE
@@ -1169,55 +1134,6 @@ private fun LibraryScreenContent(
             )
         }
 
-        // Add custom game dialog
-        if (showAddCustomGameDialog) {
-            AlertDialog(
-                onDismissRequest = { showAddCustomGameDialog = false },
-                title = { Text(stringResource(R.string.add_custom_game_dialog_title)) },
-                text = {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.add_custom_game_dialog_message),
-                            modifier = Modifier.padding(bottom = 8.dp),
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Checkbox(
-                                checked = dontShowAgain,
-                                onCheckedChange = { dontShowAgain = it },
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = stringResource(R.string.add_custom_game_dont_show_again),
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
-                    }
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            if (dontShowAgain) {
-                                PrefManager.showAddCustomGameDialog = false
-                            }
-                            showAddCustomGameDialog = false
-                            folderPicker.launchPicker()
-                        },
-                    ) {
-                        Text(stringResource(android.R.string.ok))
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = { showAddCustomGameDialog = false },
-                    ) {
-                        Text(stringResource(android.R.string.cancel))
-                    }
-                },
-            )
-        }
     }
 }
 
@@ -1277,7 +1193,6 @@ private fun Preview_LibraryScreenContent() {
             onLogout = {},
             onGoOnline = {},
             onSourceToggle = {},
-            onAddCustomGameFolder = {},
             onSortOptionChanged = {},
             onSteamCollectionToggle = {},
             onClearSteamCollections = {},

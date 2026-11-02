@@ -297,7 +297,6 @@
     <string name="gamescope_look_cb_prot">Protanopie</string>
     <string name="gamescope_look_cb_trit">Tritanopie</string>
     <string name="screen_effects">Bildschirmeffekte</string>
-    <string name="screen_effects_live_preview">Änderungen werden sofort auf das aktuelle Spiel angewendet.</string>
     <string name="screen_effects_color_adjustments">Farbkorrekturen</string>
     <string name="screen_effects_shader_toggles">Shader-Effekte</string>
     <string name="screen_effects_brightness">Helligkeit</string>
@@ -542,18 +541,13 @@
     <string name="installed">Installiert</string>
     <string name="installing">Wird installiert</string>
     <string name="not_installed">Nicht installiert</string>
-    <string name="games">Spiele</string>
-    <string name="playtime_last_two_weeks">Spielzeit der letzten 2 Wochen: %s Std</string>
-    <string name="total_playtime">Gesamtspielzeit: %s Std</string>
     <string name="last_played">Zuletzt gespielt</string>
     <string name="add_custom_game_dialog_title">Eigenes Spiel hinzufügen</string>
-    <string name="add_custom_game_dialog_message">Bitte wähle den Ordner aus, der die Spieldateien enthält, die du als eigenes Spiel hinzufügen möchtest.</string>
     <string name="custom_game_importing">Spiel wird importiert…</string>
     <string name="custom_game_import_success">Spiel importiert</string>
     <string name="custom_game_import_failed">Import fehlgeschlagen</string>
     <string name="custom_game_import_dialog_message">Wähle den Ordner aus, der das Spiel enthält. Es wird in den Speicher von GameNative importiert, damit es ohne Speicherberechtigung laufen kann. Bei großen Spielen kann das einige Minuten dauern.</string>
     <string name="custom_game_import_remove_original">Original nach dem Import entfernen</string>
-    <string name="add_custom_game_dont_show_again">Diesen Hinweis nicht mehr anzeigen</string>
     <string name="base_app_shortcut_created">Verknüpfung erstellt</string>
     <string name="base_app_shortcut_failed">Verknüpfung konnte nicht erstellt werden: %s</string>
     <string name="base_app_exported">Exportiert</string>
@@ -576,9 +570,6 @@
     <string name="connection_retry">Erneut versuchen</string>
     <!--Game Feedback Dialog -->
     <!-- Profile & Menu -->
-    <string name="go_online">Online gehen</string>
-    <string name="go_offline">Offline gehen</string>
-    <string name="log_out">Abmelden</string>
     <string name="close">Schließen</string>
 
     <!-- System menu platform actions -->
@@ -1291,18 +1282,6 @@
     <string name="launch_bionic_steam_description">Aktiviert Online-Spiel und verbessert die Kompatibilität\nFunktioniert nicht immer\nSichere deine Spielstände, bevor du es ausprobierst</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Frontend-Synchronisierung</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Benutzerdefinierte Spiele</string>
-    <string name="frontend_sync_not_set">Nicht festgelegt</string>
-    <string name="frontend_sync_clear_confirm_title">Alte Exportdateien entfernen?</string>
-    <string name="frontend_sync_clear_confirm_message">.%1$s-Dateien aus dem vorherigen Verzeichnis entfernen?</string>
-    <string name="frontend_sync_confirm_remove">Entfernen</string>
-    <string name="frontend_sync_confirm_keep">Behalten</string>
-    <string name="frontend_sync_resync_all">Alle neu synchronisieren</string>
-    <string name="frontend_sync_resync_complete">Frontend-Synchronisierung abgeschlossen</string>
-    <string name="frontend_sync_pick_directory_cd">Verzeichnis für %1$s auswählen</string>
-    <string name="frontend_sync_clear_directory_cd">Verzeichnis für %1$s löschen</string>
     <string name="screen_effects_upscaling">Hochskalierung</string>
     <string name="screen_effects_basic_scaling">Einfache Skalierung</string>
     <string name="screen_effects_scaling_mode_none">Keine Skalierung</string>

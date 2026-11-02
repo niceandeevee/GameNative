@@ -300,7 +300,6 @@
     <string name="gamescope_look_cb_prot">Protanopia</string>
     <string name="gamescope_look_cb_trit">Tritanopia</string>
     <string name="screen_effects">Effetti schermo</string>
-    <string name="screen_effects_live_preview">Le modifiche si applicano istantaneamente al gioco corrente.</string>
     <string name="screen_effects_color_adjustments">Regolazioni colore</string>
     <string name="screen_effects_shader_toggles">Effetti shader</string>
     <string name="screen_effects_brightness">Luminosità</string>
@@ -553,18 +552,13 @@
     <string name="installed">Installato</string>
     <string name="installing">Installazione</string>
     <string name="not_installed">Non Installato</string>
-    <string name="games">Giochi</string>
-    <string name="playtime_last_two_weeks">Tempo di gioco ultime 2 settimane: %s ore</string>
-    <string name="total_playtime">Tempo di gioco totale: %s ore</string>
     <string name="last_played">Ultima partita</string>
     <string name="add_custom_game_dialog_title">Aggiungi Gioco Personalizzato</string>
-    <string name="add_custom_game_dialog_message">Seleziona la cartella contenente i file del gioco che vuoi aggiungere come gioco personalizzato.</string>
     <string name="custom_game_importing">Importazione del gioco…</string>
     <string name="custom_game_import_success">Gioco importato</string>
     <string name="custom_game_import_failed">Importazione non riuscita</string>
     <string name="custom_game_import_dialog_message">Seleziona la cartella contenente il gioco. Verrà importato nell\'archivio di GameNative così da poter funzionare senza alcun permesso di archiviazione. I giochi di grandi dimensioni possono richiedere alcuni minuti.</string>
     <string name="custom_game_import_remove_original">Rimuovi l\'originale dopo l\'importazione</string>
-    <string name="add_custom_game_dont_show_again">Non mostrare più questa finestra</string>
     <string name="base_app_shortcut_created">Scorciatoia creata</string>
     <string name="base_app_shortcut_failed">Impossibile creare scorciatoia: %s</string>
     <string name="base_app_exported">Esportato</string>
@@ -593,9 +587,6 @@
 
 
     <!-- Profile & Menu -->
-    <string name="go_online">Vai Online</string>
-    <string name="go_offline">Vai Offline</string>
-    <string name="log_out">Disconnetti</string>
     <string name="close">Chiudi</string>
 
     <!-- System menu platform actions -->
@@ -1342,18 +1333,6 @@
     <string name="launch_bionic_steam_description">Abilita il gioco online e migliora la compatibilità\nNon sempre funziona\nEsegui un backup dei salvataggi prima di provarlo</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Sincronizzazione frontend</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Giochi personalizzati</string>
-    <string name="frontend_sync_not_set">Non impostato</string>
-    <string name="frontend_sync_clear_confirm_title">Rimuovere i vecchi file di esportazione?</string>
-    <string name="frontend_sync_clear_confirm_message">Rimuovere i file .%1$s dalla directory precedente?</string>
-    <string name="frontend_sync_confirm_remove">Rimuovi</string>
-    <string name="frontend_sync_confirm_keep">Mantieni</string>
-    <string name="frontend_sync_resync_all">Risincronizza tutto</string>
-    <string name="frontend_sync_resync_complete">Sincronizzazione frontend completata</string>
-    <string name="frontend_sync_pick_directory_cd">Scegli cartella per %1$s</string>
-    <string name="frontend_sync_clear_directory_cd">Cancella cartella per %1$s</string>
     <string name="screen_effects_upscaling">Super risoluzione</string>
     <string name="screen_effects_basic_scaling">Ridimensionamento di base</string>
     <string name="screen_effects_scaling_mode_none">Nessun ridimensionamento</string>

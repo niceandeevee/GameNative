@@ -262,7 +262,6 @@
     <string name="gamescope_look_cb_prot">Protanopi</string>
     <string name="gamescope_look_cb_trit">Tritanopi</string>
     <string name="screen_effects">Skærmeffekter</string>
-    <string name="screen_effects_live_preview">Ændringer anvendes straks på det aktuelle spil.</string>
     <string name="screen_effects_color_adjustments">Farvejusteringer</string>
     <string name="screen_effects_shader_toggles">Shader-effekter</string>
     <string name="screen_effects_brightness">Lysstyrke</string>
@@ -452,9 +451,6 @@
     <string name="installed">Installeret</string>
     <string name="installing">Installerer</string>
     <string name="not_installed">Ikke installeret</string>
-    <string name="games">Spil</string>
-    <string name="playtime_last_two_weeks">Spilletid de sidste 2 uger: %s timer</string>
-    <string name="total_playtime">Total spilletid: %s timer</string>
     <string name="last_played">Sidst spillet</string>
 
     <!-- Login & Connection -->
@@ -467,9 +463,6 @@
     <string name="connection_retry">Prøv igen</string>
 
     <!-- Profile & Menu -->
-    <string name="go_online">Gå online</string>
-    <string name="go_offline">Gå offline</string>
-    <string name="log_out">Log ud</string>
     <string name="close">Luk</string>
 
     <!-- System menu platform actions -->
@@ -1080,13 +1073,11 @@
 
     <!-- Misc additions -->
     <string name="add_custom_game_dialog_title">Tilføj tilpasset spil</string>
-    <string name="add_custom_game_dialog_message">Vælg venligst mappen der indeholder spilfilerne du vil tilføje som et tilpasset spil.</string>
     <string name="custom_game_importing">Importerer spil…</string>
     <string name="custom_game_import_success">Spil importeret</string>
     <string name="custom_game_import_failed">Import mislykkedes</string>
     <string name="custom_game_import_dialog_message">Vælg mappen der indeholder spillet. Det importeres til GameNatives lager, så det kan køre uden nogen lagertilladelse. Store spil kan tage et par minutter.</string>
     <string name="custom_game_import_remove_original">Fjern originalen efter import</string>
-    <string name="add_custom_game_dont_show_again">Vis ikke denne dialog igen</string>
     <string name="base_app_shortcut_created">Genvej oprettet</string>
     <string name="base_app_shortcut_failed">Kunne ikke oprette genvej: %s</string>
     <string name="base_app_exported">Eksporteret</string>
@@ -1231,18 +1222,6 @@
     <string name="launch_bionic_steam_description">Aktiverer online-spil og forbedrer kompatibilitet\nVirker ikke altid\nTag backup af dine gemte spil, før du prøver dette</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Frontend-synkronisering</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Brugerdefinerede spil</string>
-    <string name="frontend_sync_not_set">Ikke angivet</string>
-    <string name="frontend_sync_clear_confirm_title">Fjern gamle eksportfiler?</string>
-    <string name="frontend_sync_clear_confirm_message">Fjern .%1$s-filer fra den forrige mappe?</string>
-    <string name="frontend_sync_confirm_remove">Fjern</string>
-    <string name="frontend_sync_confirm_keep">Behold</string>
-    <string name="frontend_sync_resync_all">Synkroniser alt igen</string>
-    <string name="frontend_sync_resync_complete">Frontend-synkronisering fuldført</string>
-    <string name="frontend_sync_pick_directory_cd">Vælg mappe til %1$s</string>
-    <string name="frontend_sync_clear_directory_cd">Ryd mappe for %1$s</string>
     <string name="screen_effects_upscaling">Opskalering</string>
     <string name="screen_effects_basic_scaling">Grundlæggende skalering</string>
     <string name="screen_effects_scaling_mode_none">Ingen skalering</string>

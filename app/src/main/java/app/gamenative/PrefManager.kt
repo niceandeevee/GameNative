@@ -1267,14 +1267,6 @@ object PrefManager {
             setPref(SHOW_HIDDEN_GAMES_BY_DEFAULT, value)
         }
 
-    // Show dialog when adding custom game folder
-    private val SHOW_ADD_CUSTOM_GAME_DIALOG = booleanPreferencesKey("show_add_custom_game_dialog")
-    var showAddCustomGameDialog: Boolean
-        get() = getPref(SHOW_ADD_CUSTOM_GAME_DIALOG, true)
-        set(value) {
-            setPref(SHOW_ADD_CUSTOM_GAME_DIALOG, value)
-        }
-
     // Import the custom game as a Steam game
     private val IMPORT_CUSTOM_GAME_AS_STEAM_GAME = booleanPreferencesKey("import_custom_game_as_steam_game")
     var importCustomGameAsSteamGame: Boolean

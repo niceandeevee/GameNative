@@ -294,7 +294,6 @@
     <string name="gamescope_look_cb_prot">红色盲</string>
     <string name="gamescope_look_cb_trit">蓝色盲</string>
     <string name="screen_effects">屏幕效果</string>
-    <string name="screen_effects_live_preview">更改会立即应用到当前游戏。</string>
     <string name="screen_effects_color_adjustments">颜色调整</string>
     <string name="screen_effects_shader_toggles">着色器效果</string>
     <string name="screen_effects_brightness">亮度</string>
@@ -545,18 +544,13 @@
     <string name="installed">已安装</string>
     <string name="installing">安装中</string>
     <string name="not_installed">未安装</string>
-    <string name="games">游戏</string>
-    <string name="playtime_last_two_weeks">过去2周的游戏时间：%s 小时</string>
-    <string name="total_playtime">总游戏时间：%s 小时</string>
     <string name="last_played">上次游玩</string>
     <string name="add_custom_game_dialog_title">添加自定义游戏</string>
-    <string name="add_custom_game_dialog_message">请选择包含您要添加为自定义游戏的文件夹</string>
     <string name="custom_game_importing">正在导入游戏…</string>
     <string name="custom_game_import_success">游戏已导入</string>
     <string name="custom_game_import_failed">导入失败</string>
     <string name="custom_game_import_dialog_message">请选择包含游戏的文件夹。游戏将被导入到 GameNative 的存储空间，无需任何存储权限即可运行。大型游戏可能需要几分钟。</string>
     <string name="custom_game_import_remove_original">导入后删除原文件</string>
-    <string name="add_custom_game_dont_show_again">不再显示</string>
     <string name="base_app_shortcut_created">快捷方式已创建</string>
     <string name="base_app_shortcut_failed">无法创建快捷方式：%s</string>
     <string name="base_app_exported">已导出</string>
@@ -583,9 +577,6 @@
     <!-- 游戏反馈对话框 -->
 
     <!-- 个人资料与菜单 -->
-    <string name="go_online">进入在线模式</string>
-    <string name="go_offline">进入离线模式</string>
-    <string name="log_out">登出</string>
     <string name="close">关闭</string>
 
     <!-- System menu platform actions -->
@@ -1391,18 +1382,6 @@
     <string name="launch_bionic_steam_description">启用在线游玩并提升兼容性\n不一定总能正常工作\n尝试前请先备份存档</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">前端同步</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">自定义游戏</string>
-    <string name="frontend_sync_not_set">未设置</string>
-    <string name="frontend_sync_clear_confirm_title">删除旧的导出文件？</string>
-    <string name="frontend_sync_clear_confirm_message">从上一个目录删除 .%1$s 文件？</string>
-    <string name="frontend_sync_confirm_remove">删除</string>
-    <string name="frontend_sync_confirm_keep">保留</string>
-    <string name="frontend_sync_resync_all">重新同步全部</string>
-    <string name="frontend_sync_resync_complete">前端同步完成</string>
-    <string name="frontend_sync_pick_directory_cd">为 %1$s 选择目录</string>
-    <string name="frontend_sync_clear_directory_cd">为 %1$s 清除目录</string>
     <string name="filter_expired">已过期</string>
     <string name="vibration_intensity">振动强度</string>
     <string name="option_import_files">导入文件</string>

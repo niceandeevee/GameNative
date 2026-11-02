@@ -28,14 +28,12 @@
     <string name="action_select">Выбрать</string>
     <string name="action_system">Система</string>
     <string name="add">Добавить</string>
-    <string name="add_custom_game_dialog_message">Пожалуйста, выберите папку, содержащую файлы игры, которые вы хотите добавить в качестве пользовательской игры.</string>
     <string name="custom_game_importing">Импорт игры…</string>
     <string name="custom_game_import_success">Игра импортирована</string>
     <string name="custom_game_import_failed">Не удалось импортировать</string>
     <string name="custom_game_import_dialog_message">Выберите папку с игрой. Она будет импортирована в хранилище GameNative, чтобы работать без разрешения на доступ к хранилищу. Импорт больших игр может занять несколько минут.</string>
     <string name="custom_game_import_remove_original">Удалить оригинал после импорта</string>
     <string name="add_custom_game_dialog_title">Добавить пользовательскую игру</string>
-    <string name="add_custom_game_dont_show_again">Не показывать этот диалог снова</string>
     <string name="add_drive">Добавить диск</string>
     <string name="add_to_home_screen">Добавить на главный экран</string>
     <string name="adjust_size">Отрегулировать размер</string>
@@ -347,7 +345,6 @@
     <string name="game_options_quick_actions">Быстрые действия</string>
     <string name="game_options_title">Настройки</string>
     <string name="gamepad">Геймпад</string>
-    <string name="games">Игры</string>
     <string name="gesture_action_label">Действие</string>
     <string name="gesture_action_left_click">Левый клик</string>
     <string name="gesture_action_middle_click">Средний клик</string>
@@ -510,7 +507,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
     <string name="library_wifi_only_enabled">Установка только через Wi-Fi/LAN включена</string>
     <string name="location">Местоположение</string>
-    <string name="log_out">Выход</string>
     <string name="login_app_name">GameNative</string>
     <string name="login_or_sign_in_with">Или войдите через:</string>
     <string name="login_password_hide">Скрыть пароль</string>
@@ -679,7 +675,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="performance">Производительность</string>
     <string name="physical_controller_config">Редактор привязок физического контроллера</string>
     <string name="play_time">Время игры</string>
-    <string name="playtime_last_two_weeks">Время игры за последние 2 недели: %s ч.</string>
     <string name="position">Положение</string>
     <string name="position_value">X: %1$d, Y: %2$d</string>
     <string name="present_modes">Режимы представления</string>
@@ -733,7 +728,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="gamescope_look_cb_prot">Протанопия</string>
     <string name="gamescope_look_cb_trit">Тританопия</string>
     <string name="screen_effects">Эффекты экрана</string>
-    <string name="screen_effects_live_preview">Изменения мгновенно применяются к текущей игре.</string>
     <string name="screen_effects_color_adjustments">Настройка цвета</string>
     <string name="screen_effects_shader_toggles">Эффекты шейдеров</string>
     <string name="screen_effects_brightness">Яркость</string>
@@ -1073,7 +1067,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="toggle_orientation">Переключить ориентацию</string>
     <string name="tooltip_description">подсказка</string>
     <string name="tooltip_label">показать подсказку</string>
-    <string name="total_playtime">Общее время игры: %s часов</string>
     <string name="touchpad_help">Справка сенсорной панели</string>
     <string name="touchscreen_mode">Режим сенсорного экрана</string>
     <string name="touchscreen_mode_description">Для визуальных романов и игр RTS</string>
@@ -1298,18 +1291,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="launch_bionic_steam_description">Включает онлайн-игру и улучшает совместимость\nРаботает не всегда\nСделайте резервную копию сохранений перед использованием</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Синхронизация frontend</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Пользовательские игры</string>
-    <string name="frontend_sync_not_set">Не задано</string>
-    <string name="frontend_sync_clear_confirm_title">Удалить старые файлы экспорта?</string>
-    <string name="frontend_sync_clear_confirm_message">Удалить файлы .%1$s из предыдущего каталога?</string>
-    <string name="frontend_sync_confirm_remove">Удалить</string>
-    <string name="frontend_sync_confirm_keep">Сохранить</string>
-    <string name="frontend_sync_resync_all">Повторная синхронизация всего</string>
-    <string name="frontend_sync_resync_complete">Синхронизация frontend завершена</string>
-    <string name="frontend_sync_pick_directory_cd">Выбрать каталог для %1$s</string>
-    <string name="frontend_sync_clear_directory_cd">Очистить каталог для %1$s</string>
     <string name="screen_effects_upscaling">Апскейлинг</string>
     <string name="screen_effects_basic_scaling">Базовое масштабирование</string>
     <string name="screen_effects_scaling_mode_none">Без масштабирования</string>

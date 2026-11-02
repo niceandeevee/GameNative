@@ -248,7 +248,6 @@
     <string name="gamescope_look_cb_prot">1型色覚</string>
     <string name="gamescope_look_cb_trit">3型色覚</string>
     <string name="screen_effects">画面効果</string>
-    <string name="screen_effects_live_preview">変更は現在のゲームに即座に適用されます。</string>
     <string name="screen_effects_upscaling">アップスケーリング</string>
     <string name="screen_effects_basic_scaling">基本スケーリング</string>
     <string name="screen_effects_scaling_mode_none_desc">スケーリングなし。</string>
@@ -546,18 +545,13 @@
     <string name="installed">インストール済み</string>
     <string name="installing">インストール中</string>
     <string name="not_installed">インストールされていません</string>
-    <string name="games">ゲーム</string>
-    <string name="playtime_last_two_weeks">過去2週間のプレイ時間: %s 時間</string>
-    <string name="total_playtime">総プレイ時間: %s 時間</string>
     <string name="last_played">最後にプレイした時間</string>
     <string name="add_custom_game_dialog_title">カスタムゲームを追加</string>
-    <string name="add_custom_game_dialog_message">カスタムゲームとして追加するゲーム ファイルが含まれるフォルダーを選択してください。</string>
     <string name="custom_game_importing">ゲームをインポート中…</string>
     <string name="custom_game_import_success">ゲームをインポートしました</string>
     <string name="custom_game_import_failed">インポートに失敗しました</string>
     <string name="custom_game_import_dialog_message">ゲームが含まれるフォルダーを選択してください。ストレージ権限なしで実行できるように、GameNative のストレージにインポートされます。大きなゲームは数分かかる場合があります。</string>
     <string name="custom_game_import_remove_original">インポート後に元のファイルを削除</string>
-    <string name="add_custom_game_dont_show_again">\'このダイアログを再度表示しないでください</string>
     <string name="base_app_shortcut_created">ショートカットが作成されました</string>
     <string name="base_app_shortcut_failed">ショートカットの作成に失敗しました: %s</string>
     <string name="base_app_exported">輸出済み</string>
@@ -587,9 +581,6 @@
 
 
     <!-- Profile & Menu -->
-    <string name="go_online">オンラインにする</string>
-    <string name="go_offline">オフラインにする</string>
-    <string name="log_out">ログアウト</string>
     <string name="close">閉じる</string>
 
     <!-- System menu platform actions -->
@@ -1274,8 +1265,6 @@
     <string name="option_open_store_page">ストアページを開く</string>
     <string name="option_export_for_frontend">フロントエンド用にエクスポート</string>
     <string name="option_copy_launch_link">起動リンクをコピー</string>
-    <string name="frontend_sync_pick_directory_cd">%1$s のディレクトリを選択</string>
-    <string name="frontend_sync_clear_directory_cd">%1$s のディレクトリをクリア</string>
     <string name="option_open_container">コンテナを開く</string>
     <string name="option_edit_container">コンテナの編集</string>
     <string name="option_reset_to_defaults">コンテナをリセットする</string>

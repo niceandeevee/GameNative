@@ -298,7 +298,6 @@
     <string name="gamescope_look_cb_prot">Protanopie</string>
     <string name="gamescope_look_cb_trit">Tritanopie</string>
     <string name="screen_effects">Efecte de ecran</string>
-    <string name="screen_effects_live_preview">Modificările se aplică instantaneu jocului curent.</string>
     <string name="screen_effects_color_adjustments">Ajustări de culoare</string>
     <string name="screen_effects_shader_toggles">Efecte shader</string>
     <string name="screen_effects_brightness">Luminozitate</string>
@@ -554,18 +553,13 @@
     <string name="installed">Instalat</string>
     <string name="installing">Se instalează</string>
     <string name="not_installed">Neinstalat</string>
-    <string name="games">Jocuri</string>
-    <string name="playtime_last_two_weeks">Timp jucat în ultimele 2 săptămâni: %s ore</string>
-    <string name="total_playtime">Timp total jucat: %s ore</string>
     <string name="last_played">Ultima dată jucat</string>
     <string name="add_custom_game_dialog_title">Adaugă joc personalizat</string>
-    <string name="add_custom_game_dialog_message">Selectează folderul care conține fișierele jocului pe care vrei să-l adaugi ca joc personalizat.</string>
     <string name="custom_game_importing">Se importă jocul…</string>
     <string name="custom_game_import_success">Joc importat</string>
     <string name="custom_game_import_failed">Importul a eșuat</string>
     <string name="custom_game_import_dialog_message">Selectează folderul care conține jocul. Va fi importat în stocarea GameNative pentru a putea rula fără nicio permisiune de stocare. Jocurile mari pot dura câteva minute.</string>
     <string name="custom_game_import_remove_original">Șterge originalul după import</string>
-    <string name="add_custom_game_dont_show_again">Nu mai arăta acest dialog</string>
     <string name="base_app_shortcut_created">Shortcut creat</string>
     <string name="base_app_shortcut_failed">Nu s-a putut crea shortcut-ul: %s</string>
     <string name="base_app_exported">Exportat</string>
@@ -594,9 +588,6 @@
 
 
     <!-- Profile & Menu -->
-	<string name="go_online">Mergi online</string>
-	<string name="go_offline">Mergi offline</string>
-	<string name="log_out">Deconectare</string>
 	<string name="close">Închide</string>
 
     <!-- System menu platform actions -->
@@ -1329,18 +1320,6 @@
     <string name="launch_bionic_steam_description">Activează jocul online și îmbunătățește compatibilitatea\nNu funcționează întotdeauna\nFă backup salvărilor înainte să încerci</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Sincronizare frontend</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Jocuri personalizate</string>
-    <string name="frontend_sync_not_set">Nesetat</string>
-    <string name="frontend_sync_clear_confirm_title">Eliminați fișierele de export vechi?</string>
-    <string name="frontend_sync_clear_confirm_message">Eliminați fișierele .%1$s din directorul anterior?</string>
-    <string name="frontend_sync_confirm_remove">Eliminați</string>
-    <string name="frontend_sync_confirm_keep">Păstrați</string>
-    <string name="frontend_sync_resync_all">Resincronizare completă</string>
-    <string name="frontend_sync_resync_complete">Sincronizare frontend finalizată</string>
-    <string name="frontend_sync_pick_directory_cd">Alege directorul pentru %1$s</string>
-    <string name="frontend_sync_clear_directory_cd">Șterge directorul pentru %1$s</string>
     <string name="screen_effects_upscaling">Scalare superioară</string>
     <string name="screen_effects_basic_scaling">Scalare de bază</string>
     <string name="screen_effects_scaling_mode_none">Fără scalare</string>

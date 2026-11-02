@@ -278,7 +278,6 @@
     <string name="quick_menu_back">Back</string>
     <string name="display_brightness">Display brightness</string>
     <string name="screen_effects">Screen Effects</string>
-    <string name="screen_effects_live_preview">Changes apply instantly to the current game.</string>
     <string name="screen_effects_upscaling">Upscaling</string>
     <string name="screen_effects_basic_scaling">Basic scaling</string>
     <string name="screen_effects_color_adjustments">Color adjustments</string>
@@ -670,13 +669,8 @@
     <string name="installed">Installed</string>
     <string name="installing">Installing</string>
     <string name="not_installed">Not Installed</string>
-    <string name="games">Games</string>
-    <string name="playtime_last_two_weeks">Playtime last 2 weeks: %s hrs</string>
-    <string name="total_playtime">Total Playtime: %s hrs</string>
     <string name="last_played">Last Played</string>
     <string name="add_custom_game_dialog_title">Add Custom Game</string>
-    <string name="add_custom_game_dialog_message">Please select the folder containing the game files you want to add as a custom game.</string>
-    <string name="add_custom_game_dont_show_again">Don\'t show this dialog again</string>
     <string name="custom_game_importing">Importing game…</string>
     <string name="custom_game_import_success">Game imported</string>
     <string name="custom_game_import_failed">Import failed</string>
@@ -713,9 +707,6 @@
 
 
     <!-- Profile & Menu -->
-    <string name="go_online">Go Online</string>
-    <string name="go_offline">Go Offline</string>
-    <string name="log_out">Log Out</string>
     <string name="close">Close</string>
 
     <!-- System menu platform actions -->
@@ -2013,18 +2004,6 @@
     <!-- HLTB (How Long To Beat) -->
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Frontend Sync</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Custom Games</string>
-    <string name="frontend_sync_not_set">Not set</string>
-    <string name="frontend_sync_clear_confirm_title">Remove old export files?</string>
-    <string name="frontend_sync_clear_confirm_message">Remove .%1$s files from the previous directory?</string>
-    <string name="frontend_sync_confirm_remove">Remove</string>
-    <string name="frontend_sync_confirm_keep">Keep</string>
-    <string name="frontend_sync_resync_all">Resync all</string>
-    <string name="frontend_sync_resync_complete">Frontend sync complete</string>
-    <string name="frontend_sync_pick_directory_cd">Pick directory for %1$s</string>
-    <string name="frontend_sync_clear_directory_cd">Clear directory for %1$s</string>
 
     <!-- Radial Menu -->
     <string name="radial_menu">Radial Menu</string>

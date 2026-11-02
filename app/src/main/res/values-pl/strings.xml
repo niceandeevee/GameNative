@@ -299,7 +299,6 @@
     <string name="gamescope_look_cb_prot">Protanopia</string>
     <string name="gamescope_look_cb_trit">Tritanopia</string>
     <string name="screen_effects">Efekty ekranu</string>
-    <string name="screen_effects_live_preview">Zmiany są natychmiast stosowane do bieżącej gry.</string>
     <string name="screen_effects_color_adjustments">Regulacja kolorów</string>
     <string name="screen_effects_shader_toggles">Efekty shaderów</string>
     <string name="screen_effects_brightness">Jasność</string>
@@ -552,18 +551,13 @@
     <string name="installed">Zainstalowane</string>
     <string name="installing">Instalowanie</string>
     <string name="not_installed">Nie zainstalowane</string>
-    <string name="games">Gry</string>
-    <string name="playtime_last_two_weeks">Czas gry w ostatnich 2 tygodniach: %s godz.</string>
-    <string name="total_playtime">Całkowity czas gry: %s godz.</string>
     <string name="last_played">Ostatnio grane</string>
     <string name="add_custom_game_dialog_title">Dodaj własną grę</string>
-    <string name="add_custom_game_dialog_message">Wybierz folder zawierający pliki gry, którą chcesz dodać jako własną grę.</string>
     <string name="custom_game_importing">Importowanie gry…</string>
     <string name="custom_game_import_success">Grę zaimportowano</string>
     <string name="custom_game_import_failed">Import nie powiódł się</string>
     <string name="custom_game_import_dialog_message">Wybierz folder zawierający grę. Zostanie ona zaimportowana do pamięci GameNative, aby mogła działać bez żadnych uprawnień do pamięci. Duże gry mogą zająć kilka minut.</string>
     <string name="custom_game_import_remove_original">Usuń oryginał po imporcie</string>
-    <string name="add_custom_game_dont_show_again">Nie pokazuj tego ponownie</string>
     <string name="base_app_shortcut_created">Utworzono skrót</string>
     <string name="base_app_shortcut_failed">Nie udało się utworzyć skrótu: %s</string>
     <string name="base_app_exported">Wyeksportowano</string>
@@ -593,9 +587,6 @@
 
 
     <!-- Profile & Menu -->
-    <string name="go_online">Przejdź online</string>
-    <string name="go_offline">Przejdź offline</string>
-    <string name="log_out">Wyloguj</string>
     <string name="close">Zamknij</string>
 
     <!-- System menu platform actions -->
@@ -1349,18 +1340,6 @@
     <string name="launch_bionic_steam_description">Włącza grę online, poprawia kompatybilność\nNie zawsze działa\nPrzed użyciem wykonaj kopię zapasową zapisów</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Synchronizacja frontend</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Niestandardowe gry</string>
-    <string name="frontend_sync_not_set">Nie ustawiono</string>
-    <string name="frontend_sync_clear_confirm_title">Usunąć stare pliki eksportu?</string>
-    <string name="frontend_sync_clear_confirm_message">Usunąć pliki .%1$s z poprzedniego katalogu?</string>
-    <string name="frontend_sync_confirm_remove">Usuń</string>
-    <string name="frontend_sync_confirm_keep">Zachowaj</string>
-    <string name="frontend_sync_resync_all">Ponowna synchronizacja wszystkich</string>
-    <string name="frontend_sync_resync_complete">Synchronizacja frontend zakończona</string>
-    <string name="frontend_sync_pick_directory_cd">Wybierz katalog dla %1$s</string>
-    <string name="frontend_sync_clear_directory_cd">Wyczyść katalog dla %1$s</string>
     <string name="screen_effects_upscaling">Skalowanie w górę</string>
     <string name="screen_effects_basic_scaling">Podstawowe skalowanie</string>
     <string name="screen_effects_scaling_mode_none">Bez skalowania</string>

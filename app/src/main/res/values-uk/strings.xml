@@ -299,7 +299,6 @@
     <string name="gamescope_look_cb_prot">Протанопія</string>
     <string name="gamescope_look_cb_trit">Тританопія</string>
     <string name="screen_effects">Ефекти екрана</string>
-    <string name="screen_effects_live_preview">Зміни миттєво застосовуються до поточної гри.</string>
     <string name="screen_effects_color_adjustments">Налаштування кольору</string>
     <string name="screen_effects_shader_toggles">Ефекти шейдерів</string>
     <string name="screen_effects_brightness">Яскравість</string>
@@ -552,18 +551,13 @@
     <string name="installed">Інстальовано</string>
     <string name="installing">Інсталяція</string>
     <string name="not_installed">Не інстальовано</string>
-    <string name="games">Ігри</string>
-    <string name="playtime_last_two_weeks">Награно за останні два тижні: %s годин</string>
-    <string name="total_playtime">Всього награно: %s годин</string>
     <string name="last_played">Остання гра</string>
     <string name="add_custom_game_dialog_title">Додати власну гру</string>
-    <string name="add_custom_game_dialog_message">Будь ласка, виберіть папку з файлами гри, яку ви хочете додати як власну гру.</string>
     <string name="custom_game_importing">Імпорт гри…</string>
     <string name="custom_game_import_success">Гру імпортовано</string>
     <string name="custom_game_import_failed">Не вдалося імпортувати</string>
     <string name="custom_game_import_dialog_message">Виберіть папку з грою. Її буде імпортовано до сховища GameNative, щоб вона могла працювати без дозволу на доступ до сховища. Імпорт великих ігор може тривати кілька хвилин.</string>
     <string name="custom_game_import_remove_original">Видалити оригінал після імпорту</string>
-    <string name="add_custom_game_dont_show_again">Більше не показувати</string>
     <string name="base_app_shortcut_created">Ярлик створено</string>
     <string name="base_app_shortcut_failed">Не вдалося створити ярлик: %s</string>
     <string name="base_app_exported">Вивантажено</string>
@@ -592,9 +586,6 @@
 
 
     <!-- Profile & Menu -->
-    <string name="go_online">Увійти в мережу</string>
-    <string name="go_offline">Вийти з мережі</string>
-    <string name="log_out">Вийти з акаунта</string>
     <string name="close">Закрити</string>
 
     <!-- System menu platform actions -->
@@ -1349,18 +1340,6 @@
     <string name="launch_bionic_steam_description">Увімкнення онлайн-гри та покращення сумісності\nПрацює не завжди\nПеред спробою зробіть резервну копію збережень</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="frontend_sync_dialog_title">Синхронізація frontend</string>
-    <string name="frontend_sync_source_steam">Steam</string>
-    <string name="frontend_sync_source_custom">Власні ігри</string>
-    <string name="frontend_sync_not_set">Не задано</string>
-    <string name="frontend_sync_clear_confirm_title">Видалити старі файли експорту?</string>
-    <string name="frontend_sync_clear_confirm_message">Видалити файли .%1$s з попереднього каталогу?</string>
-    <string name="frontend_sync_confirm_remove">Видалити</string>
-    <string name="frontend_sync_confirm_keep">Зберегти</string>
-    <string name="frontend_sync_resync_all">Повторна синхронізація всього</string>
-    <string name="frontend_sync_resync_complete">Синхронізація frontend завершена</string>
-    <string name="frontend_sync_pick_directory_cd">Вибрати каталог для %1$s</string>
-    <string name="frontend_sync_clear_directory_cd">Очистити каталог для %1$s</string>
     <string name="screen_effects_upscaling">Апскейлінг</string>
     <string name="screen_effects_basic_scaling">Базове масштабування</string>
     <string name="screen_effects_scaling_mode_none">Без масштабування</string>
