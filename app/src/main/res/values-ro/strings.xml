@@ -464,40 +464,6 @@
             <b>2</b> : Ca 1, plus Memory Barrier la fiecare scriere MOV<br />
             <b>3</b> : Ca 2, plus Memory Barrier la citire și pe unele opcode SSE/SSE2
         ]]></string>
-    <string name="box86_64_env_var_help__dynarec_weakbarrier"><![CDATA[
-            Ajustează memory barrier‑ele pentru a reduce impactul modelului Strong<br /><br />
-            <b>0</b> : Folosește barrier‑e sigure<br />
-            <b>1</b> : Folosește barrier‑e slabe pentru un mic boost<br />
-            <b>2</b> : Folosește barrier‑e slabe și dezactivează ultimele write barrier‑e
-        ]]></string>
-    <string name="box86_64_env_var_help__dynarec_aligned_atomics"><![CDATA[
-            Generează doar atomici aliniați (disponibil doar pe Arm64).<br /><br />
-            <b>0</b> : Generează cod pentru atomici nealiniați.<br />
-            <b>1</b> : Generează doar atomici aliniați (mai rapid, cod mai mic), dar poate cauza SIGBUS pentru LOCK pe adrese aliniate.
-        ]]></string>
-    <string name="box86_64_env_var_help__dynarec_df"><![CDATA[
-            Activează sau dezactivează folosirea deferred flags.<br /><br />
-            <b>0</b> : Dezactivează deferred flags.<br />
-            <b>1</b> : Activează deferred flags.
-        ]]></string>
-    <string name="box86_64_env_var_help__dynarec_dirty"><![CDATA[
-            Permite continuarea rulării unui bloc neprotejat și potențial „dirty”.<br /><br />
-            <b>0</b> : Nu permite continuarea rulării unui bloc dirty.<br />
-            <b>1</b> : Permite rularea unui dynablock care scrie în aceeași pagină cu codul (poate accelera încărcarea, dar poate cauza crash-uri).<br />
-            <b>2</b> : Detectează HotPage, marchează pagina ca NEVERCLEAN și nu o protejează la scriere; blocurile vor fi testate mereu.
-        ]]></string>
-    <string name="box86_64_env_var_help__dynarec_nativeflags"><![CDATA[
-            Activează sau dezactivează folosirea flag‑urilor native.<br /><br />
-            <b>0</b> : Nu folosi flag‑uri native.<br />
-            <b>1</b> : Folosește flag‑uri native când este posibil.
-        ]]></string>
-    <string name="box86_64_env_var_help__dynarec_pause"><![CDATA[
-            Emularea instrucțiunii x86 PAUSE (utilă pentru spinlock‑uri).<br /><br />
-            <b>0</b> : Ignoră PAUSE.<br />
-            <b>1</b> : Emulează PAUSE cu YIELD.<br />
-            <b>2</b> : Emulează PAUSE cu WFI.<br />
-            <b>3</b> : Emulează PAUSE cu SEVL+WFE.
-        ]]></string>
     <string name="box86_64_env_var_help__avx"><![CDATA[
             AVX și AVX2 implementate, plus BMI1, BMI2, ADX, FMA, F16C și RDRAND!<br /><br />
             <b>0</b> : Dezactivează AVX<br />
@@ -506,7 +472,6 @@
         ]]></string>
     <string name="box86_64_env_var_help__maxcpu">Numărul maxim de CPU-uri prezentate programelor de box64</string>
     <string name="box86_64_env_var_help__unityplayer">Detectează UnityPlayer.dll și aplică setările strongmem</string>
-    <string name="box86_64_env_var_help__mmap32">Forțează toate alocările de memorie în spațiu 32‑bit</string>
     <string name="box86_64_env_var_help__dynarec_forward">Definește valoarea maximă forward permisă la construirea blocurilor</string>
     <string name="box86_64_env_var_help__dynarec_callret">Optimizarea opcode‑urilor CALL/RET</string>
     <string name="box86_64_env_var_help__dynarec_wait">Definește dacă Dynarec va aștepta FillBlock</string>

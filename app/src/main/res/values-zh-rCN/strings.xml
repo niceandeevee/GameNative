@@ -460,35 +460,6 @@
         <b>2</b>：包含选项1，再加上每次使用 MOV 指令写入内存时都加入内存屏障<br />
         <b>3</b>：包含选项1，再加上从内存读取时，以及在某些 SSE/SSE2 操作码上使用内存屏障
     ]]></string>
-    <string name="box86_64_env_var_help__dynarec_weakbarrier"><![CDATA[
-        调整内存屏障以减少强内存模拟对性能的影响<br /><br />
-        <b>0</b>：使用常规安全屏障<br />
-        <b>1</b>：采用弱屏障以获得轻微的性能提升<br />
-        <b>2</b>：使用弱屏障，并额外禁用最后写入屏障]]></string>
-    <string name="box86_64_env_var_help__dynarec_aligned_atomics"><![CDATA[
-        仅产生对齐原子操作（目前仅适用于 Arm64 架构）<br /><br />
-        <b>0</b>：产生非对齐原子操作的处理代码<br />
-        <b>1</b>：仅产生对齐的原子操作，此方式速度更快且代码体积更小，但会导致以 LOCK 为前缀的操作码在对齐数据地址上运作时触发 SIGBUS 异常。]]></string>
-    <string name="box86_64_env_var_help__dynarec_df"><![CDATA[
-        启用或停用延迟标志的使用<br /><br />
-        <b>0</b>：停用延迟标志的使用<br />
-        <b>1</b>：启用延迟标志的使用]]></string>
-    <string name="box86_64_env_var_help__dynarec_dirty"><![CDATA[
-        允许继续执行未受保护且可能已遭篡改的区块<br /><br />
-        <b>0</b>：不允许继续执行未受保护且可能已遭篡改的区块<br />
-        <b>1</b>：允许继续执行“动态区块”，该机制将数据写入与代码相同的页面。此做法虽能加快某些游戏的加载速度，但也可能导致意外崩溃。<br />
-        <b>2</b>：当检测到 HotPage 时，亦会将该页面标记为 NEVERCLEAN，因此该页面不会被写入保护，但从该页面建立的区块仍会持续接受测试。此方式可能更为迅速（但某些 SMC 案例可能无法被拦截）。]]></string>
-    <string name="box86_64_env_var_help__dynarec_nativeflags"><![CDATA[
-        启用或停用原生标志的使用<br /><br />
-        <b>0</b>：不使用原生标志<br />
-        <b>1</b>：尽可能使用原生标志]]></string>
-    <string name="box86_64_env_var_help__dynarec_pause"><![CDATA[
-        启用 x86 PAUSE 模拟功能，可能有助于提升自旋锁的性能<br /><br />
-        <b>0</b>：忽略 x86 PAUSE 指令<br />
-        <b>1</b>：使用 YIELD 模拟 x86 的 PAUSE 指令<br />
-        <b>2</b>：使用 WFI 模拟 x86 PAUSE 指令<br />
-        <b>3</b>：使用 SEVL+WFE 模拟 x86 PAUSE 指令
-    ]]></string>
     <string name="box86_64_env_var_help__avx"><![CDATA[
         已实现 AVX 与 AVX2，并包含 BMI1、BMI2、ADX、FMA、F16C 及 RDANDR 扩展功能<br /><br />
         <b>0</b>：禁用 AVX 扩展功能<br />
@@ -497,7 +468,6 @@
     ]]></string>
     <string name="box86_64_env_var_help__maxcpu">box64 向程序呈现的最大处理器核心数</string>
     <string name="box86_64_env_var_help__unityplayer">检测 UnityPlayer.dll 并应用 strongmem 设置</string>
-    <string name="box86_64_env_var_help__mmap32">强制所有内存分配在 32 位地址空间中执行</string>
     <string name="box86_64_env_var_help__dynarec_forward">定义建立区块时允许的最大向前位移</string>
     <string name="box86_64_env_var_help__dynarec_callret">优化 CALL/RET 操作码</string>
     <string name="box86_64_env_var_help__dynarec_wait">定义 Dynarec 是否需等待 FillBlock 准备就绪</string>

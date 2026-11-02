@@ -4254,7 +4254,7 @@ private fun setupXEnvironment(
                 "-all",
         )
     }
-    // capture debug output to file if either Wine or Box86/64 logging is enabled
+    // capture debug output to file if either Wine or Box64 logging is enabled
     var logFile: File? = null
     val captureLogs = enableWineDebug || enableBox86Logs
     if (captureLogs) {
@@ -4370,8 +4370,6 @@ private fun setupXEnvironment(
         }
         guestProgramLauncherComponent.bindingPaths = bindingPaths.toTypedArray()
         guestProgramLauncherComponent.box64Version = container.box64Version
-        guestProgramLauncherComponent.box86Version = container.box86Version
-        guestProgramLauncherComponent.box86Preset = container.box86Preset
         guestProgramLauncherComponent.box64Preset = container.box64Preset
         if (guestProgramLauncherComponent is BionicProgramLauncherComponent) {
             guestProgramLauncherComponent.setFEXCorePreset(container.fexCorePreset)
@@ -4584,8 +4582,6 @@ private fun setupXEnvironment(
         Timber.i("WoW64 Mode: ${container.isWoW64Mode}")
         Timber.i("Box64 Version: ${container.box64Version}")
         Timber.i("Box64 Preset: ${container.box64Preset}")
-        Timber.i("Box86 Version: ${container.box86Version}")
-        Timber.i("Box86 Preset: ${container.box86Preset}")
         Timber.i("FEXCore Preset: ${container.fexCorePreset}")
         Timber.i("CPU List: ${container.cpuList}")
         Timber.i("CPU List WoW64: ${container.cpuListWoW64}")

@@ -686,13 +686,6 @@ object PrefManager {
             setPref(CONTAINER_LANGUAGE, value)
         }
 
-    private val BOX86_PRESET = stringPreferencesKey("box86_preset")
-    var box86Preset: String
-        get() = getPref(BOX86_PRESET, Box86_64Preset.COMPATIBILITY)
-        set(value) {
-            setPref(BOX86_PRESET, value)
-        }
-
     private val BOX64_PRESET = stringPreferencesKey("box64_preset")
     var box64Preset: String
         get() = getPref(BOX64_PRESET, Box86_64Preset.COMPATIBILITY)
@@ -830,13 +823,6 @@ object PrefManager {
         get() = getPref(PORTRAIT_BELOW_CUTOUT, false)
         set(value) {
             setPref(PORTRAIT_BELOW_CUTOUT, value)
-        }
-
-    private val BOX_86_VERSION = stringPreferencesKey("box86_version")
-    var box86Version: String
-        get() = getPref(BOX_86_VERSION, DefaultVersion.BOX86)
-        set(value) {
-            setPref(BOX_86_VERSION, value)
         }
 
     private val BOX_64_VERSION = stringPreferencesKey("box64_version")

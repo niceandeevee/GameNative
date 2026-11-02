@@ -467,35 +467,6 @@
         <b>2</b> : Tutto 1 più una Barriera di Memoria su ogni scrittura in memoria usando MOV<br />
         <b>3</b> : Tutto 2 più Barriera di Memoria durante la lettura dalla memoria e su alcuni opcode SSE/SSE2
     ]]>    </string>
-    <string name="box86_64_env_var_help__dynarec_weakbarrier"><![CDATA[
-        Modifica le barriere di memoria per ridurre l\'impatto sulle prestazioni dell\'emulazione strong memory<br /><br />
-        <b>0</b> : Usa barriere sicure regolari<br />
-        <b>1</b> : Usa barriere deboli per un leggero aumento delle prestazioni<br />
-        <b>2</b> : Usa barriere deboli, disabilita inoltre le ultime barriere di scrittura]]></string>
-    <string name="box86_64_env_var_help__dynarec_aligned_atomics"><![CDATA[
-        Genera solo atomiche allineate (disponibile solo su Arm64 per ora).<br /><br />
-        <b>0</b> : Genera codice di gestione atomiche non allineate.<br />
-        <b>1</b> : Genera solo atomiche allineate, che è più veloce e di dimensioni ridotte, ma causerà SIGBUS per opcode con prefisso LOCK che operano su indirizzi dati allineati.]]></string>
-    <string name="box86_64_env_var_help__dynarec_df"><![CDATA[
-        Abilita o disabilita l\'uso dei flag differiti.<br /><br />
-        <b>0</b> : Disabilita l\'uso dei flag differiti.<br />
-        <b>1</b> : Abilita l\'uso dei flag differiti.]]></string>
-    <string name="box86_64_env_var_help__dynarec_dirty"><![CDATA[
-        Consenti di continuare l\'esecuzione di un blocco non protetto e potenzialmente sporco.<br /><br />
-        <b>0</b> : Non consentire di continuare l\'esecuzione di un blocco non protetto e potenzialmente sporco.<br />
-        <b>1</b> : Consenti di continuare a eseguire un dynablock che scrive dati nella stessa pagina del codice. Può essere più veloce nel caricamento di alcuni giochi ma può anche causare crash imprevisti.<br />
-        <b>2</b> : Inoltre, quando rileva una HotPage, contrassegna quella pagina come NEVERCLEAN, quindi non sarà protetta da scrittura ma il blocco costruito da quella pagina sarà sempre testato. Può essere più veloce in questo modo (ma alcuni casi SMC potrebbero non essere intercettati).]]></string>
-    <string name="box86_64_env_var_help__dynarec_nativeflags"><![CDATA[
-        Abilita o disabilita l\'uso dei flag nativi.<br /><br />
-        <b>0</b> : Non usare flag nativi.<br />
-        <b>1</b> : Usa flag nativi quando possibile.]]></string>
-    <string name="box86_64_env_var_help__dynarec_pause"><![CDATA[
-        Abilita emulazione x86 PAUSE, può aiutare le prestazioni degli spinlock.<br /><br />
-        <b>0</b> : Ignora istruzione x86 PAUSE.<br />
-        <b>1</b> : Usa YIELD per emulare istruzione x86 PAUSE.<br />
-        <b>2</b> : Usa WFI per emulare istruzione x86 PAUSE.<br />
-        <b>3</b> : Usa SEVL+WFE per emulare istruzione x86 PAUSE.
-    ]]></string>
     <string name="box86_64_env_var_help__avx"><![CDATA[
         AVX e AVX2 implementati, insieme a BMI1, BMI2, ADX, FMA, F16C ed estensione RDANDR!<br /><br />
         <b>0</b> : Disabilita estensione AVX<br />
@@ -504,7 +475,6 @@
     ]]></string>
     <string name="box86_64_env_var_help__maxcpu">Numero massimo di CPU presentate ai programmi da box64</string>
     <string name="box86_64_env_var_help__unityplayer">Rileva UnityPlayer.dll e applica impostazioni strongmem</string>
-    <string name="box86_64_env_var_help__mmap32">Forza ogni allocazione di memoria in spazi di indirizzi a 32 bit</string>
     <string name="box86_64_env_var_help__dynarec_forward">Definisce il valore massimo di avanzamento consentito durante la costruzione del Blocco</string>
     <string name="box86_64_env_var_help__dynarec_callret">Ottimizzazione degli opcode CALL/RET</string>
     <string name="box86_64_env_var_help__dynarec_wait">Definisce se Dynarec attenderà o meno che il FillBlock sia pronto</string>

@@ -467,35 +467,6 @@
         <b>2</b> : Tout 1 plus une barrière mémoire à chaque écriture en mémoire utilisant MOV<br />
         <b>3</b> : Tout 2 plus une barrière mémoire lors de la lecture de la mémoire et sur certains opcodes SSE/SSE2
     ]]>    </string>
-    <string name="box86_64_env_var_help__dynarec_weakbarrier"><![CDATA[
-        Ajuster les barrières mémoire pour réduire l\'impact sur les performances de l\'émulation de mémoire forte<br /><br />
-        <b>0</b> : Utiliser des barrières sûres régulières<br />
-        <b>1</b> : Utiliser des barrières faibles pour un léger gain de performance<br />
-        <b>2</b> : Utiliser des barrières faibles, désactiver en plus les dernières barrières d\'écriture]]></string>
-    <string name="box86_64_env_var_help__dynarec_aligned_atomics"><![CDATA[
-        Générer uniquement des atomiques alignés (disponible uniquement sur Arm64 pour le moment).<br /><br />
-        <b>0</b> : Générer du code de gestion des atomiques non alignés.<br />
-        <b>1</b> : Générer uniquement des atomiques alignés, ce qui est plus rapide et a une taille de code plus petite, mais causera SIGBUS pour les opcodes préfixés LOCK opérant sur des adresses de données alignées.]]></string>
-    <string name="box86_64_env_var_help__dynarec_df"><![CDATA[
-        Activer ou désactiver l\'utilisation des drapeaux différés.<br /><br />
-        <b>0</b> : Désactiver l\'utilisation des drapeaux différés.<br />
-        <b>1</b> : Activer l\'utilisation des drapeaux différés.]]></string>
-    <string name="box86_64_env_var_help__dynarec_dirty"><![CDATA[
-        Permettre de continuer à exécuter un bloc non protégé et potentiellement sale.<br /><br />
-        <b>0</b> : Ne pas permettre de continuer à exécuter un bloc non protégé et potentiellement sale.<br />
-        <b>1</b> : Permettre de continuer à exécuter un dynablock qui écrit des données dans la même page que le code. Cela peut accélérer le temps de chargement de certains jeux mais peut aussi provoquer des plantages inattendus.<br />
-        <b>2</b> : Également, lorsqu\'une HotPage est détectée, marquer cette page comme NEVERCLEAN, elle ne sera donc pas protégée en écriture mais les blocs construits à partir de cette page seront toujours testés. Cela peut être plus rapide de cette façon (mais certains cas SMC pourraient ne pas être capturés).]]></string>
-    <string name="box86_64_env_var_help__dynarec_nativeflags"><![CDATA[
-        Activer ou désactiver l\'utilisation des drapeaux natifs.<br /><br />
-        <b>0</b> : Ne pas utiliser les drapeaux natifs.<br />
-        <b>1</b> : Utiliser les drapeaux natifs lorsque possible.]]></string>
-    <string name="box86_64_env_var_help__dynarec_pause"><![CDATA[
-        Activer l\'émulation PAUSE x86, peut aider la performance des spinlocks.<br /><br />
-        <b>0</b> : Ignorer l\'instruction PAUSE x86.<br />
-        <b>1</b> : Utiliser YIELD pour émuler l\'instruction PAUSE x86.<br />
-        <b>2</b> : Utiliser WFI pour émuler l\'instruction PAUSE x86.<br />
-        <b>3</b> : Utiliser SEVL+WFE pour émuler l\'instruction PAUSE x86.
-    ]]></string>
     <string name="box86_64_env_var_help__avx"><![CDATA[
         AVX et AVX2 implémentés, ainsi que les extensions BMI1, BMI2, ADX, FMA, F16C et RDANDR !<br /><br />
         <b>0</b> : Désactiver l\'extension AVX<br />
@@ -504,7 +475,6 @@
     ]]></string>
     <string name="box86_64_env_var_help__maxcpu">Nombre maximum de CPUs présentés aux programmes par box64</string>
     <string name="box86_64_env_var_help__unityplayer">Détecter UnityPlayer.dll et appliquer les paramètres strongmem</string>
-    <string name="box86_64_env_var_help__mmap32">Forcer chaque allocation mémoire dans les espaces d\'adresses 32 bits</string>
     <string name="box86_64_env_var_help__dynarec_forward">Définit la valeur avant maximale autorisée lors de la construction de blocs</string>
     <string name="box86_64_env_var_help__dynarec_callret">Optimisation des opcodes CALL/RET</string>
     <string name="box86_64_env_var_help__dynarec_wait">Définit si Dynarec attendra que le FillBlock soit prêt</string>

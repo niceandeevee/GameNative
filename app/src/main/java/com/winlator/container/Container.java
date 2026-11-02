@@ -104,9 +104,7 @@ public class Container {
     private String cpuList;
     private String cpuListWoW64;
     private String desktopTheme = WineThemeManager.DEFAULT_DESKTOP_THEME;
-    private String box86Version = DefaultVersion.BOX86;
     private String box64Version = DefaultVersion.BOX64;
-    private String box86Preset = Box86_64Preset.PERFORMANCE;
     private String box64Preset = Box86_64Preset.PERFORMANCE;
     private String fexcoreVersion = DefaultVersion.FEXCORE;
     private String fexcorePreset = FEXCorePreset.INTERMEDIATE;
@@ -496,10 +494,6 @@ public class Container {
         this.cpuListWoW64 = cpuListWoW64 != null && !cpuListWoW64.isEmpty() ? cpuListWoW64 : null;
     }
 
-    public String getBox86Version() { return box86Version; }
-
-    public void setBox86Version(String box86Version) { this.box86Version = box86Version; }
-
     public String getBox64Version() { return box64Version; }
 
     public void setBox64Version(String box64Version) { this.box64Version = box64Version; }
@@ -510,14 +504,6 @@ public class Container {
 
     public String getEmulator() {
         return this.emulator;
-    }
-
-    public String getBox86Preset() {
-        return box86Preset;
-    }
-
-    public void setBox86Preset(String box86Preset) {
-        this.box86Preset = box86Preset;
     }
 
     public String getBox64Preset() {
@@ -784,9 +770,7 @@ public class Container {
             data.put("dinputMapperType", dinputMapperType);
             data.put("wow64Mode", wow64Mode);
             data.put("startupSelection", startupSelection);
-            data.put("box86Version", box86Version);
             data.put("box64Version", box64Version);
-            data.put("box86Preset", box86Preset);
             data.put("box64Preset", box64Preset);
             data.put("fexcorePreset", fexcorePreset);
             data.put("desktopTheme", desktopTheme);
@@ -975,14 +959,8 @@ public class Container {
                 case "emulator" :
                     setEmulator(data.getString(key));
                     break;
-                case "box86Version":
-                    setBox86Version(data.getString(key));
-                    break;
                 case "box64Version":
                     setBox64Version(data.getString(key));
-                    break;
-                case "box86Preset" :
-                    setBox86Preset(data.getString(key));
                     break;
                 case "box64Preset" :
                     setBox64Preset(data.getString(key));

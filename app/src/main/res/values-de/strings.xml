@@ -458,35 +458,6 @@
         <b>2</b> : Wie 1, aber Memory Barrier bei jedem Schreibzugriff mit MOV<br />
         <b>3</b> : Wie 2, plus Barrier auch beim Lesen aus dem Speicher und für einzelne SSE/SSE2-Opcode
     ]]>    </string>
-    <string name="box86_64_env_var_help__dynarec_weakbarrier"><![CDATA[
-        Speicherbarrieren optimieren für bessere Performance bei starker Speicheremulation<br /><br />
-        <b>0</b> : Reguläre sichere Barrieren verwenden<br />
-        <b>1</b> : Schwächere Barrieren für etwas mehr Leistung<br />
-        <b>2</b> : Zusätzlich letzte Schreibbarrieren deaktivieren]]></string>
-    <string name="box86_64_env_var_help__dynarec_aligned_atomics"><![CDATA[
-        Nur ausgerichtete Atomics generieren (derzeit nur auf Arm64 verfügbar).<br /><br />
-        <b>0</b> : Unausgerichtete Atomics-Handhabungscode generieren.<br />
-        <b>1</b> : Nur ausgerichtete Atomics generieren – schneller und weniger Code, kann jedoch SIGBUS verursachen bei nicht ausgerichteten Adressen.]]></string>
-    <string name="box86_64_env_var_help__dynarec_df"><![CDATA[
-        Deferred Flags verwenden oder nicht.<br /><br />
-        <b>0</b> : Deferred Flags deaktivieren.<br />
-        <b>1</b> : Deferred Flags aktivieren.]]></string>
-    <string name="box86_64_env_var_help__dynarec_dirty"><![CDATA[
-        Ausführen eines ungeschützten und potenziell veränderten Blocks erlauben.<br /><br />
-        <b>0</b> : Nicht fortsetzen bei ungeschütztem Block.<br />
-        <b>1</b> : Dynablock weiterausführen, auch wenn Daten geschrieben werden, was zu besserer Performance (aber zu Abstürzen führen) kann.<br />
-        <b>2</b> : HotPage als NEVERCLEAN markieren, nicht schreibschützen, Block immer testen. Kann schneller sein, aber SMC kann nicht vollständig erkannt werden.]]></string>
-    <string name="box86_64_env_var_help__dynarec_nativeflags"><![CDATA[
-        Native Flags verwenden oder nicht.<br /><br />
-        <b>0</b> : Keine nativen Flags nutzen.<br />
-        <b>1</b> : Wenn möglich native Flags verwenden.]]></string>
-    <string name="box86_64_env_var_help__dynarec_pause"><![CDATA[
-        x86 PAUSE-Emulation aktivieren, kann Spinlocks beschleunigen.<br /><br />
-        <b>0</b> : PAUSE-Befehl ignorieren.<br />
-        <b>1</b> : Mit YIELD emulieren.<br />
-        <b>2</b> : Mit WFI emulieren.<br />
-        <b>3</b> : Mit SEVL+WFE emulieren.
-    ]]></string>
     <string name="box86_64_env_var_help__avx"><![CDATA[
         AVX und AVX2 sowie BMI1, BMI2, ADX, FMA, F16C und RDRAND implementiert!<br /><br />
         <b>0</b> : AVX deaktivieren<br />
@@ -495,7 +466,6 @@
     ]]></string>
     <string name="box86_64_env_var_help__maxcpu">Maximale Zahl an CPUs, die von box64 emuliert werden</string>
     <string name="box86_64_env_var_help__unityplayer">UnityPlayer.dll erkennen und strongmem-Einstellungen anwenden</string>
-    <string name="box86_64_env_var_help__mmap32">Alle Speicherzuweisungen im 32-Bit-Adressraum erzwingen</string>
     <string name="box86_64_env_var_help__dynarec_forward">Definiert den maximal erlaubten Forward-Wert beim Blockbau</string>
     <string name="box86_64_env_var_help__dynarec_callret">Optimierung von CALL/RET-Opcode</string>
     <string name="box86_64_env_var_help__dynarec_wait">Legt fest, ob Dynarec auf fertige FillBlocks wartet</string>
