@@ -22,12 +22,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Inject credentials
-        run: |
-          cat <<EOF > local.properties
-          POSTHOG_API_KEY=dummy
-          POSTHOG_HOST=https://us.i.posthog.com
-          EOF
       - uses: gradle/actions/setup-gradle@v4
       - name: Compile app and unit tests (Modern debug)
         run: ./gradlew --continue :app:compileModernDebugUnitTestKotlin :app:compileModernDebugUnitTestJavaWithJavac
