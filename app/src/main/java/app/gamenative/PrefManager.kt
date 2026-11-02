@@ -1040,6 +1040,14 @@ object PrefManager {
             setPref(STEAM_USER_ACCOUNT_ID, value)
         }
 
+    /** Steam ID whose Subscriber Agreement was last confirmed accepted, so launches skip the network check. */
+    private val STEAM_SSA_ACCEPTED_FOR = longPreferencesKey("steam_ssa_accepted_for")
+    var steamSsaAcceptedFor: Long
+        get() = getPref(STEAM_SSA_ACCEPTED_FOR, 0L)
+        set(value) {
+            setPref(STEAM_SSA_ACCEPTED_FOR, value)
+        }
+
     private val STEAM_USER_STEAM_ID_64 = longPreferencesKey("steam_user_steam_id_64")
     var steamUserSteamId64: Long
         get() = getPref(STEAM_USER_STEAM_ID_64, 0L)

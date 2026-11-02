@@ -77,14 +77,29 @@ public abstract class WineStartMenuCreator {
         for (int i = 0; i < data.length(); i++) removeMenuEntry(data.getJSONObject(i), startMenuDir);
     }
 
+    private static boolean menuExists(JSONArray items, File dir) throws JSONException {
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = items.getJSONObject(i);
+            if (item.has("children")) {
+                if (!menuExists(item.getJSONArray("children"), new File(dir, item.getString("name")))) return false;
+            }
+            else if (!new File(dir, item.getString("name")+".lnk").isFile()) return false;
+        }
+        return true;
+    }
+
     public static void create(Context context, Container container) {
         try {
             File startMenuDir = container.getStartMenuDir();
             File containerStartMenuFile = new File(container.getRootDir(), ".startmenu");
-            removeOldMenu(containerStartMenuFile, startMenuDir);
-
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
-            FileUtils.writeString(containerStartMenuFile, data.toString());
+            String json = data.toString();
+            // Same menu as last launch and still on disk: nothing to rebuild.
+            if (containerStartMenuFile.isFile() && json.equals(FileUtils.readString(containerStartMenuFile))
+                    && menuExists(data, startMenuDir)) return;
+
+            removeOldMenu(containerStartMenuFile, startMenuDir);
+            FileUtils.writeString(containerStartMenuFile, json);
             for (int i = 0; i < data.length(); i++) createMenuEntry(data.getJSONObject(i), startMenuDir);
         }
         catch (JSONException e) {

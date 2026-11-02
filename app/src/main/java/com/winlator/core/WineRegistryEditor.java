@@ -20,6 +20,7 @@ import java.util.Locale;
 public class WineRegistryEditor implements Closeable {
     private final File file;
     private final File cloneFile;
+    private boolean cloned = true;
     private boolean modified = false;
     private boolean createKeyIfNotExist = true;
     private int lastParentKeyPosition = 0;
@@ -70,7 +71,20 @@ public class WineRegistryEditor implements Closeable {
                 Log.e("WineRegistryEditor", "Failed to set up editor: " + e);
             }
         }
-        else FileUtils.copy(file, cloneFile);
+        else cloned = false;
+    }
+
+    /**
+     * Reads go to the original hive until the first edit, so opening an editor that ends up changing
+     * nothing (the usual case on a repeat launch) no longer copies the whole multi-MB file.
+     */
+    private File source() {
+        return cloned ? cloneFile : file;
+    }
+
+    private void commit(File tempFile) {
+        tempFile.renameTo(cloneFile);
+        cloned = true;
     }
 
     private static String escape(String str) {
@@ -90,7 +104,7 @@ public class WineRegistryEditor implements Closeable {
 
     @Override
     public void close() {
-        if (modified && cloneFile.exists()) {
+        if (modified && cloned && cloneFile.exists()) {
             cloneFile.renameTo(file);
         }
         else cloneFile.delete();
@@ -123,11 +137,11 @@ public class WineRegistryEditor implements Closeable {
         char[] buffer = new char[StreamUtils.BUFFER_SIZE];
         File tempFile = FileUtils.createTempFile(file.getParentFile(), FileUtils.getBasename(file.getPath()));
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(cloneFile), StreamUtils.BUFFER_SIZE);
+        try (BufferedReader reader = new BufferedReader(new FileReader(source()), StreamUtils.BUFFER_SIZE);
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile), StreamUtils.BUFFER_SIZE)) {
 
             int length;
-            for (int i = 0, end = location != null ? location.end+1 : (int)cloneFile.length(); i < end; i += length) {
+            for (int i = 0, end = location != null ? location.end+1 : (int)source().length(); i < end; i += length) {
                 length = Math.min(buffer.length, end - i);
                 reader.read(buffer, 0, length);
                 writer.write(buffer, 0, length);
@@ -151,7 +165,7 @@ public class WineRegistryEditor implements Closeable {
 
         if (success) {
             modified = true;
-            tempFile.renameTo(cloneFile);
+            commit(tempFile);
             return new Location(offset, totalLength, totalLength);
         }
         else {
@@ -244,7 +258,7 @@ public class WineRegistryEditor implements Closeable {
         boolean success = false;
         char[] buffer = new char[valueLocation.length()];
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(cloneFile), StreamUtils.BUFFER_SIZE)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(source()), StreamUtils.BUFFER_SIZE)) {
             reader.skip(valueLocation.start);
             success = reader.read(buffer) == buffer.length;
         }
@@ -257,7 +271,7 @@ public class WineRegistryEditor implements Closeable {
     /** The raw (still escaped) text of [location] in the working copy, or null if it can't be read. */
     private String readRegion(Location location) {
         char[] buffer = new char[location.length()];
-        try (BufferedReader reader = new BufferedReader(new FileReader(cloneFile), StreamUtils.BUFFER_SIZE)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(source()), StreamUtils.BUFFER_SIZE)) {
             reader.skip(location.start);
             return reader.read(buffer) == buffer.length ? new String(buffer) : null;
         }
@@ -286,7 +300,7 @@ public class WineRegistryEditor implements Closeable {
 
         File tempFile = FileUtils.createTempFile(file.getParentFile(), FileUtils.getBasename(file.getPath()));
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(cloneFile), StreamUtils.BUFFER_SIZE);
+        try (BufferedReader reader = new BufferedReader(new FileReader(source()), StreamUtils.BUFFER_SIZE);
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile), StreamUtils.BUFFER_SIZE)) {
 
             int length;
@@ -313,7 +327,7 @@ public class WineRegistryEditor implements Closeable {
 
         if (success) {
             modified = true;
-            tempFile.renameTo(cloneFile);
+            commit(tempFile);
         }
         else tempFile.delete();
     }
@@ -349,7 +363,7 @@ public class WineRegistryEditor implements Closeable {
         boolean success = false;
         File tempFile = FileUtils.createTempFile(this.file.getParentFile(), FileUtils.getBasename(this.file.getPath()));
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(this.cloneFile), 65536);
+            BufferedReader reader = new BufferedReader(new FileReader(source()), 65536);
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile), 65536);
                 int position = 0;
@@ -424,7 +438,7 @@ public class WineRegistryEditor implements Closeable {
         }
         if (success) {
             this.modified = true;
-            tempFile.renameTo(this.cloneFile);
+            commit(tempFile);
         } else {
             tempFile.delete();
         }
@@ -466,7 +480,7 @@ public class WineRegistryEditor implements Closeable {
 
         File tempFile = FileUtils.createTempFile(file.getParentFile(), FileUtils.getBasename(file.getPath()));
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(cloneFile), StreamUtils.BUFFER_SIZE);
+        try (BufferedReader reader = new BufferedReader(new FileReader(source()), StreamUtils.BUFFER_SIZE);
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile), StreamUtils.BUFFER_SIZE)) {
 
             int length = 0;
@@ -487,7 +501,7 @@ public class WineRegistryEditor implements Closeable {
 
         if (success) {
             modified = true;
-            tempFile.renameTo(cloneFile);
+            commit(tempFile);
         }
         else tempFile.delete();
         return success;
@@ -498,7 +512,7 @@ public class WineRegistryEditor implements Closeable {
     }
 
     private Location getKeyLocation(String key, boolean keyAsPrefix) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(cloneFile), StreamUtils.BUFFER_SIZE)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(source()), StreamUtils.BUFFER_SIZE)) {
             int lastIndex = key.lastIndexOf("\\");
             String parentKey = lastParentKeyPosition == 0 && lastIndex != -1 ? "["+escape(key.substring(0, lastIndex)) : null;
 
@@ -557,7 +571,7 @@ public class WineRegistryEditor implements Closeable {
 
     private Location getValueLocation(Location keyLocation, String name) {
         if (keyLocation.start == keyLocation.end) return null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(cloneFile), StreamUtils.BUFFER_SIZE)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(source()), StreamUtils.BUFFER_SIZE)) {
             reader.skip(keyLocation.start);
             name = name != null ? "\""+escape(name)+"\"=" : "@=";
             int totalLength = 0;

@@ -2293,10 +2293,9 @@ fun XServerScreen(
                             Timber.i("Wine version is: $wineVersion")
                             val contentsManager = ContentsManager(context)
                             contentsManager.syncContents()
-                            Timber.i("Wine info is: " + WineInfo.fromIdentifier(context, contentsManager, wineVersion))
-                            xServerState.value = xServerState.value.copy(
-                                wineInfo = WineInfo.fromIdentifier(context, contentsManager, wineVersion),
-                            )
+                            val wineInfo = WineInfo.fromIdentifier(context, contentsManager, wineVersion)
+                            Timber.i("Wine info is: $wineInfo")
+                            xServerState.value = xServerState.value.copy(wineInfo = wineInfo)
                             Timber.i("xServerState.value.wineInfo is: " + xServerState.value.wineInfo)
                             Timber.i("WineInfo.MAIN_WINE_VERSION is: " + WineInfo.MAIN_WINE_VERSION)
                             Timber.i("Wine path for wineinfo is " + xServerState.value.wineInfo.path)
@@ -2370,7 +2369,6 @@ fun XServerScreen(
                                 }
                             }
                             extractArm64ecInputDLLs(context, container) // REQUIRED: Uses updated xinput1_3 main.c from x86_64 build, prevents crashes with 3+ players, avoids need for input shim dlls.
-                            extractx86_64InputDlls(context, container)
 
                             runBlocking {
                                 extractGraphicsDriverFiles(
@@ -4357,6 +4355,11 @@ private fun setupXEnvironment(
 
     envVars.putAll(container.envVars)
     if (container.isLoadMods && !bootToContainer && !testGraphics) ModDllOverrides.apply(container, envVars)
+    // winemenubuilder writes desktop/menu entries for a Linux desktop that doesn't exist here.
+    val dllOverrides = envVars.get("WINEDLLOVERRIDES")
+    if (!dllOverrides.contains("winemenubuilder")) {
+        envVars.put("WINEDLLOVERRIDES", if (dllOverrides.isEmpty()) "winemenubuilder.exe=d" else "$dllOverrides;winemenubuilder.exe=d")
+    }
     envVars.remove("DXVK_FRAME_RATE")
     envVars.remove("VKD3D_FRAME_RATE")
     if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
@@ -5305,33 +5308,16 @@ private fun unpackExecutableFile(
 
 private fun extractArm64ecInputDLLs(context: Context, container: Container) {
     val inputAsset = "arm64ec_input_dlls.tzst"
-    val imageFs = ImageFs.find(context)
     val wineVersion: String? = container.getWineVersion()
-    Log.d("XServerDisplayActivity", "arm64ec Input DLL Extraction Verification: Container Wine version: " + wineVersion)
-
-    // Check if the wineVersion string is not null and contains "arm64ec"
-    if (wineVersion != null && wineVersion.contains("proton-9.0-arm64ec")) {
-        val wineFolder: File = File(imageFs.getWinePath() + "/lib/wine/")
-        Log.d("XServerDisplayActivity", "Wine version contains arm64ec. Extracting input dlls to " + wineFolder.getPath())
-        val success: Boolean = TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, context.assets, inputAsset, wineFolder)
-        if (!success) {
-            Log.d("XServerDisplayActivity", "Failed to extract input dlls")
+    if (wineVersion == null || !wineVersion.contains("proton-9.0-arm64ec")) return
+    val wineFolder = File(ImageFs.find(context).getWinePath() + "/lib/wine/")
+    // The asset only changes with an app update, so the version code identifies it.
+    val signature = listOf(inputAsset, AppUtils.getVersionCode(context), wineFolder.path).joinToString("|")
+    ExtractionFingerprint.runIfChanged(container, "arm64ec-input-dlls", signature) { recorder ->
+        TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, context.assets, inputAsset, wineFolder, recorder).also {
+            if (!it) Timber.w("Failed to extract $inputAsset")
         }
-    } else {
-        // Updated log message for clarity
-        Log.d("XServerDisplayActivity", "Wine version is not arm64ec, skipping input dlls extraction.")
     }
-}
-
-private fun extractx86_64InputDlls(context: Context, container: Container) {
-    val inputAsset = "x86_64_input_dlls.tzst"
-    val imageFs = ImageFs.find(context)
-    val wineVersion: String? = container.getWineVersion()
-    Log.d("XServerDisplayActivity", "x86_64 Input DLL Extraction Verification: Container Wine version: " + wineVersion)
-    if ("proton-9.0-x86_64" == wineVersion) {
-        val wineFolder: File = File(imageFs.getWinePath() + "/lib/wine/")
-        Log.d("XServerDisplayActivity", "Extracting input dlls to " + wineFolder.getPath())
-    } else Log.d("XServerDisplayActivity", "Wine version is not proton-9.0-x86_64, skipping input dlls extraction")
 }
 
 private suspend fun setupWineSystemFiles(
@@ -6177,13 +6163,16 @@ private fun extractSteamFiles(
 
         val steamclientDllsArchive = File(imageFs.getFilesDir(), "steamclient-dlls-20260619.tzst")
         if (steamclientDllsArchive.exists()) {
-            Timber.i("Extracting steamclient-dlls.tzst (genuine Valve steamclient.dll for SteamStub)")
-            TarCompressorUtils.extract(
-                TarCompressorUtils.Type.ZSTD,
-                steamclientDllsArchive,
-                imageFs.getRootDir(),
-                onExtractFileListener,
-            )
+            val signature = ExtractionFingerprint.sourceState(steamclientDllsArchive) + "|" + imageFs.getRootDir().path
+            ExtractionFingerprint.runIfChanged(container, "steamclient-dlls", signature, onExtractFileListener) { recorder ->
+                Timber.i("Extracting steamclient-dlls.tzst (genuine Valve steamclient.dll for SteamStub)")
+                TarCompressorUtils.extract(
+                    TarCompressorUtils.Type.ZSTD,
+                    steamclientDllsArchive,
+                    imageFs.getRootDir(),
+                    recorder,
+                )
+            }
         } else {
             Timber.e("steamclient-dlls-20260619.tzst missing at ${steamclientDllsArchive.absolutePath}")
         }
@@ -6193,16 +6182,20 @@ private fun extractSteamFiles(
             if (!steamExeSource.exists()) {
                 Timber.e("steam.exe cache missing at ${steamExeSource.absolutePath} (expected from BionicSteamAssetsDependency)")
             } else {
-                steamExeSource.inputStream().use { input ->
-                    Files.copy(input, steamExe.toPath(), REPLACE_EXISTING)
+                ExtractionFingerprint.runIfChanged(container, "bionic-steam-exe", ExtractionFingerprint.sourceState(steamExeSource)) { recorder ->
+                    steamExeSource.inputStream().use { input ->
+                        Files.copy(input, steamExe.toPath(), REPLACE_EXISTING)
+                    }
+                    recorder.files += steamExe
+                    true
                 }
             }
         } catch (e: IOException) {
             Timber.e(e, "Failed to copy cached steam.exe")
         }
 
-        // Re-extract the active Proton's lsteamclient into its tree + prefix every boot,
-        // so switching a container's Proton version can't leave a stale ABI-mismatched build.
+        // Puts the active Proton's lsteamclient into its tree + prefix; re-done whenever the Proton
+        // version, the archive or any written file changes, so no stale ABI-mismatched build is left.
         BionicSteamAssetsDependency.extractLsteamclientIntoPrefix(context, container)
 
         try {

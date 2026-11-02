@@ -29,9 +29,6 @@ object SteamAgreementGate {
 
     private val lock = Mutex()
 
-    @Volatile
-    private var ssaHandledFor = 0L
-
     private var request by mutableStateOf<Request?>(null)
 
     suspend fun confirm(
@@ -41,16 +38,18 @@ object SteamAgreementGate {
         setLoadingDialogVisible: (Boolean) -> Unit,
     ): Boolean = lock.withLock {
         val steamId = PrefManager.steamUserSteamId64
-        if (ssaHandledFor != steamId && !isOffline && SteamService.isConnected && SteamService.isLoggedIn) {
+        // Acceptance is permanent per account, so it is remembered across app restarts instead of
+        // costing a network round trip (up to SSA_CHECK_TIMEOUT_MS) on the first launch of each session.
+        if (PrefManager.steamSsaAcceptedFor != steamId && !isOffline && SteamService.isConnected && SteamService.isLoggedIn) {
             val state = withTimeoutOrNull(SSA_CHECK_TIMEOUT_MS) { SteamService.getSteamAgreementState() }
             if (state != null && !state.needsAcceptance) {
-                ssaHandledFor = steamId
+                PrefManager.steamSsaAcceptedFor = steamId
             } else if (state != null) {
                 setLoadingDialogVisible(false)
                 if (!ask(context.getString(R.string.steam_agreement_ssa_title), SSA_URL)) return@withLock false
                 setLoadingDialogVisible(true)
                 if (SteamService.acceptSteamAgreement()) {
-                    ssaHandledFor = steamId
+                    PrefManager.steamSsaAcceptedFor = steamId
                 } else {
                     Timber.w("Steam Subscriber Agreement acceptance failed, continuing launch")
                 }

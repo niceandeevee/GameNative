@@ -189,6 +189,37 @@ public abstract class FileUtils {
         else return targetFile.length() == 0;
     }
 
+    /**
+     * Copies [source] to [target] unless target already is an untouched copy (same length and
+     * mtime as the source). The copy takes the source's mtime, so the next call can skip it; a
+     * target modified since gets a new mtime and is copied again.
+     */
+    public static boolean copyIfChanged(File source, File target) {
+        if (!source.isFile()) return false;
+        if (target.isFile()) {
+            // A hardlink to the source shares its length and mtime but must still become its own copy;
+            // writing through it would also corrupt the source.
+            boolean sameFile;
+            try {
+                sameFile = java.nio.file.Files.isSameFile(source.toPath(), target.toPath());
+            }
+            catch (IOException e) {
+                sameFile = false;
+            }
+            if (sameFile) {
+                //noinspection ResultOfMethodCallIgnored
+                target.delete();
+            }
+            else if (target.length() == source.length() && target.lastModified() == source.lastModified()) {
+                return true;
+            }
+        }
+        if (!copy(source, target)) return false;
+        //noinspection ResultOfMethodCallIgnored
+        target.setLastModified(source.lastModified());
+        return true;
+    }
+
     public static boolean copy(File srcFile, File dstFile) {
         return copy(srcFile, dstFile, null);
     }

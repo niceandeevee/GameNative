@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.gamenative.BuildConfig;
+import app.gamenative.utils.ExtractionFingerprint;
 import app.gamenative.PluviaApp;
 import app.gamenative.service.SteamService;
 
@@ -734,12 +735,16 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         Log.i("Extraction", "Extracting required box64 version: " + box64Version);
         File rootDir = imageFs.getRootDir();
 
-        // No more version check, just extract directly.
         ContentProfile profile = contentsManager.getProfileByEntryName("box64-" + box64Version);
         if (profile != null) {
             contentsManager.applyContent(profile);
         } else {
-            TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, context.getAssets(), "box86_64/box64-" + box64Version + "-bionic.tzst", rootDir);
+            // imagefs is shared by containers, so the signature carries the version and target root:
+            // a container on another Box64 version changes the written files and forces a re-extract.
+            String asset = "box86_64/box64-" + box64Version + "-bionic.tzst";
+            String signature = asset + "|" + AppUtils.getVersionCode(context) + "|" + rootDir.getPath();
+            ExtractionFingerprint.INSTANCE.runIfChanged(container, "box64", signature, null, recorder ->
+                    TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, context.getAssets(), asset, rootDir, recorder));
         }
 
         // Update the metadata so the container knows which version is installed.

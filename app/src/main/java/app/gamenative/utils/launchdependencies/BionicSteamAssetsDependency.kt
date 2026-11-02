@@ -3,6 +3,7 @@ package app.gamenative.utils.launchdependencies
 import android.content.Context
 import app.gamenative.data.GameSource
 import app.gamenative.service.SteamService
+import app.gamenative.utils.ExtractionFingerprint
 import app.gamenative.utils.LOADING_PROGRESS_UNKNOWN
 import com.winlator.container.Container
 import com.winlator.contents.ContentsManager
@@ -179,29 +180,42 @@ object BionicSteamAssetsDependency : LaunchDependency {
         val archive = lsteamclientArchiveFor(container)
         if (archive == null && container.wineVersion !in BUNDLED_LSTEAMCLIENT_WINE) return
         val libDir = wineLibDir(context, container)
-        if (archive != null) {
-            val archiveCache = File(ImageFs.find(context).filesDir, archive)
-            if (!archiveCache.exists()) {
-                Timber.e("lsteamclient archive $archive not downloaded; extract skipped")
-                return
-            }
-            libDir.mkdirs()
-            if (!TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, archiveCache, libDir)) {
-                Timber.e("Failed to extract $archive into ${libDir.absolutePath}")
-                return
-            }
+        val archiveCache = archive?.let { File(ImageFs.find(context).filesDir, it) }
+        if (archiveCache != null && !archiveCache.exists()) {
+            Timber.e("lsteamclient archive $archive not downloaded; extract skipped")
+            return
         }
-        val sys32Src = treeSystem32DllIn(libDir, container)
-        val sysWowSrc = treeSyswow64DllIn(libDir)
-        val dstSystem32 = system32Dll(container)
-        val dstSyswow64 = syswow64Dll(container)
-        dstSystem32.parentFile?.mkdirs()
-        dstSyswow64.parentFile?.mkdirs()
-        if (!FileUtils.copy(sys32Src, dstSystem32)) {
-            Timber.e("Failed to copy ${sys32Src.absolutePath} to ${dstSystem32.absolutePath}")
-        }
-        if (!FileUtils.copy(sysWowSrc, dstSyswow64)) {
-            Timber.e("Failed to copy ${sysWowSrc.absolutePath} to ${dstSyswow64.absolutePath}")
+        // Re-run only when the archive, Wine version or any written file changed since last boot.
+        val signature = listOf(
+            archiveCache?.let { ExtractionFingerprint.sourceState(it) } ?: "bundled",
+            container.wineVersion,
+            libDir.path,
+        ).joinToString("|")
+        ExtractionFingerprint.runIfChanged(container, "lsteamclient", signature) { recorder ->
+            if (archiveCache != null) {
+                libDir.mkdirs()
+                if (!TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, archiveCache, libDir, recorder)) {
+                    Timber.e("Failed to extract $archive into ${libDir.absolutePath}")
+                    return@runIfChanged false
+                }
+            }
+            val sys32Src = treeSystem32DllIn(libDir, container)
+            val sysWowSrc = treeSyswow64DllIn(libDir)
+            val dstSystem32 = system32Dll(container)
+            val dstSyswow64 = syswow64Dll(container)
+            dstSystem32.parentFile?.mkdirs()
+            dstSyswow64.parentFile?.mkdirs()
+            var ok = true
+            if (!FileUtils.copy(sys32Src, dstSystem32)) {
+                Timber.e("Failed to copy ${sys32Src.absolutePath} to ${dstSystem32.absolutePath}")
+                ok = false
+            }
+            if (!FileUtils.copy(sysWowSrc, dstSyswow64)) {
+                Timber.e("Failed to copy ${sysWowSrc.absolutePath} to ${dstSyswow64.absolutePath}")
+                ok = false
+            }
+            recorder.files += listOf(sys32Src, sysWowSrc, dstSystem32, dstSyswow64)
+            ok
         }
     }
 
