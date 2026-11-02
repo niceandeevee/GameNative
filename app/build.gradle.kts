@@ -54,8 +54,9 @@ android {
         }
 
         proguardFiles(
-            // getDefaultProguardFile("proguard-android-optimize.txt"),
-            getDefaultProguardFile("proguard-android.txt"),
+            // Optimizing R8 (inlining, class merging, dead-branch removal); JNI and reflection
+            // targets that this could break are pinned in proguard-rules.pro.
+            getDefaultProguardFile("proguard-android-optimize.txt"),
             "proguard-rules.pro",
         )
     }
