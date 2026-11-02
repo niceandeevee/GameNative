@@ -136,7 +136,7 @@ android {
                 // CI passes -PtestForks=2 -PtestHeap=3g to split the suite over two test JVMs
                 it.maxParallelForks = (project.findProperty("testForks") as String?)?.toIntOrNull() ?: 1
                 it.maxHeapSize = (project.findProperty("testHeap") as String?) ?: "4g"
-                it.testLogging { events("started", "failed") }
+                it.testLogging { events("failed") }
             }
         }
     }
