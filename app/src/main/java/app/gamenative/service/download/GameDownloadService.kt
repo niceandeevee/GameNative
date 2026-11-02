@@ -820,9 +820,7 @@ object GameDownloadService {
      * fact, and every capture the app offers is logcat-based — the settings "Save logcat" tail
      * (`logcat -d --pid=<app>`, so the native tags come along), the crash report, and the support
      * bundle's unfiltered `logcat -v threadtime`. Steam emits them from Rust via android_log (tag
-     * GN_STEAM_DL); the flag travels in the plan JSON; Epic/GOG/Amazon forward their lines over
-     * JNI `onLog`, gated at the Timber call sites in their managers (INFO, because ReleaseTree
-     * drops Debug/Verbose).
+     * GN_STEAM_DL); the flag travels in the plan JSON.
      */
     val SHOW_PIPELINE_LOGS = true
 
@@ -834,8 +832,7 @@ object GameDownloadService {
     private val queueLock = Any()
 
     /**
-     * Runs the deferred queue-resume store startups (DB / container / disk work — Epic
-     * even `runBlocking`s a Room query), so they never run on the caller's thread of
+     * Runs the deferred queue-resume store startups (DB / container / disk work), so they never run on the caller's thread of
      * unregister/remove (which can be the main thread) and never inside [queueLock].
      */
     private val queueScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -942,7 +939,7 @@ object GameDownloadService {
         }
 
         // Off the caller's thread and OUTSIDE queueLock: store startups do DB /
-        // container / disk work (Epic even `runBlocking`s a Room query), so running
+        // container / disk work, so running
         // one here would ANR a main-thread caller and stall every other queue call.
         queueScope.launch { resumeNextDownload(context.applicationContext) }
     }

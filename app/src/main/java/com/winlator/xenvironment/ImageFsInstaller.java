@@ -208,7 +208,6 @@ public abstract class ImageFsInstaller {
 
         // Download and extract extras.tzst
         try {
-            // Modern variant: download and extract
             java.io.File extrasFile = ContainerFilesDownloaderKt.ensureContainerFileAvailableBlocking(
                 ctx,
                 "extras",
@@ -230,7 +229,6 @@ public abstract class ImageFsInstaller {
             Log.e("ImageFsInstaller", "extras download/extract failed", e);
             return;
         }
-    
 
         // ➌  Make sure the new libs are world-readable / executable
         chmod(new File(imagefs, "generate_interfaces_file.exe"));

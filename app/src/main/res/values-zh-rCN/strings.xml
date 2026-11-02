@@ -1,13 +1,7 @@
 ﻿<resources>
     <string name="app_name">GameNative</string>
-    <string name="login_user">登录</string>
-    <string name="login_2fa">双重验证</string>
-    <string name="home">主页</string>
     <string name="settings">设置</string>
-    <string name="login_qr">扫码登录</string>
-    <string name="app_library">游戏库</string>
     <string name="app_downloads">下载</string>
-    <string name="unknown_app">未知应用</string>
     <string name="steam_2fa_incorrect">验证码错误，请重试</string>
     <string name="steam_2fa_confirmation">正在通过Steam移动应用确认登录…</string>
     <string name="steam_2fa_device">请输入您验证器应用中的双重验证码</string>
@@ -22,7 +16,6 @@
     <string name="steam_imagefs_download_install_message">必须先下载并安装 Ubuntu 镜像才能编辑配置。此操作可能需要几分钟，是否继续？</string>
     <string name="steam_imagefs_install_title">安装 ImageFS</string>
     <string name="steam_imagefs_install_message">必须先下载并安装 Ubuntu 镜像才能编辑配置。此操作可能需要几分钟，是否继续？</string>
-    <string name="steam_reset_container_title">重置容器</string>
     <string name="steam_reset_container_message">这将把容器重置为默认配置</string>
     <string name="base_app_reset_container_title">重置容器？</string>
     <string name="base_app_reset_container_confirm">重置</string>
@@ -32,7 +25,6 @@
     <string name="steam_update_title">更新</string>
     <string name="steam_update_message">更新前请确保存档已上传至云端或已备份，否则存档可能会被覆盖</string>
     <string name="steam_storage_permission_required">需要存储权限</string>
-    <string name="steam_container_reset_success">容器已重置为默认设置</string>
     <string name="steam_imagefs_installed">ImageFS 已安装，请重试编辑容器</string>
     <string name="steam_imagefs_install_failed">ImageFS 安装失败：%s</string>
     <string name="steam_uninstall_game_title">卸载游戏</string>
@@ -42,13 +34,11 @@
     <string name="deleting">正在删除…</string>
     <string name="steam_never">从不</string>
     <string name="steam_continue">继续</string>
-    <string name="header_img_desc">应用头图</string>
     <string name="download">下载</string>
     <string name="install">安装</string>
     <string name="install_app">安装</string>
     <string name="delete_app">删除</string>
     <string name="uninstall">卸载</string>
-    <string name="branch">分支</string>
     <string name="change_branch">更改分支</string>
     <string name="change_branch_message">通过开发者提供的分支从 Steam 下载游戏的替代版本。输入访问代码以解锁私有分支。</string>
     <string name="change_preferred_copy">更改首选副本</string>
@@ -69,8 +59,6 @@
     <string name="private_branch_password_invalid">访问代码无效</string>
     <string name="run_app">开始游戏</string>
     <string name="download_prompt_title">安装应用</string>
-    <string name="calculating_space_requirements">计算空间需求中…</string>
-    <string name="delete_prompt_title">删除应用</string>
     <string name="cancel_download_prompt_title">取消下载</string>
     <string name="acknowledge">确定</string>
     <string name="yes">确定</string>
@@ -86,7 +74,6 @@
 
     <!-- Library Tabs -->
     <string name="downloads_empty">暂无活动下载</string>
-    <string name="downloads_overview_subtitle">跟踪活动、已暂停和可恢复的下载</string>
     <string name="downloads_cancel_confirm">要取消下载并删除 %1$s 的文件吗？</string>
     <string name="downloads_cancel_all">全部取消</string>
     <string name="downloads_clear_finished">清除已完成项</string>
@@ -102,12 +89,9 @@
     <string name="storage_external">外部</string>
     <string name="storage_free_of_total">%1$s：%3$s 中有 %2$s 可用</string>
     <string name="storage_calculating">%1$s：计算中…</string>
-    <string name="container_storage_title">存储管理</string>
-    <string name="container_storage_subtitle">在内部存储与外部存储之间移动安装内容</string>
     <string name="container_storage_summary">%1$d 项 • %2$s</string>
     <string name="container_storage_loading">正在加载存储清单...</string>
     <string name="container_storage_empty">未找到可移动的游戏安装项</string>
-    <string name="container_storage_source_and_status">%1$s • %2$s</string>
     <string name="container_storage_source_unknown">未知来源</string>
     <string name="container_storage_location_internal">内部</string>
     <string name="container_storage_location_external">外部</string>
@@ -136,40 +120,18 @@
     <string name="container_storage_uninstall_failed">卸载游戏失败：%1$s</string>
     <string name="container_storage_unknown_container">未知容器</string>
     <string name="container_storage_unknown_error">未知错误</string>
-    <string name="settings_storage_title">存储</string>
     <string name="settings_storage_manage_title">管理存储</string>
-    <string name="settings_storage_manage_subtitle">查看安装内容、在不同存储位置之间移动它们，并清理容器</string>
     <string name="tab_all">全部</string>
     <string name="tab_steam">Steam</string>
-    <string name="tab_installed">已安装</string>
     <string name="tab_local">自定义</string>
     <string name="library_tab_with_count">%1$s (%2$d)</string>
     <string name="library_search_close">关闭搜索</string>
     <string name="default_user_name">用户</string>
 
     <!-- 自定义游戏 -->
-    <string name="custom_games_title">自定义游戏</string>
-    <string name="custom_games_no_paths">未添加路径</string>
-    <string name="custom_games_grant_permission">授予权限</string>
-    <string name="custom_games_manual_subtitle">从游戏库添加</string>
-    <string name="custom_games_no_manual_entries">尚未手动添加游戏</string>
-    <string name="custom_games_remove_path_title">移除路径</string>
-    <string name="custom_games_remove_path_message">从扫描中移除此路径？文件夹内容将保留在磁盘上</string>
-    <string name="custom_games_remove_path_content_desc">移除路径</string>
-    <string name="custom_games_path_removed_toast">路径已从列表中移除。文件夹内容未删除</string>
-    <string name="custom_games_remove_manual_title">移除自定义游戏</string>
-    <string name="custom_games_remove_manual_message">从游戏库中移除此手动添加的文件夹吗？这不会删除磁盘上的文件</string>
-    <string name="custom_games_remove_manual_content_desc">移除文件夹</string>
-    <string name="custom_games_manual_removed_toast">文件夹已从游戏库中移除</string>
-    <string name="custom_games_cannot_access">⚠ 无法访问（检查路径是否存在）</string>
-    <string name="custom_games_permission_denied">⚠ 没有权限</string>
-    <string name="custom_games_zero_folders">找到 0 个文件夹</string>
-    <string name="custom_games_folders_found">找到 %d 个文件夹</string>
-    <string name="custom_games_scan_description">将扫描这些路径中文件夹内的 .exe 文件并将其列为自定义游戏，可能会减慢应用启动速度</string>
     <string name="custom_game_folder_picker_error">无法解析文件夹路径</string>
     <string name="container_config_drive_letter_missing">缺少驱动器字母</string>
     <string name="container_config_invalid_drive_path">驱动器路径无效</string>
-    <string name="custom_game_settings">自定义游戏设置</string>
     <string name="custom_game_delete_title">删除游戏</string>
     <string name="custom_game_delete_message">确定要卸载 %1$s 吗？</string>
     <string name="custom_game_unknown_developer">未知</string>
@@ -186,7 +148,6 @@
     <string name="extreme">极致</string>
     <string name="unity">Unity</string>
     <string name="unity_mono_bleeding_edge">Unity Mono Bleeding Edge</string>
-    <string name="title_ubuntufs">Ubuntu FS</string>
 
     <!-- Winlator: Win 组件 -->
     <string name="direct3d">Direct3D</string>
@@ -257,7 +218,6 @@
     <string name="resume_game">恢复游戏</string>
     <string name="extra">额外</string>
     <string name="clear_search">清除搜索</string>
-    <string name="buttons">按钮</string>
     <string name="face_buttons_category">正面按钮</string>
     <string name="shoulder_buttons_category">肩部按钮</string>
     <string name="menu_buttons_category">菜单按钮</string>
@@ -298,9 +258,6 @@
     <string name="mouse_speed_subtitle">调整触摸移动和分配为移动鼠标的控件的指针速度。射击模式使用独立的视角灵敏度。</string>
     <string name="reset_mouse_speed">重置鼠标速度</string>
     <string name="edit_physical_controller">编辑实体控制器</string>
-    <string name="controller_disconnected">已断开</string>
-    <string name="reset_onscreen_controls">重置屏幕控制器</string>
-    <string name="open_navigation_menu">打开导航菜单</string>
     <string name="quick_menu_title">快捷菜单</string>
     <string name="quick_menu_back">返回</string>
     <string name="display_brightness">显示亮度</string>
@@ -316,7 +273,6 @@
     <string name="gamescope_scaler_fit">适应</string>
     <string name="gamescope_scaler_stretch">拉伸</string>
     <string name="gamescope_scaler_fill">填充</string>
-    <string name="gamescope_apply_next_launch">下次启动时生效</string>
     <string name="gamescope_scaling_filter">缩放滤镜</string>
     <string name="gamescope_filter_linear">线性</string>
     <string name="gamescope_filter_nearest">最近邻</string>
@@ -356,7 +312,6 @@
     <string name="screen_effects_ntsc_description">添加复古复合电视扭曲、色彩渗色和扫描线。</string>
     <string name="screen_effects_reset">重置</string>
     <string name="screen_effects_close">关闭</string>
-    <string name="quick_menu_tab_general">常规</string>
     <string name="quick_menu_tab_controller">控制器</string>
     <string name="performance_hud">性能 HUD</string>
     <string name="performance_hud_description">显示或隐藏游戏内叠加层。</string>
@@ -365,13 +320,11 @@
     <string name="performance_hud_fps_limiter_value">%1$d FPS</string>
     <string name="performance_hud_fps_limiter_lsfg_base">限制基础帧率。屏幕帧率为上限乘以 LSFG 倍数。</string>
     <string name="performance_hud_presets">预设</string>
-    <string name="performance_hud_presets_description">快速切换常用 HUD 布局。</string>
     <string name="performance_hud_preset_fps_only">1</string>
     <string name="performance_hud_preset_essential">2</string>
     <string name="performance_hud_preset_battery">3</string>
     <string name="performance_hud_preset_full">4</string>
     <string name="performance_hud_appearance">外观</string>
-    <string name="performance_hud_appearance_description">调整 HUD 大小和背景不透明度。</string>
     <string name="performance_hud_size">大小</string>
     <string name="performance_hud_size_small">S</string>
     <string name="performance_hud_size_medium">M</string>
@@ -381,7 +334,6 @@
     <string name="performance_hud_text_outline">文字描边</string>
     <string name="performance_hud_percentage_value">%1$d%%</string>
     <string name="performance_hud_metrics">显示的指标</string>
-    <string name="performance_hud_metrics_description">选择要在叠加层中显示的统计信息。</string>
     <string name="performance_hud_frame_rate">帧率</string>
     <string name="performance_hud_frame_rate_graph">FPS 图表</string>
     <string name="performance_hud_cpu_usage">CPU 使用率</string>
@@ -396,20 +348,13 @@
     <string name="performance_hud_cpu_temperature">CPU 温度</string>
     <string name="performance_hud_gpu_temperature">GPU 温度</string>
     <string name="touchpad_help">触摸板支持</string>
-    <string name="hide_controls_with_controller">使用控制器时隐藏屏幕控制器</string>
-    <string name="hide_controls_with_controller_description">当实体控制器连接时自动隐藏屏幕控制器</string>
 
     <!-- 控制器绑定对话框 -->
-    <string name="select_binding">选择绑定</string>
     <string name="bind_button">绑定：%1$s</string>
     <string name="current_binding">当前：%1$s</string>
-    <string name="search_bindings">搜索绑定…</string>
     <string name="search_placeholder">搜索…</string>
     <string name="search">搜索</string>
     <string name="category">类别</string>
-    <string name="keyboard_bindings">键盘</string>
-    <string name="mouse_bindings">鼠标</string>
-    <string name="gamepad_bindings">游戏手柄</string>
     <string name="mouse">鼠标</string>
     <string name="gamepad">游戏手柄</string>
     <string name="binding_none">无</string>
@@ -451,7 +396,6 @@
     <string name="copy_size_from_element">从元素复制大小</string>
     <string name="toast_no_elements_to_copy">没有其他可用元素可复制大小</string>
     <string name="toast_copied_size">已复制大小：%.2fx</string>
-    <string name="on_screen_toast_controls_reset">屏幕控制器已重置为默认值</string>
     <string name="quick_presets">快速预设</string>
     <string name="preset_wasd">WASD</string>
     <string name="preset_arrows">方向键</string>
@@ -462,45 +406,27 @@
 
     <!-- 实体控制器配置 -->
     <string name="physical_controller_config">实体控制器绑定编辑器</string>
-    <string name="physical_controller_config_subtitle">设置实体控制器的按钮映射</string>
-    <string name="face_buttons">正面按钮</string>
     <string name="button_a">A 按钮</string>
-    <string name="button_a_subtitle">底部正面按钮（确认）</string>
     <string name="button_b">B 按钮</string>
-    <string name="button_b_subtitle">右侧正面按钮（返回）</string>
     <string name="button_x">X 按钮</string>
-    <string name="button_x_subtitle">左侧正面按钮</string>
     <string name="button_y">Y 按钮</string>
-    <string name="button_y_subtitle">顶部正面按钮</string>
-    <string name="shoulder_buttons">肩部按钮</string>
     <string name="button_l1">LB</string>
-    <string name="button_l1_subtitle">左侧肩部按钮</string>
     <string name="button_r1">RB</string>
-    <string name="button_r1_subtitle">右侧肩部按钮</string>
     <string name="button_l2">LT</string>
-    <string name="button_l2_subtitle">左侧扳机</string>
     <string name="button_r2">RT</string>
-    <string name="button_r2_subtitle">右侧扳机</string>
-    <string name="menu_buttons">菜单按钮</string>
     <string name="button_start">Start / Options</string>
     <string name="button_select">Select / View / Share</string>
-    <string name="analog_sticks">模拟摇杆</string>
-    <string name="thumbstick_buttons">摇杆按钮</string>
     <string name="button_l3">L3（左摇杆按下）</string>
     <string name="button_r3">R3（右摇杆按下）</string>
-    <string name="left_analog_stick">左模拟摇杆</string>
     <string name="left_stick_up">左摇杆 上</string>
     <string name="left_stick_down">左摇杆 下</string>
     <string name="left_stick_left">左摇杆 左</string>
     <string name="left_stick_right">左摇杆 右</string>
-    <string name="right_analog_stick">右模拟摇杆</string>
     <string name="right_stick_up">右摇杆 上</string>
     <string name="right_stick_down">右摇杆 下</string>
     <string name="right_stick_left">右摇杆 左</string>
     <string name="right_stick_right">右摇杆 右</string>
-    <string name="other">其他</string>
     <string name="button_home">Home / Guide / PS</string>
-    <string name="reset_to_default_bindings">重置为默认绑定</string>
     <string name="not_set">未设置</string>
 
     <!-- 提示消息 -->
@@ -596,23 +522,13 @@
 
     <!-- 库与游戏管理 -->
     <string name="create_shortcut">创建快捷方式</string>
-    <string name="label">标签</string>
-    <string name="icon">图标</string>
     <string name="create">创建</string>
     <string name="update_now">立即更新</string>
     <string name="moving_files">移动文件中</string>
-    <string name="need_internet_to_install">需要网络连接才能安装</string>
-    <string name="install_wifi_only_enabled">仅启用通过 WiFi 安装</string>
-    <string name="installation_progress">安装进度</string>
     <string name="downloading">下载中...</string>
-    <string name="calculating_time">计算中...</string>
     <string name="download_failed_try_again">下载失败，请重试</string>
     <string name="download_preparing">正在准备下载...</string>
     <string name="download_verifying_files_progress">正在验证文件 (%1$d/%2$d)</string>
-    <string name="download_verifying_files">正在验证文件...</string>
-    <string name="download_assembling_files">正在合并文件...</string>
-    <string name="download_progress_chunks">正在下载 (%1$d/%2$d 区块)</string>
-    <string name="download_progress_files">正在下载 (%1$d/%2$d 个文件)…</string>
     <string name="download_unpacking">正在解压...</string>
     <string name="download_preparing_depots">正在准备仓库 (%1$d/%2$d)</string>
     <string name="update_available">有可用更新</string>
@@ -629,14 +545,10 @@
     <string name="installed">已安装</string>
     <string name="installing">安装中</string>
     <string name="not_installed">未安装</string>
-    <string name="open">打开</string>
-    <string name="family_shared">家庭共享</string>
     <string name="games">游戏</string>
     <string name="playtime_last_two_weeks">过去2周的游戏时间：%s 小时</string>
     <string name="total_playtime">总游戏时间：%s 小时</string>
     <string name="last_played">上次游玩</string>
-    <string name="playtime">游戏时间</string>
-    <string name="add_custom_game_content_desc">添加自定义游戏</string>
     <string name="add_custom_game_dialog_title">添加自定义游戏</string>
     <string name="add_custom_game_dialog_message">请选择包含您要添加为自定义游戏的文件夹</string>
     <string name="custom_game_importing">正在导入游戏…</string>
@@ -658,7 +570,6 @@
     <string name="app_filter_tool">工具</string>
     <string name="app_filter_demo">试玩版</string>
     <string name="app_filter_playtest">游戏测试</string>
-    <string name="app_filter_family">家庭共享</string>
 
     <!-- 登录与连接 -->
     <string name="connecting_to_steam">正在连接 Steam…</string>
@@ -667,11 +578,6 @@
     <string name="continue_offline">离线使用</string>
     <string name="connection_reconnecting">正在重新连接 Steam…</string>
     <string name="connection_disconnected">已断开 Steam 连接</string>
-    <string name="connection_disconnected_servers">已断开 Steam 服务器连接</string>
-    <string name="connection_logging_in">正在登录…</string>
-    <string name="connection_login_failed">登录失败</string>
-    <string name="connection_session_ended">会话已结束</string>
-    <string name="connection_offline_mode">离线模式</string>
     <string name="connection_retry">重试</string>
 
     <!-- 游戏反馈对话框 -->
@@ -702,9 +608,6 @@
     <string name="width">宽度</string>
     <string name="height">高度</string>
     <string name="audio_driver">音频驱动程序</string>
-    <string name="pulseaudio_suspend_behavior">PulseAudio 暂停行为</string>
-    <string name="pulseaudio_suspend_behavior_thread">通过线程暂停（默认）</string>
-    <string name="pulseaudio_suspend_behavior_pactl">通过 Pactl 暂停（省电）</string>
     <string name="pulseaudio_low_latency">PulseAudio 低延迟模式</string>
     <string name="microphone_input">麦克风输入</string>
     <string name="microphone_input_description">将设备麦克风作为录音设备提供给 Wine/Proton。需要麦克风权限。</string>
@@ -744,7 +647,6 @@
     <string name="graphics_driver_version">图形驱动程序版本</string>
     <string name="exposed_vulkan_extensions">启用 Vulkan 扩展功能</string>
     <string name="max_device_memory">最大内存容量</string>
-    <string name="frame_synchronization">帧同步</string>
     <string name="use_adrenotools_turnip">使用 Adrenotools Turnip</string>
     <string name="vulkan_version">Vulkan 版本</string>
     <string name="image_cache_size">图像缓存大小</string>
@@ -754,16 +656,11 @@
     <string name="vkd3d_feature_level">VKD3D 功能级别</string>
     <string name="use_dri3">使用 DRI3</string>
     <string name="use_dri3_description">在某些设备上禁用此功能或许能修复图形故障</string>
-    <string name="use_legacy_renderer">使用旧版渲染器</string>
-    <string name="use_legacy_renderer_description">使用旧版 GLRenderer 而非 VulkanRenderer。VulkanRenderer 可提升性能，但目前为 Beta 版，可能会造成问题。</string>
-    <string name="sync_frame">同步每帧图像</string>
-    <string name="disable_present_wait">禁用 KHR_present_wait</string>
     <string name="present_modes">呈现模式</string>
     <string name="renderer_present_modes">渲染器呈现模式</string>
     <string name="resource_type">内存资源类型</string>
     <string name="bcn_emulation">BCn 模拟</string>
     <string name="bcn_emulation_type">BCn 模拟类型</string>
-    <string name="bcn_emulation_cache">BCn 模拟缓存</string>
     <string name="sharpness_effect">锐度增强</string>
     <string name="sharpness_level">锐度等级</string>
     <string name="sharpness_denoise">锐度去噪</string>
@@ -771,9 +668,6 @@
     <!-- 容器配置：模拟 -->
     <string name="fexcore_version">FEXCore 版本</string>
     <string name="fexcore_preset">FEXCore 预设</string>
-    <string name="tso_mode">TSO 模式</string>
-    <string name="x87_mode">x87 模式</string>
-    <string name="multiblock">多区块</string>
     <string name="emulator_64bit">64位 模拟器</string>
     <string name="emulator_32bit">32位 模拟器</string>
     <string name="box64_version">Box64 版本</string>
@@ -795,7 +689,6 @@
     <string name="touchscreen_mode">触屏模式</string>
     <string name="touchscreen_mode_description">适用于视觉小说和即时战略游戏</string>
     <string name="shooter_mode_toggle">射击模式</string>
-    <string name="shooter_mode_toggle_description">用动态摇杆替换摇杆元素</string>
     <string name="shooter_mode_on">启用鼠标</string>
     <string name="shooter_mode_off">启用摇杆</string>
 
@@ -803,9 +696,7 @@
     <string name="gesture_settings">手势设置</string>
     <string name="gesture_settings_title">触控手势设置</string>
     <string name="gesture_tap">点击</string>
-    <string name="gesture_tap_subtitle">左键单击</string>
     <string name="gesture_drag">拖动</string>
-    <string name="gesture_drag_subtitle">左键拖动（框选）</string>
     <string name="gesture_hold_mouse_button_while_touching">触摸时按住鼠标按钮</string>
     <string name="gesture_mouse_button_label">鼠标按钮</string>
     <string name="gesture_long_press">长按</string>
@@ -829,7 +720,6 @@
     <string name="gesture_zoom_plus_minus">+/- 键</string>
     <string name="gesture_zoom_page_up_down">Page Up/Down</string>
     <string name="gesture_action_label">操作</string>
-    <string name="gesture_delay_label">延迟</string>
     <string name="gesture_section_single_finger">单指</string>
     <string name="gesture_section_two_finger">双指</string>
     <string name="gesture_section_three_finger">三指</string>
@@ -857,7 +747,6 @@
     <string name="gesture_three_finger_hold">三指长按</string>
     <string name="gesture_three_finger_hold_delay">三指长按延迟 (ms)</string>
     <string name="gesture_threshold">手势阈值 (px)</string>
-    <string name="gesture_threshold_subtitle">锁定手势类型所需的移动距离（越低越灵敏）</string>
     <string name="gesture_mouse_drag_movement">拖动时的鼠标移动</string>
     <string name="gesture_mouse_drag_movement_subtitle">直接模式适用于大多数游戏。如果拖动导致镜头或光标问题，请使用相对模式</string>
     <string name="gesture_mouse_drag_movement_direct">直接</string>
@@ -899,12 +788,9 @@
     <string name="range_f1_to_f12">F1 – F12</string>
     <string name="range_lock_scrolling">锁定滚动</string>
     <string name="range_lock_scrolling_subtitle">防止在范围内滚动</string>
-    <string name="button_settings">按钮设置</string>
     <string name="button_toggleable">可切换</string>
     <string name="button_toggleable_subtitle">点击激活，再次点击停用</string>
 
-    <string name="custom_game_exe_selection_title">需要选择可执行文件</string>
-    <string name="custom_game_exe_selection_message">此游戏有多个可执行文件。请打开自定义游戏设置以选择要启动的文件。</string>
 
     <string name="external_display_input">外接显示器输入</string>
     <string name="external_display_input_subtitle">选择已连接的演示显示器的行为方式</string>
@@ -914,10 +800,6 @@
     <string name="external_display_mode_hybrid">混合（触摸板 + 键盘按钮）</string>
     <string name="external_display_swap">在外接显示器上显示游戏</string>
     <string name="external_display_swap_subtitle">交换屏幕，使游戏在外接显示器上渲染，此设备成为控制表面</string>
-    <string name="start_with_controls_hidden">开始时隐藏屏幕控制器</string>
-    <string name="start_with_controls_hidden_description">游戏开始时屏幕控制器将被隐藏。可通过导航菜单切换。</string>
-    <string name="emulate_keyboard_mouse">模拟键盘与鼠标</string>
-    <string name="emulate_keyboard_mouse_description">左摇杆 = WASD，右摇杆 = 鼠标，L2 = 鼠标左键，R2 = 鼠标右键</string>
 
     <!-- 容器配置：渲染 -->
     <string name="renderer">渲染器</string>
@@ -941,14 +823,11 @@
     <string name="suspend_behavior_never">从不挂起</string>
     <string name="suspend_behavior_manual">挂起直到按下“恢复游戏”按钮（默认）</string>
     <string name="processor_affinity_32bit">处理器关联性（32 位应用程序）</string>
-    <string name="executable_path">执行路径</string>
-    <string name="executable_path_placeholder">例如：path\\to\\exe</string>
 
     <!-- 对话框 -->
     <string name="allowed_orientations">允许的屏幕方向</string>
     <string name="select_wine_debug_channels">选择 Wine 调试通道</string>
     <string name="cpu_label">CPU%d</string>
-    <string name="describe_what_happened">描述发生了什么</string>
 
     <!-- 驱动程序管理器 -->
     <string name="driver_manager">驱动程序管理</string>
@@ -959,7 +838,6 @@
     <string name="contents_manager">内容管理</string>
     <string name="import_wcp_from_device">从设备导入 .wcp</string>
     <string name="working">正在处理...</string>
-    <string name="selected">已选择</string>
     <string name="selected_content">选定的内容</string>
     <string name="installed_contents">已安装的内容</string>
     <string name="select_type">选择类型</string>
@@ -987,7 +865,6 @@
     <string name="settings_accounts_signed_out">未登录</string>
     <string name="settings_accounts_ea_title">EA 账户</string>
     <string name="settings_accounts_rockstar_title">Rockstar 账户</string>
-    <string name="main_thank_you_message_play">立即成为会员。会员可享受：\n\n• AI 帮你解决游戏运行问题\n• 新版本抢先体验\n• Discord 高级身份组和专属频道\n• …以及更多\n\n每月 %1$s 起</string>
     <string name="settings_emulation_orientations_title">允许的屏幕方向</string>
     <string name="settings_emulation_orientations_subtitle">选择游戏中可使用的屏幕方向</string>
     <string name="settings_emulation_default_config_title">修改默认配置</string>
@@ -1029,8 +906,6 @@
     <string name="settings_info_source_subtitle">查看此项目的源代码</string>
     <string name="settings_info_libraries_title">使用的库</string>
     <string name="settings_info_libraries_subtitle">了解哪些技术让 GameNative 成为可能</string>
-    <string name="settings_info_privacy_title">隐私政策</string>
-    <string name="settings_info_privacy_subtitle">打开链接至 GameNative 的隐私政策</string>
 
     <!-- 设置：界面组 -->
     <string name="settings_interface_title">界面</string>
@@ -1056,14 +931,7 @@
 
     <!-- 登录界面 -->
     <string name="login_app_name">GameNative</string>
-    <string name="login_privacy_policy">隐私政策</string>
-    <string name="login_welcome_back">欢迎回来</string>
-    <string name="login_subtitle">登录以访问您的 Steam 游戏库</string>
-    <string name="login_tab_credentials">登录凭据</string>
-    <string name="login_tab_qr_code">二维码</string>
-    <string name="login_username">用户名</string>
     <string name="login_username_hint">输入您的 Steam 用户名</string>
-    <string name="login_password">密码</string>
     <string name="login_password_hint">输入您的密码</string>
     <string name="login_password_show">显示密码</string>
     <string name="login_password_hide">隐藏密码</string>
@@ -1071,7 +939,6 @@
     <string name="login_qr_failed">QR 码扫描失败</string>
     <string name="login_retry_qr">重试 QR 码扫描</string>
     <string name="login_qr_instructions">打开 Steam 移动应用程序，扫描此 QR 码即可立即登录</string>
-    <string name="login_skip_steam">跳过 Steam 登录</string>
     <string name="login_or_sign_in_with">或使用以下方式登录：</string>
     <string name="login_skip_login">跳过登录</string>
 
@@ -1081,35 +948,14 @@
     <string name="settings_interface_settingslistdropdownsearchable_searchlabel">寻找</string>
 
     <!-- 连接至服务器界面 -->
-    <string name="connect_to_remote_server">正在连接到远程服务器...</string>
 
     <!-- 库应用界面：对话框 -->
-    <string name="library_not_enough_space_message">要安装的应用程序需要 %1$s 的空间，但此设备仅剩 %2$s 可用空间</string>
-    <string name="library_download_prompt_message">要安装的应用程序有以下存储空间需求。是否继续安装？\n\n\t下载大小：%1$s\n\t磁盘占用空间：%2$s\n\t可用空间：%3$s</string>
-    <string name="library_cancel_download_message">确定要取消应用程序的下载？</string>
-    <string name="library_delete_download_message">删除此游戏的所有已下载数据？</string>
-    <string name="library_delete_app_message">确定要删除此应用程序？</string>
-    <string name="library_download_install_imagefs_title">下载并安装 ImageFS</string>
-    <string name="library_download_install_imagefs_message">在编辑配置文件之前，需先下载并安装 Ubuntu 镜像文件。此操作可能需要数分钟时间。您要继续吗？</string>
-    <string name="library_install_imagefs_title">安装 ImageFS</string>
-    <string name="library_install_imagefs_message">在编辑设置前，需先安装 Ubuntu 镜像文件。此操作可能需要数分钟时间。您要继续吗？</string>
-    <string name="library_reset_container_title">重置容器</string>
-    <string name="library_reset_container_message">此操作将您的容器重置为默认配置</string>
-    <string name="library_verify_files_title">验证文件</string>
-    <string name="library_verify_files_message">请确保您的存档已上传至云端或完成备份后再进行验证，否则存档可能会被覆盖</string>
-    <string name="library_config_title">%s 配置文件</string>
 
     <!-- 库应用界面：提示消息 -->
-    <string name="library_storage_permission_required">需要存储权限</string>
     <string name="library_exported">已导出</string>
-    <string name="library_failed_to_export">导出失败：%s</string>
-    <string name="library_export_cancelled">导出已取消</string>
-    <string name="library_shortcut_created">快捷方式已创建</string>
-    <string name="library_failed_to_create_shortcut">创建快捷方式失败：%s</string>
     <string name="library_cloud_sync_starting">正在同步云存档…</string>
     <string name="library_cloud_sync_success">云存档同步完成</string>
     <string name="library_cloud_sync_up_to_date">云存档同步已是最新状态</string>
-    <string name="library_cloud_sync_failed">云存档同步失败</string>
     <string name="library_cloud_sync_error">云存档同步错误：%1$s</string>
 
     <!-- 库应用界面：UI标签 -->
@@ -1119,17 +965,12 @@
 
     <!-- 主界面：更新与应用信息 -->
     <string name="main_update_button">更新</string>
-    <string name="main_later_button">稍后更新</string>
     <string name="launch_dependency_failed_title">下载启动依赖失败</string>
     <string name="launch_dependency_failed_message">无法下载所需组件，请稍后再试。</string>
 
     <!-- 主界面：崩溃与支持 -->
     <string name="main_recent_crash_title">最近应用程序崩溃</string>
     <string name="main_recent_crash_message">若能了解您最近遇到的问题，将有助于我们改善应用程序。\n您可在应用程序设置中查看并导出最近的崩溃日志，将其附加至项目源代码仓库的 Github Issue中\nGithub 源代码仓库的链接亦位于设置页面内</string>
-    <string name="main_thank_you_title">喜欢 GameNative 吗？</string>
-    <string name="main_thank_you_message">立即成为会员。会员可享受：\n\n• AI 帮你解决游戏运行问题\n• 新版本抢先体验\n• Discord 高级身份组和专属频道\n• …以及更多\n\n每月 $5 起</string>
-    <string name="main_share">分享</string>
-    <string name="main_share_text">试试 GameNative - 在 Android 上畅玩您的 PC Steam 游戏，完整支持云存档！\nhttps://gamenative.app\n加入社区：https://discord.gg/2hKv4VfZfE</string>
 
     <!-- 主界面：游戏启动 -->
     <string name="main_downloading_steam">正在下载 Steam...</string>
@@ -1160,8 +1001,6 @@
     <string name="main_keep_remote">保留远程存档</string>
 
     <!-- 主界面：同步错误 -->
-    <string name="main_sync_in_progress_retry">同步操作耗时过久，请稍后重新启动游戏</string>
-    <string name="main_sync_in_progress">同步目前正在进行中，请稍后再试</string>
     <string name="main_sync_in_progress_launch_anyway_message">该游戏的云存档同步正在进行。你可以等待后重试，或继续启动但不进行同步（可能导致存档冲突）。</string>
     <string name="main_launch_anyway">仍然启动</string>
     <string name="main_wait">等待</string>
@@ -1189,7 +1028,6 @@
     <string name="container_config_tab_environment">环境</string>
     <string name="container_config_tab_drives">驱动器</string>
     <string name="container_config_tab_advanced">高级</string>
-    <string name="container_config_vkd3d_version">VKD3D 版本</string>
     <string name="container_config_executable_path">可执行文件路径</string>
     <string name="container_config_executable_path_placeholder">例如：path\\to\\exe</string>
     <string name="container_config_executable_path_custom">自定义路径…</string>
@@ -1204,9 +1042,7 @@
     <!-- 聊天界面 -->
 
     <!-- 库组件 -->
-    <string name="library_open">打开</string>
     <string name="library_installed">已安装</string>
-    <string name="library_installing">安装中</string>
     <string name="library_not_installed">未安装</string>
     <string name="library_family_shared">家庭共享</string>
     <string name="library_shared_short">共享</string>
@@ -1226,24 +1062,17 @@
 
     <string name="library_app_type">应用程序类型</string>
     <string name="library_app_status">应用程序状态</string>
-    <string name="library_layout">布局</string>
     <string name="library_layout_list">列表</string>
     <string name="library_layout_capsule">胶囊</string>
     <string name="library_layout_hero">英雄</string>
     <string name="library_layout_carousel">轮播</string>
     <string name="library_search_placeholder">搜索您的游戏...</string>
-    <string name="library_search_description">搜索</string>
     <string name="library_search_clear">清除搜索</string>
     <string name="library_no_items">没有符合选择条件的项目</string>
-    <string name="library_filters">过滤器</string>
-    <string name="library_game_count">%1$d 款游戏 • %2$d 款已安装</string>
     <string name="library_source_steam">Steam</string>
     <string name="library_source_custom">自定义游戏</string>
-    <string name="library_source_title">来源</string>
     <string name="library_layout_title">布局</string>
-    <string name="library_options">选项</string>
     <string name="back">返回</string>
-    <string name="cloud">云</string>
     <string name="options">选项</string>
     <string name="play_time">游戏时间</string>
 
@@ -1287,25 +1116,6 @@
     <string name="two_factor_enter_code">输入5位数验证码</string>
 
     <!-- 内容管理器 -->
-    <string name="contents_validating">正在验证内容...</string>
-    <string name="contents_error_badtar">无法识别文件</string>
-    <string name="contents_error_noprofile">内容中未找到配置文件</string>
-    <string name="contents_error_badprofile">无法识别配置文件</string>
-    <string name="contents_error_exist">内容已存在</string>
-    <string name="contents_error_missingfiles">内容不完整</string>
-    <string name="contents_error_untrustprofile">内容不可信</string>
-    <string name="contents_error_nospace">空间不足</string>
-    <string name="contents_error_generic">无法安装内容</string>
-    <string name="contents_untrusted_files">此内容包含受信文件以外的文件</string>
-    <string name="contents_install_components">安装附加组件（.wcp: tar.xz/zst）</string>
-    <string name="contents_type">类型</string>
-    <string name="contents_version">版本</string>
-    <string name="contents_code">代码</string>
-    <string name="contents_description">描述</string>
-    <string name="contents_all_trusted">所有文件均受信任，已准备好安装</string>
-    <string name="contents_no_installed">此类型无已安装内容</string>
-    <string name="contents_delete">删除</string>
-    <string name="contents_removed">已移除 %1$s</string>
 
     <!-- 驱动程序管理器 -->
     <string name="driver_error_manifest">加载驱动程序清单失败：%1$d</string>
@@ -1330,9 +1140,6 @@
     <string name="settings_subtitle">自定义您的体验</string>
 
     <!-- 内容安装完成 -->
-    <string name="contents_install_success">内容已成功安装</string>
-    <string name="contents_install_failed">安装内容失败</string>
-    <string name="contents_install_error">安装错误：%1$s</string>
 
     <!-- 库状态 -->
     <string name="library_status_ready">准备就绪</string>
@@ -1364,10 +1171,6 @@
     <string name="wine_proton_remove_message">确定要移除 %1$s %2$s（%3$d）吗？使用此版本的容器将无法继续运行</string>
     <string name="wine_proton_removed_toast">已移除 %s</string>
     <string name="wine_proton_remove_failed">移除失败：%s</string>
-    <string name="cancel_import_title">取消导入？</string>
-    <string name="cancel_import_message">导入作业正在进行中，取消操作将丢弃所有已提取的文件，您需要重新开始导入程序\n\n确定要取消吗？</string>
-    <string name="cancel_import_confirm">是，取消导入</string>
-    <string name="cancel_import_keep">不，保留导入</string>
 
     <!-- Wine/Proton 管理器 - 状态消息 -->
     <string name="wine_proton_extracting">正在解压缩及验证包（大型文件可能需要 2 至 3 分钟）...</string>
@@ -1392,12 +1195,8 @@
     <string name="wine_proton_install_error">安装错误：%s</string>
     <string name="wine_proton_install_success">%1$s %2$s 已安装成功</string>
     <string name="wine_proton_glibc_incompatible">此 Wine/Proton 版本需搭配 GLIBC 容器运行，且不兼容 GameNative。\n请使用 ARM64/bionic 版本。</string>
-    <string name="wine_proton_containers_in_use">使用此版本的容器：</string>
-    <string name="wine_proton_no_containers_warning">目前没有容器使用此版本</string>
-    <string name="wine_proton_containers_will_break">若您继续操作，这些容器将无法继续运行：</string>
     <string name="auth_webview_title">授权</string>
 
-    <!-- GOG Integration -->
     <string name="rockstar_login_required_title">需要登录 Rockstar</string>
     <string name="rockstar_login_failed">Rockstar 登录失败：%1$s</string>
     <string name="rockstar_link_refused">此 Rockstar 账户已关联到其他 Steam 账户。</string>
@@ -1409,24 +1208,19 @@
     <string name="rockstar_link_failed">无法关联 Steam 账户：%1$s</string>
     <string name="rockstar_link_unchecked">无法检查 Steam 关联。请在设置中退出 Rockstar 登录，然后重新登录以重试。</string>
     <string name="ea_login_required_title">需要登录 EA</string>
-    <string name="ea_login_success">已以 %1$s 身份登录 EA</string>
     <string name="ea_login_failed">EA 登录失败：%1$s</string>
     <string name="ea_preparing">正在准备 EA 启动器支持</string>
     <string name="rockstar_preparing">正在准备 Rockstar 启动器支持</string>
     <string name="rockstar_runtime_installing">正在安装 Social Club 运行环境</string>
     <string name="rockstar_installer_missing">游戏文件中缺少 Social Club 安装程序。请在 Steam 中验证游戏文件后重试。</string>
 
-    <!-- Epic Games Integration -->
 
-    <!-- Amazon Games Integration -->
 
     <!-- Epic Install/Uninstall -->
     <string name="manifest_downloading_item">正在下载 %1$s…</string>
     <string name="manifest_download_failed">下载失败：%1$s</string>
     <string name="manifest_install_failed">安装 %1$s 失败</string>
     <string name="manifest_install_success">%1$s 已安装</string>
-    <string name="manifest_content_untrusted">内容不可信，未安装。</string>
-    <string name="manifest_type_mismatch">下载的内容与预期类型不匹配。</string>
     <!-- Library: source not logged in splash -->
     <string name="library_source_not_logged_in_steam">登录以访问您的 Steam 游戏库。</string>
     <string name="library_source_no_custom_games">您尚未添加任何自定义游戏。</string>
@@ -1449,7 +1243,6 @@
     <string name="workshop_download_failed">下载失败</string>
 
     <!-- Recommendations -->
-    <string name="recommended_badge">推荐</string>
     <string name="recommended_about_heading">关于本游戏</string>
     <string name="recommended_review_count">基于 %1$s 条评价</string>
     <string name="library_store_media_page">第 %1$d 项，共 %2$d 项</string>
@@ -1498,8 +1291,6 @@
     <string name="library_compatibility_unknown">未知</string>
 
     <!-- Steam 集成：存档设置 -->
-    <string name="local_saves_only">仅本地存档</string>
-    <string name="local_saves_only_description">禁用此游戏的云存档同步，仅将存档保存在本地设备上</string>
 
     <!-- 主界面：下载条目 -->
     <string name="main_downloading_entry">正在下载 %s</string>
@@ -1522,7 +1313,6 @@
     <string name="performance_hud_battery_temperature">电池温度</string>
 
     <!-- 屏幕效果 -->
-    <string name="screen_effects_scaling">缩放</string>
     <string name="screen_effects_upscaling">超分辨率</string>
     <string name="screen_effects_basic_scaling">基础缩放</string>
     <string name="screen_effects_scaling_mode_none_desc">不缩放。</string>
@@ -1534,7 +1324,6 @@
     <string name="screen_effects_scaling_mode_fsr_aspect_desc">FSR，保持宽高比。</string>
     <string name="screen_effects_scaling_mode_dls_desc">锐化／清晰度处理。</string>
     <string name="screen_effects_scaling_mode_natural_desc">更暖的色调。</string>
-    <string name="screen_effects_scaling_mode">缩放模式</string>
     <string name="screen_effects_scaling_mode_none">不缩放</string>
     <string name="screen_effects_scaling_mode_nearest">最近邻</string>
     <string name="screen_effects_scaling_mode_linear">线性</string>
@@ -1544,17 +1333,8 @@
     <string name="screen_effects_scaling_mode_fsr_aspect">FSR 适配</string>
     <string name="screen_effects_scaling_mode_dls">DLS</string>
     <string name="screen_effects_scaling_mode_natural">自然</string>
-    <string name="screen_effects_fsr">FSR 1.0</string>
-    <string name="screen_effects_fsr_description">官方 AMD FidelityFX Super Resolution 1.0，使用 EASU + RCAS，以较低的内部分辨率渲染并进行全分辨率放大。</string>
-    <string name="screen_effects_fsr_quality">FSR 质量</string>
-    <string name="screen_effects_fsr_quality_ultra_quality">超高质量</string>
-    <string name="screen_effects_fsr_quality_quality">质量</string>
-    <string name="screen_effects_fsr_quality_balanced">平衡</string>
-    <string name="screen_effects_fsr_quality_performance">性能</string>
     <string name="screen_effects_fsr_sharpness">FSR 锐度</string>
     <string name="screen_effects_fsr_sharpness_value">%1$d/5</string>
-    <string name="screen_effects_launch_sharpness">启动锐度</string>
-    <string name="screen_effects_launch_sharpness_note">CAS 和 DLS 通过 vkBasalt 应用，将在下次启动游戏时生效。</string>
 
     <!-- 设置：界面组 -->
     <string name="settings_interface_icon_style">图标样式</string>
@@ -1581,9 +1361,6 @@
     <string name="lsfg_backend_native">Native（渲染器）</string>
     <string name="lsfg_install_prompt">Lossless Scaling 未安装。点击安装。已知仅在 Adreno 6xx 及更高版本上可用。</string>
     <string name="lsfg_not_in_library">Lossless Scaling 不在你的 Steam 库中</string>
-    <string name="lsfg_install_title">安装 Lossless Scaling？</string>
-    <string name="lsfg_install_message">将从 Steam 下载 Lossless Scaling 以启用帧生成。</string>
-    <string name="lsfg_installing">正在下载 Lossless Scaling…</string>
     <string name="lsfg_performance_mode_desc">降低画质以提升吞吐量</string>
     <!-- Game Launch Tips -->
     <string name="game_launch_tip_1">首次启动可能需要几分钟时间</string>
@@ -1614,8 +1391,6 @@
     <string name="launch_bionic_steam_description">启用在线游玩并提升兼容性\n不一定总能正常工作\n尝试前请先备份存档</string>
 
     <!-- Frontend Sync Settings -->
-    <string name="settings_interface_frontend_sync_title">前端同步</string>
-    <string name="settings_interface_frontend_sync_subtitle">自动将已安装的游戏导出到游戏库前端程序</string>
     <string name="frontend_sync_dialog_title">前端同步</string>
     <string name="frontend_sync_source_steam">Steam</string>
     <string name="frontend_sync_source_custom">自定义游戏</string>
@@ -1916,7 +1691,6 @@
     <string name="nexus_use_this_folder">使用此文件夹</string>
     <string name="nexus_use_selected">使用选择</string>
     <string name="nexus_choose_game_container_location">选择游戏/容器位置</string>
-    <string name="nexus_no_subdirectories">没有子目录</string>
     <string name="nexus_select">选择</string>
     <string name="nexus_scanning">扫描</string>
     <string name="nexus_issue_count">%1$d问题</string>
@@ -2029,7 +1803,6 @@
     <string name="nexus_no_downloadable_files_mod">此模组没有返回可下载文件</string>
     <string name="nexus_resolve_url_failed">未能解决NexusURL</string>
     <string name="nexus_applying_mod_files">应用 mod 文件</string>
-    <string name="nexus_applied_items_backups">已应用%1$d项目，备份%2$d%3$s</string>
     <string name="nexus_old_files_left_in_place_suffix">; %1$d 旧文件保留在原处</string>
     <string name="nexus_mod_apply_already_running">Mod 文件已被应用。</string>
     <string name="nexus_failed_to_apply_mod">应用模组失败</string>
@@ -2101,8 +1874,6 @@
     <string name="button_drag_look">按钮拖动视角</string>
     <string name="button_drag_look_subtitle">允许从屏幕按钮拖动来瞄准或移动</string>
     <string name="button_drag_threshold">按钮拖动阈值 (px)</string>
-    <string name="joystick_behavior">摇杆行为</string>
-    <string name="joystick_behavior_subtitle">长时间拖动时动态摇杆中心的行为</string>
     <string name="joystick_behavior_anchored">固定</string>
     <string name="joystick_behavior_floating">浮动</string>
     <string name="outer_ring_sprint">外环冲刺</string>
@@ -2249,12 +2020,8 @@
 
     <!-- Power Control -->
     <string name="power_control">性能控制</string>
-    <string name="power_control_info">控制CPU频率调节和调速器设置。需要PServer服务。</string>
-    <string name="power_control_driver">驱动：%s</string>
     <string name="power_control_profiles">性能配置</string>
     <string name="power_control_governor">CPU调速器</string>
-    <string name="power_control_current_frequencies">当前频率</string>
-    <string name="power_control_frequencies">频率设置</string>
     <string name="power_control_cpu_min_freq">最低CPU频率</string>
     <string name="power_control_cpu_max_freq">最高CPU频率</string>
     <string name="power_control_gpu_freq">GPU频率</string>
@@ -2262,7 +2029,6 @@
     <string name="power_control_gpu_max_power">最高GPU功率</string>
     <string name="power_control_ram_min_power">最低RAM频率</string>
     <string name="power_control_ram_max_power">最高RAM频率</string>
-    <string name="power_control_available_frequencies">可用频率</string>
     <string name="power_control_auto_tuning">自动调整</string>
     <string name="power_control_auto_tuning_desc">更稳定的性能、更长的续航、更少的发热：自动为游戏调节 CPU 和 GPU。已在 Retroid Pocket 6 上验证。</string>
     <string name="power_control_adaptive_fps">自动降低 FPS</string>
@@ -2287,24 +2053,6 @@
     <string name="power_control_strategy_aggressive_desc">最大化检测到的瓶颈性能</string>
     <string name="power_control_strategy_conservative">保守</string>
     <string name="power_control_strategy_conservative_desc">渐进式调整，注重稳定性</string>
-    <string name="launch_immersive_mode">以沉浸模式启动（VR）</string>
-    <string name="quick_menu_tab_immersive">沉浸</string>
-    <string name="immersive_passthrough">透视</string>
-    <string name="immersive_passthrough_desc">透过虚拟屏幕查看周围的真实环境</string>
-    <string name="immersive_passthrough_toggle">启用透视</string>
-    <string name="immersive_resize_mode_title">缩放/移动控制点</string>
-    <string name="immersive_resize_mode_desc">开启后会在游戏画面边缘内侧显示抓取控制点。默认关闭，因为不留边距可以避免画面变模糊。</string>
-    <string name="immersive_resize_mode_toggle">显示缩放/移动控制点</string>
-    <string name="immersive_direct_render_title">性能</string>
-    <string name="immersive_reset_effects_status_blocked">当前启用的画面效果、滤镜或亮度/对比度/伽马调整正在阻止使用最快的渲染路径。</string>
-    <string name="immersive_reset_effects_status_ok">当前没有任何设置阻止使用最快的渲染路径。</string>
-    <string name="immersive_reset_effects_button">重置画面效果</string>
-    <string name="immersive_reset_effects_desc">关闭所有效果、滤镜以及亮度/对比度/伽马调整。立即生效，无需重启。</string>
-    <string name="immersive_onboarding_disable_passthrough">关闭透视可提升性能</string>
-    <string name="immersive_onboarding_quick_menu">长按 Start 可打开或关闭快捷菜单</string>
-    <string name="immersive_onboarding_pointer_toggle">双击摇杆可在 Xbox 手柄与 XR 指针之间切换</string>
-    <string name="immersive_mode_xr_pointer">XR 指针模式</string>
-    <string name="immersive_mode_xbox">Xbox 手柄模式</string>
     <string name="tab_favorites">收藏</string>
     <string name="favorites_empty_title">还没有收藏</string>
     <string name="favorites_empty_message">打开游戏详情菜单即可添加到收藏，或在游戏获得焦点时按下控制器左侧面键（Xbox 为 X、PlayStation 为方块键、Nintendo 布局为 Y）。</string>
@@ -2319,7 +2067,6 @@
     <string name="favorite_removed_named">已将 %1$s 从收藏中移除</string>
     <string name="favorite_added">已添加到收藏</string>
     <string name="favorite_added_named">已将 %1$s 添加到收藏</string>
-    <string name="xr_refresh_rate">VR 刷新率</string>
     <string name="nexus_plan_review_title">放置审核</string>
     <string name="nexus_plan_coverage">已规划 %1$d/%2$d 个文件 • 已忽略 %3$d 个 • %4$d 个需要审核</string>
     <string name="nexus_plan_ranked">建议排名</string>
@@ -2404,19 +2151,6 @@
     <string name="binding_mode_sequence">顺序</string>
     <string name="binding_sequence_delay_ms">顺序延迟（毫秒）</string>
     <string name="binding_sequence_current_format">%1$s（%2$d 毫秒）</string>
-    <string name="immersive_windows_vr_title">Windows VR</string>
-    <string name="immersive_windows_vr_toggle">启用 Windows VR</string>
-    <string name="immersive_openvr_compatibility_toggle">OpenVR 兼容（实验性）</string>
-    <string name="immersive_windows_vr_restart_required">运行时和兼容性更改将在下次启动时生效。</string>
-    <string name="immersive_windows_vr_export">导出 Windows VR 诊断</string>
-    <string name="immersive_windows_vr_export_desc">保存精简的运行时事件报告</string>
-    <string name="xr_windows_vr_toggle">以 VR 应用运行（实验性）</string>
-    <string name="xr_windows_vr_toggle_desc">适用于 Beat Saber 等原生 VR 游戏。需要 arm64ec Wine、DXVK 和 D3D11。其他游戏仍使用平面沉浸式屏幕。</string>
-    <string name="xr_open_composite_toggle">SteamVR (OpenVR) 兼容</string>
-    <string name="xr_open_composite_toggle_desc">通过 OpenComposite 运行为 SteamVR 开发的游戏。若游戏提示 SteamVR 未运行，或开启 VR 模式后仍为平面显示，请开启此项。</string>
-    <string name="xr_render_scale">VR 渲染比例</string>
-    <string name="boot_quiz_win_default">答对了！</string>
-    <string name="boot_quiz_lose_default">正确答案是 %1$s</string>
     <string name="gyro_aiming">陀螺仪瞄准</string>
     <string name="gyro_settings_title">陀螺仪设置</string>
     <string name="gyro_section_output">输出和动作</string>

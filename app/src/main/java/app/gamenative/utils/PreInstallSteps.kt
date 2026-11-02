@@ -6,7 +6,7 @@ import com.winlator.container.Container
 import java.io.File
 
 /**
- * Determines whether pre-install steps (GOG script interpreter, Ubisoft Connect) need to run
+ * Determines whether pre-install steps (e.g. Ubisoft Connect) need to run
  * as Wine guest programs before the game launches. These installers require wine explorer
  * and cannot be run via execShellCommand.
  *

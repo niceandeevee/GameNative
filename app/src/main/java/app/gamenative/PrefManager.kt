@@ -1315,31 +1315,6 @@ object PrefManager {
             setPref(EXTERNAL_STORAGE_PATH, value)
         }
 
-    private val FRONTEND_SYNC_DIR_STEAM = stringPreferencesKey("frontend_sync_dir_steam")
-    private val FRONTEND_SYNC_DIR_CUSTOM = stringPreferencesKey("frontend_sync_dir_custom")
-
-    var frontendSyncDirSteam: String
-        get() = getPref(FRONTEND_SYNC_DIR_STEAM, "")
-        set(value) { setPref(FRONTEND_SYNC_DIR_STEAM, value) }
-
-    var frontendSyncDirCustom: String
-        get() = getPref(FRONTEND_SYNC_DIR_CUSTOM, "")
-        set(value) { setPref(FRONTEND_SYNC_DIR_CUSTOM, value) }
-
-    /** Returns the configured export directory for [source], or an empty string if not set. */
-    fun getFrontendSyncDir(source: GameSource): String = when (source) {
-        GameSource.STEAM -> frontendSyncDirSteam
-        GameSource.CUSTOM_GAME -> frontendSyncDirCustom
-    }
-
-    /** Persists [path] as the export directory for [source]. Pass an empty string to clear. */
-    fun setFrontendSyncDir(source: GameSource, path: String) {
-        when (source) {
-            GameSource.STEAM -> frontendSyncDirSteam = path
-            GameSource.CUSTOM_GAME -> frontendSyncDirCustom = path
-        }
-    }
-
     // Custom Games root (additional paths). Default path is provided by the app at runtime and isn't stored here.
     private val CUSTOM_GAME_PATHS = stringPreferencesKey("custom_game_paths")
     var customGamePaths: Set<String>

@@ -60,7 +60,6 @@ object SteamUtils {
 
     /**
      * True when a stored Steam session exists (offline-launch gate).
-     * Matches GOG/Epic/Amazon AuthManager.hasStoredCredentials convention.
      */
     fun hasStoredCredentials(): Boolean =
         PrefManager.username.isNotEmpty() && PrefManager.refreshToken.isNotEmpty()

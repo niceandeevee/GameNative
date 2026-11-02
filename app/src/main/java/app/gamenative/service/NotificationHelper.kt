@@ -179,8 +179,7 @@ class NotificationHelper @Inject constructor(@ApplicationContext appContext: Con
         // The latter would oblige whichever service was named in the Intent to call
         // startForeground(...) within ~5s of being started — but the ACTION_EXIT branch
         // in SteamService just emits EndProcess and returns, which crashes the app when
-        // the targeted service wasn't already running (e.g. Exit tapped on a GOG
-        // notification with no active Steam session).
+        // the targeted service wasn't already running.
         val stopIntent = Intent(context, NotificationActionReceiver::class.java).apply {
             action = ACTION_EXIT
         }

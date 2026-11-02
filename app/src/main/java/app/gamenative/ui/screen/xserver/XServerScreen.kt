@@ -1539,11 +1539,8 @@ fun XServerScreen(
         }
     }
 
-    // Modern only: API 33+ routes gesture-back through OnBackInvokedDispatcher,
-    // which no longer delivers KEYCODE_BACK to MainActivity.dispatchKeyEvent.
-    // BackHandler registers with OnBackPressedDispatcher to catch that path.
-    // Legacy flavor (targetSdk 28) still receives BACK as a KeyEvent, so it keeps
-    // master's event-bus route via registerBackAction(gameBack) below.
+    // API 33+ routes gesture-back through OnBackInvokedDispatcher, which no longer delivers
+    // KEYCODE_BACK to MainActivity.dispatchKeyEvent; BackHandler catches that path.
     BackHandler { gameBack() }
 
     DisposableEffect(container) {
@@ -1603,7 +1600,6 @@ fun XServerScreen(
                 keyboardEscMenuHandler.handleOverlayEsc(it.event, ui.keyboard)
                 if (it.event.action == KeyEvent.ACTION_DOWN && it.event.repeatCount == 0) {
                     (context as? ComponentActivity)?.onBackPressedDispatcher?.onBackPressed()
-                
                 }
                 true
             } else {

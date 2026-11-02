@@ -2,8 +2,7 @@ package app.gamenative.service.download
 
 /**
  * Loads `libgndownload.so` — the single Rust library (`cpp/gn-download/rust`) behind
- * [GameDownloadService]. All store download pipelines (Steam CDN depots, GOG chunks,
- * Epic chunks, Amazon files) live in this one library.
+ * [GameDownloadService]: the Steam CDN depot downloader and the tree deleter.
  */
 object GameDownloadNative {
 

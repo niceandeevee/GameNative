@@ -730,7 +730,6 @@ fun AppScreen(
 internal fun AppScreenContent(
     modifier: Modifier = Modifier,
     displayInfo: GameDisplayInfo,
-    resetHeroOnFirstArtworkChange: Boolean = false,
     downloadDisplayDetails: DownloadDisplayDetails,
     downloadInfo: app.gamenative.data.DownloadInfo? = null,
     onDownloadInstallClick: () -> Unit,
@@ -765,12 +764,6 @@ internal fun AppScreenContent(
     val heroPagerState = rememberPagerState(pageCount = { heroMedia.size.coerceAtLeast(1) })
     val heroMediaScope = rememberCoroutineScope()
     var fullscreenHeroPage by rememberSaveable(displayInfo.appId) { mutableStateOf<Int?>(null) }
-    var previousHeroImageUrl by remember(displayInfo.appId) {
-        mutableStateOf(displayInfo.heroImageUrl)
-    }
-    var didResetForFirstArtworkChange by remember(displayInfo.appId) {
-        mutableStateOf(false)
-    }
 
     var optionsMenuVisible by remember { mutableStateOf(false) }
 
@@ -806,9 +799,8 @@ internal fun AppScreenContent(
                     downloadTimeLeftText // keep the previous ETA text until the 1s tick
                 }
             } else if (isDownloading && downloadProgress >= 1f) {
-                // Bytes at 100% while the download is still active. Prefer the real status
-                // (e.g. Epic may still be fetching chunks — its byte total can saturate
-                // early); "Unpacking..." only when there is nothing more truthful to say.
+                // Bytes at 100% while the download is still active: prefer the real status,
+                // "Unpacking..." only when there is nothing more truthful to say.
                 lastEtaTextUpdateAt = 0L
                 downloadStatusMessage?.takeUnless { it.isBlank() } ?: unpackingText
             } else if (downloadProgress in 0f..1f && downloadProgress < 1f) {
@@ -825,30 +817,6 @@ internal fun AppScreenContent(
         scrollState.scrollTo(0)
         heroPagerState.scrollToPage(0)
         fullscreenHeroPage = null
-    }
-
-    // Amazon initially renders its library icon while the full catalog record is loaded.
-    // Reset once when that icon is replaced so the pager does not preserve its stable key at
-    // a later position. Other artwork refreshes must not discard the user's current position.
-    LaunchedEffect(
-        displayInfo.appId,
-        resetHeroOnFirstArtworkChange,
-        displayInfo.heroImageUrl,
-    ) {
-        val currentHeroImageUrl = displayInfo.heroImageUrl
-        val heroChanged = currentHeroImageUrl != previousHeroImageUrl
-        previousHeroImageUrl = currentHeroImageUrl
-        if (
-            resetHeroOnFirstArtworkChange &&
-            !didResetForFirstArtworkChange &&
-            heroChanged &&
-            !currentHeroImageUrl.isNullOrBlank()
-        ) {
-            didResetForFirstArtworkChange = true
-            scrollState.scrollTo(0)
-            heroPagerState.scrollToPage(0)
-            fullscreenHeroPage = null
-        }
     }
 
     LaunchedEffect(heroMedia.size) {

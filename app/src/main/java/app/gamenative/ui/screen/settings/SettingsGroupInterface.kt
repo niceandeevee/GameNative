@@ -85,31 +85,7 @@ import timber.log.Timber
 import app.gamenative.PluviaApp
 import app.gamenative.events.AndroidEvent
 import app.gamenative.utils.StorageUtils
-import app.gamenative.sync.FrontendSyncManager
 import app.gamenative.ui.util.SnackbarManager
-
-/** Icon button that triggers [FrontendSyncManager.resyncAll] and shows a spinner while syncing. */
-@Composable
-private fun FrontendSyncResyncButton() {
-    val isSyncing by FrontendSyncManager.isSyncing.collectAsState()
-    val resyncLabel = stringResource(R.string.frontend_sync_resync_all)
-    IconButton(
-        onClick = { FrontendSyncManager.resyncAll() },
-        modifier = Modifier.semantics { contentDescription = resyncLabel },
-    ) {
-        if (isSyncing) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
-                strokeWidth = 2.dp,
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Default.Sync,
-                contentDescription = stringResource(R.string.frontend_sync_resync_all),
-            )
-        }
-    }
-}
 
 /** Settings group covering interface preferences: theme, downloads, frontend sync, language, and icons. */
 @Composable
@@ -173,7 +149,6 @@ fun SettingsGroupInterface(
         steamRegionsList.indexOfFirst { it.first == PrefManager.cellId }.takeIf { it >= 0 } ?: 0
     ) }
 
-    var showFrontendSyncDialog by rememberSaveable { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -728,9 +703,6 @@ fun SettingsGroupInterface(
         message = stringResource(R.string.settings_language_changing),
     )
 
-    if (showFrontendSyncDialog) {
-        FrontendSyncDialog(onDismiss = { showFrontendSyncDialog = false })
-    }
 
 }
 
