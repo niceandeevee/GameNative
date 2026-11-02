@@ -54,9 +54,9 @@ android {
         }
 
         proguardFiles(
-            // Optimizing R8 (inlining, class merging, dead-branch removal); JNI and reflection
-            // targets that this could break are pinned in proguard-rules.pro.
-            getDefaultProguardFile("proguard-android-optimize.txt"),
+            // Not proguard-android-optimize.txt: optimizing R8 broke zstd-jni (archive extraction
+            // hung on boot) and achievement loading on device. Shrinking without optimization only.
+            getDefaultProguardFile("proguard-android.txt"),
             "proguard-rules.pro",
         )
     }
