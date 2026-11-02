@@ -3,7 +3,12 @@ package app.gamenative.utils
 import android.content.Context
 import app.gamenative.BuildConfig
 import app.gamenative.PrefManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.Request
@@ -13,6 +18,8 @@ object ManifestRepository {
     private const val ONE_DAY_MS = 24 * 60 * 60 * 1000L
     private const val MANIFEST_URL = "https://raw.githubusercontent.com/utkarshdalal/GameNative/refs/heads/master/manifest.json"
     private val json = Json { ignoreUnknownKeys = true }
+    private val refreshScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val refreshLock = Mutex()
 
     suspend fun loadManifest(context: Context): ManifestData {
         if (BuildConfig.DEBUG) {
@@ -31,18 +38,27 @@ object ManifestRepository {
             return cachedManifest
         }
 
-        val fetched = fetchManifestJson()
-        if (fetched != null) {
-            val parsed = parseManifest(fetched)
-            if (parsed != null) {
-                val now = System.currentTimeMillis()
-                PrefManager.componentManifestJson = fetched
-                PrefManager.componentManifestFetchedAt = now
-                return parsed
-            }
+        // A usable cache is served immediately and refreshed in the background, so a game launch
+        // never waits on GitHub; only a first run with no cache blocks on the fetch.
+        if (parseManifest(cachedJson) != null) {
+            refreshScope.launch { refresh() }
+            return cachedManifest
         }
 
-        return cachedManifest
+        return refresh() ?: cachedManifest
+    }
+
+    private suspend fun refresh(): ManifestData? = refreshLock.withLock {
+        if (PrefManager.componentManifestJson.isNotEmpty() &&
+            System.currentTimeMillis() - PrefManager.componentManifestFetchedAt < ONE_DAY_MS
+        ) {
+            return@withLock parseManifest(PrefManager.componentManifestJson)
+        }
+        val fetched = fetchManifestJson() ?: return@withLock null
+        val parsed = parseManifest(fetched) ?: return@withLock null
+        PrefManager.componentManifestJson = fetched
+        PrefManager.componentManifestFetchedAt = System.currentTimeMillis()
+        parsed
     }
 
     private suspend fun fetchManifestJson(): String? = withContext(Dispatchers.IO) {
