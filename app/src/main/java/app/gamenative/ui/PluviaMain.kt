@@ -1243,6 +1243,7 @@ fun PluviaMain(
                                 setMessageDialogState = { msgDialogState = it },
                                 onSuccess = viewModel::launchApp,
                                 isOffline = offline,
+                                onOfflineResolved = viewModel::setOffline,
                                 bootToContainer = asContainer,
                             )
                         },
@@ -1262,6 +1263,7 @@ fun PluviaMain(
                                 setMessageDialogState = { msgDialogState = it },
                                 onSuccess = viewModel::launchApp,
                                 isOffline = offline,
+                                onOfflineResolved = viewModel::setOffline,
                                 bootToContainer = true,
                             )
                         },
@@ -1281,6 +1283,7 @@ fun PluviaMain(
                                 setMessageDialogState = { msgDialogState = it },
                                 onSuccess = viewModel::launchApp,
                                 isOffline = offline,
+                                onOfflineResolved = viewModel::setOffline,
                                 bootToContainer = false,
                             )
                         },
@@ -1486,6 +1489,7 @@ fun preLaunchApp(
     retryCount: Int = 0,
     isOffline: Boolean = false,
     bootToContainer: Boolean = false,
+    onOfflineResolved: (Boolean) -> Unit = {},
 ) {
     setLoadingDialogVisible(true)
     // TODO: add a way to cancel
@@ -1494,6 +1498,22 @@ fun preLaunchApp(
     val gameId = ContainerUtils.extractGameIdFromContainerId(appId)
 
     CoroutineScope(Dispatchers.IO).launch {
+        // Play pressed while Steam is still logging in (right after opening the app): wait for the
+        // login instead of launching offline. Real Steam started offline refuses to run the game
+        // ("steamhost: failed launch"). Only a phone with no internet or a failed login goes offline.
+        var isOffline = isOffline
+        if (isOffline && ContainerUtils.extractGameSourceFromContainerId(appId) == GameSource.STEAM &&
+            !SteamService.isLoggedIn && NetworkMonitor.hasInternet.value && SteamUtils.hasStoredCredentials()
+        ) {
+            setLoadingMessage(context.getString(R.string.connecting_to_steam))
+            setLoadingProgress(-1f)
+            isOffline = !SteamUtils.awaitSteamLogin()
+            Timber.i("Launch waited for Steam login: offline=$isOffline")
+        } else if (isOffline && SteamService.isLoggedIn) {
+            isOffline = false
+        }
+        onOfflineResolved(isOffline)
+
         if (!bootToContainer && ContainerUtils.extractGameSourceFromContainerId(appId) == GameSource.STEAM &&
             !SteamAgreementGate.confirm(context, gameId, isOffline, setLoadingDialogVisible)
         ) {
