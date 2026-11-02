@@ -27,15 +27,12 @@ import android.hardware.input.InputManager
 import android.view.InputDevice
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import app.gamenative.BuildConfig
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,11 +43,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -58,7 +56,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import app.gamenative.MainActivity
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -101,13 +98,11 @@ import app.gamenative.gamefixes.GameInputCompatibility
 import app.gamenative.inputcontrols.ControlProfileService
 import app.gamenative.data.LaunchInfo
 import app.gamenative.filedetect.GameFileDetection
-import app.gamenative.data.LibraryItem
 import app.gamenative.data.ShooterModeConfig
 import app.gamenative.data.SteamApp
 import app.gamenative.display.GameNativeDrm
 import app.gamenative.display.GamescopeCommandQueue
 import app.gamenative.display.GamescopeServerComponent
-import app.gamenative.display.GamescopeSettings
 import app.gamenative.events.AndroidEvent
 import app.gamenative.events.SteamEvent
 import app.gamenative.ui.enums.Orientation
@@ -134,7 +129,6 @@ import app.gamenative.ui.component.dialog.SteamControllerBindingEditorDialog
 import app.gamenative.ui.component.parseBooleanExtra
 import app.gamenative.ui.component.parsePositiveFpsLimit
 import app.gamenative.ui.data.PerformanceHudConfig
-import app.gamenative.ui.data.PerformanceHudSize
 import app.gamenative.ui.data.XServerState
 import app.gamenative.ui.widget.PerformanceHudView
 import app.gamenative.utils.AssetUtils
@@ -142,7 +136,6 @@ import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.ExtractionFingerprint
 import app.gamenative.utils.downloader.CoreDriverDownloader
 import app.gamenative.utils.CustomGameScanner
-import app.gamenative.utils.ExecutableSelectionUtils
 import app.gamenative.utils.LsfgQuickMenuHelper
 import app.gamenative.utils.LsfgVkManager
 import app.gamenative.utils.ManifestComponentHelper
@@ -197,7 +190,6 @@ import com.winlator.core.WineUtils
 import com.winlator.core.envvars.EnvVarRedaction
 import com.winlator.core.envvars.EnvVars
 import com.winlator.fexcore.FEXCoreManager
-import com.winlator.fexcore.FEXCorePreset
 import com.winlator.inputcontrols.ControllerManager
 import com.winlator.inputcontrols.ControlsProfile
 import com.winlator.inputcontrols.ExternalController
@@ -243,7 +235,6 @@ import com.winlator.xserver.extensions.PresentExtension
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -507,9 +498,6 @@ fun XServerScreen(
     onWindowMapped: ((Context, Window) -> Unit)? = null,
     onWindowUnmapped: ((Window) -> Unit)? = null,
     onGameLaunchError: ((String) -> Unit)? = null,
-    // Non-null only when hosted by ImmersiveXrActivity. One bundled parameter, not nine — this
-    // composable sits at the dex verifier's register limit (see ImmersiveSessionHooks' kdoc).
-    immersiveHooks: app.gamenative.ui.screen.xr.ImmersiveSessionHooks? = null,
 ) {
     Timber.i("Starting up XServerScreen")
     val context = LocalContext.current
@@ -1168,10 +1156,6 @@ fun XServerScreen(
     }
 
     LaunchedEffect(ui.showQuickMenu, ui.quickMenuToolsVisible, ui.xServerView) {
-        // Piggybacks on this effect rather than its own LaunchedEffect(showQuickMenu) — this
-        // composable is at the dex 255-register limit. Extra fires from the other keys repeat
-        // the same value; the activity's handler is idempotent.
-        immersiveHooks?.onQuickMenuVisibilityChanged?.invoke(ui.showQuickMenu)
         if (!ui.showQuickMenu || !ui.quickMenuToolsVisible) {
             ui.quickMenuWineProcesses = emptyList()
             ui.quickMenuWineProcessesLoading = false
@@ -1560,34 +1544,10 @@ fun XServerScreen(
     // BackHandler registers with OnBackPressedDispatcher to catch that path.
     // Legacy flavor (targetSdk 28) still receives BACK as a KeyEvent, so it keeps
     // master's event-bus route via registerBackAction(gameBack) below.
-    BackHandler(enabled = BuildConfig.MODERN_ANDROID) { gameBack() }
+    BackHandler { gameBack() }
 
     DisposableEffect(container) {
         registerBackAction(gameBack)
-        immersiveHooks?.registerToggle?.invoke {
-            Timber.i("toggleQuickMenu: invoked, showQuickMenu=%b", ui.showQuickMenu)
-            if (ui.showQuickMenu) {
-                dismissOverlayMenu()
-            } else {
-                val imeVisible = ViewCompat.getRootWindowInsets(view)
-                    ?.isVisible(WindowInsetsCompat.Type.ime()) == true
-                if (imeVisible) {
-                    ui.imeInputReceiver?.hideKeyboard()
-                    view.post {
-                        if (Build.VERSION.SDK_INT >= 30) {
-                            view.windowInsetsController?.hide(WindowInsets.Type.ime())
-                        } else {
-                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            if (view.windowToken != null) imm.hideSoftInputFromWindow(view.windowToken, 0)
-                        }
-                    }
-                }
-                PluviaApp.touchpadView?.postDelayed({
-                    PluviaApp.touchpadView?.releasePointerCapture()
-                }, 100)
-                ui.showQuickMenu = true
-            }
-        }
         if (isLsfgAvailable) {
             LsfgVkManager.startVsyncClock(context, container)
         }
@@ -1604,7 +1564,6 @@ fun XServerScreen(
                 PluviaApp.isOverlayPaused = false
             }
             registerBackAction { }
-            immersiveHooks?.registerToggle?.invoke {}
         }   // preserve suspend state across activity recreation while a game is still running
     }
 
@@ -1643,11 +1602,8 @@ fun XServerScreen(
             if (escPressed) {
                 keyboardEscMenuHandler.handleOverlayEsc(it.event, ui.keyboard)
                 if (it.event.action == KeyEvent.ACTION_DOWN && it.event.repeatCount == 0) {
-                    if (BuildConfig.MODERN_ANDROID) {
-                        (context as? ComponentActivity)?.onBackPressedDispatcher?.onBackPressed()
-                    } else {
-                        gameBack()
-                    }
+                    (context as? ComponentActivity)?.onBackPressedDispatcher?.onBackPressed()
+                
                 }
                 true
             } else {
@@ -2383,7 +2339,6 @@ fun XServerScreen(
 
                             Timber.i("Doing things once")
                             val envVars = EnvVars()
-                            immersiveHooks?.windowsVr?.beforeWineSystemSetup(container)
                             RedistInstallerExtractor.clearCache()
                             // Game fixes first, on this session's container: launch prep applied them to a
                             // copy loaded earlier, and merging into or saving this older copy would drop
@@ -2455,7 +2410,6 @@ fun XServerScreen(
                                 sessionDisplay,
                                 onGameLaunchError,
                                 isOffline,
-                                immersiveHooks,
                             )
 
                             // Autostart performance driver after environment is set up
@@ -3134,8 +3088,6 @@ fun XServerScreen(
                 onPerformanceModeChanged = ::applyLsfgPerformanceMode,
             ),
             onRequestOpen = { ui.showQuickMenu = true },
-            // Immersive tab (tab only visible when hosted by ImmersiveXrActivity)
-            immersiveHooks = immersiveHooks,
             onAnimationComplete = { isMenuVisible ->
                 if (isMenuVisible) {
                     // An invite dialog the game asked for must not suspend it -- the game has to
@@ -3172,7 +3124,7 @@ fun XServerScreen(
         }
 
         if (manualResumeMode && PluviaApp.isOverlayPaused && !ui.showQuickMenu && !ui.keepPausedForEditor) {
-            ManualResumeOverlay(onResume = ::resumeFromManualButton, immersive = immersiveHooks != null)
+            ManualResumeOverlay(onResume = ::resumeFromManualButton)
         }
     }
 
@@ -3442,13 +3394,7 @@ private fun ScLiveEditorDialogs(
 /** Lives outside XServerScreen because that composable sits at the dex verifier's 255-register
  * limit — its FocusRequester/effect locals tripped a runtime VerifyError when inlined there. */
 @Composable
-private fun ManualResumeOverlay(onResume: () -> Unit, immersive: Boolean) {
-    val resumeButtonFocusRequester = remember { FocusRequester() }
-    if (immersive) {
-        LaunchedEffect(Unit) {
-            runCatching { resumeButtonFocusRequester.requestFocus() }
-        }
-    }
+private fun ManualResumeOverlay(onResume: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -3465,15 +3411,6 @@ private fun ManualResumeOverlay(onResume: () -> Unit, immersive: Boolean) {
                 .background(
                     color = androidx.compose.ui.graphics.Color.White,
                     shape = androidx.compose.foundation.shape.CircleShape,
-                )
-                .then(
-                    if (immersive) {
-                        Modifier
-                            .focusRequester(resumeButtonFocusRequester)
-                            .focusable()
-                    } else {
-                        Modifier
-                    },
                 )
                 .clickable(onClick = onResume),
             contentAlignment = Alignment.Center,
@@ -4261,7 +4198,6 @@ private fun setupXEnvironment(
     sessionDisplay: SessionDisplay,
     onGameLaunchError: ((String) -> Unit)? = null,
     offline: Boolean = false,
-    immersiveHooks: app.gamenative.ui.screen.xr.ImmersiveSessionHooks? = null,
 ): XEnvironment {
     val session = guestSession.incrementAndGet()
     val isX11Display = sessionDisplay == SessionDisplay.X11
@@ -4434,7 +4370,6 @@ private fun setupXEnvironment(
 
         envVars.putAll(container.envVars)
         if (container.isLoadMods && !bootToContainer && !testGraphics) ModDllOverrides.apply(container, envVars)
-        immersiveHooks?.windowsVr?.afterContainerEnvironmentMerged(envVars, container)
         envVars.remove("DXVK_FRAME_RATE")
         envVars.remove("VKD3D_FRAME_RATE")
         if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
@@ -4712,9 +4647,7 @@ private fun setupXEnvironment(
 
     xServer.winHandler.start()
     try {
-        immersiveHooks?.windowsVr?.beforeGuestProcessStart()
         environment.startEnvironmentComponents()
-        immersiveHooks?.windowsVr?.onEnvironmentStarted()
         if (container != null && !bootToContainer) {
             CoroutineScope(Dispatchers.IO).launch { GameFileDetection.ensure(context, container) }
         }

@@ -98,20 +98,18 @@ jobs:
           keytool -list -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey \
             | grep -E "SHA256:" | sed 's/^/Keystore certificate /'
 
-      - name: Write local.properties
-        env:
-          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
-          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
-          STEAMGRIDDB_API_KEY: ${{ secrets.STEAMGRIDDB_API_KEY }}
+      - name: Restore cached libgndownload.so
+        id: gndownload-cache
+        uses: actions/cache@v4
+        with:
+          path: app/src/main/jniLibs/arm64-v8a/libgndownload.so
+          key: gndownload-${{ hashFiles('app/src/main/cpp/gn-download/rust/Cargo.*', 'app/src/main/cpp/gn-download/rust/.cargo/**', 'app/src/main/cpp/gn-download/rust/src/**', 'tools/build-gn-download.sh') }}
+
+      - name: Build libgndownload.so (Rust)
+        if: steps.gndownload-cache.outputs.cache-hit != 'true'
         run: |
-          # All optional: analytics and artwork stay off when the secrets are absent.
-          # Only non-empty values are written: the secrets-gradle-plugin copies every entry into
-          # BuildConfig unquoted when empty, which generates `String X = ;` and breaks javac.
-          : > local.properties
-          [ -n "$POSTHOG_API_KEY" ] && echo "POSTHOG_API_KEY=$POSTHOG_API_KEY" >> local.properties
-          [ -n "$POSTHOG_HOST" ] && echo "POSTHOG_HOST=$POSTHOG_HOST" >> local.properties
-          [ -n "$STEAMGRIDDB_API_KEY" ] && echo "STEAMGRIDDB_API_KEY=$STEAMGRIDDB_API_KEY" >> local.properties
-          echo "local.properties keys: $(cut -d= -f1 local.properties | tr '\n' ' ')"
+          rustup target add aarch64-linux-android
+          tools/build-gn-download.sh
 
       - name: Install Android SDK build tools
         run: |

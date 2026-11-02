@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color.TRANSPARENT
 import android.hardware.input.InputManager
@@ -21,11 +20,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import coil.ImageLoader
@@ -48,7 +47,6 @@ import app.gamenative.ui.enums.Orientation
 import app.gamenative.ui.util.LocalSnackbarHostController
 import app.gamenative.ui.util.SnackbarHostController
 import app.gamenative.utils.AnimatedPngDecoder
-import app.gamenative.data.GameSource
 import app.gamenative.powercontrol.PowerManager
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.IconDecoder
@@ -80,18 +78,6 @@ class MainActivity : ComponentActivity() {
 
         private var currentOrientationChangeValue: Int = 0
         private var availableOrientations: EnumSet<Orientation> = EnumSet.of(Orientation.UNSPECIFIED)
-
-        fun isHeadset(context: Context): Boolean =
-            context.packageManager.hasSystemFeature("android.hardware.vr.headtracking") ||
-                Build.MANUFACTURER.equals("Oculus", true) ||
-                Build.MANUFACTURER.equals("Meta", true) ||
-                Build.MANUFACTURER.equals("Pico", true)
-
-        fun isMetaQuest(): Boolean =
-            Build.MANUFACTURER.equals("Oculus", true) ||
-                Build.MANUFACTURER.equals("Meta", true) ||
-                Build.BRAND.equals("oculus", true)
-
 
         // Store pending launch request to be processed after UI is ready
         @Volatile
@@ -153,25 +139,21 @@ class MainActivity : ComponentActivity() {
      * auto, so the first press always turns the picture and every press changes the state.
      */
     private val onRotateLauncherOrientation: (AndroidEvent.RotateLauncherOrientation) -> Unit = {
-        if (isHeadset(this)) {
-            Timber.d("RotateLauncherOrientation ignored: headset keeps a fixed landscape projection")
-        } else {
-            val next = LauncherOrientation.nextState(
-                LauncherOrientation.stored(),
-                LauncherOrientation.naturalPortrait(this),
-                LauncherOrientation.currentlyPortrait(this),
-            )
-            LauncherOrientation.store(next)
+        val next = LauncherOrientation.nextState(
+            LauncherOrientation.stored(),
+            LauncherOrientation.naturalPortrait(this),
+            LauncherOrientation.currentlyPortrait(this),
+        )
+        LauncherOrientation.store(next)
 
-            // Apply the choice immediately rather than relying on setOrientationTo alone: it
-            // also carries the in-game allowed-orientation math, which would ignore the press
-            // whenever the last orientation request was not the launcher's auto set.
-            val target = LauncherOrientation.launcherTarget()
-            if (requestedOrientation != target) {
-                requestedOrientation = target
-            }
-            setOrientationTo(currentOrientationChangeValue, availableOrientations)
+        // Apply the choice immediately rather than relying on setOrientationTo alone: it
+        // also carries the in-game allowed-orientation math, which would ignore the press
+        // whenever the last orientation request was not the launcher's auto set.
+        val target = LauncherOrientation.launcherTarget()
+        if (requestedOrientation != target) {
+            requestedOrientation = target
         }
+        setOrientationTo(currentOrientationChangeValue, availableOrientations)
     }
 
     private val onEndProcess: (AndroidEvent.EndProcess) -> Unit = {
@@ -225,19 +207,6 @@ class MainActivity : ComponentActivity() {
         )
         super.onCreate(savedInstanceState)
 
-        app.gamenative.launch.installLaunchReadiness(applicationContext, lifecycleScope)
-
-        if (isHeadset(this)) {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            android.view.InputDevice.getDeviceIds().forEach { id ->
-                val d = android.view.InputDevice.getDevice(id) ?: return@forEach
-                val axes = d.motionRanges.joinToString(",") { mr -> "axis=${mr.axis}(min=${mr.min},max=${mr.max})" }
-                Timber.tag("HeadsetInput").i(
-                    "id=$id name='${d.name}' sources=0x%08x vendor=0x%04x product=0x%04x isGamepad=%b axes=[$axes]",
-                    d.sources, d.vendorId, d.productId, d.sources and android.view.InputDevice.SOURCE_GAMEPAD == android.view.InputDevice.SOURCE_GAMEPAD
-                )
-            }
-        }
 
         // Restore the orientation picked with the System menu rotate button.
         LauncherOrientation.applyStored(this)
@@ -279,7 +248,7 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(Unit) {
-                if (!BuildConfig.MODERN_XR && !hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (!hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
@@ -511,7 +480,6 @@ class MainActivity : ComponentActivity() {
         PowerManager.resume()
         PluviaApp.isActivityInForeground = true
 
-        lifecycleScope.launch { app.gamenative.launch.LaunchReadiness.refresh() }
         // Re-apply immersive mode to ensure fullscreen persists
         if (!desiredSystemUiVisible) {
             applyImmersiveMode()
@@ -649,13 +617,10 @@ class MainActivity : ComponentActivity() {
                 if (event.action == KeyEvent.ACTION_DOWN) {
                     PluviaApp.events.emit(AndroidEvent.BackPressed)
                     eventDispatched = true
-                } else if (BuildConfig.MODERN_ANDROID && event.action == KeyEvent.ACTION_UP) {
-                    // Modern only: swallow BACK UP so super.dispatchKeyEvent doesn't
-                    // forward it to OnBackPressedDispatcher, which would double-fire
-                    // XServerScreen's BackHandler and immediately dismiss the quick
-                    // menu the DOWN event just opened.
-                    // Legacy must NOT swallow UP — master relies on UP falling through
-                    // so any KeyEvent consumers (controller code, etc.) see it.
+                } else if (event.action == KeyEvent.ACTION_UP) {
+                    // Swallow BACK UP so super.dispatchKeyEvent doesn't forward it to
+                    // OnBackPressedDispatcher, which would double-fire XServerScreen's
+                    // BackHandler and immediately dismiss the quick menu DOWN just opened.
                     eventDispatched = true
                 }
             }
@@ -754,12 +719,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setOrientationTo(orientation: Int, conformTo: EnumSet<Orientation>) {
-        if (isHeadset(this)) {
-            if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            }
-            return
-        }
         // Log.d("MainActivity$index", "Setting orientation to conform")
 
         // The launcher owns the screen only while the last orientation request was its own

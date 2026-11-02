@@ -12,7 +12,6 @@ import android.os.IBinder
 import android.util.Base64
 import app.gamenative.ui.data.Achievement
 import app.gamenative.ui.util.GameInviteNotificationManager
-import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.service.callback.GameInviteCallback
 import app.gamenative.service.cloud.CloseSyncTracker
 import app.gamenative.service.handler.GameInviteHandler
@@ -169,7 +168,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.BufferOverflow
-import okio.Path.Companion.toPath
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -4614,7 +4612,7 @@ class SteamService : Service(), IChallengeUrlChanged {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        if (!hasActiveOperations() && !(BuildConfig.XR_BUILD && keepAlive)) {
+        if (!hasActiveOperations()) {
             Timber.i("Task removed and no active work — stopping service")
             stopSelf()
         } else {

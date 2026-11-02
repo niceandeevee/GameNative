@@ -2,7 +2,6 @@ package app.gamenative
 
 import android.content.Context
 import android.content.pm.ActivityInfo
-import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.Preferences
@@ -958,7 +957,6 @@ object PrefManager {
     var libraryFilter: EnumSet<AppFilter>
         get() {
             val defaultFilter = EnumSet.of(AppFilter.GAME, AppFilter.SHARED)
-            if (BuildConfig.XR_BUILD) defaultFilter.add(AppFilter.VR)
             val value = getPref(LIBRARY_FILTER, AppFilter.toFlags(defaultFilter))
             return AppFilter.fromFlags(value)
         }

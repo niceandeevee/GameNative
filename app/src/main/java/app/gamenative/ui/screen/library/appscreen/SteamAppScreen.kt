@@ -3,7 +3,6 @@ package app.gamenative.ui.screen.library.appscreen
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -41,8 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
-import app.gamenative.BuildConfig
 import app.gamenative.PrefManager
 import app.gamenative.PluviaApp
 
@@ -79,14 +76,12 @@ import app.gamenative.service.SteamService.Companion.getInstalledApp
 import com.winlator.container.Container
 import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
-import com.winlator.fexcore.FEXCoreManager
 import com.winlator.xenvironment.ImageFsInstaller
 import java.nio.file.Paths
 import kotlin.io.path.pathString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import app.gamenative.ui.component.dialog.GameManagerDialog
@@ -97,10 +92,6 @@ import app.gamenative.ui.component.dialog.state.GameManagerDialogState
 import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.ui.util.SteamSaveTransfer
 import app.gamenative.utils.ContainerUtils.getContainer
-import app.gamenative.utils.CustomGameScanner
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
 
@@ -1054,25 +1045,7 @@ class SteamAppScreen : BaseAppScreen() {
         val oldGamesDirectory = remember {
             Paths.get(SteamService.defaultAppInstallPath).pathString
         }
-        // Modern flavor uses an app-scoped external install path that needs no permission.
-        // Legacy keeps its existing MANAGE_EXTERNAL_STORAGE / runtime perm flow.
-        val initialStoragePermissionGranted = remember {
-            when {
-                BuildConfig.MODERN_ANDROID -> true
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
-                else -> {
-                    val writePermissionGranted = ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    ) == PackageManager.PERMISSION_GRANTED
-                    val readPermissionGranted = ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                    ) == PackageManager.PERMISSION_GRANTED
-                    writePermissionGranted && readPermissionGranted
-                }
-            }
-        }
+        val initialStoragePermissionGranted = true
         var hasStoragePermission by remember { mutableStateOf(initialStoragePermissionGranted) }
         var installSizeInfo by remember(gameId) { mutableStateOf<InstallSizeInfo?>(null) }
 

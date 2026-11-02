@@ -87,8 +87,6 @@ public class Container {
     private String rendererPresentMode = "fifo";
     private String displayRenderer = Container.DEFAULT_DISPLAY_RENDERER;
     private String displayServer = DefaultVersion.DISPLAY_SERVER;
-    private int xrRefreshRate = 72;
-    private int xrRenderScale = 100;
     private boolean sfCompatMode = true;
     private String wincomponents = DEFAULT_WINCOMPONENTS;
     private String audioDriver = DEFAULT_AUDIO_DRIVER;
@@ -98,7 +96,6 @@ public class Container {
     private String drives = DEFAULT_DRIVES;
     private String wineVersion = WineInfo.MAIN_WINE_VERSION.identifier();
     private boolean showFPS;
-    private boolean launchImmersiveMode = app.gamenative.BuildConfig.XR_BUILD;
     private boolean launchRealSteam;
     private boolean launchBionicSteam;
     private boolean allowSteamUpdates;
@@ -144,7 +141,7 @@ public class Container {
     // Disable external mouse input
     private boolean disableMouseInput = false;
     // Touchscreen mode (defaults on for XR builds)
-    private boolean touchscreenMode = app.gamenative.BuildConfig.XR_BUILD;
+    private boolean touchscreenMode = false;
     // Shooter mode
     private boolean shooterMode = true;
     // Serialised JSON gesture configuration (used when touchscreenMode is true)
@@ -294,14 +291,6 @@ public class Container {
 
     public String getDisplayServer() { return displayServer; }
 
-    public int getXrRefreshRate() { return xrRefreshRate; }
-
-    public void setXrRefreshRate(int v) { this.xrRefreshRate = v; }
-
-    public int getXrRenderScale() { return xrRenderScale; }
-
-    public void setXrRenderScale(int v) { this.xrRenderScale = v; }
-
     public void setDisplayRenderer(String v) { this.displayRenderer = v; }
 
     public void setDisplayServer(String v) { this.displayServer = v; }
@@ -396,14 +385,6 @@ public class Container {
 
     public void setShowFPS(boolean showFPS) {
         this.showFPS = showFPS;
-    }
-
-    public boolean isLaunchImmersiveMode() {
-        return launchImmersiveMode;
-    }
-
-    public void setLaunchImmersiveMode(boolean launchImmersiveMode) {
-        this.launchImmersiveMode = launchImmersiveMode;
     }
 
     public boolean isLaunchRealSteam() {
@@ -788,8 +769,6 @@ public class Container {
             data.put("rendererPresentMode", rendererPresentMode);
             data.put("displayRendererMode", displayRenderer);
             data.put("displayServer", displayServer);
-            data.put("xrRefreshRate", xrRefreshRate);
-            data.put("xrRenderScale", xrRenderScale);
             data.put("sfCompatMode", sfCompatMode);
             data.put("dxwrapper", dxwrapper);
             if (!dxwrapperConfig.isEmpty()) data.put("dxwrapperConfig", dxwrapperConfig);
@@ -799,7 +778,6 @@ public class Container {
             data.put("wincomponents", wincomponents);
             data.put("drives", drives);
             data.put("showFPS", showFPS);
-            data.put("launchImmersiveMode", launchImmersiveMode);
             data.put("launchRealSteam", launchRealSteam);
             data.put("launchBionicSteam", launchBionicSteam);
             data.put("allowSteamUpdates", allowSteamUpdates);
@@ -926,12 +904,6 @@ public class Container {
                 case "displayServer" :
                     setDisplayServer(data.getString(key));
                     break;
-                case "xrRefreshRate" :
-                    setXrRefreshRate(data.getInt(key));
-                    break;
-                case "xrRenderScale" :
-                    setXrRenderScale(data.getInt(key));
-                    break;
                 case "sfCompatMode" :
                     setSfCompatMode(data.getBoolean(key));
                     break;
@@ -949,9 +921,6 @@ public class Container {
                     break;
                 case "showFPS" :
                     setShowFPS(data.getBoolean(key));
-                    break;
-                case "launchImmersiveMode" :
-                    setLaunchImmersiveMode(data.getBoolean(key));
                     break;
                 case "launchRealSteam" :
                     setLaunchRealSteam(data.getBoolean(key));

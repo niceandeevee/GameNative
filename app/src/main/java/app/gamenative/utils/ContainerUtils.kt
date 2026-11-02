@@ -2,8 +2,6 @@ package app.gamenative.utils
 
 import android.content.Context
 import android.os.Build
-import app.gamenative.BuildConfig
-import app.gamenative.MainActivity
 import app.gamenative.PrefManager
 import app.gamenative.data.GameSource
 import app.gamenative.gamefixes.GameFixesRegistry
@@ -16,7 +14,6 @@ import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
 import com.winlator.core.DefaultVersion
 import com.winlator.core.FileUtils
-import com.winlator.core.KeyValueSet
 import com.winlator.core.GPUInformation
 import com.winlator.core.envvars.EnvVars
 import com.winlator.core.WineRegistryEditor
@@ -24,7 +21,6 @@ import com.winlator.core.WineThemeManager
 import com.winlator.winhandler.WinHandler.PreferredInputApi
 import com.winlator.xenvironment.ImageFs
 import java.io.File
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.json.JSONArray
@@ -328,8 +324,6 @@ object ContainerUtils {
             rendererPresentMode = container.rendererPresentMode,
             displayRenderer = container.displayRenderer,
             displayServer = container.displayServer,
-            xrRefreshRate = container.xrRefreshRate,
-            xrRenderScale = container.xrRenderScale,
             sfCompatMode = container.sfCompatMode,
             dxwrapper = container.dxWrapper,
             dxwrapperConfig = container.dxWrapperConfig,
@@ -401,8 +395,6 @@ object ContainerUtils {
             vibrationIntensity = (container.getExtra("vibrationIntensity", "100").toIntOrNull() ?: 100).coerceIn(0, 100),
             // LSFG Vulkan frame generation
             lsfgEnabled = container.getExtra(LsfgVkManager.EXTRA_ARMED, "false").toBoolean(),
-            windowsVrEnabled = container.getExtra("windowsVrEnabled", "false").toBoolean(),
-            openCompositeEnabled = container.getExtra("windowsVrOpenCompositeEnabled", "false").toBoolean(),
         )
     }
 
@@ -539,8 +531,6 @@ object ContainerUtils {
         container.rendererPresentMode = containerData.rendererPresentMode
         container.displayRenderer = containerData.displayRenderer
         container.displayServer = containerData.displayServer
-        container.xrRefreshRate = containerData.xrRefreshRate
-        container.xrRenderScale = containerData.xrRenderScale
         container.sfCompatMode = containerData.sfCompatMode
         container.dxWrapper = containerData.dxwrapper
         container.dxWrapperConfig = containerData.dxwrapperConfig
@@ -608,8 +598,6 @@ object ContainerUtils {
         container.putExtra("vibrationIntensity", containerData.vibrationIntensity.coerceIn(0, 100).toString())
         // LSFG Vulkan frame generation
         container.putExtra(LsfgVkManager.EXTRA_ARMED, containerData.lsfgEnabled.toString())
-        container.putExtra("windowsVrEnabled", containerData.windowsVrEnabled.toString())
-        container.putExtra("windowsVrOpenCompositeEnabled", containerData.openCompositeEnabled.toString())
         try {
             container.language = containerData.language
         } catch (e: Exception) {
@@ -892,23 +880,6 @@ object ContainerUtils {
             )
         }
 
-        if (BuildConfig.XR_BUILD && MainActivity.isMetaQuest()) {
-            val kvs = KeyValueSet(containerData.graphicsDriverConfig)
-            kvs.put("adrenotoolsTurnip", "0")
-            containerData = containerData.copy(graphicsDriverConfig = kvs.toString())
-        }
-
-        if (BuildConfig.XR_BUILD) {
-            containerData = containerData.copy(
-                launchRealSteam = true,
-                launchBionicSteam = false,
-                steamType = Container.STEAM_TYPE_HEADLESS,
-            )
-            if (isVrGame(appId, gameSource)) {
-                containerData = containerData.copy(windowsVrEnabled = true, openCompositeEnabled = true)
-            }
-        }
-
         if (Build.MANUFACTURER.equals("samsung", ignoreCase = true) && GPUInformation.isAdreno740(context)) {
             val ev = EnvVars(containerData.envVars)
             if (!ev.has("FD_DEV_FEATURES")) {
@@ -1120,11 +1091,6 @@ object ContainerUtils {
                 Timber.w("[ContainerDeletion] Dirs present on disk but NOT loaded by ContainerManager (corrupt/empty config): $unloadedIds")
             }
         }
-    }
-
-    private fun isVrGame(appId: String, gameSource: GameSource): Boolean {
-        if (gameSource != GameSource.STEAM) return false
-        return runCatching { SteamService.getAppInfoOf(extractGameIdFromContainerId(appId))?.isVrGame }.getOrNull() == true
     }
 
     /**

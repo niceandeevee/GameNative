@@ -3,11 +3,9 @@ package com.winlator.xenvironment.components;
 import static com.winlator.core.ProcessHelper.splitCommand;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Process;
 import android.util.Log;
 
-import app.gamenative.BuildConfig;
 import com.winlator.PrefManager;
 import com.winlator.box86_64.Box86_64Preset;
 import com.winlator.box86_64.Box86_64PresetManager;
@@ -15,7 +13,6 @@ import com.winlator.contents.ContentProfile;
 import com.winlator.contents.ContentsManager;
 import com.winlator.core.Callback;
 import com.winlator.core.DefaultVersion;
-import com.winlator.core.FileUtils;
 import com.winlator.core.GPUInformation;
 import com.winlator.core.envvars.EnvVars;
 import com.winlator.core.ProcessHelper;
@@ -24,17 +21,9 @@ import com.winlator.xconnector.UnixSocketConfig;
 import com.winlator.xenvironment.ImageFs;
 import com.winlator.container.Container;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.List;
 
-import app.gamenative.PluviaApp;
-import app.gamenative.events.AndroidEvent;
 import app.gamenative.service.SteamService;
 
 public class GlibcProgramLauncherComponent extends GuestProgramLauncherComponent {
@@ -190,10 +179,10 @@ public class GlibcProgramLauncherComponent extends GuestProgramLauncherComponent
         envVars.put("PATH", winePath + ":" +
                 imageFs.getRootDir().getPath() + "/usr/bin:" +
                 imageFs.getRootDir().getPath() + "/usr/local/bin");
-        if (BuildConfig.MODERN_ANDROID) envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
+        envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
 
         envVars.put("LD_LIBRARY_PATH", imageFs.getRootDir().getPath() + "/usr/lib"
-                + (BuildConfig.MODERN_ANDROID ? ":" + imageFs.getWinePath() + "/lib" : ""));
+                + ":" + imageFs.getWinePath() + "/lib");
         envVars.put("BOX64_LD_LIBRARY_PATH", imageFs.getRootDir().getPath() + "/usr/lib/x86_64-linux-gnu");
         envVars.put("ANDROID_SYSVSHM_SERVER", imageFs.getRootDir().getPath() + UnixSocketConfig.SYSVSHM_SERVER_PATH);
         envVars.put("FONTCONFIG_PATH", imageFs.getRootDir().getPath() + "/usr/etc/fonts");
@@ -302,10 +291,10 @@ public class GlibcProgramLauncherComponent extends GuestProgramLauncherComponent
         envVars.put("PATH", winePath + ":" +
                 imageFs.getRootDir().getPath() + "/usr/bin:" +
                 imageFs.getRootDir().getPath() + "/usr/local/bin");
-        if (BuildConfig.MODERN_ANDROID) envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
+        envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
 
         envVars.put("LD_LIBRARY_PATH", imageFs.getRootDir().getPath() + "/usr/lib"
-                + (BuildConfig.MODERN_ANDROID ? ":" + imageFs.getWinePath() + "/lib" : ""));
+                + ":" + imageFs.getWinePath() + "/lib");
         envVars.put("BOX64_LD_LIBRARY_PATH", imageFs.getRootDir().getPath() + "/usr/lib/x86_64-linux-gnu");
         envVars.put("ANDROID_SYSVSHM_SERVER", imageFs.getRootDir().getPath() + UnixSocketConfig.SYSVSHM_SERVER_PATH);
         envVars.put("FONTCONFIG_PATH", imageFs.getRootDir().getPath() + "/usr/etc/fonts");

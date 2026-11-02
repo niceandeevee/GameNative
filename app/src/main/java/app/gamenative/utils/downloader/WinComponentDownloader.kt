@@ -1,7 +1,6 @@
 package app.gamenative.utils.downloader
 
 import android.content.Context
-import app.gamenative.BuildConfig
 import app.gamenative.service.SteamService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -52,14 +51,6 @@ object WinComponentDownloader {
         val manifest = loadWinComponentManifest(context)
         val component = manifest.components.find { it.id == componentId }
             ?: throw Exception("WinComponent $componentId not found in $WINCOMPONENTS_MANIFEST_FILE")
-
-        // Legacy variant: the components it ships are extracted from bundled
-        // assets, and only the ones it does not ship (physx) are downloaded.
-        if (!BuildConfig.MODERN_ANDROID && hasBundledAsset(context, componentId)) {
-            Timber.d("Legacy variant: WinComponent $componentId will be extracted from bundled assets")
-            // Return null to indicate using bundled assets
-            return@withContext null
-        }
 
         // Modern variant: download from server
         // Check if already downloaded and cached
@@ -113,9 +104,6 @@ object WinComponentDownloader {
      * Whether this APK ships [componentId]'s archive. Legacy builds extract a component from
      * the bundled asset, so only an absent one has to be downloaded.
      */
-    private fun hasBundledAsset(context: Context, componentId: String): Boolean =
-        runCatching { context.assets.open("wincomponents/$componentId.tzst").close() }.isSuccess
-
 
     /**
      * Clears the cached wincomponents to free up space.

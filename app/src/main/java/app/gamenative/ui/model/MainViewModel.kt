@@ -5,7 +5,6 @@ import android.os.Process
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.gamenative.BuildConfig
 import app.gamenative.PluviaApp
 import app.gamenative.PrefManager
 import app.gamenative.data.GameProcessInfo
@@ -18,8 +17,6 @@ import app.gamenative.enums.LoginResult
 import app.gamenative.enums.PathType
 import app.gamenative.events.AndroidEvent
 import app.gamenative.events.SteamEvent
-import app.gamenative.ui.enums.Orientation
-import java.util.EnumSet
 import app.gamenative.service.ActiveGameRegistry
 import app.gamenative.service.SteamService
 import app.gamenative.utils.CustomGameScanner
@@ -40,7 +37,6 @@ import java.nio.file.Paths
 import javax.inject.Inject
 import kotlin.io.path.name
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import app.gamenative.service.cloud.CloseSyncTracker
 import kotlinx.coroutines.Job
@@ -558,18 +554,7 @@ class MainViewModel @Inject constructor(
                 startBootGameExitWatch(context, appId)
             }
 
-            if (app.gamenative.BuildConfig.XR_BUILD &&
-                container.isLaunchImmersiveMode() &&
-                app.gamenative.MainActivity.isHeadset(context)
-            ) {
-                bootingSplashTimeoutJob?.cancel()
-                bootingSplashTimeoutJob = null
-                setShowBootingSplash(false)
-                SteamService.keepAlive = true
-                app.gamenative.ui.screen.xr.ImmersiveXrActivity.start(context, appId, _offline.value)
-            } else {
-                _uiEvent.send(MainUiEvent.LaunchApp)
-            }
+            _uiEvent.send(MainUiEvent.LaunchApp)
         }
     }
 
@@ -713,8 +698,6 @@ class MainViewModel @Inject constructor(
                 bootingSplashTimeoutJob?.cancel()
                 bootingSplashTimeoutJob = null
                 setShowBootingSplash(false)
-                // See onClearBootingSplash's kdoc — broadcast so MainActivity's own instance clears
-                // too when this call is actually running on ImmersiveXrActivity's separate instance.
                 PluviaApp.events.emit(AndroidEvent.ClearBootingSplash)
             }
 
@@ -789,8 +772,6 @@ class MainViewModel @Inject constructor(
             bootingSplashTimeoutJob?.cancel()
             bootingSplashTimeoutJob = null
             setShowBootingSplash(false)
-            // See onClearBootingSplash's kdoc — broadcast so MainActivity's own instance clears
-            // too when this call is actually running on ImmersiveXrActivity's separate instance.
             PluviaApp.events.emit(AndroidEvent.ClearBootingSplash)
 
             // You could also show an error dialog here if needed

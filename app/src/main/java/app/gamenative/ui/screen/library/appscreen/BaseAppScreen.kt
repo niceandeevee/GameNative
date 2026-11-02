@@ -11,15 +11,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -27,16 +27,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
-import app.gamenative.PluviaApp
-import app.gamenative.PrefManager
 import app.gamenative.R
 import app.gamenative.data.GameSource
 import app.gamenative.data.FavoritesManager
 import app.gamenative.data.LibraryItem
 import app.gamenative.data.StoreDetailsRepository
 import app.gamenative.data.withoutTitleOnlyDescription
-import app.gamenative.events.AndroidEvent
 import app.gamenative.mods.ModContainerResolver
 import app.gamenative.mods.NexusModManager
 import app.gamenative.ui.component.dialog.ContainerConfigDialog
@@ -57,9 +53,7 @@ import app.gamenative.utils.DiagnosticsLog
 import app.gamenative.utils.ManifestInstaller
 import app.gamenative.utils.createPinnedShortcut
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.channels.Channel
 import com.winlator.container.ContainerData
-import com.winlator.core.GPUInformation
 import java.io.File
 import kotlin.text.Charsets
 import kotlinx.coroutines.CoroutineScope
@@ -70,7 +64,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -166,7 +159,6 @@ internal suspend fun installMissingComponentsForConfig(
 
 abstract class BaseAppScreen {
     companion object {
-        private const val WINDOWS_VR_ENABLED_EXTRA = "windowsVrEnabled"
         private val installDialogStates = mutableStateMapOf<String, app.gamenative.ui.component.dialog.state.MessageDialogState>()
         private val exportConfigRequests = mutableStateMapOf<String, Boolean>()
         private val importConfigRequests = mutableStateMapOf<String, Boolean>()
@@ -1002,56 +994,6 @@ abstract class BaseAppScreen {
             mutableStateOf<List<Achievement>?>(null)
         }
 
-        val isImmersiveModeSupported = remember(libraryItem.appId) {
-            app.gamenative.BuildConfig.XR_BUILD && app.gamenative.MainActivity.isHeadset(context)
-        }
-        var isImmersiveModeEnabledState by remember(libraryItem.appId) { mutableStateOf<Boolean?>(null) }
-        var isVrModeEnabledState by remember(libraryItem.appId) { mutableStateOf(false) }
-        val immersiveModeSaveRequests = remember(libraryItem.appId) { Channel<Boolean>(Channel.CONFLATED) }
-        val vrModeSaveRequests = remember(libraryItem.appId) { Channel<Boolean>(Channel.CONFLATED) }
-        val containerSaveMutex = remember(libraryItem.appId) { kotlinx.coroutines.sync.Mutex() }
-        if (isImmersiveModeSupported) {
-            LaunchedEffect(libraryItem.appId) {
-                val stored = withContext(Dispatchers.IO) {
-                    runCatching {
-                        val container = ContainerUtils.getContainer(context, libraryItem.appId)
-                        container.isLaunchImmersiveMode() to
-                            container.getExtra(WINDOWS_VR_ENABLED_EXTRA, "false").toBoolean()
-                    }.getOrDefault(true to false)
-                }
-                if (isImmersiveModeEnabledState == null) {
-                    isImmersiveModeEnabledState = stored.first
-                    isVrModeEnabledState = stored.second
-                }
-                launch {
-                    for (enabled in immersiveModeSaveRequests) {
-                        containerSaveMutex.withLock {
-                            withContext(Dispatchers.IO) {
-                                runCatching {
-                                    val container = ContainerUtils.getContainer(context, libraryItem.appId)
-                                    container.setLaunchImmersiveMode(enabled)
-                                    container.saveData()
-                                }
-                            }
-                        }
-                    }
-                }
-                launch {
-                    for (enabled in vrModeSaveRequests) {
-                        containerSaveMutex.withLock {
-                            withContext(Dispatchers.IO) {
-                                runCatching {
-                                    val container = ContainerUtils.getContainer(context, libraryItem.appId)
-                                    container.putExtra(WINDOWS_VR_ENABLED_EXTRA, enabled.toString())
-                                    container.saveData()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         val uiScope = rememberCoroutineScope()
 
         suspend fun performStateRefresh(includeUpdatePending: Boolean) {
@@ -1389,9 +1331,6 @@ abstract class BaseAppScreen {
             }
         }
 
-        val launchActivity = context as? android.app.Activity
-        var showReadiness by remember { mutableStateOf(false) }
-
         // Render the common UI
         app.gamenative.ui.screen.library.AppScreenContent(
             displayInfo = displayInfo,
@@ -1406,28 +1345,11 @@ abstract class BaseAppScreen {
                     isUpdatePendingState,
             ),
             downloadInfo = downloadInfo,
-            immersiveMode = app.gamenative.ui.screen.library.ImmersiveModeUiState(
-                isSupported = isImmersiveModeSupported && isImmersiveModeEnabledState != null,
-                isEnabled = isImmersiveModeEnabledState == true,
-                onChange = { enabled ->
-                    isImmersiveModeEnabledState = enabled
-                    immersiveModeSaveRequests.trySend(enabled)
-                },
-                isVrEnabled = isVrModeEnabledState,
-                onVrChange = { enabled ->
-                    isVrModeEnabledState = enabled
-                    vrModeSaveRequests.trySend(enabled)
-                },
-            ),
             onDownloadInstallClick = {
-                if (app.gamenative.launch.LaunchReadiness.pending) {
-                    showReadiness = true
-                } else {
-                    onDownloadInstallClick(context, libraryItem, onClickPlay)
-                    uiScope.launch {
-                        delay(100)
-                        performStateRefresh(true)
-                    }
+                onDownloadInstallClick(context, libraryItem, onClickPlay)
+                uiScope.launch {
+                    delay(100)
+                    performStateRefresh(true)
                 }
             },
             onPauseResumeClick = {
@@ -1448,19 +1370,6 @@ abstract class BaseAppScreen {
             optionsMenu = optionsMenu,
             dialogOpen = showConfigDialog || manageModsRequested || importFilesRequested || exportFilesRequested,
         )
-
-        if (showReadiness && launchActivity != null) {
-            app.gamenative.launch.LaunchReadiness.Prompt(launchActivity) {
-                showReadiness = false
-                if (!app.gamenative.launch.LaunchReadiness.pending) {
-                    onDownloadInstallClick(context, libraryItem, onClickPlay)
-                    uiScope.launch {
-                        delay(100)
-                        performStateRefresh(true)
-                    }
-                }
-            }
-        }
 
         // Show container config dialog if needed
         if (showConfigDialog) {

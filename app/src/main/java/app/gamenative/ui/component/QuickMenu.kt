@@ -59,7 +59,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.BatteryChargingFull
-import androidx.compose.material.icons.filled.ViewInAr
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -67,16 +66,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -84,12 +83,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -104,7 +98,6 @@ import app.gamenative.PluviaApp
 import app.gamenative.PrefManager
 import app.gamenative.R
 import app.gamenative.data.GyroSettings
-import app.gamenative.display.GameNativeDrm
 import app.gamenative.powercontrol.PowerManager
 import app.gamenative.ui.component.dialog.GyroSettingsDialog
 import app.gamenative.ui.component.dialog.OnScreenControllerSettingsDialog
@@ -123,7 +116,6 @@ import com.winlator.renderer.VulkanRenderer
 import com.winlator.winhandler.ProcessInfo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.File
 import kotlin.math.roundToInt
 
 object QuickMenuAction {
@@ -154,7 +146,6 @@ private object QuickMenuTab {
     const val EFFECTS = 2
     const val CONTROLLER = 3
     const val TOOLS = 4
-    const val IMMERSIVE = 5
     const val INVITE = 6
     const val POWER = 7
     const val GAMESCOPE = 8
@@ -310,23 +301,7 @@ private fun matchesPerformanceHudPreset(
 // fpsLimiterSteps / fpsLimiterCurrentIndex / fpsLimiterProgress /
 // nextFpsLimiterValue / previousFpsLimiterValue live in FpsLimiterUtils.kt
 
-/**
- * Lets ANY quick-menu row — no matter how deeply nested, in this file or any other — report its
- * own gamepad interaction to the Meta Quest immersive activity, without threading a dedicated
- * parameter through every intermediate composable in between (the previous approach: adding a
- * new callback param to QuickMenuAdjustmentRow, then to its tab wrapper, then to QuickMenu itself,
- * then to every call site — for every single row that needed it. A new row buried in some future
- * tab would need the SAME threading redone by hand, easy to forget).
- *
- * Exists because normal Android/Compose gamepad input (real hardware, real KeyEvents) already
- * works correctly for every existing row with zero extra code — this is ONLY needed because the
- * immersive activity's Quest-Touch-controller input is synthetic and confirmed, repeatedly this
- * session, to never reach Compose's own key dispatch or default click-on-focused-view behavior in
- * that Activity. [QuickMenu] provides the real implementation (backed by state it forwards to
- * ImmersiveXrActivity via registerAdjustmentControl/registerFocusedActivate); everywhere else —
- * i.e. normal 2D panel mode — gets the no-op default below, so a row that reports itself here
- * costs nothing and needs no `if (immersive)` branching of its own.
- */
+/** Inactive focus-bypass hook kept for the quick-menu rows that read it; always the no-op default. */
 class ImmersiveInputBypass(
     val active: Boolean = false,
     private val applyAdjustment: (Pair<() -> Unit, () -> Unit>?) -> Unit = {},
@@ -417,10 +392,8 @@ fun QuickMenu(
     onAnimationComplete: (Boolean) -> Unit = {},
     /** Lets the menu open itself when the running game asks for its Steam invite dialog. */
     onRequestOpen: () -> Unit = {},
-    immersiveHooks: app.gamenative.ui.screen.xr.ImmersiveSessionHooks? = null,
     modifier: Modifier = Modifier,
 ) {
-    val immersiveControls = immersiveHooks?.controls
     val isPerformanceHudEnabled = performance.hudEnabled
     val performanceHudConfig = performance.hudConfig
     val fpsLimiterEnabled = performance.fpsLimiterEnabled
@@ -437,22 +410,6 @@ fun QuickMenu(
     val onLsfgFlowScaleChanged = lsfg.onFlowScaleChanged
     val onLsfgPerformanceModeChanged = lsfg.onPerformanceModeChanged
     val focusManager = LocalFocusManager.current
-    LaunchedEffect(immersiveHooks) {
-        immersiveHooks?.registerFocusManager?.invoke(focusManager)
-    }
-    val focusTabRailScope = rememberCoroutineScope()
-    var activeAdjustment by remember { mutableStateOf<Pair<() -> Unit, () -> Unit>?>(null) }
-    var activeRadioActivate by remember { mutableStateOf<(() -> Unit)?>(null) }
-    LaunchedEffect(Unit) {
-        immersiveHooks?.registerFocusedActivate?.invoke { activeRadioActivate }
-    }
-    var startHeld by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        immersiveHooks?.registerStartHeld?.invoke { startHeld = it }
-    }
-    LaunchedEffect(Unit) {
-        immersiveHooks?.registerAdjustmentControl?.invoke { activeAdjustment }
-    }
     val exitGameItem = QuickMenuItem(
         id = QuickMenuAction.EXIT_GAME,
         icon = Icons.AutoMirrored.Filled.ExitToApp,
@@ -586,7 +543,6 @@ fun QuickMenu(
                 PrefManager.quickMenuLastTab == QuickMenuTab.LSFG && !isLsfgAvailable -> QuickMenuTab.HUD
                 PrefManager.quickMenuLastTab == QuickMenuTab.INVITE && inviteMenu == null -> QuickMenuTab.HUD
                 PrefManager.quickMenuLastTab == QuickMenuTab.POWER -> QuickMenuTab.HUD
-                PrefManager.quickMenuLastTab == QuickMenuTab.IMMERSIVE && immersiveControls == null -> QuickMenuTab.HUD
                 PrefManager.quickMenuLastTab == QuickMenuTab.GAMESCOPE && !isGamescopeSession -> QuickMenuTab.HUD
                 PrefManager.quickMenuLastTab == QuickMenuTab.EFFECTS && !hasEffectsTab -> QuickMenuTab.HUD
                 else -> PrefManager.quickMenuLastTab
@@ -601,7 +557,6 @@ fun QuickMenu(
         QuickMenuTab.INVITE -> R.string.steam_invite_tab_title
         QuickMenuTab.POWER -> R.string.power_control
         QuickMenuTab.GAMESCOPE -> R.string.gamescope_tab_title
-        QuickMenuTab.IMMERSIVE -> R.string.quick_menu_tab_immersive
         else -> R.string.quick_menu_tab_controller
     }
 
@@ -643,10 +598,7 @@ fun QuickMenu(
     val gamescopeScrollState = rememberScrollState()
     val gamescopeTabFocusRequester = remember { FocusRequester() }
     val gamescopeItemFocusRequester = remember { FocusRequester() }
-    val immersiveScrollState = rememberScrollState()
-    val immersiveTabFocusRequester = remember { FocusRequester() }
     val exitFocusRequester = remember { FocusRequester() }
-    val immersiveItemFocusRequester = remember { FocusRequester() }
 
     val visibleState = remember { MutableTransitionState(false) }
     visibleState.targetState = isVisible
@@ -663,7 +615,7 @@ fun QuickMenu(
 
     // Only the tabs actually shown in the rail, in on-screen order — mirrors the conditions each
     // QuickMenuTabButton below is gated on (isLsfgAvailable, a renderer being available, etc).
-    val availableTabs = remember(isLsfgAvailable, hasEffectsTab, immersiveControls, inviteMenu, isGamescopeSession)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           {
+    val availableTabs = remember(isLsfgAvailable, hasEffectsTab, inviteMenu, isGamescopeSession) {
         buildList {
             add(QuickMenuTab.HUD)
             add(QuickMenuTab.POWER)
@@ -673,86 +625,14 @@ fun QuickMenu(
             if (hasEffectsTab) add(QuickMenuTab.EFFECTS)
             add(QuickMenuTab.CONTROLLER)
             add(QuickMenuTab.TOOLS)
-            if (immersiveControls != null) add(QuickMenuTab.IMMERSIVE)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        immersiveHooks?.registerFocusExit?.invoke {
-            runCatching { exitFocusRequester.requestFocus() }
-        }
-        immersiveHooks?.registerFocusTabRail?.invoke {
-            val requester = when (selectedTab) {
-                QuickMenuTab.HUD -> hudTabFocusRequester
-                QuickMenuTab.GAMESCOPE -> gamescopeTabFocusRequester
-                QuickMenuTab.LSFG -> lsfgTabFocusRequester
-                QuickMenuTab.EFFECTS -> effectsTabFocusRequester
-                QuickMenuTab.CONTROLLER -> controllerTabFocusRequester
-                QuickMenuTab.TOOLS -> toolsTabFocusRequester
-                QuickMenuTab.IMMERSIVE -> immersiveTabFocusRequester
-                else -> null
-            }
-            if (requester == null) return@invoke
-            focusTabRailScope.launch {
-                repeat(3) { attempt ->
-                    try {
-                        requester.requestFocus()
-                        Timber.i("QuickMenu: requestFocusTabRail succeeded for tab=%s on attempt=%d", selectedTab, attempt)
-                        return@launch
-                    } catch (e: IllegalStateException) {
-                        Timber.w(e, "QuickMenu: requestFocusTabRail failed for tab=%s on attempt=%d", selectedTab, attempt)
-                        delay(80)
-                    }
-                }
-                Timber.w("QuickMenu: requestFocusTabRail never succeeded for tab=%s after 3 attempts", selectedTab)
-            }
-        }
-    }
-
-    LaunchedEffect(availableTabs) {
-        immersiveHooks?.registerCycleTab?.invoke { forward ->
-            val currentIndex = availableTabs.indexOf(selectedTab).takeIf { it >= 0 } ?: 0
-            val nextTab = if (forward) {
-                availableTabs[(currentIndex + 1) % availableTabs.size]
-            } else {
-                availableTabs[(currentIndex - 1 + availableTabs.size) % availableTabs.size]
-            }
-            selectedTab = nextTab
-            PrefManager.quickMenuLastTab = nextTab
         }
     }
 
     CompositionLocalProvider(
-        LocalImmersiveInputBypass provides remember(immersiveControls != null) {
-            ImmersiveInputBypass(
-                active = immersiveControls != null,
-                applyAdjustment = { activeAdjustment = it },
-                applyActivate = { activeRadioActivate = it },
-            )
-        },
+        LocalImmersiveInputBypass provides remember { ImmersiveInputBypass() },
     ) {
     Box(
-        modifier = modifier.fillMaxSize()
-            .onPreviewKeyEvent { keyEvent ->
-                if (isVisible && startHeld) {
-                    return@onPreviewKeyEvent true
-                }
-                if (keyEvent.nativeKeyEvent.action != KeyEvent.ACTION_DOWN) return@onPreviewKeyEvent false
-                Timber.i("QuickMenu: onPreviewKeyEvent keyCode=%d selectedTab=%d", keyEvent.nativeKeyEvent.keyCode, selectedTab)
-                val currentIndex = availableTabs.indexOf(selectedTab).takeIf { it >= 0 } ?: 0
-                val nextTab = if (immersiveHooks == null) null else when (keyEvent.nativeKeyEvent.keyCode) {
-                    KeyEvent.KEYCODE_BUTTON_L1 -> availableTabs[(currentIndex - 1 + availableTabs.size) % availableTabs.size]
-                    KeyEvent.KEYCODE_BUTTON_R1 -> availableTabs[(currentIndex + 1) % availableTabs.size]
-                    else -> null
-                }
-                if (nextTab != null) {
-                    selectedTab = nextTab
-                    PrefManager.quickMenuLastTab = nextTab
-                    true
-                } else {
-                    false
-                }
-            },
+        modifier = modifier.fillMaxSize(),
     ) {
         AnimatedVisibility(
             visible = isVisible,
@@ -763,19 +643,10 @@ fun QuickMenu(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0f))
-                    .then(
-                        // Immersive only: .clickable() adds a screen-sized focus target that
-                        // Compose's directional focus search can land on, silently closing the
-                        // menu on the next DPAD_CENTER. Flat mode keeps master's clickable.
-                        if (immersiveHooks != null) {
-                            Modifier.pointerInput(Unit) { detectTapGestures { onDismiss() } }
-                        } else {
-                            Modifier.clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = onDismiss,
-                            )
-                        },
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = onDismiss,
                     ),
             )
         }
@@ -958,20 +829,6 @@ fun QuickMenu(
                                     modifier = Modifier.width(56.dp),
                                     focusRequester = toolsTabFocusRequester,
                                 )
-                                if (immersiveControls != null) {
-                                    QuickMenuTabButton(
-                                        icon = Icons.Default.ViewInAr,
-                                        contentDescriptionResId = R.string.quick_menu_tab_immersive,
-                                        selected = selectedTab == QuickMenuTab.IMMERSIVE,
-                                        accentColor = PluviaTheme.colors.accentPurple,
-                                        onSelected = {
-                                            selectedTab = QuickMenuTab.IMMERSIVE
-                                            PrefManager.quickMenuLastTab = selectedTab
-                                        },
-                                        modifier = Modifier.width(56.dp),
-                                        focusRequester = immersiveTabFocusRequester,
-                                    )
-                                }
                             }
 
                             Box(
@@ -1140,17 +997,6 @@ fun QuickMenu(
                                         )
                                     }
 
-                                    QuickMenuTab.IMMERSIVE -> {
-                                        if (immersiveControls != null) {
-                                            ImmersiveQuickMenuTab(
-                                                controls = immersiveControls,
-                                                scrollState = immersiveScrollState,
-                                                focusRequester = immersiveItemFocusRequester,
-                                                modifier = Modifier.fillMaxSize(),
-                                            )
-                                        }
-                                    }
-
                                     QuickMenuTab.CONTROLLER -> {
                                         Column(
                                             modifier = Modifier
@@ -1313,9 +1159,7 @@ fun QuickMenu(
         if (isVisible) gyroMenu?.reloadFromContainer()
     }
 
-    // Immersive also re-requests content focus on every tab switch (its LB/RB cycling moves
-    // tabs without ever moving focus); flat mode keeps the original open-only behavior.
-    LaunchedEffect(isVisible, if (immersiveControls != null) selectedTab else Unit) {
+    LaunchedEffect(isVisible) {
         if (isVisible) {
             repeat(3) { attempt ->
                 try {
@@ -1327,7 +1171,6 @@ fun QuickMenu(
                         QuickMenuTab.POWER -> powerItemFocusRequester.requestFocus()
                         QuickMenuTab.GAMESCOPE -> gamescopeItemFocusRequester.requestFocus()
                         QuickMenuTab.TOOLS -> toolsItemFocusRequester.requestFocus()
-                        QuickMenuTab.IMMERSIVE -> immersiveItemFocusRequester.requestFocus()
                         else -> controllerItemFocusRequester.requestFocus()
                     }
                     Timber.i("QuickMenu: requestFocus succeeded for tab=%d on attempt=%d", selectedTab, attempt)
@@ -1961,138 +1804,6 @@ private fun LsfgQuickMenuTab(
                         }
                     }
                 }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-    }
-}
-
-@Composable
-private fun ImmersiveQuickMenuTab(
-    controls: app.gamenative.ui.screen.xr.ImmersiveControls,
-    scrollState: ScrollState,
-    focusRequester: FocusRequester? = null,
-    modifier: Modifier = Modifier,
-) {
-    val accentColor = PluviaTheme.colors.accentPurple
-
-    Column(
-        modifier = modifier
-            .verticalScroll(scrollState)
-            .focusGroup(),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        // ── Passthrough ────────────────────────────────────────────────
-        QuickMenuSectionHeader(
-            title = stringResource(R.string.immersive_windows_vr_title),
-            subtitle = "${controls.windowsVrStatus} · ${controls.windowsVrRuntimePath}",
-        )
-        QuickMenuToggleRow(
-            title = stringResource(R.string.immersive_windows_vr_toggle),
-            enabled = controls.windowsVrEnabled,
-            onToggle = { controls.onWindowsVrToggle(!controls.windowsVrEnabled) },
-            accentColor = accentColor,
-            focusRequester = focusRequester,
-        )
-        QuickMenuToggleRow(
-            title = stringResource(R.string.immersive_openvr_compatibility_toggle),
-            enabled = controls.openCompositeEnabled,
-            onToggle = { controls.onOpenCompositeToggle(!controls.openCompositeEnabled) },
-            accentColor = accentColor,
-        )
-        Text(
-            text = stringResource(R.string.immersive_windows_vr_restart_required),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-        )
-        QuickMenuDetailRow(
-            title = stringResource(R.string.immersive_windows_vr_export),
-            subtitle = stringResource(R.string.immersive_windows_vr_export_desc),
-            accentColor = accentColor,
-            onActivate = controls.onExportWindowsVrDiagnostics,
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        QuickMenuSectionHeader(
-            title = stringResource(R.string.immersive_passthrough),
-            subtitle = stringResource(R.string.immersive_passthrough_desc),
-        )
-        QuickMenuToggleRow(
-            title = stringResource(R.string.immersive_passthrough_toggle),
-            enabled = controls.passthroughEnabled,
-            onToggle = { controls.onPassthroughToggle(!controls.passthroughEnabled) },
-            accentColor = accentColor,
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        QuickMenuSectionHeader(
-            title = stringResource(R.string.immersive_resize_mode_title),
-            subtitle = stringResource(R.string.immersive_resize_mode_desc),
-        )
-        QuickMenuToggleRow(
-            title = stringResource(R.string.immersive_resize_mode_toggle),
-            enabled = controls.resizeModeEnabled,
-            onToggle = { controls.onResizeModeToggle(!controls.resizeModeEnabled) },
-            accentColor = accentColor,
-        )
-
-        if (controls.directRenderBlockedByEffects != null) {
-            Spacer(modifier = Modifier.height(4.dp))
-            QuickMenuSectionHeader(
-                title = stringResource(R.string.immersive_direct_render_title),
-                subtitle = stringResource(
-                    if (controls.directRenderBlockedByEffects) {
-                        R.string.immersive_reset_effects_status_blocked
-                    } else {
-                        R.string.immersive_reset_effects_status_ok
-                    },
-                ),
-            )
-            val resetInteractionSource = remember { MutableInteractionSource() }
-            val resetIsFocused by resetInteractionSource.collectIsFocusedAsState()
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(
-                        if (resetIsFocused) {
-                            accentColor.copy(alpha = 0.16f)
-                        } else {
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.18f)
-                        },
-                    )
-                    .then(
-                        if (resetIsFocused) {
-                            Modifier.border(width = 2.dp, color = accentColor.copy(alpha = 0.7f), shape = RoundedCornerShape(14.dp))
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .selectable(
-                        selected = false,
-                        interactionSource = resetInteractionSource,
-                        indication = null,
-                        onClick = controls.onResetScreenEffects,
-                    )
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.immersive_reset_effects_button),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = stringResource(R.string.immersive_reset_effects_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
             }
         }
 

@@ -1,6 +1,3 @@
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
@@ -9,16 +6,8 @@ plugins {
     alias(libs.plugins.jetbrains.serialization)
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.secrets.gradle)
     alias(libs.plugins.room)
 }
-
-val keystorePropertiesFile = rootProject.file("app/keystores/keystore.properties")
-val keystoreProperties: Properties? = if (keystorePropertiesFile.exists()) {
-    Properties().apply {
-        load(FileInputStream(keystorePropertiesFile))
-    }
-} else null
 
 room {
     schemaDirectory("$projectDir/schemas")
@@ -37,36 +26,18 @@ android {
     // https://developer.android.com/ndk/downloads
     ndkVersion = "27.3.13750724"
 
-    signingConfigs {
-        create("pluvia") {
-            if (keystoreProperties != null) {
-                storeFile = file(keystoreProperties["storeFile"].toString())
-                storePassword = keystoreProperties["storePassword"].toString()
-                keyAlias = keystoreProperties["keyAlias"].toString()
-                keyPassword = keystoreProperties["keyPassword"].toString()
-            }
-        }
-    }
-
     defaultConfig {
         applicationId = "app.gamenative"
 
         minSdk = 26
 
         manifestPlaceholders["screenOrientation"] = "unspecified"
-        buildConfigField("boolean", "XR_BUILD", "false")
-        buildConfigField("boolean", "MODERN_XR", "false")
 
         // CI builds pass -PversionCodeOverride so every build is a higher version than the last one
         // and installs over it as a normal update.
         versionCode = (project.findProperty("versionCodeOverride") as String?)?.toIntOrNull() ?: 24
         versionName = "1.4.0"
 
-        buildConfigField("boolean", "GOLD", "false")
-        fun secret(name: String) =
-            project.findProperty(name) as String? ?: System.getenv(name) ?: ""
-
-        buildConfigField("String", "CLOUD_PROJECT_NUMBER", "\"${secret("CLOUD_PROJECT_NUMBER")}\"")
         val iconValue = "@mipmap/ic_launcher"
         val iconRoundValue = "@mipmap/ic_launcher_round"
         manifestPlaceholders.putAll(
@@ -75,10 +46,6 @@ android {
                 "roundIcon" to iconRoundValue,
             ),
         )
-
-        ndk {
-            //abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
-        }
 
         // Localization support - specify which languages to include
         resourceConfigurations += listOf(
@@ -100,7 +67,6 @@ android {
             // TODO: Add more languages here using the ISO 639-1 locale code with regional qualifiers (e.g., "pt-rPT" for European Portuguese)
         )
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -119,7 +85,6 @@ android {
             minSdk = 29
             targetSdk = 36
             ndk.abiFilters += listOf("arm64-v8a")
-            buildConfigField("boolean", "MODERN_ANDROID", "true")
             buildConfigField("String", "PRELOAD_BIONIC_SO", "\"libredirect-bionic-wx.so\"")
         }
     }
@@ -136,11 +101,6 @@ android {
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("debug")
         }
-        create("release-signed") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            signingConfig = signingConfigs.getByName("pluvia")
-        }
     }
 
     compileOptions {
@@ -155,10 +115,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-        // Exposes the openxr_loader_for_android AAR's native headers/lib to CMake, for the
-        // (not yet wired into the default build — see xrimmersive/CMakeLists.txt) immersive
-        // VR native module.
-        prefab = true
     }
 
     packaging {
@@ -169,8 +125,7 @@ android {
             excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
         }
         jniLibs {
-            // 'extractNativeLibs' was not enough to keep the jniLibs and
-            // the libs went missing after adding on-demand feature delivery
+            // Native libs must be extracted to nativeLibraryDir: several are exec'd or LD_PRELOADed
             useLegacyPackaging = true
         }
     }
@@ -196,7 +151,6 @@ android {
     // Configure Assets to be used in different variants
     sourceSets {
         getByName("modern") {
-            java.srcDir("src/nonXr/java")
             assets {
                 srcDirs("src/modern/assets", "src/main/assets")
             }
@@ -209,61 +163,6 @@ android {
     kotlinter {
         ignoreFormatFailures  = false
     }
-
-    // externalNativeBuild {
-    //   cmake {
-    //       path = file("src/main/cpp/asurfacerenderer/CMakeLists.txt")
-    //   }
-    // }
-
-    // externalNativeBuild {
-    //    cmake {
-    //        path = file("src/main/cpp/evshim/CMakeLists.txt")
-    //    }
-    // }
-
-    // xconnectorpatch is shipped as a prebuilt jniLib because our APK packaging flow
-    // does not rebuild native libraries during release creation.
-    // externalNativeBuild {
-    //     cmake {
-    //         path = file("src/main/cpp/xconnectorpatch/CMakeLists.txt")
-    //         version = "3.22.1"
-    //     }
-    // }
-
-    // build extras needed in libwinlator_bionic.so
-    // externalNativeBuild {
-    //     cmake {
-    //         path = file("src/main/cpp/extras/CMakeLists.txt")   // the file shown above
-    //         version = "3.22.1"
-    //     }
-    // }
-
-    // cmake on release builds a proot that fails to process ld-2.31.so
-    // externalNativeBuild {
-    //     cmake {
-    //         path = file("src/main/cpp/CMakeLists.txt")
-    //         version = "3.22.1"
-    //     }
-    // }
-
-    // Meta Quest immersive launch mode's native OpenXR module. Same convention as the
-    // other native modules above: not part of the default build (native libs ship as
-    // prebuilt .so files in jniLibs/) — temporarily uncomment to build+test locally,
-    // then copy the resulting libxrimmersive.so into jniLibs/arm64-v8a/ and re-comment.
-    // externalNativeBuild {
-    //     cmake {
-    //         path = file("src/main/cpp/xrimmersive/CMakeLists.txt")
-    //         version = "3.22.1"
-    //     }
-    // }
-
-    // (For now) Uncomment for LeakCanary to work.
-    // configurations {
-    //     debugImplementation {
-    //         exclude(group = "junit", module = "junit")
-    //     }
-    // }
 }
 
 dependencies {
@@ -287,7 +186,6 @@ dependencies {
             isChanging = version?.contains("SNAPSHOT") ?: false
         }
     }
-    implementation(libs.spongycastle)
     implementation(libs.okhttp.dnsoverhttps)
 
 
@@ -302,9 +200,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.landscapist.coil)
-    implementation(libs.media3.exoplayer)
-    implementation(libs.media3.exoplayer.hls)
-    implementation(libs.media3.ui)
     debugImplementation(libs.androidx.ui.tooling)
 
     // Support
@@ -317,9 +212,6 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.zxing)
 
-    // Google Protobufs
-    implementation(libs.protobuf.java)
-
     // Hilt
     implementation(libs.bundles.hilt)
 
@@ -329,16 +221,7 @@ dependencies {
     // Room Database
     implementation(libs.bundles.room)
 
-    // Memory Leak Detection
-    // debugImplementation("com.squareup.leakcanary:leakcanary-android:3.0-alpha-8")
-
     // Testing
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.room.testing)
-    androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

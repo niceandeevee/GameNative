@@ -1,10 +1,7 @@
 package app.gamenative.utils
 
-import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
-import app.gamenative.BuildConfig
-import app.gamenative.MainActivity
 import app.gamenative.PrefManager
 import app.gamenative.R
 import com.winlator.box86_64.Box86_64PresetManager
@@ -16,9 +13,6 @@ import com.winlator.core.KeyValueSet
 import com.winlator.fexcore.FEXCorePresetManager
 import com.winlator.winhandler.WinHandler
 import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
@@ -128,22 +122,6 @@ object BestConfigService {
             kvs.put("version", ContainerUtils.WRAPPER_ADRENO_A12)
             filteredJson.put("graphicsDriverConfig", kvs.toString())
             filteredJson.put("graphicsDriverVersion", ContainerUtils.WRAPPER_ADRENO_A12)
-        }
-
-        if (BuildConfig.XR_BUILD && MainActivity.isMetaQuest()) {
-            val kvs = KeyValueSet(filteredJson.optString("graphicsDriverConfig", ""))
-            val isTurnip = filteredJson.optString("graphicsDriverVersion", "").contains("turnip", ignoreCase = true) ||
-                kvs.get("version").contains("turnip", ignoreCase = true)
-            if (isTurnip) {
-                kvs.put("adrenotoolsTurnip", "0")
-                filteredJson.put("graphicsDriverConfig", kvs.toString())
-            }
-        }
-
-        if (BuildConfig.XR_BUILD) {
-            filteredJson.put("launchRealSteam", true)
-            filteredJson.put("launchBionicSteam", false)
-            filteredJson.put("steamType", Container.STEAM_TYPE_HEADLESS)
         }
 
         return filteredJson
@@ -717,7 +695,7 @@ object BestConfigService {
 
                 // glibc is not supported on the modern flavor — reject the entire config so neither
                 // server best-config responses nor JSON imports can switch a container to glibc.
-                if (BuildConfig.MODERN_ANDROID && containerVariant.equals(Container.GLIBC, ignoreCase = true)) {
+                if (containerVariant.equals(Container.GLIBC, ignoreCase = true)) {
                     Timber.tag("BestConfigService").w("Rejecting glibc containerVariant on modern flavor")
                     return ParsedConfigResult(emptyMap())
                 }

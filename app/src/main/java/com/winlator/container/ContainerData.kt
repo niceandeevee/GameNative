@@ -20,8 +20,6 @@ data class ContainerData(
     val rendererPresentMode: String = "fifo",
     val displayRenderer: String = Container.DEFAULT_DISPLAY_RENDERER,
     val displayServer: String = DefaultVersion.DISPLAY_SERVER,
-    val xrRefreshRate: Int = 72,
-    val xrRenderScale: Int = 100,
     val sfCompatMode: Boolean = true,
     var dxwrapper: String = Container.DEFAULT_DXWRAPPER,
     val dxwrapperConfig: String = "",
@@ -89,7 +87,7 @@ data class ContainerData(
     /** Disable external mouse input **/
     val disableMouseInput: Boolean = false,
     /** Touchscreen mode (defaults on for XR builds) **/
-    val touchscreenMode: Boolean = app.gamenative.BuildConfig.XR_BUILD,
+    val touchscreenMode: Boolean = false,
     /** Shooter mode (auto-replace sticks with dynamic joysticks) **/
     val shooterMode: Boolean = true,
     /** Serialised JSON gesture configuration (used when touchscreenMode is true) **/
@@ -118,8 +116,6 @@ data class ContainerData(
     // LSFG Vulkan frame generation
     /** Whether LSFG frame generation is enabled for this container */
     val lsfgEnabled: Boolean = false,
-    val windowsVrEnabled: Boolean = false,
-    val openCompositeEnabled: Boolean = false,
 ) {
     companion object {
         val Saver = mapSaver(
@@ -134,8 +130,6 @@ data class ContainerData(
                     "rendererPresentMode" to state.rendererPresentMode,
                     "displayRenderer" to state.displayRenderer,
                     "displayServer" to state.displayServer,
-                    "xrRefreshRate" to state.xrRefreshRate,
-                    "xrRenderScale" to state.xrRenderScale,
                     "sfCompatMode" to state.sfCompatMode,
                     "dxwrapper" to state.dxwrapper,
                     "dxwrapperConfig" to state.dxwrapperConfig,
@@ -201,8 +195,6 @@ data class ContainerData(
                     "sharpnessDenoise" to state.sharpnessDenoise,
                     "vibrationIntensity" to state.vibrationIntensity,
                     "lsfgEnabled" to state.lsfgEnabled,
-                    "windowsVrEnabled" to state.windowsVrEnabled,
-                    "openCompositeEnabled" to state.openCompositeEnabled,
                 )
             },
             restore = { savedMap ->
@@ -216,8 +208,6 @@ data class ContainerData(
                     rendererPresentMode = (savedMap["rendererPresentMode"] as? String) ?: "fifo",
                     displayRenderer = (savedMap["displayRenderer"] as? String) ?: "vulkan",
                     displayServer = (savedMap["displayServer"] as? String) ?: DefaultVersion.DISPLAY_SERVER,
-                    xrRefreshRate = (savedMap["xrRefreshRate"] as? Int) ?: 72,
-                    xrRenderScale = (savedMap["xrRenderScale"] as? Int) ?: 100,
                     sfCompatMode = (savedMap["sfCompatMode"] as? Boolean) ?: true,
                     dxwrapper = savedMap["dxwrapper"] as String,
                     dxwrapperConfig = savedMap["dxwrapperConfig"] as String,
@@ -284,8 +274,6 @@ data class ContainerData(
                     sharpnessDenoise = (savedMap["sharpnessDenoise"] as? Int) ?: 100,
                     vibrationIntensity = (savedMap["vibrationIntensity"] as? Int) ?: 100,
                     lsfgEnabled = (savedMap["lsfgEnabled"] as? Boolean) ?: false,
-                    windowsVrEnabled = (savedMap["windowsVrEnabled"] as? Boolean) ?: false,
-                    openCompositeEnabled = (savedMap["openCompositeEnabled"] as? Boolean) ?: false,
                 )
             },
         )

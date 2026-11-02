@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import app.gamenative.BuildConfig;
 import app.gamenative.R;
 import app.gamenative.enums.Marker;
 import app.gamenative.service.SteamService;
@@ -87,21 +86,18 @@ public abstract class ImageFsInstaller {
         }
     }
 
-    // Modern flavor ships an additional bionic preload shipped as a flat asset
-    // (src/modern/assets/) until it's folded into redirect.tzst. Copy it next to
-    // the tarball-extracted variant so BionicProgramLauncherComponent can find it
+    // The bionic preloads ship as flat assets (src/modern/assets/); copy them next to the
+    // tarball-extracted variant so BionicProgramLauncherComponent can find them
     private static void ensureBionicLib(Context context, File imagefs) {
-        if (BuildConfig.MODERN_ANDROID) {
-            File wxDest = new File(imagefs, "usr/lib/libredirect-bionic-wx.so");
-            if (!wxDest.exists()) {
-                FileUtils.copy(context, "libredirect-bionic-wx.so", wxDest);
-                chmod(wxDest);
-            }
-            File wxMinimalDest = new File(imagefs, "usr/lib/libredirect-bionic-wx-minimal.so");
-            if (!wxMinimalDest.exists()) {
-                FileUtils.copy(context, "libredirect-bionic-wx-minimal.so", wxMinimalDest);
-                chmod(wxMinimalDest);
-            }
+        File wxDest = new File(imagefs, "usr/lib/libredirect-bionic-wx.so");
+        if (!wxDest.exists()) {
+            FileUtils.copy(context, "libredirect-bionic-wx.so", wxDest);
+            chmod(wxDest);
+        }
+        File wxMinimalDest = new File(imagefs, "usr/lib/libredirect-bionic-wx-minimal.so");
+        if (!wxMinimalDest.exists()) {
+            FileUtils.copy(context, "libredirect-bionic-wx-minimal.so", wxMinimalDest);
+            chmod(wxMinimalDest);
         }
     }
 
@@ -210,41 +206,31 @@ public abstract class ImageFsInstaller {
 
         ensureBionicLib(ctx, imagefs);
 
-        // Extract extras.tzst - download from server for modern variant, use bundled assets for legacy
-        if (app.gamenative.BuildConfig.MODERN_ANDROID) {
-            try {
-                // Modern variant: download and extract
-                java.io.File extrasFile = ContainerFilesDownloaderKt.ensureContainerFileAvailableBlocking(
-                    ctx,
-                    "extras",
-                    new ProgressCallback() {
-                        @Override
-                        public void onProgress(float progress) {
-                            Log.d("ImageFsInstaller", "Downloading extras.tzst: " + (int)(progress * 100) + "%");
-                        }
+        // Download and extract extras.tzst
+        try {
+            // Modern variant: download and extract
+            java.io.File extrasFile = ContainerFilesDownloaderKt.ensureContainerFileAvailableBlocking(
+                ctx,
+                "extras",
+                new ProgressCallback() {
+                    @Override
+                    public void onProgress(float progress) {
+                        Log.d("ImageFsInstaller", "Downloading extras.tzst: " + (int)(progress * 100) + "%");
                     }
-                );
-
-                if (extrasFile != null && extrasFile.exists()) {
-                    TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, extrasFile, imagefs);
-                } else {
-                    Log.e("ImageFsInstaller", "Failed to download extras.tzst");
-                    return;
                 }
-            } catch (Exception e) {
-                Log.e("ImageFsInstaller", "extras download/extract failed", e);
+            );
+
+            if (extrasFile != null && extrasFile.exists()) {
+                TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, extrasFile, imagefs);
+            } else {
+                Log.e("ImageFsInstaller", "Failed to download extras.tzst");
                 return;
             }
-        } else {
-            // Legacy variant: use bundled assets
-            final String EXTRAS_TAR = "extras.tzst";
-            try (InputStream in = ctx.getAssets().open(EXTRAS_TAR)) {
-                TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, in, imagefs);
-            } catch (IOException e) {
-                Log.e("ImageFsInstaller", "extras deploy failed", e);
-                return;
-            }
+        } catch (Exception e) {
+            Log.e("ImageFsInstaller", "extras download/extract failed", e);
+            return;
         }
+    
 
         // ➌  Make sure the new libs are world-readable / executable
         chmod(new File(imagefs, "generate_interfaces_file.exe"));

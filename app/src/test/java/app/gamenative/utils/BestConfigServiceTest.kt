@@ -128,7 +128,7 @@ class BestConfigServiceTest {
         assertEquals("proton-9.0-x86_64", result["wineVersion"])
         // Box64 0.3.6 (bionic) and FEXCore 2507 are bundled with the Legacy flavors only; Modern
         // replaces them with its defaults
-        val modern = BuildConfig.MODERN_ANDROID
+        val modern = true
         assertEquals(if (modern) DefaultVersion.BOX64 else "0.3.6", result["box64Version"])
         assertEquals("PERFORMANCE", result["box64Preset"])
         assertEquals("Box64", result["emulator"])
@@ -163,7 +163,7 @@ class BestConfigServiceTest {
         assertEquals("FEXCore", result["emulator"])
         assertEquals("COMPATIBILITY", result["box64Preset"])
         // FEXCore 2507 is bundled with the Legacy flavors only; Modern replaces it with its default
-        assertEquals(if (BuildConfig.MODERN_ANDROID) DefaultVersion.FEXCORE else "2507", result["fexcoreVersion"])
+        assertEquals(DefaultVersion.FEXCORE, result["fexcoreVersion"])
         assertFalse("loadMods should not be added when absent", result.containsKey("loadMods"))
     }
 
@@ -288,7 +288,7 @@ class BestConfigServiceTest {
         assertTrue("DXVK version should be valid", dxwrapperConfig.contains("async-1.10.3"))
 
         // Box64 "0.3.6" (bionic) is bundled with the Legacy flavors only; Modern swaps in its default
-        assertEquals(if (BuildConfig.MODERN_ANDROID) DefaultVersion.BOX64 else "0.3.6", result["box64Version"])
+        assertEquals(DefaultVersion.BOX64, result["box64Version"])
     }
 
     @Test
@@ -420,34 +420,6 @@ class BestConfigServiceTest {
     }
 
     @Test
-    fun testGlibcBox64VersionValidation() {
-        // Modern flavor rejects glibc containers wholesale — this test only applies to legacy.
-        assumeFalse("glibc not supported on modern", BuildConfig.MODERN_ANDROID)
-        // Test glibc container with Box64 version
-        val glibcConfigJson = """
-            {
-                "wineVersion": "invalid-wine-version",
-                "dxwrapper": "dxvk",
-                "dxwrapperConfig": "version=1.10.3",
-                "containerVariant": "glibc",
-                "box64Version": "0.3.6",
-                "wineVersion": "wine-9.2-x86_64"
-            }
-        """.trimIndent()
-
-        val bestConfig = Json.parseToJsonElement(glibcConfigJson).jsonObject
-        val result = runBlocking { BestConfigService.parseConfigToContainerData(context, bestConfig, "exact_gpu_match", true) }
-
-        assertNotNull("Result should not be null", result)
-
-        // For glibc, should check against box64_version_entries
-        // If version exists, it should be preserved
-        assertNotNull("Result should not be null", result)
-        assertTrue("Result should not be empty", result!!.isNotEmpty())
-        assertEquals("0.3.6", result["box64Version"])
-    }
-
-    @Test
     fun testBionicGraphicsDriverVersionValidation() {
         // Test bionic container with graphics driver version
         val bionicConfigJson = """
@@ -472,69 +444,6 @@ class BestConfigServiceTest {
         assertTrue("Result should not be empty", result!!.isNotEmpty())
         val graphicsDriverConfig = result["graphicsDriverConfig"] as? String ?: ""
         assertTrue("Graphics driver config should contain System", graphicsDriverConfig.contains("System"))
-    }
-
-    @Test
-    fun testGlibcGraphicsDriverVersionValidation() {
-        // Modern flavor rejects glibc containers wholesale — this test only applies to legacy.
-        assumeFalse("glibc not supported on modern", BuildConfig.MODERN_ANDROID)
-        // Test glibc container with turnip graphics driver
-        val glibcConfigJson = """
-            {
-                "wineVersion": "wine-9.2-x86_64",
-                "dxwrapper": "dxvk",
-                "dxwrapperConfig": "version=1.10.3",
-                "containerVariant": "glibc",
-                "graphicsDriver": "turnip",
-                "graphicsDriverConfig": "version=25.3.0"
-            }
-        """.trimIndent()
-
-        val bestConfig = Json.parseToJsonElement(glibcConfigJson).jsonObject
-        val result = runBlocking { BestConfigService.parseConfigToContainerData(context, bestConfig, "exact_gpu_match", true) }
-
-        assertNotNull("Result should not be null", result)
-
-        // For glibc with turnip, should check against turnip_version_entries
-        // "25.3.0" should be in that array
-        assertNotNull("Result should not be null", result)
-        assertTrue("Result should not be empty", result!!.isNotEmpty())
-        val graphicsDriverConfig = result["graphicsDriverConfig"] as? String ?: ""
-        assertTrue("Graphics driver config should contain 25.3.0", graphicsDriverConfig.contains("25.3.0"))
-    }
-
-    @Test
-    fun testPrefManagerDefaults_usedWhenFieldsMissing() {
-        // Modern flavor rejects glibc containers wholesale — this test only applies to legacy.
-        assumeFalse("glibc not supported on modern", BuildConfig.MODERN_ANDROID)
-        // Create a minimal config with only a few fields
-        val minimalConfigJson = """
-            {
-                "wineVersion": "wine-9.2-x86_64",
-                "dxwrapper": "dxvk",
-                "dxwrapperConfig": "version=1.10.3",
-                "containerVariant": "glibc",
-                "box64Version": "0.3.6"
-            }
-        """.trimIndent()
-
-        val bestConfig = Json.parseToJsonElement(minimalConfigJson).jsonObject
-        val result = runBlocking { BestConfigService.parseConfigToContainerData(context, bestConfig, "exact_gpu_match", true) }
-
-        assertNotNull("Result should not be null", result)
-
-        // Verify provided fields are used
-        assertNotNull("Result should not be null", result)
-        assertTrue("Result should not be empty", result!!.isNotEmpty())
-        assertEquals("wine-9.2-x86_64", result["wineVersion"])
-        assertEquals("0.3.6", result["box64Version"])
-
-        // Note: showFPS is currently being parsed, but user says it should NOT be parsed
-        // screenSize is NOT being parsed (not in ContainerData constructor call) - this is correct
-        // screenSize will use Container.DEFAULT_SCREEN_SIZE (not parsed)
-
-        // Note: Missing fields won't be in the map - they're not included when not present in config
-        // The map only contains fields that were explicitly in the filtered config
     }
 
     @Test
@@ -856,7 +765,7 @@ class BestConfigServiceTest {
         assertNotNull("Dota2 XClipse fallback result should not be null", dota2XClipseResult)
         assertTrue("Dota2 XClipse fallback result should not be empty", dota2XClipseResult?.isNotEmpty() == true)
         // Modern flavor rejects glibc — the hades2-Adreno835 fixture is glibc, so it returns empty there.
-        if (BuildConfig.MODERN_ANDROID) {
+        if (true) {
             assertTrue("Hades2 Adreno835 family glibc result should be empty on modern", hades2Adreno835Result.isNullOrEmpty())
         } else {
             assertTrue("Hades2 Adreno835 family result should not be empty", hades2Adreno835Result?.isNotEmpty() == true) // wineVersion filled in for glibc
@@ -903,7 +812,7 @@ class BestConfigServiceTest {
         assertEquals("emulator should be parsed", "Box64", result["emulator"])
         // The fixture's Box64 0.3.6 (bionic) and FEXCore 2507 are bundled with the Legacy flavors only;
         // Modern replaces them with its defaults
-        val modern = BuildConfig.MODERN_ANDROID
+        val modern = true
         assertEquals("fexcoreVersion should be parsed", if (modern) DefaultVersion.FEXCORE else "2507", result["fexcoreVersion"])
         assertEquals("box64Version should be parsed", if (modern) DefaultVersion.BOX64 else "0.3.6", result["box64Version"])
         assertEquals("box64Preset should be parsed", "PERFORMANCE", result["box64Preset"])

@@ -2,16 +2,10 @@ package com.winlator.xenvironment.components;
 
 import android.app.Service;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.media.Image;
 import android.net.ConnectivityManager;
-import android.net.InetAddresses;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Process;
 import android.system.Os;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Display;
 
@@ -28,7 +22,6 @@ import com.winlator.box86_64.Box86_64Preset;
 import com.winlator.box86_64.Box86_64PresetManager;
 import com.winlator.container.Container;
 import com.winlator.container.ContainerOverlay;
-import com.winlator.container.Shortcut;
 import com.winlator.contents.ContentProfile;
 import com.winlator.contents.ContentsManager;
 import com.winlator.core.Callback;
@@ -44,17 +37,11 @@ import com.winlator.core.TarCompressorUtils;
 import com.winlator.core.WineInfo;
 import com.winlator.fexcore.FEXCorePreset;
 import com.winlator.fexcore.FEXCorePresetManager;
-import com.winlator.sysvshm.SysVSHMConnectionHandler;
-import com.winlator.sysvshm.SysVSHMRequestHandler;
-import com.winlator.sysvshm.SysVSharedMemory;
 import com.winlator.xconnector.UnixSocketConfig;
-import com.winlator.xconnector.XConnectorEpoll;
 import com.winlator.xenvironment.ImageFs;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -63,7 +50,6 @@ import java.util.List;
 
 import app.gamenative.BuildConfig;
 import app.gamenative.PluviaApp;
-import app.gamenative.events.AndroidEvent;
 import app.gamenative.service.SteamService;
 
 public class BionicProgramLauncherComponent extends GuestProgramLauncherComponent {
@@ -99,10 +85,7 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
     // W^X kernel) and legacy preloads nothing. Returns null to preload nothing.
     private String resolveLibredirectPreload(ImageFs imageFs) {
         if (container != null && container.isDisableLibredirect()) {
-            if (BuildConfig.MODERN_ANDROID) {
-                return imageFs.getLibDir() + "/libredirect-bionic-wx-minimal.so";
-            }
-            return null;
+            return imageFs.getLibDir() + "/libredirect-bionic-wx-minimal.so";
         }
         return imageFs.getLibDir() + "/" + BuildConfig.PRELOAD_BIONIC_SO;
     }
@@ -297,10 +280,10 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
 
         envVars.put("PATH", winePath + ":" +
                 rootDir.getPath() + "/usr/bin");
-        if (BuildConfig.MODERN_ANDROID) envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
+        envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
 
         String ldLibraryPath = rootDir.getPath() + "/usr/lib" + ":" + "/system/lib64";
-        if (BuildConfig.MODERN_ANDROID) ldLibraryPath += ":" + imageFs.getWinePath() + "/lib";
+        ldLibraryPath += ":" + imageFs.getWinePath() + "/lib";
         envVars.put("LD_LIBRARY_PATH", ldLibraryPath);
         envVars.put("ANDROID_SYSVSHM_SERVER", rootDir.getPath() + UnixSocketConfig.SYSVSHM_SERVER_PATH);
         envVars.put("FONTCONFIG_PATH", rootDir.getPath() + "/usr/etc/fonts");
@@ -401,14 +384,6 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         // Merge any additional environment variables from external sources
         if (this.envVars != null) {
             envVars.putAll(this.envVars);
-        }
-
-        if (BuildConfig.XR_BUILD) {
-            String shimPath = context.getApplicationInfo().nativeLibraryDir + "/libkgslshim.so";
-            if (new File(shimPath).exists()) {
-                String cur = envVars.get("LD_PRELOAD");
-                envVars.put("LD_PRELOAD", cur.isEmpty() ? shimPath : shimPath + ":" + cur);
-            }
         }
 
         if (LsfgVkManager.isSupported(container)) {
@@ -1060,10 +1035,10 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         Log.d("BionicProgramLauncherComponent", "WinePath is " + winePath);
 
         envVars.put("PATH", winePath + ":" + rootDir.getPath() + "/usr/bin");
-        if (BuildConfig.MODERN_ANDROID) envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
+        envVars.put("REDIRECT_EXEC__PROC_SELF_EXE", winePath + "/wine");
 
         String ldLibraryPath = rootDir.getPath() + "/usr/lib" + ":" + "/system/lib64";
-        if (BuildConfig.MODERN_ANDROID) ldLibraryPath += ":" + imageFs.getWinePath() + "/lib";
+        ldLibraryPath += ":" + imageFs.getWinePath() + "/lib";
         envVars.put("LD_LIBRARY_PATH", ldLibraryPath);
         envVars.put("ANDROID_SYSVSHM_SERVER", rootDir.getPath() + UnixSocketConfig.SYSVSHM_SERVER_PATH);
         envVars.put("WINE_NO_DUPLICATE_EXPLORER", "1");
