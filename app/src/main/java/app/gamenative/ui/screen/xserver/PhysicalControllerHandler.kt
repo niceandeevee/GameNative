@@ -53,6 +53,10 @@ class PhysicalControllerHandler(
         private const val SCROLL_REPEAT_INTERVAL_MS = 90L
         private const val UNKNOWN_DEVICE_ID = -1
         private const val SEQUENCE_PRESS_MS = 80L
+        private const val MOUSE_MOVE_PERIOD_MS = 4L
+        private const val MOUSE_MOVE_REFERENCE_NANOS = 1_000_000_000.0 / 60
+        // A stalled timer thread must not turn into one large jump
+        private const val MOUSE_MOVE_MAX_STEP_NANOS = 50_000_000L
     }
 
     private val TAG = "gncontrol"
@@ -60,6 +64,7 @@ class PhysicalControllerHandler(
     private val mouseMoveRemainder = PointF(0f, 0f)
     private val mouseMoveContributions = mutableMapOf<MouseMoveSource, Float>()
     private val mouseMoveLock = Any()
+    private var lastMouseMoveNanos = 0L
     private val sequenceHandler = Handler(Looper.getMainLooper())
     private var mouseMoveTimer: Timer? = null
     private var scrollRepeatTimer: Timer? = null
@@ -350,15 +355,27 @@ class PhysicalControllerHandler(
     }
 
     /**
-     * Create a timer for continuous mouse movement injection.
-     * Runs at 60 FPS, injecting mouse deltas based on mouseMoveOffset.
+     * Continuous stick-to-mouse injection. Steps every 4 ms and scales each step by the time that
+     * actually passed (same distance per 1/60 s as the old 16 ms timer), so every game frame gets a
+     * proportional share of the motion. The old fixed-delay 16 ms ticks landed 0, 1 or 2 times per
+     * frame, which games that recentre the cursor each frame turn into a jerky camera.
      */
     private fun createMouseMoveTimer() {
         if (profile != null && mouseMoveTimer == null) {
-            mouseMoveTimer = Timer()
-            mouseMoveTimer?.schedule(object : TimerTask() {
+            synchronized(mouseMoveLock) { lastMouseMoveNanos = System.nanoTime() }
+            mouseMoveTimer = Timer("PadStickMouse", true)
+            mouseMoveTimer?.scheduleAtFixedRate(object : TimerTask() {
+                private var priorityRaised = false
+
                 override fun run() {
+                    if (!priorityRaised) {
+                        priorityRaised = true
+                        runCatching { android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DISPLAY) }
+                    }
+                    val now = System.nanoTime()
                     synchronized(mouseMoveLock) {
+                        val elapsedNanos = (now - lastMouseMoveNanos).coerceIn(0L, MOUSE_MOVE_MAX_STEP_NANOS)
+                        lastMouseMoveNanos = now
                         // Tuning already applies the user's chosen deadzone. Preserve sub-pixel input
                         // across ticks instead of silently discarding low-sensitivity movement.
                         if (mouseMoveOffset.x == 0f) mouseMoveRemainder.x = 0f
@@ -366,8 +383,9 @@ class PhysicalControllerHandler(
                         if (mouseMoveOffset.x == 0f && mouseMoveOffset.y == 0f) return@synchronized
                         // Look up cursor speed dynamically so it updates when profile changes
                         val cursorSpeed = profile?.cursorSpeed ?: ControlsProfile.DEFAULT_CURSOR_SPEED
-                        val scaledX = mouseMoveOffset.x * 10 * cursorSpeed + mouseMoveRemainder.x
-                        val scaledY = mouseMoveOffset.y * 10 * cursorSpeed + mouseMoveRemainder.y
+                        val step = 10 * cursorSpeed * (elapsedNanos.toDouble() / MOUSE_MOVE_REFERENCE_NANOS).toFloat()
+                        val scaledX = mouseMoveOffset.x * step + mouseMoveRemainder.x
+                        val scaledY = mouseMoveOffset.y * step + mouseMoveRemainder.y
                         val deltaX = scaledX.toInt()
                         val deltaY = scaledY.toInt()
                         mouseMoveRemainder.set(scaledX - deltaX, scaledY - deltaY)
@@ -376,7 +394,7 @@ class PhysicalControllerHandler(
                         }
                     }
                 }
-            }, 0, 1000 / 60)
+            }, 0, MOUSE_MOVE_PERIOD_MS)
         }
     }
 
