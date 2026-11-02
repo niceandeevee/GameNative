@@ -54,8 +54,9 @@ android {
         }
 
         proguardFiles(
-            // getDefaultProguardFile("proguard-android-optimize.txt"),
-            getDefaultProguardFile("proguard-android.txt"),
+            // Optimizing R8 (inlining, class merging, dead-branch removal); JNI and reflection
+            // targets that this could break are pinned in proguard-rules.pro.
+            getDefaultProguardFile("proguard-android-optimize.txt"),
             "proguard-rules.pro",
         )
     }
@@ -83,6 +84,12 @@ android {
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("debug")
         }
+    }
+
+    // Release builds ran lintVital (~2.5 min) in parallel with R8 on the CI runner's 4 cores. It
+    // only reports problems and never changes the APK; the PR checks compile and test every change.
+    lint {
+        checkReleaseBuilds = false
     }
 
     compileOptions {

@@ -70,3 +70,21 @@
 # Samsung Performance SDK (bundled stub jar, referenced by powercontrol Samsung driver)
 -keep class com.samsung.sdk.sperf.** { *; }
 -dontwarn com.samsung.sdk.sperf.**
+
+# --- Optimizing R8 (proguard-android-optimize.txt) ---------------------------------------------
+# With optimization R8 may inline, merge classes and drop or reorder parameters. Native code looks
+# Java members up by name and signature (GetMethodID / GetFieldID), which nothing in bytecode shows,
+# so every class that declares native methods is kept whole: its natives and the callbacks and
+# fields the same native library reaches back into (XConnectorEpoll.handleNewConnection,
+# GPUImage/AHBImage.setStride, VirGLRendererComponent.flushFrontbuffer, ...).
+-if class * { native <methods>; }
+-keep class <1> { *; }
+
+# Constructed and called from libwinlator / libextras by name.
+-keep class com.winlator.contents.AdrenotoolsManager { *; }
+-keep class com.winlator.core.AppUtils { *; }
+
+# SteamUtils reads the container language through reflection (getMethod("getLanguage")).
+-keepclassmembers class com.winlator.container.Container {
+    public java.lang.String getLanguage();
+}
