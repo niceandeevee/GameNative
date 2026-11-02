@@ -210,7 +210,7 @@ object EaCloudSaveConfig {
                 .put("next", next)
                 .put("limit", PAGE_SIZE)
                 .put("type", JSONArray(listOf("DIGITAL_FULL_GAME")))
-                .put("storefronts", JSONArray(listOf("EA", "STEAM", "EPIC")))
+                .put("storefronts", JSONArray(listOf("EA", "STEAM")))
                 .put("platforms", JSONArray(listOf("PC")))
             val owned = post(token, "getPreloadedOwnedGames", OWNED_QUERY, variables)
                 .optJSONObject("me")?.optJSONObject("ownedGameProducts")

@@ -45,7 +45,7 @@ class BionicDefaultProtonDependencyTest {
 
     @Test
     fun appliesTo_returnsFalse_whenContainerIsNotBionic() {
-        every { container.containerVariant } returns "glibc"
+        every { container.containerVariant } returns "legacy"
         every { container.wineVersion } returns "proton-9.0-arm64ec"
 
         val result = BionicDefaultProtonDependency.appliesTo(container, GameSource.STEAM, 1)

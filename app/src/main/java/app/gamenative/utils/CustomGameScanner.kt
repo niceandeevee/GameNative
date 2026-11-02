@@ -871,7 +871,6 @@ object CustomGameScanner {
         return null
     }
 
-    // Helper function to check if game is installed to match pattern of GOG & Steam Service
     fun isGameInstalled(appId: Int): Boolean {
         val isInstalled = findCustomGameById(appId) != null
 

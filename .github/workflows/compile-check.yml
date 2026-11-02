@@ -8,26 +8,21 @@ on:
     paths-ignore:
       - '**.md'
 
+# One group per commit and never cancel: every pushed commit gets a full compile result.
 concurrency:
-  group: compile-check-${{ github.ref }}
-  cancel-in-progress: true
+  group: compile-check-${{ github.sha }}
+  cancel-in-progress: false
 
 jobs:
   compile:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Inject credentials
-        run: |
-          cat <<EOF > local.properties
-          POSTHOG_API_KEY=dummy
-          POSTHOG_HOST=https://us.i.posthog.com
-          EOF
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - name: Compile app and unit tests (Modern debug)
         run: ./gradlew --continue :app:compileModernDebugUnitTestKotlin :app:compileModernDebugUnitTestJavaWithJavac

@@ -20,7 +20,7 @@ class InputDeviceManagerButtonReleaseTest {
     /** A button-only client receives mouse-up with pre-transition state after its window moves. */
     @Test
     fun `button-only client receives release after window geometry changes`() {
-        val server = XServer(ScreenInfo(640, 480), false)
+        val server = XServer(ScreenInfo(640, 480))
         val output = RecordingOutput()
         val client = XClient(server, null, output)
         val window = server.windowManager.createWindow(
@@ -52,7 +52,7 @@ class InputDeviceManagerButtonReleaseTest {
         for ((ownerSelectsChild, ownerClearsChild, expectedRecipient) in listOf(
             Triple(false, false, 42), Triple(true, false, 43), Triple(true, true, 42),
         )) {
-            val server = XServer(ScreenInfo(640, 480), false)
+            val server = XServer(ScreenInfo(640, 480))
             val output = RecordingOutput()
             val client = XClient(server, null, output)
             val window = server.windowManager.createWindow(

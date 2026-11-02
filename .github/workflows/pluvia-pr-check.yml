@@ -6,7 +6,6 @@ on:
     paths-ignore:
       - '**.md'
       - '.gitignore'
-      - 'keyvalues/**'
       - 'media/**'
       - '.github/ISSUE_TEMPLATE/**'
 
@@ -22,27 +21,16 @@ jobs:
 
     steps:
       - name: Checking out GameNative
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Inject credentials
-        env:
-          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
-          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
-        # Fall back to dummies when a secret is unset (fork PRs, or forks without the upstream secrets):
-        # the secrets-gradle-plugin leaves an empty value unquoted and generates `String X = ;`.
-        run: |
-          cat <<EOF > local.properties
-          POSTHOG_API_KEY=${POSTHOG_API_KEY:-dummy}
-          POSTHOG_HOST=${POSTHOG_HOST:-https://us.i.posthog.com}
-          EOF
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
       - name: Run unit tests (${{ matrix.variant }})
         timeout-minutes: 45
         run: |

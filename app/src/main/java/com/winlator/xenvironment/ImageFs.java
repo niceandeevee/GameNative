@@ -100,7 +100,7 @@ public class ImageFs {
     }
 
     /**
-     * Returns the filesystem variant stored in {@code .variant} (e.g. {@code "glibc"}), or
+     * Returns the filesystem variant stored in {@code .variant} (e.g. {@code "bionic"}), or
      * {@code ""} if the file is absent, empty, or whitespace-only.
      * @return The variant string, or {@code ""} as a safe default.
      */
@@ -157,14 +157,6 @@ public class ImageFs {
 
     public File getShareDir() {
         return new File(rootDir, "/usr/share");
-    }
-
-    public File getGlibc32Dir() {
-        return new File(rootDir, "/usr/lib/arm-linux-gnueabihf");
-    }
-
-    public File getGlibc64Dir() {
-        return new File(rootDir, "/usr/lib");
     }
 
     public File getLib32Dir() {

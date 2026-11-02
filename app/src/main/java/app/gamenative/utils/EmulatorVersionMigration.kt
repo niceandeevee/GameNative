@@ -12,7 +12,6 @@ import timber.log.Timber
  * current default before the launch installs whatever the container references.
  */
 object EmulatorVersionMigration {
-    private const val GLIBC_DEFAULT_BOX64 = "0.3.6"
 
     suspend fun apply(context: Context, container: Container) {
         try {
@@ -29,8 +28,6 @@ object EmulatorVersionMigration {
             val box64 = container.box64Version.orEmpty()
             val box64Available = when {
                 box64.isEmpty() -> true
-                !bionic -> bundled("box86_64/box64-$box64.tzst") ||
-                    ManifestComponentHelper.versionExists(box64, installed.box64)
                 // arm64ec Wine runs 32-bit code through WoWBox64, which follows the Box64 version.
                 arm64ec -> bundled("wowbox64/wowbox64-$box64.tzst") ||
                     ManifestComponentHelper.versionExists(box64, installed.wowBox64) ||
@@ -40,7 +37,7 @@ object EmulatorVersionMigration {
                     inManifest(ManifestContentTypes.BOX64, box64)
             }
             if (!box64Available) {
-                val fallback = if (bionic) DefaultVersion.BOX64 else GLIBC_DEFAULT_BOX64
+                val fallback = DefaultVersion.BOX64
                 Timber.i("Box64 $box64 is no longer available, moving container ${container.id} to $fallback")
                 container.box64Version = fallback
                 changed = true

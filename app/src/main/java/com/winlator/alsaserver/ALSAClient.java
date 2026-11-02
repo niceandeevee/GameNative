@@ -17,7 +17,6 @@ import java.nio.ByteOrder;
 
 public class ALSAClient {
     private static short framesPerBuffer = 256;
-    private ByteBuffer auxBuffer;
     private int bufferCapacity;
     private int bufferSize;
     private byte frameBytes;
@@ -220,10 +219,6 @@ public class ALSAClient {
         return containerVariant;
     }
 
-    public boolean isGlibc() {
-        return containerVariant.equals(Container.GLIBC);
-    }
-
     public void setChannels(int channels) {
         this.channels = (byte) channels;
     }
@@ -241,19 +236,7 @@ public class ALSAClient {
     }
 
     public void setSharedBuffer(ByteBuffer sharedBuffer) {
-        if (sharedBuffer != null) {
-            ByteBuffer allocateDirect = ByteBuffer.allocateDirect(getBufferSizeInBytes());
-            ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
-            this.auxBuffer = allocateDirect.order(byteOrder);
-            this.sharedBuffer = sharedBuffer.order(byteOrder);
-            return;
-        }
-        this.auxBuffer = null;
-        this.sharedBuffer = null;
-    }
-
-    public ByteBuffer getAuxBuffer() {
-        return this.auxBuffer;
+        this.sharedBuffer = sharedBuffer != null ? sharedBuffer.order(ByteOrder.LITTLE_ENDIAN) : null;
     }
 
     public int getBufferSizeInBytes() {

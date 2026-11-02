@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -228,42 +228,6 @@ fun GraphicsTabContent(state: ContainerConfigState, default: Boolean = false) {
                     state.config.value = config.copy(graphicsDriverConfig = cfg.toString())
                 },
             )
-            if (app.gamenative.BuildConfig.XR_BUILD && !default) {
-                val xrRates = listOf(72, 90, 120)
-                SettingsListDropdown(
-                    colors = settingsTileColors(),
-                    title = { Text(text = stringResource(R.string.xr_refresh_rate)) },
-                    value = xrRates.indexOf(config.xrRefreshRate).coerceAtLeast(0),
-                    items = xrRates.map { "$it Hz" },
-                    onItemSelected = { idx ->
-                        state.config.value = config.copy(xrRefreshRate = xrRates[idx])
-                    },
-                )
-                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                    Text(text = stringResource(R.string.xr_render_scale))
-                    Slider(
-                        value = config.xrRenderScale.toFloat(),
-                        onValueChange = { newValue ->
-                            val stepped = ((newValue.roundToInt() + 2) / 5 * 5).coerceIn(25, 100)
-                            state.config.value = config.copy(xrRenderScale = stepped)
-                        },
-                        valueRange = 25f..100f,
-                    )
-                    Text(text = "${config.xrRenderScale}%")
-                }
-                if (config.windowsVrEnabled) {
-                    SettingsSwitch(
-                        colors = settingsTileColorsAlt(),
-                        title = { Text(text = stringResource(R.string.xr_open_composite_toggle)) },
-                        subtitle = { Text(text = stringResource(R.string.xr_open_composite_toggle_desc)) },
-                        state = config.openCompositeEnabled,
-                        onCheckedChange = { checked ->
-                            state.config.value = config.copy(openCompositeEnabled = checked)
-                        },
-                    )
-                }
-            }
-
             if (isX11Display) {
                 SettingsListDropdown(
                     colors = settingsTileColors(),
@@ -385,79 +349,6 @@ fun GraphicsTabContent(state: ContainerConfigState, default: Boolean = false) {
                 },
             )
             DxWrapperSection(state)
-            // Vortek/Adreno specific settings
-            run {
-                val driverType = StringUtils.parseIdentifier(state.graphicsDrivers.value.getOrNull(state.graphicsDriverIndex.value).orEmpty())
-                val isVortekLike = config.containerVariant.equals(Container.GLIBC) && (driverType == "vortek" || driverType == "adreno" || driverType == "sd-8-elite")
-                if (isVortekLike) {
-                    val vkVersions = listOf("1.0", "1.1", "1.2", "1.3")
-                    SettingsListDropdown(
-                        colors = settingsTileColors(),
-                        title = { Text(text = stringResource(R.string.vulkan_version)) },
-                        value = state.vkMaxVersionIndex.value.coerceIn(0, 3),
-                        items = vkVersions,
-                        onItemSelected = { idx ->
-                            state.vkMaxVersionIndex.value = idx
-                            val cfg = KeyValueSet(config.graphicsDriverConfig)
-                            cfg.put("vkMaxVersion", vkVersions[idx])
-                            state.config.value = config.copy(graphicsDriverConfig = cfg.toString())
-                        },
-                    )
-                    SettingsMultiListDropdown(
-                        colors = settingsTileColors(),
-                        title = { Text(text = stringResource(R.string.exposed_vulkan_extensions)) },
-                        values = state.exposedExtIndices.value,
-                        items = state.gpuExtensions,
-                        fallbackDisplay = "all",
-                        onItemSelected = { idx ->
-                            val current = state.exposedExtIndices.value
-                            state.exposedExtIndices.value =
-                                if (current.contains(idx)) current.filter { it != idx } else current + idx
-                            val cfg = KeyValueSet(config.graphicsDriverConfig)
-                            val allSelected = state.exposedExtIndices.value.size == state.gpuExtensions.size
-                            if (allSelected) cfg.put("exposedDeviceExtensions", "all") else cfg.put(
-                                "exposedDeviceExtensions",
-                                state.exposedExtIndices.value.sorted().joinToString("|") { state.gpuExtensions[it] },
-                            )
-                            val blacklisted = if (allSelected) "" else
-                                state.gpuExtensions.indices
-                                    .filter { it !in state.exposedExtIndices.value }
-                                    .sorted()
-                                    .joinToString(",") { state.gpuExtensions[it] }
-                            cfg.put("blacklistedExtensions", blacklisted)
-                            state.config.value = config.copy(graphicsDriverConfig = cfg.toString())
-                        },
-                    )
-                    val imageSizes = listOf("64", "128", "256", "512", "1024")
-                    val imageLabels = listOf("64", "128", "256", "512", "1024").map { "$it MB" }
-                    SettingsListDropdown(
-                        colors = settingsTileColors(),
-                        title = { Text(text = stringResource(R.string.image_cache_size)) },
-                        value = state.imageCacheIndex.value.coerceIn(0, imageSizes.lastIndex),
-                        items = imageLabels,
-                        onItemSelected = { idx ->
-                            state.imageCacheIndex.value = idx
-                            val cfg = KeyValueSet(config.graphicsDriverConfig)
-                            cfg.put("imageCacheSize", imageSizes[idx])
-                            state.config.value = config.copy(graphicsDriverConfig = cfg.toString())
-                        },
-                    )
-                    val memValues = listOf("0", "512", "1024", "2048", "4096")
-                    val memLabels = listOf("0 MB", "512 MB", "1024 MB", "2048 MB", "4096 MB")
-                    SettingsListDropdown(
-                        colors = settingsTileColors(),
-                        title = { Text(text = stringResource(R.string.max_device_memory)) },
-                        value = state.maxDeviceMemoryIndex.value.coerceIn(0, memValues.lastIndex),
-                        items = memLabels,
-                        onItemSelected = { idx ->
-                            state.maxDeviceMemoryIndex.value = idx
-                            val cfg = KeyValueSet(config.graphicsDriverConfig)
-                            cfg.put("maxDeviceMemory", memValues[idx])
-                            state.config.value = config.copy(graphicsDriverConfig = cfg.toString())
-                        },
-                    )
-                }
-            }
         }
 
         // Frame Generation (LSFG) — hooks the Vulkan swapchain for

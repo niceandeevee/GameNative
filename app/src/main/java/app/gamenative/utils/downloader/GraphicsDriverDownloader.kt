@@ -1,7 +1,6 @@
 package app.gamenative.utils.downloader
 
 import android.content.Context
-import app.gamenative.BuildConfig
 import app.gamenative.service.SteamService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -54,10 +53,6 @@ object GraphicsDriverDownloader {
             ?: return@withContext null
 
         // Legacy variant: use bundled assets
-        if (!BuildConfig.MODERN_ANDROID) {
-            Timber.d("Legacy variant: Graphics driver $componentId will be extracted from bundled assets")
-            return@withContext null
-        }
 
         // Modern variant: download from server
         // Check if already downloaded and cached

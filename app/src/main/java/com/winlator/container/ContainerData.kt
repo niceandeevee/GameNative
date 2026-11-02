@@ -20,8 +20,6 @@ data class ContainerData(
     val rendererPresentMode: String = "fifo",
     val displayRenderer: String = Container.DEFAULT_DISPLAY_RENDERER,
     val displayServer: String = DefaultVersion.DISPLAY_SERVER,
-    val xrRefreshRate: Int = 72,
-    val xrRenderScale: Int = 100,
     val sfCompatMode: Boolean = true,
     var dxwrapper: String = Container.DEFAULT_DXWRAPPER,
     val dxwrapperConfig: String = "",
@@ -42,12 +40,10 @@ data class ContainerData(
     val cpuListWoW64: String = Container.getFallbackCPUListWoW64(),
     val wow64Mode: Boolean = true,
     val startupSelection: Byte = Container.STARTUP_SELECTION_ESSENTIAL,
-    val box86Version: String = DefaultVersion.BOX86,
     val box64Version: String = DefaultVersion.BOX64,
-    val box86Preset: String = Box86_64Preset.COMPATIBILITY,
     val box64Preset: String = Box86_64Preset.COMPATIBILITY,
     val desktopTheme: String = WineThemeManager.DEFAULT_DESKTOP_THEME,
-    // container runtime variant (glibc or bionic)
+    // container runtime variant (always bionic)
     val containerVariant: String = Container.DEFAULT_VARIANT,
     // wine version identifier (used for bionic variant), defaults to main wine
     val wineVersion: String = WineInfo.MAIN_WINE_VERSION.identifier(),
@@ -89,7 +85,7 @@ data class ContainerData(
     /** Disable external mouse input **/
     val disableMouseInput: Boolean = false,
     /** Touchscreen mode (defaults on for XR builds) **/
-    val touchscreenMode: Boolean = app.gamenative.BuildConfig.XR_BUILD,
+    val touchscreenMode: Boolean = false,
     /** Shooter mode (auto-replace sticks with dynamic joysticks) **/
     val shooterMode: Boolean = true,
     /** Serialised JSON gesture configuration (used when touchscreenMode is true) **/
@@ -118,8 +114,6 @@ data class ContainerData(
     // LSFG Vulkan frame generation
     /** Whether LSFG frame generation is enabled for this container */
     val lsfgEnabled: Boolean = false,
-    val windowsVrEnabled: Boolean = false,
-    val openCompositeEnabled: Boolean = false,
 ) {
     companion object {
         val Saver = mapSaver(
@@ -134,8 +128,6 @@ data class ContainerData(
                     "rendererPresentMode" to state.rendererPresentMode,
                     "displayRenderer" to state.displayRenderer,
                     "displayServer" to state.displayServer,
-                    "xrRefreshRate" to state.xrRefreshRate,
-                    "xrRenderScale" to state.xrRenderScale,
                     "sfCompatMode" to state.sfCompatMode,
                     "dxwrapper" to state.dxwrapper,
                     "dxwrapperConfig" to state.dxwrapperConfig,
@@ -156,9 +148,7 @@ data class ContainerData(
                     "cpuListWoW64" to state.cpuListWoW64,
                     "wow64Mode" to state.wow64Mode,
                     "startupSelection" to state.startupSelection,
-                    "box86Version" to state.box86Version,
                     "box64Version" to state.box64Version,
-                    "box86Preset" to state.box86Preset,
                     "box64Preset" to state.box64Preset,
                     "desktopTheme" to state.desktopTheme,
                     "containerVariant" to state.containerVariant,
@@ -201,8 +191,6 @@ data class ContainerData(
                     "sharpnessDenoise" to state.sharpnessDenoise,
                     "vibrationIntensity" to state.vibrationIntensity,
                     "lsfgEnabled" to state.lsfgEnabled,
-                    "windowsVrEnabled" to state.windowsVrEnabled,
-                    "openCompositeEnabled" to state.openCompositeEnabled,
                 )
             },
             restore = { savedMap ->
@@ -216,8 +204,6 @@ data class ContainerData(
                     rendererPresentMode = (savedMap["rendererPresentMode"] as? String) ?: "fifo",
                     displayRenderer = (savedMap["displayRenderer"] as? String) ?: "vulkan",
                     displayServer = (savedMap["displayServer"] as? String) ?: DefaultVersion.DISPLAY_SERVER,
-                    xrRefreshRate = (savedMap["xrRefreshRate"] as? Int) ?: 72,
-                    xrRenderScale = (savedMap["xrRenderScale"] as? Int) ?: 100,
                     sfCompatMode = (savedMap["sfCompatMode"] as? Boolean) ?: true,
                     dxwrapper = savedMap["dxwrapper"] as String,
                     dxwrapperConfig = savedMap["dxwrapperConfig"] as String,
@@ -238,9 +224,7 @@ data class ContainerData(
                     cpuListWoW64 = savedMap["cpuListWoW64"] as String,
                     wow64Mode = savedMap["wow64Mode"] as Boolean,
                     startupSelection = savedMap["startupSelection"] as Byte,
-                    box86Version = savedMap["box86Version"] as String,
                     box64Version = savedMap["box64Version"] as String,
-                    box86Preset = savedMap["box86Preset"] as String,
                     box64Preset = savedMap["box64Preset"] as String,
                     desktopTheme = savedMap["desktopTheme"] as String,
                     containerVariant = (savedMap["containerVariant"] as? String) ?: Container.DEFAULT_VARIANT,
@@ -284,8 +268,6 @@ data class ContainerData(
                     sharpnessDenoise = (savedMap["sharpnessDenoise"] as? Int) ?: 100,
                     vibrationIntensity = (savedMap["vibrationIntensity"] as? Int) ?: 100,
                     lsfgEnabled = (savedMap["lsfgEnabled"] as? Boolean) ?: false,
-                    windowsVrEnabled = (savedMap["windowsVrEnabled"] as? Boolean) ?: false,
-                    openCompositeEnabled = (savedMap["openCompositeEnabled"] as? Boolean) ?: false,
                 )
             },
         )

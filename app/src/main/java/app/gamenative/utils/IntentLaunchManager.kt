@@ -254,9 +254,7 @@ object IntentLaunchManager {
             } else {
                 Container.STARTUP_SELECTION_ESSENTIAL.toInt().toByte()
             },
-            box86Version = if (json.has("box86Version")) json.getString("box86Version") else "",
             box64Version = if (json.has("box64Version")) json.getString("box64Version") else "",
-            box86Preset = if (json.has("box86Preset")) json.getString("box86Preset") else "",
             box64Preset = if (json.has("box64Preset")) json.getString("box64Preset") else "",
             desktopTheme = if (json.has("desktopTheme")) json.getString("desktopTheme") else "",
             csmt = if (json.has("csmt")) json.getBoolean("csmt") else true,
@@ -343,9 +341,7 @@ object IntentLaunchManager {
             } else {
                 base.startupSelection
             },
-            box86Version = override.box86Version.ifEmpty { base.box86Version },
             box64Version = override.box64Version.ifEmpty { base.box64Version },
-            box86Preset = override.box86Preset.ifEmpty { base.box86Preset },
             box64Preset = override.box64Preset.ifEmpty { base.box64Preset },
             desktopTheme = override.desktopTheme.ifEmpty { base.desktopTheme },
             csmt = if (override.csmt != true) override.csmt else base.csmt,

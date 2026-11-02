@@ -51,35 +51,6 @@ internal fun createBionicScenario(): ContainerScenario {
     return ContainerScenario(initial = base, mutated = mutated, assertions = BIONIC_ASSERTIONS)
 }
 
-internal fun createGlibcScenario(): ContainerScenario {
-    val base = ContainerData(
-        containerVariant = Container.GLIBC,
-        wineVersion = "wine-9.2-x86_64",
-    )
-    val mutated = base.commonOverrides().copy(
-        containerVariant = Container.GLIBC,
-        wineVersion = "wine-9.2-x86_64",
-        graphicsDriver = "sd-8-elite",
-        graphicsDriverVersion = "2-842.6",
-        graphicsDriverConfig = buildGlibcGraphicsConfig(),
-        dxwrapper = "vkd3d",
-        dxwrapperConfig = buildDxWrapperConfig(
-            version = "2.4.1-gplasync",
-            async = true,
-            asyncCache = true,
-            vkd3dVersion = "2.14.1",
-            featureLevel = "12_1",
-        ),
-        emulator = "box64",
-        box64Version = "0.3.4",
-        box64Preset = Box86_64Preset.STABILITY,
-        sharpnessEffect = "DLS",
-        sharpnessLevel = 40,
-        sharpnessDenoise = 22,
-    )
-    return ContainerScenario(initial = base, mutated = mutated, assertions = GLIBC_ASSERTIONS)
-}
-
 internal fun assertFieldsChanged(scenario: ContainerScenario) {
     scenario.assertions.forEach { assertion ->
         val initialValue = assertion.selector(scenario.initial)
@@ -158,16 +129,6 @@ private fun buildBionicGraphicsConfig(): String {
         .put("adrenotoolsTurnip", "0")
         .put("exposedDeviceExtensions", "VK_KHR_swapchain|VK_KHR_timeline_semaphore")
         .put("blacklistedExtensions", "VK_KHR_maintenance1")
-        .toString()
-}
-
-private fun buildGlibcGraphicsConfig(): String {
-    return KeyValueSet()
-        .put("vkMaxVersion", "1.2")
-        .put("imageCacheSize", "512")
-        .put("maxDeviceMemory", "4096")
-        .put("exposedDeviceExtensions", "VK_KHR_swapchain|VK_KHR_timeline_semaphore")
-        .put("blacklistedExtensions", "VK_EXT_sample_locations")
         .toString()
 }
 
@@ -281,7 +242,4 @@ private val BIONIC_ASSERTIONS = COMMON_ASSERTIONS + listOf(
     FieldAssertion("wineVersion") { it.wineVersion },
 )
 
-private val GLIBC_ASSERTIONS = COMMON_ASSERTIONS + listOf(
-    FieldAssertion("graphicsDriverVersion") { it.graphicsDriverVersion },
-)
 

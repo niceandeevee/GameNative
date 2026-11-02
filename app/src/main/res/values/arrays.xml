@@ -176,12 +176,7 @@
         <item>Builtin (Wine)</item>
         <item>Native (Windows)</item>
     </string-array>
-    <!-- Only the bundled defaults (main/assets). Older versions are bundled for the Legacy flavors
-         only (src/legacy/assets, listed in src/legacy*/res/values/emulator_versions.xml); Modern
-         installs any other version from the online manifest. -->
-    <string-array name="box64_version_entries">
-        <item>0.3.6 (Default)</item>
-    </string-array>
+    <!-- Only the bundled defaults (main/assets); other versions install from the online manifest. -->
     <string-array name="box64_bionic_version_entries">
         <item>0.4.2 (Default)</item>
     </string-array>
@@ -238,15 +233,11 @@
         <item>FEXCore</item>
         <item>Box64</item>
     </string-array>
-    <string-array name="glibc_wine_entries">
-        <item>wine-9.2-x86_64</item>
-    </string-array>
     <string-array name="bionic_wine_entries">
         <item>proton-9.0-arm64ec</item>
         <item>proton-9.0-x86_64</item>
     </string-array>
     <string-array name="container_variant_entries">
-        <item>glibc</item>
         <item>bionic</item>
     </string-array>
     <string-array name="vkbasalt_sharpness_entries">

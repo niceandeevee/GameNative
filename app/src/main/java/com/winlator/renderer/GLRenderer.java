@@ -8,7 +8,6 @@ import android.opengl.GLSurfaceView;
 import android.view.View;
 
 // import com.winlator.R;
-// import com.winlator.XrActivity;
 import app.gamenative.R;
 import com.winlator.math.Mathf;
 import com.winlator.math.XForm;
@@ -63,7 +62,6 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
     private boolean sceneInitialized = false;
     private final EffectComposer effectComposer;
     private FrameRating frameRating;
-    private volatile XrFrameBridge xrFrameBridge = null;
     private volatile boolean flatPresentationEnabled = true;
 
     public void setFlatPresentationEnabled(boolean enabled) {
@@ -124,14 +122,6 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        // if (XrActivity.isSupported()) {
-        //     XrActivity activity = XrActivity.getInstance();
-        //     activity.init();
-        //     width = activity.getWidth();
-        //     height = activity.getHeight();
-        //     GLES20.glViewport(0, 0, width, height);
-        //     magnifierEnabled = false;
-        // }
 
         surfaceWidth = width;
         surfaceHeight = height;
@@ -172,18 +162,6 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
     }
 
     void drawScene() {
-        // The effect composer renders the scene into its own target, so the XR bridge must not
-        // rebind the framebuffer underneath it.
-        XrFrameBridge bridge = effectComposer.hasEffects() ? null : xrFrameBridge;
-        boolean xrFrame = false;
-        if (bridge != null) {
-            int[] xrTargetSize = bridge.beginFrame();
-            if (xrTargetSize != null) {
-                xrFrame = true;
-                setRenderTargetSizeOverride(xrTargetSize[0], xrTargetSize[1]);
-            }
-        }
-
         int targetWidth = renderTargetWidthOverride > 0 ? renderTargetWidthOverride : surfaceWidth;
         int targetHeight = renderTargetHeightOverride > 0 ? renderTargetHeightOverride : surfaceHeight;
         boolean renderingToOffscreenTarget = renderTargetWidthOverride > 0 && renderTargetHeightOverride > 0;
@@ -258,11 +236,6 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
         if (cursorVisible) renderCursor();
 
         if ((!magnifierEnabled && !fullscreen) || renderingToOffscreenTarget) GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
-
-        if (xrFrame) {
-            bridge.endFrame();
-            xServerView.requestRender();
-        }
     }
 
     @Override
@@ -386,14 +359,6 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
 
     public void setOnFrameRenderedListener(Runnable onFrameRenderedListener) {
         this.onFrameRenderedListener = onFrameRenderedListener;
-    }
-
-    /** See {@link XrFrameBridge}. Pass null to detach (e.g. when leaving immersive mode). */
-    public void setXrFrameBridge(XrFrameBridge xrFrameBridge) {
-        this.xrFrameBridge = xrFrameBridge;
-        if (xrFrameBridge == null) clearRenderTargetSizeOverride();
-        viewportNeedsUpdate = true;
-        if (flatPresentationEnabled) xServerView.requestRender();
     }
 
     /** Whether active screen effects are forcing the composer path, which blocks the XR direct

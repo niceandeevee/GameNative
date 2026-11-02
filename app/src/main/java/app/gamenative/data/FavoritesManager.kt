@@ -14,7 +14,7 @@ import timber.log.Timber
  * Keeps track of which games the user has marked as favorite.
  *
  * Favorites are stored as a set of [LibraryItem.appId] values, so they work across every source
- * (Steam, GOG, Epic, Amazon and custom games) without needing an account. The current set is
+ * (Steam and custom games) without needing an account. The current set is
  * exposed as a [StateFlow] so the library list and the game cards update as soon as it changes,
  * while [PrefManager] keeps the values on disk between sessions.
  *

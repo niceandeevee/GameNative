@@ -11,7 +11,6 @@ import android.util.Log;
 import com.winlator.core.FileUtils;
 import com.winlator.xenvironment.components.ALSAServerComponent;
 import com.winlator.xenvironment.components.BionicProgramLauncherComponent;
-import com.winlator.xenvironment.components.GlibcProgramLauncherComponent;
 import com.winlator.xenvironment.components.GuestProgramLauncherComponent;
 import com.winlator.xenvironment.components.MicrophoneComponent;
 import com.winlator.xenvironment.components.PulseAudioComponent;
@@ -125,8 +124,6 @@ public class XEnvironment implements Iterable<EnvironmentComponent> {
 
         GuestProgramLauncherComponent guestProgramLauncherComponent = getComponent(GuestProgramLauncherComponent.class);
         if (guestProgramLauncherComponent != null) guestProgramLauncherComponent.suspendProcess();
-        GlibcProgramLauncherComponent glibcProgramLauncherComponent = getComponent(GlibcProgramLauncherComponent.class);
-        if (glibcProgramLauncherComponent != null) glibcProgramLauncherComponent.suspendProcess();
         BionicProgramLauncherComponent bionicProgramLauncherComponent = getComponent(BionicProgramLauncherComponent.class);
         if (bionicProgramLauncherComponent != null) bionicProgramLauncherComponent.suspendProcess();
     }
@@ -134,8 +131,6 @@ public class XEnvironment implements Iterable<EnvironmentComponent> {
     public void resumeGameProcesses() {
         GuestProgramLauncherComponent guestProgramLauncherComponent = getComponent(GuestProgramLauncherComponent.class);
         if (guestProgramLauncherComponent != null) guestProgramLauncherComponent.resumeProcess();
-        GlibcProgramLauncherComponent glibcProgramLauncherComponent = getComponent(GlibcProgramLauncherComponent.class);
-        if (glibcProgramLauncherComponent != null) glibcProgramLauncherComponent.resumeProcess();
         BionicProgramLauncherComponent bionicProgramLauncherComponent = getComponent(BionicProgramLauncherComponent.class);
         if (bionicProgramLauncherComponent != null) bionicProgramLauncherComponent.resumeProcess();
 

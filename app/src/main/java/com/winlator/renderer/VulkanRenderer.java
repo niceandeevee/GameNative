@@ -68,8 +68,6 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
     private Drawable rootCursorDrawable;
     private Cursor lastCursor = null;
     private boolean xRenderingPausedForScanout = false;
-    private volatile VulkanXrFrameBridge xrFrameBridge = null;
-    private volatile long xrTargetAhbPtr = 0;
     private volatile boolean flatPresentationEnabled = true;
     private final java.util.concurrent.atomic.AtomicLong sourceFrames = new java.util.concurrent.atomic.AtomicLong();
     private volatile boolean frameGenArmed = false;
@@ -84,37 +82,6 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
             onPointerMove(xServer.pointer.getX(), xServer.pointer.getY());
             queueSceneUpdate();
             xServerView.requestRender();
-        }
-    }
-
-    /** See VulkanXrFrameBridge's kdoc — null except for the Meta Quest immersive path. */
-    public void setVulkanXrFrameBridge(VulkanXrFrameBridge xrFrameBridge) {
-        if (!app.gamenative.BuildConfig.XR_BUILD) return;
-        this.xrFrameBridge = xrFrameBridge;
-        synchronized (lock) {
-            if (xrFrameBridge == null) {
-                if (nativeHandle != 0 && xrTargetAhbPtr != 0) nativeDisableXrTarget(nativeHandle);
-                xrTargetAhbPtr = 0;
-            } else {
-                enableXrTargetLocked();
-            }
-        }
-    }
-
-    /**
-     * Points the immersive session at a persistent scene-sized AHardwareBuffer that the native
-     * compositor renders into instead of the (hidden) swapchain. Covers every present path,
-     * including SHM/CPU ones that never produce a per-window AHardwareBuffer.
-     */
-    private void enableXrTargetLocked() {
-        VulkanXrFrameBridge bridge = xrFrameBridge;
-        if (bridge == null || nativeHandle == 0) return;
-        xrTargetAhbPtr = nativeEnableXrTarget(nativeHandle);
-        if (xrTargetAhbPtr != 0) {
-            long ext = nativeGetXrTargetExtent(nativeHandle);
-            bridge.onScanoutBuffer(xrTargetAhbPtr, (int)(ext >>> 32), (int)(ext & 0xFFFFFFFFL));
-        } else {
-            android.util.Log.w("VulkanRenderer", "XR scene target unavailable, falling back to per-window forwarding");
         }
     }
 
@@ -182,9 +149,6 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
     private native void nativeSetPresentMode(long handle, int mode);
     private native void nativeSetEffect(long handle, int effectId, float sharpness,
         int effectMask, float brightness, float contrast, float gamma);
-    private native long nativeEnableXrTarget(long handle);
-    private native void nativeDisableXrTarget(long handle);
-    private native long nativeGetXrTargetExtent(long handle);
 
     private native void nativeSetFrameGenerationEnabled(long handle, boolean enabled);
     private native boolean nativeIsFrameGenerationSupported(long handle);
@@ -232,9 +196,7 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
                     if (!ok) {
                         nativeDestroy(nativeHandle);
                         nativeHandle = 0;
-                        xrTargetAhbPtr = 0;
                     } else {
-                        enableXrTargetLocked();
                         applyFrameGenerationSettingsLocked();
                         initComplete = true;
                         xServerView.queueEvent(this::updateScene);
@@ -294,7 +256,6 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
                 if (nativeHandle != 0) {
                     nativeSetVerboseLog(nativeHandle, true);
                     nativeDumpRendererInfo(nativeHandle);
-                    enableXrTargetLocked();
                 }
             }
             initComplete = true;
@@ -309,9 +270,6 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
             if (nativeHandle != 0) {
                 nativeResize(nativeHandle, width, height);
                 updateTransform();
-                // Recreate the XR scene target at the new extent and republish the
-                // replacement buffer; a no-op (same pointer back) when the size is unchanged.
-                if (xrFrameBridge != null) enableXrTargetLocked();
             }
         }
     }
@@ -330,7 +288,6 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
                     nativeDestroyScanout(nativeHandle);
                     nativeDestroy(nativeHandle);
                     nativeHandle = 0;
-                    xrTargetAhbPtr = 0;
                 } else {
                     nativeDetachSurface(nativeHandle);
                 }
@@ -552,14 +509,6 @@ public class VulkanRenderer implements WindowManager.OnWindowModificationListene
                             rx, ry, pixmap.width, pixmap.height, fenceFd);
                         g.lock();
                     } else {
-                        if (xrFrameBridge != null && xrTargetAhbPtr == 0) {
-                            // The immersive session samples this AHB directly; skipping the
-                            // native update leaves the render loop parked on its condvar, so
-                            // no scene is composited or presented to the invisible surface.
-                            // Only used when the scene target could not be created.
-                            xrFrameBridge.onScanoutBuffer(ahbPtr, pixmap.width, pixmap.height);
-                            return;
-                        }
                         if (frameGenArmed) setSourceFrameCount(sourceFrames.incrementAndGet());
                         nativeUpdateWindowContentAHB(nativeHandle, targetId, ahbPtr,
                             pixmap.width, pixmap.height, rx, ry);

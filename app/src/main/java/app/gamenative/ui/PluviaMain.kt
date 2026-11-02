@@ -1,9 +1,7 @@
 package app.gamenative.ui
 
 import android.content.Context
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -22,15 +20,15 @@ import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,8 +50,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import app.gamenative.BuildConfig
-import app.gamenative.Constants
 import app.gamenative.MainActivity
 import app.gamenative.NetworkMonitor
 import app.gamenative.PluviaApp
@@ -93,7 +89,6 @@ import app.gamenative.ui.component.dialog.state.MessageDialogState
 import app.gamenative.ui.components.BootingSplash
 import app.gamenative.ui.enums.AppOptionMenuType
 import app.gamenative.ui.enums.ConnectionState
-import app.gamenative.launch.LaunchReadiness
 import app.gamenative.launch.SteamAgreementGate
 import app.gamenative.ui.enums.DialogType
 import app.gamenative.ui.enums.Orientation
@@ -109,7 +104,6 @@ import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.utils.BestConfigService
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.EmulatorVersionMigration
-import app.gamenative.utils.HardwareUtils
 import app.gamenative.utils.PlatformAuthUtils
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.utils.ManifestInstaller
@@ -122,16 +116,13 @@ import com.winlator.container.Container
 import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
 import com.winlator.core.StringUtils
-import com.winlator.core.TarCompressorUtils
 import com.winlator.xenvironment.ImageFSLegacyMigrator
-import com.winlator.xenvironment.ImageFs
 import com.winlator.xenvironment.ImageFsInstaller
 import `in`.dragonbra.javasteam.protobufs.steamclient.SteammessagesClientObjects.ECloudPendingRemoteOperation
 import java.io.File
 import java.util.Locale
 import java.util.Date
 import java.util.EnumSet
-import kotlin.reflect.KFunction2
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
@@ -1497,12 +1488,6 @@ fun preLaunchApp(
     val gameId = ContainerUtils.extractGameIdFromContainerId(appId)
 
     CoroutineScope(Dispatchers.IO).launch {
-        if (LaunchReadiness.pending) {
-            setLoadingDialogVisible(false)
-            (context as? Activity)?.let { LaunchReadiness.resolve(it) }
-            return@launch
-        }
-
         if (!bootToContainer && ContainerUtils.extractGameSourceFromContainerId(appId) == GameSource.STEAM &&
             !SteamAgreementGate.confirm(context, gameId, isOffline, setLoadingDialogVisible)
         ) {
@@ -1638,20 +1623,9 @@ fun preLaunchApp(
         }
 
         try {
-            if (!SteamService.isImageFsInstallable(context, container.containerVariant)) {
+            if (!SteamService.isImageFsInstallable(context)) {
                 setLoadingMessage("Downloading first-time files")
                 SteamService.downloadImageFs(
-                    onDownloadProgress = { setLoadingProgress(it / 1.0f) },
-                    this,
-                    variant = container.containerVariant,
-                    context = context,
-                ).await()
-            }
-            if (container.containerVariant.equals(Container.GLIBC) &&
-                !SteamService.isFileInstallable(context, "imagefs_patches_gamenative.tzst")
-            ) {
-                setLoadingMessage("Downloading Wine")
-                SteamService.downloadImageFsPatches(
                     onDownloadProgress = { setLoadingProgress(it / 1.0f) },
                     this,
                     context = context,
@@ -1829,12 +1803,7 @@ fun preLaunchApp(
             return@launch
         }
 
-        val loadingMessage = if (container.containerVariant.equals(Container.GLIBC)) {
-            context.getString(R.string.main_installing_glibc)
-        } else {
-            context.getString(R.string.main_installing_bionic)
-        }
-        setLoadingMessage(loadingMessage)
+        setLoadingMessage(context.getString(R.string.main_installing_bionic))
         val imageFsInstallSuccess =
             ImageFsInstaller.installIfNeededFuture(context, context.assets, container) { progress ->
                 setLoadingProgress(progress / 100f)

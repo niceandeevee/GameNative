@@ -1,7 +1,6 @@
 package app.gamenative.utils.downloader
 
 import android.content.Context
-import app.gamenative.BuildConfig
 import app.gamenative.service.SteamService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -54,10 +53,6 @@ object DXWrapperDownloader {
             ?: return@withContext null
 
         // Legacy variant: use bundled assets
-        if (!BuildConfig.MODERN_ANDROID) {
-            Timber.d("Legacy variant: DXWrapper $componentId will be extracted from bundled assets")
-            return@withContext null
-        }
 
         // Modern variant: prefer a bundled asset (the common defaults) over downloading
         if (assetExists(context, "dxwrapper/$componentId.tzst")) {

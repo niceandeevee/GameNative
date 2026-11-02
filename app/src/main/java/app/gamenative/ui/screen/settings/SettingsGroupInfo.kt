@@ -47,14 +47,5 @@ fun SettingsGroupInfo() {
             onClick = { showLibrariesDialog = true },
         )
 
-        SettingsMenuLink(
-            colors = settingsTileColors(),
-            title = { Text(text = stringResource(R.string.settings_info_privacy_title)) },
-            subtitle = { Text(text = stringResource(R.string.settings_info_privacy_subtitle)) },
-            onClick = {
-                uriHandler.openUri(Constants.Misc.PRIVACY_LINK)
-            },
-        )
-
     }
 }

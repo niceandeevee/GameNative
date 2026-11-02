@@ -12,7 +12,6 @@ import android.os.IBinder
 import android.util.Base64
 import app.gamenative.ui.data.Achievement
 import app.gamenative.ui.util.GameInviteNotificationManager
-import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.service.callback.GameInviteCallback
 import app.gamenative.service.cloud.CloseSyncTracker
 import app.gamenative.service.handler.GameInviteHandler
@@ -169,7 +168,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.BufferOverflow
-import okio.Path.Companion.toPath
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -2291,15 +2289,10 @@ class SteamService : Service(), IChallengeUrlChanged {
             return ImageFs.find(context).rootDir.exists()
         }
 
-        fun isImageFsInstallable(context: Context, variant: String): Boolean {
+        fun isImageFsInstallable(context: Context): Boolean {
             val imageFs = ImageFs.find(context)
-            if (variant.equals(Container.BIONIC)) {
-                return File(imageFs.filesDir, "imagefs_bionic.txz").exists() || context.assets.list("")
-                    ?.contains("imagefs_bionic.txz") == true
-            } else {
-                return File(imageFs.filesDir, "imagefs_gamenative.txz").exists() || context.assets.list("")
-                    ?.contains("imagefs_gamenative.txz") == true
-            }
+            return File(imageFs.filesDir, "imagefs_bionic.txz").exists() || context.assets.list("")
+                ?.contains("imagefs_bionic.txz") == true
         }
 
         fun isSteamInstallable(context: Context): Boolean {
@@ -2390,34 +2383,11 @@ class SteamService : Service(), IChallengeUrlChanged {
         fun downloadImageFs(
             onDownloadProgress: (Float) -> Unit,
             parentScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-            variant: String,
             context: Context,
         ) = parentScope.asyncIsolated {
-            Timber.i("imagefs will be downloaded")
-            if (variant == Container.BIONIC) {
-                val dest = File(instance!!.filesDir, "imagefs_bionic.txz")
-                Timber.d("Downloading imagefs_bionic to " + dest.toString())
-                fetchFileWithFallback("imagefs_bionic.txz", dest, context, onDownloadProgress)
-            } else {
-                Timber.d("Downloading imagefs_gamenative to " + File(instance!!.filesDir, "imagefs_gamenative.txz"));
-                fetchFileWithFallback(
-                    "imagefs_gamenative.txz",
-                    File(instance!!.filesDir, "imagefs_gamenative.txz"),
-                    context,
-                    onDownloadProgress,
-                )
-            }
-        }
-
-        fun downloadImageFsPatches(
-            onDownloadProgress: (Float) -> Unit,
-            parentScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-            context: Context,
-        ) = parentScope.asyncIsolated {
-            Timber.i("imagefs will be downloaded")
-            val dest = File(instance!!.filesDir, "imagefs_patches_gamenative.tzst")
-            Timber.d("Downloading imagefs_patches_gamenative.tzst to " + dest.toString())
-            fetchFileWithFallback("imagefs_patches_gamenative.tzst", dest, context, onDownloadProgress)
+            val dest = File(instance!!.filesDir, "imagefs_bionic.txz")
+            Timber.i("Downloading imagefs_bionic to $dest")
+            fetchFileWithFallback("imagefs_bionic.txz", dest, context, onDownloadProgress)
         }
 
         fun downloadFile(
@@ -4614,7 +4584,7 @@ class SteamService : Service(), IChallengeUrlChanged {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        if (!hasActiveOperations() && !(BuildConfig.XR_BUILD && keepAlive)) {
+        if (!hasActiveOperations()) {
             Timber.i("Task removed and no active work — stopping service")
             stopSelf()
         } else {

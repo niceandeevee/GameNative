@@ -20,9 +20,8 @@ import androidx.compose.ui.unit.dp
 import app.gamenative.R
 
 /**
- * Full-screen splash shown when the user is on a GOG/Epic/Amazon library tab
- * but is not logged in to that service. Shows a message and a prominent sign-in button
- * that launches the same OAuth flow as the system menu.
+ * Full-screen empty-state splash for the Steam (signed out) and Local (no games) tabs,
+ * with a message and one action button.
  */
 @Composable
 internal fun LibrarySourceNotLoggedInSplash(

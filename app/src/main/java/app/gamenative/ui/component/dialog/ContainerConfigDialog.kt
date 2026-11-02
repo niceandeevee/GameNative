@@ -1,37 +1,22 @@
 package app.gamenative.ui.component.dialog
 
-import android.widget.Spinner
-import android.widget.ArrayAdapter
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -43,23 +28,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import app.gamenative.ui.component.NoExtractOutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -72,27 +55,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.tooling.preview.Preview
-import app.gamenative.BuildConfig
 import app.gamenative.R
 import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.ui.component.dialog.state.MessageDialogState
-import app.gamenative.ui.component.settings.SettingsCPUList
-import app.gamenative.ui.component.settings.SettingsCenteredLabel
-import app.gamenative.ui.component.settings.SettingsListDropdown
 import app.gamenative.ui.components.rememberCustomGameFolderPicker
 import app.gamenative.ui.components.requestPermissionsForPath
 import app.gamenative.ui.theme.PluviaTheme
-import app.gamenative.ui.theme.settingsTileColors
-import app.gamenative.ui.theme.settingsTileColorsAlt
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.ManifestComponentHelper
@@ -103,12 +77,8 @@ import app.gamenative.utils.ManifestInstaller
 import app.gamenative.service.SteamService
 import app.gamenative.service.download.SteamDownloadMode
 import app.gamenative.utils.ManifestComponentHelper.VersionOptionList
-import app.gamenative.utils.ManifestRepository
 import app.gamenative.utils.PaddingUtils
 import com.winlator.contents.ContentProfile
-import com.alorma.compose.settings.ui.SettingsGroup
-import com.alorma.compose.settings.ui.SettingsMenuLink
-import com.alorma.compose.settings.ui.SettingsSwitch
 import com.winlator.box86_64.Box86_64Preset
 import com.winlator.box86_64.Box86_64PresetManager
 import com.winlator.container.Container
@@ -121,7 +91,6 @@ import com.winlator.core.GPUHelper
 import com.winlator.core.WineInfo
 import com.winlator.core.WineInfo.MAIN_WINE_VERSION
 import com.winlator.core.WineThemeManager
-import com.winlator.fexcore.FEXCoreManager
 import com.winlator.fexcore.FEXCorePreset
 import com.winlator.fexcore.FEXCorePresetManager
 import kotlinx.coroutines.Dispatchers
@@ -132,7 +101,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
-import kotlin.math.roundToInt
 
 /**
  * Gets the component title for Win Components settings group.
@@ -182,7 +150,6 @@ private data class ContainerConfigDialogStaticData(
     val mouseWarps: List<String>,
     val externalDisplayModes: List<String>,
     val winCompOpts: List<String>,
-    val box64Versions: List<String>,
     val wowBox64VersionsBase: List<String>,
     val box64BionicVersionsBase: List<String>,
     val box64Presets: List<Box86_64Preset>,
@@ -198,9 +165,7 @@ private data class ContainerConfigDialogStaticData(
     val vortekVersions: List<String>,
     val adrenoVersions: List<String>,
     val sd8EliteVersions: List<String>,
-    val containerVariants: List<String>,
     val bionicWineEntriesBase: List<String>,
-    val glibcWineEntriesBase: List<String>,
     val emulatorEntries: List<String>,
     val bionicGraphicsDrivers: List<String>,
     val baseWrapperVersions: List<String>,
@@ -212,14 +177,6 @@ private fun rememberContainerConfigDialogStaticData(): ContainerConfigDialogStat
     val context = LocalContext.current
     val sharpnessEffects = stringArrayResource(R.array.vkbasalt_sharpness_entries).toList()
     val sharpnessEffectLabels = stringArrayResource(R.array.vkbasalt_sharpness_labels).toList()
-    val containerVariants = stringArrayResource(R.array.container_variant_entries).toList()
-        .let { variants ->
-            if (BuildConfig.MODERN_ANDROID) {
-                variants.filterNot { it.equals(Container.GLIBC, ignoreCase = true) }
-            } else {
-                variants
-            }
-        }
 
     return ContainerConfigDialogStaticData(
         screenSizes = stringArrayResource(R.array.screen_size_entries).toList(),
@@ -247,7 +204,6 @@ private fun rememberContainerConfigDialogStaticData(): ContainerConfigDialogStat
             stringResource(R.string.external_display_mode_hybrid),
         ),
         winCompOpts = stringArrayResource(R.array.win_component_entries).toList(),
-        box64Versions = stringArrayResource(R.array.box64_version_entries).toList(),
         wowBox64VersionsBase = stringArrayResource(R.array.wowbox64_version_entries).toList(),
         box64BionicVersionsBase = stringArrayResource(R.array.box64_bionic_version_entries).toList(),
         box64Presets = Box86_64PresetManager.getPresets("box64", context),
@@ -263,9 +219,7 @@ private fun rememberContainerConfigDialogStaticData(): ContainerConfigDialogStat
         vortekVersions = stringArrayResource(R.array.vortek_version_entries).toList(),
         adrenoVersions = stringArrayResource(R.array.adreno_version_entries).toList(),
         sd8EliteVersions = stringArrayResource(R.array.sd8elite_version_entries).toList(),
-        containerVariants = containerVariants,
         bionicWineEntriesBase = stringArrayResource(R.array.bionic_wine_entries).toList(),
-        glibcWineEntriesBase = stringArrayResource(R.array.glibc_wine_entries).toList(),
         emulatorEntries = stringArrayResource(R.array.emulator_entries).toList(),
         bionicGraphicsDrivers = stringArrayResource(R.array.bionic_graphics_driver_entries).toList(),
         baseWrapperVersions = ManifestComponentHelper.bundledGraphicsDriverBase(
@@ -331,7 +285,6 @@ fun ContainerConfigDialog(
         val mouseWarps = staticData.mouseWarps
         val externalDisplayModes = staticData.externalDisplayModes
         val winCompOpts = staticData.winCompOpts
-        val box64Versions = staticData.box64Versions
         val wowBox64VersionsBase = staticData.wowBox64VersionsBase
         val box64BionicVersionsBase = staticData.box64BionicVersionsBase
         val box64Presets = staticData.box64Presets
@@ -347,13 +300,9 @@ fun ContainerConfigDialog(
         val vortekVersions = staticData.vortekVersions
         val adrenoVersions = staticData.adrenoVersions
         val sd8EliteVersions = staticData.sd8EliteVersions
-        val containerVariants = staticData.containerVariants
         val bionicWineEntriesBase = staticData.bionicWineEntriesBase
-        val glibcWineEntriesBase = staticData.glibcWineEntriesBase
         val bionicWineEntriesRef = remember { mutableStateOf(bionicWineEntriesBase) }
         var bionicWineEntries by bionicWineEntriesRef
-        val glibcWineEntriesRef = remember { mutableStateOf(glibcWineEntriesBase) }
-        var glibcWineEntries by glibcWineEntriesRef
         val emulatorEntries = staticData.emulatorEntries
         val bionicGraphicsDrivers = staticData.bionicGraphicsDrivers
         val baseWrapperVersions = staticData.baseWrapperVersions
@@ -421,9 +370,6 @@ fun ContainerConfigDialog(
         val vkd3dOptions = remember(vkd3dVersionsBase, installedVkd3d, manifestVkd3d) {
             ManifestComponentHelper.buildVersionOptionList(vkd3dVersionsBase, installedVkd3d, manifestVkd3d)
         }
-        val box64Options = remember(box64Versions, installedBox64, manifestBox64) {
-            ManifestComponentHelper.buildVersionOptionList(box64Versions, installedBox64, manifestBox64)
-        }
         val box64BionicOptions = remember(box64BionicVersionsBase, installedBox64, manifestBox64) {
             ManifestComponentHelper.buildVersionOptionList(box64BionicVersionsBase, installedBox64, manifestBox64)
         }
@@ -441,15 +387,8 @@ fun ContainerConfigDialog(
             ManifestComponentHelper.filterManifestByVariant(manifestWine, "bionic") +
                 ManifestComponentHelper.filterManifestByVariant(manifestProton, "bionic")
         }
-        val glibcWineManifest = remember(manifestWine, manifestProton) {
-            ManifestComponentHelper.filterManifestByVariant(manifestWine, "glibc") +
-                ManifestComponentHelper.filterManifestByVariant(manifestProton, "glibc")
-        }
         val bionicWineOptions = remember(bionicWineEntriesBase, installedWine, installedProton, bionicWineManifest) {
             ManifestComponentHelper.buildVersionOptionList(bionicWineEntriesBase, installedWine + installedProton, bionicWineManifest)
-        }
-        val glibcWineOptions = remember(glibcWineEntriesBase, glibcWineManifest) {
-            ManifestComponentHelper.buildVersionOptionList(glibcWineEntriesBase, emptyList(), glibcWineManifest)
         }
 
         val dxvkManifestById = remember(manifestDxvk) {
@@ -473,9 +412,6 @@ fun ContainerConfigDialog(
         val bionicWineManifestById = remember(bionicWineManifest) {
             bionicWineManifest.associateBy { it.id }
         }
-        val glibcWineManifestById = remember(glibcWineManifest) {
-            glibcWineManifest.associateBy { it.id }
-        }
 
         suspend fun refreshInstalledLists() {
             val availabilityUpdated = ManifestComponentHelper.loadComponentAvailability(context)
@@ -485,7 +421,6 @@ fun ContainerConfigDialog(
 
             wrapperVersions = (baseWrapperVersions + availabilityUpdated.installedDrivers).distinct()
             bionicWineEntries = (bionicWineEntriesBase + installed.proton + installed.wine).distinct()
-            glibcWineEntries = glibcWineEntriesBase
         }
 
         LaunchedEffect(Unit) {
@@ -808,23 +743,17 @@ fun ContainerConfigDialog(
         }
 
         fun getVersionsForBox64(): VersionOptionList {
-            return if (config.containerVariant.equals(Container.GLIBC, ignoreCase = true)) {
-                box64Options
-            } else if (config.wineVersion.contains("x86_64", true)) {
+            return if (config.wineVersion.contains("x86_64", true)) {
                 box64BionicOptions
             } else if (config.wineVersion.contains("arm64ec", true)) {
                 wowBox64Options
             } else {
-                box64Options
+                box64BionicOptions
             }
         }
 
         fun getStartupSelectionOptions(): List<String> {
-            if (config.containerVariant.equals(Container.GLIBC)) {
-                return startupSelectionEntries
-            } else {
-                return startupSelectionEntries.subList(0, 2)
-            }
+            return startupSelectionEntries.subList(0, 2)
         }
         val dxWrapperIndexRef = rememberSaveable {
             val driverIndex = dxWrappers.indexOfFirst { StringUtils.parseIdentifier(it) == config.dxwrapper }
@@ -842,7 +771,7 @@ fun ContainerConfigDialog(
         // VKD3D version control (forced depending on driver)
         fun vkd3dForcedVersion(): String {
             val driverType = StringUtils.parseIdentifier(graphicsDrivers[graphicsDriverIndex])
-            val isVortekLike = config.containerVariant.equals(Container.GLIBC) && driverType == "vortek" || driverType == "adreno" || driverType == "sd-8-elite"
+            val isVortekLike = driverType == "adreno" || driverType == "sd-8-elite"
             return if (isVortekLike) "2.6" else "2.14.1"
         }
 
@@ -907,9 +836,7 @@ fun ContainerConfigDialog(
 
             // Ensure index within range or default
             val selectedVersion = context.ids.getOrNull(dxvkVersionIndex).orEmpty()
-            val version = if (selectedVersion.isEmpty()) {
-                if (context.isVortekLike) "async-1.10.3" else DefaultVersion.DXVK
-            } else selectedVersion
+            val version = selectedVersion.ifEmpty { DefaultVersion.DXVK }
             val envSet = EnvVars(config.envVars)
             // Update dxwrapperConfig version regardless of wrapper type (allows DXVK config even when VKD3D is selected)
             val kvs = KeyValueSet(config.dxwrapperConfig)
@@ -1077,7 +1004,6 @@ fun ContainerConfigDialog(
             config = configState,
             graphicsDrivers = graphicsDriversRef,
             bionicWineEntries = bionicWineEntriesRef,
-            glibcWineEntries = glibcWineEntriesRef,
             wrapperVersions = wrapperVersionsRef,
             dxvkVersionsAll = dxvkVersionsAllRef,
             componentAvailability = componentAvailabilityRef,
@@ -1143,7 +1069,6 @@ fun ContainerConfigDialog(
             mouseWarps = mouseWarps,
             externalDisplayModes = externalDisplayModes,
             winCompOpts = winCompOpts,
-            box64Versions = box64Versions,
             wowBox64VersionsBase = wowBox64VersionsBase,
             box64BionicVersionsBase = box64BionicVersionsBase,
             fexcoreVersionsBase = fexcoreVersionsBase,
@@ -1157,22 +1082,18 @@ fun ContainerConfigDialog(
             vortekVersions = vortekVersions,
             adrenoVersions = adrenoVersions,
             sd8EliteVersions = sd8EliteVersions,
-            containerVariants = containerVariants,
             bionicWineEntriesBase = bionicWineEntriesBase,
-            glibcWineEntriesBase = glibcWineEntriesBase,
             emulatorEntries = emulatorEntries,
             bionicGraphicsDrivers = bionicGraphicsDriversMerged,
             baseWrapperVersions = baseWrapperVersions,
             languages = languages,
             dxvkOptions = dxvkOptions,
             vkd3dOptions = vkd3dOptions,
-            box64Options = box64Options,
             box64BionicOptions = box64BionicOptions,
             wowBox64Options = wowBox64Options,
             fexcoreOptions = fexcoreOptions,
             wrapperOptions = wrapperOptions,
             bionicWineOptions = bionicWineOptions,
-            glibcWineOptions = glibcWineOptions,
             dxvkManifestById = dxvkManifestById,
             vkd3dManifestById = vkd3dManifestById,
             box64ManifestById = box64ManifestById,
@@ -1180,7 +1101,6 @@ fun ContainerConfigDialog(
             fexcoreManifestById = fexcoreManifestById,
             wrapperManifestById = wrapperManifestById,
             bionicWineManifestById = bionicWineManifestById,
-            glibcWineManifestById = glibcWineManifestById,
             gpuCards = gpuCards,
             box64Presets = box64Presets,
             fexcorePresets = fexcorePresets,
@@ -1374,12 +1294,10 @@ private fun Preview_ContainerConfigDialog() {
             cpuListWoW64 = "0,1,2,3",
             wow64Mode = true,
             startupSelection = 1,
-            box86Version = DefaultVersion.BOX86,
             box64Version = DefaultVersion.BOX64,
-            box86Preset = Box86_64Preset.COMPATIBILITY,
             box64Preset = Box86_64Preset.COMPATIBILITY,
             desktopTheme = WineThemeManager.DEFAULT_DESKTOP_THEME,
-            containerVariant = "glibc",
+            containerVariant = Container.BIONIC,
             wineVersion = MAIN_WINE_VERSION.identifier(),
             emulator = "FEXCore",
             fexcoreVersion = DefaultVersion.FEXCORE,

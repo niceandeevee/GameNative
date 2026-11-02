@@ -11,7 +11,7 @@ import timber.log.Timber
  * Handles user-tapped actions on foreground-service notifications.
  *
  * Previously the Exit action used `PendingIntent.getForegroundService` targeting
- * [SteamService]. That meant tapping Exit on a GOG/Epic/Amazon (or group summary)
+ * [SteamService]. That meant tapping Exit on a group summary
  * notification while [SteamService] wasn't running would trigger
  * `startForegroundService(SteamService)`, but SteamService's ACTION_EXIT branch
  * never calls `startForeground(...)` — leading to a `ForegroundServiceDidNotStartInTime`

@@ -201,15 +201,6 @@ internal fun parseSteamStoreDetails(
         ).map(::stripStoreHtml).firstOrNull(String::isNotBlank).orEmpty()
     }.orEmpty()
 
-    val screenshots = data?.optJSONArray("screenshots").objects()
-        .mapNotNull { it.optString("path_full").asHttpUrl() }
-
-    val videos = data?.optJSONArray("movies").objects().mapNotNull { movie ->
-        movie.optJSONObject("mp4")?.optString("max").asHttpUrl()
-            ?: movie.optJSONObject("webm")?.optString("max").asHttpUrl()
-            ?: movie.optString("hls_h264").asHttpUrl()
-    }
-
     val genres = data?.optJSONArray("genres").objects()
         .map { it.optString("description") }
     val categories = data?.optJSONArray("categories").objects()
@@ -226,8 +217,6 @@ internal fun parseSteamStoreDetails(
         reviewCount = reviewCount,
         reviewSummary = reviewSummary?.optString("review_score_desc")?.takeIf(String::isNotBlank),
         tags = (genres + categories).cleanStoreList(16),
-        screenshots = screenshots.cleanStoreList(12),
-        videos = videos.cleanStoreList(4),
     )
 }
 
@@ -261,27 +250,6 @@ private fun JSONArray?.labels(): List<String> {
         }
     }
 }
-
-private fun JSONArray?.urls(): List<String> {
-    if (this == null) return emptyList()
-    return buildList {
-        for (index in 0 until length()) {
-            when (val value = opt(index)) {
-                is String -> value.asHttpUrl()?.let(::add)
-                is JSONObject -> sequenceOf(
-                    value.optString("videoUrl"),
-                    value.optString("imageUrl"),
-                    value.optString("full"),
-                    value.optString("url"),
-                ).firstNotNullOfOrNull { it.asHttpUrl() }?.let(::add)
-            }
-        }
-    }
-}
-
-private fun String?.asHttpUrl(): String? = this
-    ?.trim()
-    ?.takeIf { it.startsWith("https://") || it.startsWith("http://") }
 
 private fun String.normalizeProtocolUrl(): String? {
     val value = trim()

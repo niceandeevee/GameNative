@@ -16,8 +16,7 @@ public final class EnvVarRedaction {
         "STEAMHOST_STEAMID64",
         "SteamUser",
         "SteamAppUser",
-        "STEAMID",
-        "AMAZON_GAMES_FUEL_ENTITLEMENT_ID"
+        "STEAMID"
     ));
 
     private EnvVarRedaction() {}

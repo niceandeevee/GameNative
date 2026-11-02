@@ -249,19 +249,6 @@ private fun UserLoginScreenContent(
                         ),
                     ),
                 )
-
-                // Privacy Policy Button
-                val uriHandler = LocalUriHandler.current
-                TextButton(
-                    onClick = { uriHandler.openUri(Constants.Misc.PRIVACY_LINK) },
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
-                    shape = RoundedCornerShape(8.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.login_privacy_policy),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
             }
 
             // Main Content

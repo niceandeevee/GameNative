@@ -30,9 +30,7 @@ public class GuestProgramLauncherComponent extends EnvironmentComponent {
     private static int pid = -1;
     private String[] bindingPaths;
     private EnvVars envVars;
-    private String box86Version = DefaultVersion.BOX86;
     private String box64Version = DefaultVersion.BOX64;
-    private String box86Preset = Box86_64Preset.COMPATIBILITY;
     private String box64Preset = Box86_64Preset.COMPATIBILITY;
     private Callback<Integer> terminationCallback;
     private static final Object lock = new Object();
@@ -60,7 +58,6 @@ public class GuestProgramLauncherComponent extends EnvironmentComponent {
         // Log.d("GuestProgramLauncherComponent", "Starting...");
         synchronized (lock) {
             stop();
-            extractBox86_64Files();
             pid = execGuestProgram();
             Log.d("GuestProgramLauncherComponent", "Process " + pid + " started");
         }
@@ -150,21 +147,9 @@ public class GuestProgramLauncherComponent extends EnvironmentComponent {
         this.envVars = envVars;
     }
 
-    public String getBox86Version() { return box86Version; }
-
-    public void setBox86Version(String box86Version) { this.box86Version = box86Version; }
-
     public String getBox64Version() { return box64Version; }
 
     public void setBox64Version(String box64Version) { this.box64Version = box64Version; }
-
-    public String getBox86Preset() {
-        return box86Preset;
-    }
-
-    public void setBox86Preset(String box86Preset) {
-        this.box86Preset = box86Preset;
-    }
 
     public String getBox64Preset() {
         return box64Preset;
@@ -189,7 +174,6 @@ public class GuestProgramLauncherComponent extends EnvironmentComponent {
         boolean enableBox86_64Logs = PrefManager.getBoolean("enable_box86_64_logs", false);
 
         EnvVars envVars = new EnvVars();
-        if (!wow64Mode) addBox86EnvVars(envVars, enableBox86_64Logs);
         addBox64EnvVars(envVars, enableBox86_64Logs);
         if (this.envVars != null) envVars.putAll(this.envVars);
 
@@ -233,7 +217,6 @@ public class GuestProgramLauncherComponent extends EnvironmentComponent {
         // boolean enableBox86_64Logs = PrefManager.getBoolean("enable_box86_64_logs", false);
 
         EnvVars envVars = new EnvVars();
-        // if (!wow64Mode) addBox86EnvVars(envVars, enableBox86_64Logs);
         // addBox64EnvVars(envVars, enableBox86_64Logs);
 
         TimeZone androidTz = TimeZone.getDefault();
@@ -299,31 +282,6 @@ public class GuestProgramLauncherComponent extends EnvironmentComponent {
         });
     }
 
-    private void extractBox86_64Files() {
-        ImageFs imageFs = environment.getImageFs();
-        Context context = environment.getContext();
-        PrefManager.init(context);
-        String currentBox86Version = PrefManager.getString("current_box86_version", "");
-        String currentBox64Version = PrefManager.getString("current_box64_version", "");
-        File rootDir = imageFs.getRootDir();
-
-        if (wow64Mode) {
-            File box86File = new File(rootDir, "/usr/local/bin/box86");
-            if (box86File.isFile()) {
-                box86File.delete();
-                PrefManager.putString("current_box86_version", "");
-            }
-        } else if (!box86Version.equals(currentBox86Version)) {
-            TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, context.getAssets(), "box86_64/box86-" + box86Version + ".tzst", rootDir);
-            PrefManager.putString("current_box86_version", box86Version);
-        }
-
-        if (!box64Version.equals(currentBox64Version)) {
-            TarCompressorUtils.extract(TarCompressorUtils.Type.ZSTD, context.getAssets(), "box86_64/box64-" + box64Version + ".tzst", rootDir);
-            PrefManager.putString("current_box64_version", box64Version);
-        }
-    }
-
     void copyDefaultBox64RCFile() {
         Context context = environment.getContext();
         ImageFs imageFs = ImageFs.find(context);
@@ -341,20 +299,6 @@ public class GuestProgramLauncherComponent extends EnvironmentComponent {
                 break;
         }
         FileUtils.copy(context, assetPath, new File(rootDir, "/etc/config.box64rc"));
-    }
-
-    private void addBox86EnvVars(EnvVars envVars, boolean enableLogs) {
-        envVars.put("BOX86_NOBANNER", ProcessHelper.PRINT_DEBUG && enableLogs ? "0" : "1");
-        envVars.put("BOX86_DYNAREC", "1");
-
-        if (enableLogs) {
-            envVars.put("BOX86_LOG", "1");
-            envVars.put("BOX86_DYNAREC_MISSING", "1");
-        }
-
-        envVars.putAll(Box86_64PresetManager.getEnvVars("box86", environment.getContext(), box86Preset));
-        envVars.put("BOX86_X11GLX", "1");
-        envVars.put("BOX86_NORCFILES", "1");
     }
 
     private void addBox64EnvVars(EnvVars envVars, boolean enableLogs) {

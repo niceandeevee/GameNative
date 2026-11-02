@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.platform.LocalView
@@ -30,8 +32,6 @@ import app.gamenative.ui.component.InfoCard
 import app.gamenative.ui.component.topbar.BackButton
 import app.gamenative.ui.data.Achievement
 import app.gamenative.ui.screen.library.components.ambient.AmbientDownloadOverlay
-import android.content.ActivityNotFoundException
-import android.net.Uri
 import android.view.KeyEvent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
@@ -42,7 +42,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusGroup
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -59,7 +58,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
@@ -68,12 +66,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
@@ -83,7 +78,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
@@ -99,8 +93,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -113,21 +105,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
@@ -142,12 +129,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -173,7 +158,6 @@ import app.gamenative.ui.internal.fakeAppInfo
 import app.gamenative.ui.screen.library.appscreen.CustomGameAppScreen
 import app.gamenative.ui.screen.library.appscreen.SteamAppScreen
 import app.gamenative.ui.screen.library.components.GameOptionsPanel
-import app.gamenative.ui.screen.library.components.VideoHero
 import app.gamenative.utils.FormatUtils
 import app.gamenative.ui.theme.PluviaTheme
 import com.skydoves.landscapist.ImageOptions
@@ -184,7 +168,6 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 // https://partner.steamgames.com/doc/store/assets/libraryassets#4
 
@@ -400,7 +383,6 @@ private fun ActionIconButton(
 }
 
 private data class StoreMediaItem(
-    val isVideo: Boolean,
     val url: String,
 )
 
@@ -408,40 +390,25 @@ private data class StoreMediaItem(
 private fun StoreMediaPage(
     item: StoreMediaItem,
     gameName: String,
-    videoFallback: String,
-    active: Boolean,
     fullscreen: Boolean,
-    autoplay: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    if (item.isVideo) {
-        VideoHero(
-            videoUrl = item.url,
-            fallbackImageUrl = videoFallback,
+    CoilImage(
+        imageModel = { item.url },
+        imageOptions = ImageOptions(
             contentDescription = gameName,
-            active = active,
-            muted = !fullscreen,
-            autoplay = autoplay,
-            modifier = modifier.background(Color.Black),
-        )
-    } else {
-        CoilImage(
-            imageModel = { item.url },
-            imageOptions = ImageOptions(
-                contentDescription = gameName,
-                contentScale = if (fullscreen) ContentScale.Fit else ContentScale.Crop,
-            ),
-            modifier = modifier.background(Color.Black),
-            loading = {
-                Box(
-                    modifier = Modifier.fillMaxSize().background(Color.Black),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(color = Color.White)
-                }
-            },
-        )
-    }
+            contentScale = if (fullscreen) ContentScale.Fit else ContentScale.Crop,
+        ),
+        modifier = modifier.background(Color.Black),
+        loading = {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color.Black),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(color = Color.White)
+            }
+        },
+    )
 }
 
 private fun buildStoreMedia(
@@ -449,10 +416,8 @@ private fun buildStoreMedia(
     fallbackImageUrl: String?,
 ): List<StoreMediaItem> = buildList {
     fallbackImageUrl?.takeIf(String::isNotBlank)?.let {
-        add(StoreMediaItem(isVideo = false, url = it))
+        add(StoreMediaItem(url = it))
     }
-    details.videos.forEach { add(StoreMediaItem(isVideo = true, url = it)) }
-    details.screenshots.forEach { add(StoreMediaItem(isVideo = false, url = it)) }
 }.distinctBy(StoreMediaItem::url)
 
 @Composable
@@ -460,8 +425,6 @@ private fun FullscreenStoreMediaDialog(
     media: List<StoreMediaItem>,
     initialPage: Int,
     gameName: String,
-    videoFallback: String,
-    autoplay: Boolean,
     onDismiss: (Int) -> Unit,
 ) {
     if (media.isEmpty()) return
@@ -501,10 +464,7 @@ private fun FullscreenStoreMediaDialog(
                     StoreMediaPage(
                         item = media[page],
                         gameName = gameName,
-                        videoFallback = videoFallback,
-                        active = page == pagerState.currentPage,
                         fullscreen = true,
-                        autoplay = autoplay,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -765,19 +725,10 @@ fun AppScreen(
 }
 
 
-internal data class ImmersiveModeUiState(
-    val isSupported: Boolean = false,
-    val isEnabled: Boolean = false,
-    val onChange: (Boolean) -> Unit = {},
-    val isVrEnabled: Boolean = false,
-    val onVrChange: (Boolean) -> Unit = {},
-)
-
 @Composable
 internal fun AppScreenContent(
     modifier: Modifier = Modifier,
     displayInfo: GameDisplayInfo,
-    resetHeroOnFirstArtworkChange: Boolean = false,
     downloadDisplayDetails: DownloadDisplayDetails,
     downloadInfo: app.gamenative.data.DownloadInfo? = null,
     onDownloadInstallClick: () -> Unit,
@@ -788,7 +739,6 @@ internal fun AppScreenContent(
     achievements: List<Achievement>? = null,
     optionsMenu: List<AppMenuOption>,
     dialogOpen: Boolean = false,
-    immersiveMode: ImmersiveModeUiState = ImmersiveModeUiState(),
 ) {
     // Unpacked so the body below is unchanged; bundling the params avoids a Compose VerifyError.
     val isInstalled = downloadDisplayDetails.isInstalled
@@ -805,27 +755,13 @@ internal fun AppScreenContent(
     val downloadAllowed = !PrefManager.downloadOnWifiOnly || hasWifiOrEthernet
     val scrollState = rememberScrollState()
     val heroMedia = remember(
-        displayInfo.storeDetails.videos,
-        displayInfo.storeDetails.screenshots,
         displayInfo.heroImageUrl,
     ) {
         buildStoreMedia(displayInfo.storeDetails, displayInfo.heroImageUrl)
     }
     val heroPagerState = rememberPagerState(pageCount = { heroMedia.size.coerceAtLeast(1) })
     val heroMediaScope = rememberCoroutineScope()
-    val videoFallback = displayInfo.heroImageUrl
-        ?: displayInfo.storeDetails.screenshots.firstOrNull().orEmpty()
     var fullscreenHeroPage by rememberSaveable(displayInfo.appId) { mutableStateOf<Int?>(null) }
-    var previousHeroImageUrl by remember(displayInfo.appId) {
-        mutableStateOf(displayInfo.heroImageUrl)
-    }
-    var didResetForFirstArtworkChange by remember(displayInfo.appId) {
-        mutableStateOf(false)
-    }
-    var heroHeightPx by remember { mutableIntStateOf(0) }
-    val heroPlaybackVisible by remember(scrollState) {
-        derivedStateOf { heroHeightPx > 0 && scrollState.value < heroHeightPx }
-    }
 
     var optionsMenuVisible by remember { mutableStateOf(false) }
 
@@ -861,9 +797,8 @@ internal fun AppScreenContent(
                     downloadTimeLeftText // keep the previous ETA text until the 1s tick
                 }
             } else if (isDownloading && downloadProgress >= 1f) {
-                // Bytes at 100% while the download is still active. Prefer the real status
-                // (e.g. Epic may still be fetching chunks — its byte total can saturate
-                // early); "Unpacking..." only when there is nothing more truthful to say.
+                // Bytes at 100% while the download is still active: prefer the real status,
+                // "Unpacking..." only when there is nothing more truthful to say.
                 lastEtaTextUpdateAt = 0L
                 downloadStatusMessage?.takeUnless { it.isBlank() } ?: unpackingText
             } else if (downloadProgress in 0f..1f && downloadProgress < 1f) {
@@ -880,30 +815,6 @@ internal fun AppScreenContent(
         scrollState.scrollTo(0)
         heroPagerState.scrollToPage(0)
         fullscreenHeroPage = null
-    }
-
-    // Amazon initially renders its library icon while the full catalog record is loaded.
-    // Reset once when that icon is replaced so the pager does not preserve its stable key at
-    // a later position. Other artwork refreshes must not discard the user's current position.
-    LaunchedEffect(
-        displayInfo.appId,
-        resetHeroOnFirstArtworkChange,
-        displayInfo.heroImageUrl,
-    ) {
-        val currentHeroImageUrl = displayInfo.heroImageUrl
-        val heroChanged = currentHeroImageUrl != previousHeroImageUrl
-        previousHeroImageUrl = currentHeroImageUrl
-        if (
-            resetHeroOnFirstArtworkChange &&
-            !didResetForFirstArtworkChange &&
-            heroChanged &&
-            !currentHeroImageUrl.isNullOrBlank()
-        ) {
-            didResetForFirstArtworkChange = true
-            scrollState.scrollTo(0)
-            heroPagerState.scrollToPage(0)
-            fullscreenHeroPage = null
-        }
     }
 
     LaunchedEffect(heroMedia.size) {
@@ -1044,9 +955,7 @@ internal fun AppScreenContent(
         ) {
             // Hero Section (Parallax)
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onSizeChanged { heroHeightPx = it.height },
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 // Store media carousel with the same parallax treatment as the former hero image.
                 Box(
@@ -1067,12 +976,7 @@ internal fun AppScreenContent(
                             StoreMediaPage(
                                 item = heroMedia[page],
                                 gameName = displayInfo.name,
-                                videoFallback = videoFallback,
-                                active = fullscreenHeroPage == null &&
-                                    heroPlaybackVisible &&
-                                    page == heroPagerState.currentPage,
                                 fullscreen = false,
-                                autoplay = hasWifiOrEthernet,
                                 modifier = Modifier.fillMaxSize(),
                             )
                         }
@@ -1325,50 +1229,6 @@ internal fun AppScreenContent(
                         }
                     }
 
-                    if (immersiveMode.isSupported && isInstalled) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 4.dp)
-                                .clickable { immersiveMode.onChange(!immersiveMode.isEnabled) },
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Checkbox(
-                                checked = immersiveMode.isEnabled,
-                                onCheckedChange = immersiveMode.onChange,
-                                colors = CheckboxDefaults.colors(
-                                    uncheckedColor = Color.White.copy(alpha = 0.7f),
-                                ),
-                            )
-                            Text(
-                                text = stringResource(R.string.launch_immersive_mode),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White,
-                            )
-                        }
-                        if (immersiveMode.isEnabled) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 24.dp)
-                                    .clickable { immersiveMode.onVrChange(!immersiveMode.isVrEnabled) },
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Checkbox(
-                                    checked = immersiveMode.isVrEnabled,
-                                    onCheckedChange = immersiveMode.onVrChange,
-                                    colors = CheckboxDefaults.colors(
-                                        uncheckedColor = Color.White.copy(alpha = 0.7f),
-                                    ),
-                                )
-                                Text(
-                                    text = stringResource(R.string.xr_windows_vr_toggle),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color.White,
-                                )
-                            }
-                        }
-                    }
 
                     if (isDownloading && isPortrait) {
                         Row(
@@ -1451,8 +1311,6 @@ internal fun AppScreenContent(
                     media = heroMedia,
                     initialPage = initialPage,
                     gameName = displayInfo.name,
-                    videoFallback = videoFallback,
-                    autoplay = hasWifiOrEthernet,
                     onDismiss = { lastPage ->
                         fullscreenHeroPage = null
                         heroMediaScope.launch { heroPagerState.scrollToPage(lastPage) }
@@ -2296,7 +2154,6 @@ private fun Preview_AppScreen() {
             reviewPercentage = 92,
             reviewCount = 12_438,
             tags = listOf("Adventure", "Story Rich", "Controller"),
-            screenshots = listOf(fakeApp.getHeroUrl()),
         ),
     )
     PluviaTheme {

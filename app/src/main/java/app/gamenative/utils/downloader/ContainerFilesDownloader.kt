@@ -1,7 +1,6 @@
 package app.gamenative.utils.downloader
 
 import android.content.Context
-import app.gamenative.BuildConfig
 import app.gamenative.service.SteamService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -76,10 +75,6 @@ object ContainerFilesDownloader {
             ?: throw Exception("Container file $componentId not found in $CONTAINER_FILES_MANIFEST_FILE")
 
         // Legacy variant: use bundled assets
-        if (!BuildConfig.MODERN_ANDROID) {
-            Timber.d("Legacy variant: Container file $componentId will be extracted from bundled assets")
-            return@withContext null
-        }
 
         // Modern variant: download from server
         // Check if already downloaded and cached
@@ -152,10 +147,6 @@ object ContainerFilesDownloader {
      * Safe to call on app startup - runs in background and doesn't block.
      */
     suspend fun preloadAllContainerFiles(context: Context) = withContext(Dispatchers.IO) {
-        if (!BuildConfig.MODERN_ANDROID) {
-            Timber.d("Legacy variant: Skipping container files preload (using bundled assets)")
-            return@withContext
-        }
 
         try {
             val manifest = loadContainerFilesManifest(context)

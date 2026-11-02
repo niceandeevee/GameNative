@@ -155,40 +155,6 @@ class ContainerFilesDownloaderTest {
     }
 
     @Test
-    fun testWfmOnlyExtractionCreatesMissingParentDirectories() {
-        assumeFalse("Bundled archive is only available in the legacy variant", BuildConfig.MODERN_ANDROID)
-
-        val destination = File(context.cacheDir, "wfm-only-extraction")
-        destination.deleteRecursively()
-        try {
-            assertTrue(ContainerManager(context).extractContainerPatternCommonWfm(destination, null))
-            val wfm = File(destination, "home/xuser/.wine/drive_c/windows/wfm.exe")
-            assertTrue("WFM should be extracted into a newly created prefix", wfm.isFile)
-            assertTrue("Extracted WFM should not be empty", wfm.length() > 0)
-        } finally {
-            destination.deleteRecursively()
-        }
-    }
-
-    @Test
-    fun testWfmOnlyExtractionFailsWhenWfmIsNotSelected() {
-        assumeFalse("Bundled archive is only available in the legacy variant", BuildConfig.MODERN_ANDROID)
-
-        val destination = File(context.cacheDir, "wfm-rejected-extraction")
-        destination.deleteRecursively()
-        try {
-            val rejectWfm = OnExtractFileListener { _, _ -> null }
-            assertFalse(
-                ContainerManager(context).extractContainerPatternCommonWfm(destination, rejectWfm),
-            )
-            val wfm = File(destination, "home/xuser/.wine/drive_c/windows/wfm.exe")
-            assertFalse("Rejected WFM should not be reported as extracted", wfm.exists())
-        } finally {
-            destination.deleteRecursively()
-        }
-    }
-
-    @Test
     fun testContainerPatternGamenativeExists() {
         val manifestJson = context.assets.open(ContainerFilesDownloader.CONTAINER_FILES_MANIFEST_FILE).bufferedReader().use { it.readText() }
         val manifest = Json { ignoreUnknownKeys = true }

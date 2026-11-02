@@ -2,7 +2,6 @@ package app.gamenative
 
 import android.content.Context
 import android.content.pm.ActivityInfo
-import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.Preferences
@@ -687,13 +686,6 @@ object PrefManager {
             setPref(CONTAINER_LANGUAGE, value)
         }
 
-    private val BOX86_PRESET = stringPreferencesKey("box86_preset")
-    var box86Preset: String
-        get() = getPref(BOX86_PRESET, Box86_64Preset.COMPATIBILITY)
-        set(value) {
-            setPref(BOX86_PRESET, value)
-        }
-
     private val BOX64_PRESET = stringPreferencesKey("box64_preset")
     var box64Preset: String
         get() = getPref(BOX64_PRESET, Box86_64Preset.COMPATIBILITY)
@@ -833,13 +825,6 @@ object PrefManager {
             setPref(PORTRAIT_BELOW_CUTOUT, value)
         }
 
-    private val BOX_86_VERSION = stringPreferencesKey("box86_version")
-    var box86Version: String
-        get() = getPref(BOX_86_VERSION, DefaultVersion.BOX86)
-        set(value) {
-            setPref(BOX_86_VERSION, value)
-        }
-
     private val BOX_64_VERSION = stringPreferencesKey("box64_version")
     var box64Version: String
         get() = getPref(BOX_64_VERSION, DefaultVersion.BOX64)
@@ -958,7 +943,6 @@ object PrefManager {
     var libraryFilter: EnumSet<AppFilter>
         get() {
             val defaultFilter = EnumSet.of(AppFilter.GAME, AppFilter.SHARED)
-            if (BuildConfig.XR_BUILD) defaultFilter.add(AppFilter.VR)
             val value = getPref(LIBRARY_FILTER, AppFilter.toFlags(defaultFilter))
             return AppFilter.fromFlags(value)
         }
@@ -1269,14 +1253,6 @@ object PrefManager {
             setPref(SHOW_HIDDEN_GAMES_BY_DEFAULT, value)
         }
 
-    // Show dialog when adding custom game folder
-    private val SHOW_ADD_CUSTOM_GAME_DIALOG = booleanPreferencesKey("show_add_custom_game_dialog")
-    var showAddCustomGameDialog: Boolean
-        get() = getPref(SHOW_ADD_CUSTOM_GAME_DIALOG, true)
-        set(value) {
-            setPref(SHOW_ADD_CUSTOM_GAME_DIALOG, value)
-        }
-
     // Import the custom game as a Steam game
     private val IMPORT_CUSTOM_GAME_AS_STEAM_GAME = booleanPreferencesKey("import_custom_game_as_steam_game")
     var importCustomGameAsSteamGame: Boolean
@@ -1316,31 +1292,6 @@ object PrefManager {
         set(value) {
             setPref(EXTERNAL_STORAGE_PATH, value)
         }
-
-    private val FRONTEND_SYNC_DIR_STEAM = stringPreferencesKey("frontend_sync_dir_steam")
-    private val FRONTEND_SYNC_DIR_CUSTOM = stringPreferencesKey("frontend_sync_dir_custom")
-
-    var frontendSyncDirSteam: String
-        get() = getPref(FRONTEND_SYNC_DIR_STEAM, "")
-        set(value) { setPref(FRONTEND_SYNC_DIR_STEAM, value) }
-
-    var frontendSyncDirCustom: String
-        get() = getPref(FRONTEND_SYNC_DIR_CUSTOM, "")
-        set(value) { setPref(FRONTEND_SYNC_DIR_CUSTOM, value) }
-
-    /** Returns the configured export directory for [source], or an empty string if not set. */
-    fun getFrontendSyncDir(source: GameSource): String = when (source) {
-        GameSource.STEAM -> frontendSyncDirSteam
-        GameSource.CUSTOM_GAME -> frontendSyncDirCustom
-    }
-
-    /** Persists [path] as the export directory for [source]. Pass an empty string to clear. */
-    fun setFrontendSyncDir(source: GameSource, path: String) {
-        when (source) {
-            GameSource.STEAM -> frontendSyncDirSteam = path
-            GameSource.CUSTOM_GAME -> frontendSyncDirCustom = path
-        }
-    }
 
     // Custom Games root (additional paths). Default path is provided by the app at runtime and isn't stored here.
     private val CUSTOM_GAME_PATHS = stringPreferencesKey("custom_game_paths")

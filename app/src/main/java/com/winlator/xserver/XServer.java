@@ -51,14 +51,13 @@ public class XServer {
     private volatile ScreenInfo effectiveScreenInfo;
     private final boolean mouseDragCompatibilityEnabled;
     private boolean simulateTouchScreen = false;
-    private final boolean runningFromGlibc;
     private volatile boolean flatPresentationEnabled = true;
 
-    public XServer(ScreenInfo screenInfo, boolean useGlibcContainer) {
-        this(screenInfo, useGlibcContainer, false);
+    public XServer(ScreenInfo screenInfo) {
+        this(screenInfo, false);
     }
 
-    public XServer(ScreenInfo screenInfo, boolean useGlibcContainer, boolean mouseDragCompatibilityEnabled) {
+    public XServer(ScreenInfo screenInfo, boolean mouseDragCompatibilityEnabled) {
         Log.d("XServer", "Creating xServer " + screenInfo);
         this.screenInfo = screenInfo;
         for (Lockable lockable : Lockable.values()) locks.put(lockable, new ReentrantLock());
@@ -70,11 +69,7 @@ public class XServer {
         selectionManager = new SelectionManager(windowManager);
         inputDeviceManager = new InputDeviceManager(this);
         grabManager = new GrabManager(this);
-        runningFromGlibc = useGlibcContainer;
-        this.mouseDragCompatibilityEnabled = shouldAdvertiseGenericEvents(
-                useGlibcContainer,
-                mouseDragCompatibilityEnabled
-        );
+        this.mouseDragCompatibilityEnabled = mouseDragCompatibilityEnabled;
 
         DesktopHelper.attachTo(this);
         setupExtensions();
@@ -399,20 +394,10 @@ public class XServer {
         registerExtension(new DRI3Extension(),      nextEventId, nextErrorId);
         registerExtension(new PresentExtension(),   nextEventId, nextErrorId);
         registerExtension(new SyncExtension(),      nextEventId, nextErrorId);
-        if (supportsXInput2(runningFromGlibc)) {
-            if (mouseDragCompatibilityEnabled) {
-                registerExtension(new GenericEventExtension(), nextEventId, nextErrorId);
-            }
-            registerExtension(new XInput2Extension(),   nextEventId, nextErrorId);
+        if (mouseDragCompatibilityEnabled) {
+            registerExtension(new GenericEventExtension(), nextEventId, nextErrorId);
         }
-    }
-
-    static boolean supportsXInput2(boolean useGlibcContainer) {
-        return !useGlibcContainer;
-    }
-
-    static boolean shouldAdvertiseGenericEvents(boolean useGlibcContainer, boolean mouseDragCompatibilityEnabled) {
-        return supportsXInput2(useGlibcContainer) && mouseDragCompatibilityEnabled;
+        registerExtension(new XInput2Extension(),   nextEventId, nextErrorId);
     }
 
     public <T extends Extension> T getExtension(int opcode) {

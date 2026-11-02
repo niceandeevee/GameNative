@@ -42,7 +42,7 @@ object EaLicenseManager {
 
 
     /**
-     * Asks EA to pull the entitlements granted through linked storefronts (Steam, Epic) into the
+     * Asks EA to pull the entitlements granted through linked storefronts (Steam) into the
      * EA account, the way the EA app does before it verifies a Steam-launched title. Returns the
      * response body when the request was accepted, null otherwise.
      */

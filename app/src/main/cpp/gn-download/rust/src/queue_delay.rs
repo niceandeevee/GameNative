@@ -1,5 +1,5 @@
-//! Queueing-delay estimator (LEDBAT, RFC 6817) shared by both window controllers (Steam
-//! `depot_writer` and the Epic/GOG/Amazon `fetch_core`).
+//! Queueing-delay estimator (LEDBAT, RFC 6817) used by the Steam
+//! `depot_writer` window controller.
 //!
 //! A background thread takes one TCP-connect round trip to the CDN hosts (round-robin, one every
 //! [`PROBE_INTERVAL_MS`]). Each host keeps a **base delay** — the minimum RTT over

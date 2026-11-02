@@ -139,8 +139,6 @@ object LauncherOrientation {
 
     /** Applies the stored orientation before the first frame, to avoid a rotation flash. */
     fun applyStored(activity: Activity) {
-        if (MainActivity.isHeadset(activity)) return
-
         // A container can outlive an activity recreation; it keeps owning the orientation then.
         if (PluviaApp.xEnvironment != null) return
 

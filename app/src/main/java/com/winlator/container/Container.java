@@ -73,7 +73,6 @@ public class Container {
     public static final String STEAM_TYPE_LIGHT = "light";
     public static final String STEAM_TYPE_ULTRALIGHT = "ultralight";
     public static final String STEAM_TYPE_HEADLESS = "headless";
-    public static final String GLIBC = "glibc";
     public static final String BIONIC = "bionic";
     public static final byte MAX_DRIVE_LETTERS = 8;
     public final String id;
@@ -87,8 +86,6 @@ public class Container {
     private String rendererPresentMode = "fifo";
     private String displayRenderer = Container.DEFAULT_DISPLAY_RENDERER;
     private String displayServer = DefaultVersion.DISPLAY_SERVER;
-    private int xrRefreshRate = 72;
-    private int xrRenderScale = 100;
     private boolean sfCompatMode = true;
     private String wincomponents = DEFAULT_WINCOMPONENTS;
     private String audioDriver = DEFAULT_AUDIO_DRIVER;
@@ -98,7 +95,6 @@ public class Container {
     private String drives = DEFAULT_DRIVES;
     private String wineVersion = WineInfo.MAIN_WINE_VERSION.identifier();
     private boolean showFPS;
-    private boolean launchImmersiveMode = app.gamenative.BuildConfig.XR_BUILD;
     private boolean launchRealSteam;
     private boolean launchBionicSteam;
     private boolean allowSteamUpdates;
@@ -108,9 +104,7 @@ public class Container {
     private String cpuList;
     private String cpuListWoW64;
     private String desktopTheme = WineThemeManager.DEFAULT_DESKTOP_THEME;
-    private String box86Version = DefaultVersion.BOX86;
     private String box64Version = DefaultVersion.BOX64;
-    private String box86Preset = Box86_64Preset.PERFORMANCE;
     private String box64Preset = Box86_64Preset.PERFORMANCE;
     private String fexcoreVersion = DefaultVersion.FEXCORE;
     private String fexcorePreset = FEXCorePreset.INTERMEDIATE;
@@ -144,7 +138,7 @@ public class Container {
     // Disable external mouse input
     private boolean disableMouseInput = false;
     // Touchscreen mode (defaults on for XR builds)
-    private boolean touchscreenMode = app.gamenative.BuildConfig.XR_BUILD;
+    private boolean touchscreenMode = false;
     // Shooter mode
     private boolean shooterMode = true;
     // Serialised JSON gesture configuration (used when touchscreenMode is true)
@@ -294,14 +288,6 @@ public class Container {
 
     public String getDisplayServer() { return displayServer; }
 
-    public int getXrRefreshRate() { return xrRefreshRate; }
-
-    public void setXrRefreshRate(int v) { this.xrRefreshRate = v; }
-
-    public int getXrRenderScale() { return xrRenderScale; }
-
-    public void setXrRenderScale(int v) { this.xrRenderScale = v; }
-
     public void setDisplayRenderer(String v) { this.displayRenderer = v; }
 
     public void setDisplayServer(String v) { this.displayServer = v; }
@@ -396,14 +382,6 @@ public class Container {
 
     public void setShowFPS(boolean showFPS) {
         this.showFPS = showFPS;
-    }
-
-    public boolean isLaunchImmersiveMode() {
-        return launchImmersiveMode;
-    }
-
-    public void setLaunchImmersiveMode(boolean launchImmersiveMode) {
-        this.launchImmersiveMode = launchImmersiveMode;
     }
 
     public boolean isLaunchRealSteam() {
@@ -516,10 +494,6 @@ public class Container {
         this.cpuListWoW64 = cpuListWoW64 != null && !cpuListWoW64.isEmpty() ? cpuListWoW64 : null;
     }
 
-    public String getBox86Version() { return box86Version; }
-
-    public void setBox86Version(String box86Version) { this.box86Version = box86Version; }
-
     public String getBox64Version() { return box64Version; }
 
     public void setBox64Version(String box64Version) { this.box64Version = box64Version; }
@@ -530,14 +504,6 @@ public class Container {
 
     public String getEmulator() {
         return this.emulator;
-    }
-
-    public String getBox86Preset() {
-        return box86Preset;
-    }
-
-    public void setBox86Preset(String box86Preset) {
-        this.box86Preset = box86Preset;
     }
 
     public String getBox64Preset() {
@@ -788,8 +754,6 @@ public class Container {
             data.put("rendererPresentMode", rendererPresentMode);
             data.put("displayRendererMode", displayRenderer);
             data.put("displayServer", displayServer);
-            data.put("xrRefreshRate", xrRefreshRate);
-            data.put("xrRenderScale", xrRenderScale);
             data.put("sfCompatMode", sfCompatMode);
             data.put("dxwrapper", dxwrapper);
             if (!dxwrapperConfig.isEmpty()) data.put("dxwrapperConfig", dxwrapperConfig);
@@ -799,7 +763,6 @@ public class Container {
             data.put("wincomponents", wincomponents);
             data.put("drives", drives);
             data.put("showFPS", showFPS);
-            data.put("launchImmersiveMode", launchImmersiveMode);
             data.put("launchRealSteam", launchRealSteam);
             data.put("launchBionicSteam", launchBionicSteam);
             data.put("allowSteamUpdates", allowSteamUpdates);
@@ -807,9 +770,7 @@ public class Container {
             data.put("dinputMapperType", dinputMapperType);
             data.put("wow64Mode", wow64Mode);
             data.put("startupSelection", startupSelection);
-            data.put("box86Version", box86Version);
             data.put("box64Version", box64Version);
-            data.put("box86Preset", box86Preset);
             data.put("box64Preset", box64Preset);
             data.put("fexcorePreset", fexcorePreset);
             data.put("desktopTheme", desktopTheme);
@@ -926,12 +887,6 @@ public class Container {
                 case "displayServer" :
                     setDisplayServer(data.getString(key));
                     break;
-                case "xrRefreshRate" :
-                    setXrRefreshRate(data.getInt(key));
-                    break;
-                case "xrRenderScale" :
-                    setXrRenderScale(data.getInt(key));
-                    break;
                 case "sfCompatMode" :
                     setSfCompatMode(data.getBoolean(key));
                     break;
@@ -949,9 +904,6 @@ public class Container {
                     break;
                 case "showFPS" :
                     setShowFPS(data.getBoolean(key));
-                    break;
-                case "launchImmersiveMode" :
-                    setLaunchImmersiveMode(data.getBoolean(key));
                     break;
                 case "launchRealSteam" :
                     setLaunchRealSteam(data.getBoolean(key));
@@ -1007,14 +959,8 @@ public class Container {
                 case "emulator" :
                     setEmulator(data.getString(key));
                     break;
-                case "box86Version":
-                    setBox86Version(data.getString(key));
-                    break;
                 case "box64Version":
                     setBox64Version(data.getString(key));
-                    break;
-                case "box86Preset" :
-                    setBox86Preset(data.getString(key));
                     break;
                 case "box64Preset" :
                     setBox64Preset(data.getString(key));

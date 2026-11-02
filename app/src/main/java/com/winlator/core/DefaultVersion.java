@@ -6,7 +6,6 @@ import com.winlator.container.Container;
 
 public abstract class DefaultVersion {
 
-    public static final String BOX86 = "0.3.2";
     public static final String BOX64 = "0.4.2";
     public static final String FEXCORE = "2610-gn-5";
     public static String WRAPPER = "System";
@@ -21,7 +20,7 @@ public abstract class DefaultVersion {
     public static final String ADRENO = "819.2";
     public static final String SD8ELITE = "800.51";
     public static String STEAM_TYPE = STEAM_TYPE_HEADLESS;
-    public static String VARIANT = Container.GLIBC;
+    public static final String VARIANT = Container.BIONIC;
     public static String DEFAULT_GRAPHICS_DRIVER = "vortek";
     public static String WINE_VERSION = com.winlator.core.WineInfo.MAIN_WINE_VERSION.identifier();
     public static String ASYNC = "1";

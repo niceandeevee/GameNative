@@ -16,7 +16,6 @@ import app.gamenative.powercontrol.PowerManager
 import app.gamenative.service.ActiveGameRegistry
 import app.gamenative.service.DownloadService
 import app.gamenative.service.SteamService
-import app.gamenative.sync.FrontendSyncManager
 import app.gamenative.ui.screen.xserver.RadialMenuCoordinator
 import app.gamenative.utils.AppExitRecorder
 import app.gamenative.utils.ContainerMigrator
@@ -87,7 +86,6 @@ class PluviaApp : Application() {
         // Init our datastore preferences.
         PrefManager.init(this)
         NexusAuthManager.initialize(this)
-        FrontendSyncManager.init(this)
 
         DownloadService.populateDownloadService(this)
 

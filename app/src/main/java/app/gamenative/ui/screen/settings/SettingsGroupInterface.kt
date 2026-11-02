@@ -21,25 +21,22 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Login
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
-import app.gamenative.BuildConfig
 import app.gamenative.R
 import app.gamenative.PrefManager
 import app.gamenative.enums.AppTheme
@@ -75,50 +72,20 @@ import com.winlator.core.AppUtils
 import app.gamenative.ui.component.dialog.MessageDialog
 import app.gamenative.ui.component.dialog.LoadingDialog
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import app.gamenative.utils.LocaleHelper
-import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 import app.gamenative.PluviaApp
 import app.gamenative.events.AndroidEvent
 import app.gamenative.utils.StorageUtils
-import app.gamenative.data.GameSource
-import app.gamenative.sync.FrontendSyncManager
 import app.gamenative.ui.util.SnackbarManager
-
-/** Icon button that triggers [FrontendSyncManager.resyncAll] and shows a spinner while syncing. */
-@Composable
-private fun FrontendSyncResyncButton() {
-    val isSyncing by FrontendSyncManager.isSyncing.collectAsState()
-    val resyncLabel = stringResource(R.string.frontend_sync_resync_all)
-    IconButton(
-        onClick = { FrontendSyncManager.resyncAll() },
-        modifier = Modifier.semantics { contentDescription = resyncLabel },
-    ) {
-        if (isSyncing) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
-                strokeWidth = 2.dp,
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Default.Sync,
-                contentDescription = stringResource(R.string.frontend_sync_resync_all),
-            )
-        }
-    }
-}
 
 /** Settings group covering interface preferences: theme, downloads, frontend sync, language, and icons. */
 @Composable
@@ -182,7 +149,6 @@ fun SettingsGroupInterface(
         steamRegionsList.indexOfFirst { it.first == PrefManager.cellId }.takeIf { it >= 0 } ?: 0
     ) }
 
-    var showFrontendSyncDialog by rememberSaveable { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -385,19 +351,6 @@ fun SettingsGroupInterface(
             title = { Text(text = stringResource(R.string.settings_interface_library_tabs_title)) },
             subtitle = { Text(text = stringResource(R.string.settings_interface_library_tabs_subtitle)) },
         )
-
-        if (!BuildConfig.MODERN_ANDROID) {
-            val anyFrontendSyncConfigured by FrontendSyncManager.anyConfigured.collectAsState()
-            SettingsMenuLink(
-                colors = settingsTileColorsAlt(),
-                title = { Text(text = stringResource(R.string.settings_interface_frontend_sync_title)) },
-                subtitle = { Text(text = stringResource(R.string.settings_interface_frontend_sync_subtitle)) },
-                action = if (anyFrontendSyncConfigured) {
-                    { FrontendSyncResyncButton() }
-                } else null,
-                onClick = { showFrontendSyncDialog = true },
-            )
-        }
 
         // Language selection
         SettingsMenuLink(
@@ -750,9 +703,6 @@ fun SettingsGroupInterface(
         message = stringResource(R.string.settings_language_changing),
     )
 
-    if (showFrontendSyncDialog) {
-        FrontendSyncDialog(onDismiss = { showFrontendSyncDialog = false })
-    }
 
 }
 

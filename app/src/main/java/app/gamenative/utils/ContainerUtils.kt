@@ -2,8 +2,6 @@ package app.gamenative.utils
 
 import android.content.Context
 import android.os.Build
-import app.gamenative.BuildConfig
-import app.gamenative.MainActivity
 import app.gamenative.PrefManager
 import app.gamenative.data.GameSource
 import app.gamenative.gamefixes.GameFixesRegistry
@@ -16,7 +14,6 @@ import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
 import com.winlator.core.DefaultVersion
 import com.winlator.core.FileUtils
-import com.winlator.core.KeyValueSet
 import com.winlator.core.GPUInformation
 import com.winlator.core.envvars.EnvVars
 import com.winlator.core.WineRegistryEditor
@@ -24,7 +21,6 @@ import com.winlator.core.WineThemeManager
 import com.winlator.winhandler.WinHandler.PreferredInputApi
 import com.winlator.xenvironment.ImageFs
 import java.io.File
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.json.JSONArray
@@ -49,7 +45,6 @@ object ContainerUtils {
     fun setContainerDefaults(context: Context) {
         // Override default driver and DXVK version based on Turnip capability
         if (GPUInformation.isTurnipCapable(context)) {
-            DefaultVersion.VARIANT = Container.BIONIC
             DefaultVersion.WINE_VERSION = "proton-11.0-2-arm64ec-9"
             DefaultVersion.DEFAULT_GRAPHICS_DRIVER = "Wrapper"
             DefaultVersion.DXVK = if (GPUInformation.isAdreno6xx(context)) "1.11.1-sarek" else "2.4.1-gplasync"
@@ -61,7 +56,6 @@ object ContainerUtils {
             DefaultVersion.STEAM_TYPE = Container.STEAM_TYPE_HEADLESS
             DefaultVersion.ASYNC_CACHE = "1"
         } else if (GPUInformation.isAdrenoA12(context)) {
-            DefaultVersion.VARIANT = Container.BIONIC
             DefaultVersion.WINE_VERSION = "proton-11.0-2-arm64ec-9"
             DefaultVersion.DEFAULT_GRAPHICS_DRIVER = "Wrapper"
             DefaultVersion.DXVK = "2.4.1-gplasync"
@@ -70,7 +64,6 @@ object ContainerUtils {
             DefaultVersion.STEAM_TYPE = Container.STEAM_TYPE_HEADLESS
             DefaultVersion.ASYNC_CACHE = "1"
         } else if (GPUInformation.isAdreno8EliteGen5(context)) {
-            DefaultVersion.VARIANT = Container.BIONIC
             DefaultVersion.WINE_VERSION = "proton-11.0-2-arm64ec-9"
             DefaultVersion.DEFAULT_GRAPHICS_DRIVER = "Wrapper"
             DefaultVersion.DXVK = "2.4.1-gplasync"
@@ -79,7 +72,6 @@ object ContainerUtils {
             DefaultVersion.STEAM_TYPE = Container.STEAM_TYPE_HEADLESS
             DefaultVersion.ASYNC_CACHE = "1"
         } else if (GPUInformation.isAdreno8Elite(context)) {
-            DefaultVersion.VARIANT = Container.BIONIC
             DefaultVersion.WINE_VERSION = "proton-11.0-2-arm64ec-9"
             DefaultVersion.DEFAULT_GRAPHICS_DRIVER = "Wrapper"
             DefaultVersion.DXVK = "2.4.1-gplasync"
@@ -88,7 +80,6 @@ object ContainerUtils {
             DefaultVersion.STEAM_TYPE = Container.STEAM_TYPE_HEADLESS
             DefaultVersion.ASYNC_CACHE = "1"
         } else {
-            DefaultVersion.VARIANT = Container.BIONIC
             DefaultVersion.WINE_VERSION = "proton-11.0-2-arm64ec-9"
             DefaultVersion.DEFAULT_GRAPHICS_DRIVER =
                 if (GPUInformation.isAdrenoGPU(context)) "Wrapper" else "Wrapper-gamenative"
@@ -143,9 +134,7 @@ object ContainerUtils {
             cpuListWoW64 = PrefManager.cpuListWoW64,
             wow64Mode = PrefManager.wow64Mode,
             startupSelection = PrefManager.startupSelection.toByte(),
-            box86Version = PrefManager.box86Version,
             box64Version = PrefManager.box64Version,
-            box86Preset = PrefManager.box86Preset,
             box64Preset = PrefManager.box64Preset,
             desktopTheme = WineThemeManager.DEFAULT_DESKTOP_THEME,
             language = PrefManager.containerLanguage,
@@ -216,9 +205,7 @@ object ContainerUtils {
         PrefManager.cpuListWoW64 = containerData.cpuListWoW64
         PrefManager.wow64Mode = containerData.wow64Mode
         PrefManager.startupSelection = containerData.startupSelection.toInt()
-        PrefManager.box86Version = containerData.box86Version
         PrefManager.box64Version = containerData.box64Version
-        PrefManager.box86Preset = containerData.box86Preset
         PrefManager.box64Preset = containerData.box64Preset
 
         PrefManager.csmt = containerData.csmt
@@ -328,8 +315,6 @@ object ContainerUtils {
             rendererPresentMode = container.rendererPresentMode,
             displayRenderer = container.displayRenderer,
             displayServer = container.displayServer,
-            xrRefreshRate = container.xrRefreshRate,
-            xrRenderScale = container.xrRenderScale,
             sfCompatMode = container.sfCompatMode,
             dxwrapper = container.dxWrapper,
             dxwrapperConfig = container.dxWrapperConfig,
@@ -349,9 +334,7 @@ object ContainerUtils {
             cpuListWoW64 = container.cpuListWoW64,
             wow64Mode = container.isWoW64Mode,
             startupSelection = container.startupSelection.toByte(),
-            box86Version = container.box86Version,
             box64Version = container.box64Version,
-            box86Preset = container.box86Preset,
             box64Preset = container.box64Preset,
             desktopTheme = container.desktopTheme,
             containerVariant = container.containerVariant,
@@ -401,8 +384,6 @@ object ContainerUtils {
             vibrationIntensity = (container.getExtra("vibrationIntensity", "100").toIntOrNull() ?: 100).coerceIn(0, 100),
             // LSFG Vulkan frame generation
             lsfgEnabled = container.getExtra(LsfgVkManager.EXTRA_ARMED, "false").toBoolean(),
-            windowsVrEnabled = container.getExtra("windowsVrEnabled", "false").toBoolean(),
-            openCompositeEnabled = container.getExtra("windowsVrOpenCompositeEnabled", "false").toBoolean(),
         )
     }
 
@@ -539,8 +520,6 @@ object ContainerUtils {
         container.rendererPresentMode = containerData.rendererPresentMode
         container.displayRenderer = containerData.displayRenderer
         container.displayServer = containerData.displayServer
-        container.xrRefreshRate = containerData.xrRefreshRate
-        container.xrRenderScale = containerData.xrRenderScale
         container.sfCompatMode = containerData.sfCompatMode
         container.dxWrapper = containerData.dxwrapper
         container.dxWrapperConfig = containerData.dxwrapperConfig
@@ -567,9 +546,7 @@ object ContainerUtils {
         container.cpuListWoW64 = containerData.cpuListWoW64
         container.isWoW64Mode = containerData.wow64Mode
         container.startupSelection = containerData.startupSelection
-        container.box86Version = containerData.box86Version
         container.box64Version = containerData.box64Version
-        container.box86Preset = containerData.box86Preset
         container.box64Preset = containerData.box64Preset
         container.isSdlControllerAPI = containerData.sdlControllerAPI
         container.isFasterExternalLoading = containerData.fasterExternalLoading
@@ -608,8 +585,6 @@ object ContainerUtils {
         container.putExtra("vibrationIntensity", containerData.vibrationIntensity.coerceIn(0, 100).toString())
         // LSFG Vulkan frame generation
         container.putExtra(LsfgVkManager.EXTRA_ARMED, containerData.lsfgEnabled.toString())
-        container.putExtra("windowsVrEnabled", containerData.windowsVrEnabled.toString())
-        container.putExtra("windowsVrOpenCompositeEnabled", containerData.openCompositeEnabled.toString())
         try {
             container.language = containerData.language
         } catch (e: Exception) {
@@ -848,9 +823,7 @@ object ContainerUtils {
                 launchBionicSteam = PrefManager.launchBionicSteam,
                 wow64Mode = PrefManager.wow64Mode,
                 startupSelection = PrefManager.startupSelection.toByte(),
-                box86Version = PrefManager.box86Version,
                 box64Version = PrefManager.box64Version,
-                box86Preset = PrefManager.box86Preset,
                 box64Preset = PrefManager.box64Preset,
                 desktopTheme = WineThemeManager.DEFAULT_DESKTOP_THEME,
                 language = PrefManager.containerLanguage,
@@ -890,23 +863,6 @@ object ContainerUtils {
                 externalDisplaySwap = PrefManager.externalDisplaySwap,
                 vibrationIntensity = PrefManager.vibrationIntensity,
             )
-        }
-
-        if (BuildConfig.XR_BUILD && MainActivity.isMetaQuest()) {
-            val kvs = KeyValueSet(containerData.graphicsDriverConfig)
-            kvs.put("adrenotoolsTurnip", "0")
-            containerData = containerData.copy(graphicsDriverConfig = kvs.toString())
-        }
-
-        if (BuildConfig.XR_BUILD) {
-            containerData = containerData.copy(
-                launchRealSteam = true,
-                launchBionicSteam = false,
-                steamType = Container.STEAM_TYPE_HEADLESS,
-            )
-            if (isVrGame(appId, gameSource)) {
-                containerData = containerData.copy(windowsVrEnabled = true, openCompositeEnabled = true)
-            }
         }
 
         if (Build.MANUFACTURER.equals("samsung", ignoreCase = true) && GPUInformation.isAdreno740(context)) {
@@ -1120,11 +1076,6 @@ object ContainerUtils {
                 Timber.w("[ContainerDeletion] Dirs present on disk but NOT loaded by ContainerManager (corrupt/empty config): $unloadedIds")
             }
         }
-    }
-
-    private fun isVrGame(appId: String, gameSource: GameSource): Boolean {
-        if (gameSource != GameSource.STEAM) return false
-        return runCatching { SteamService.getAppInfoOf(extractGameIdFromContainerId(appId))?.isVrGame }.getOrNull() == true
     }
 
     /**
