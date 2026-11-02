@@ -85,6 +85,12 @@ android {
         }
     }
 
+    // Release builds ran lintVital (~2.5 min) in parallel with R8 on the CI runner's 4 cores. It
+    // only reports problems and never changes the APK; the PR checks compile and test every change.
+    lint {
+        checkReleaseBuilds = false
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
