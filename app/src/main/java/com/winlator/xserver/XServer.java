@@ -50,6 +50,11 @@ public class XServer {
     private volatile boolean forceRelativeMouseMovement = false;
     private volatile ScreenInfo effectiveScreenInfo;
     private final boolean mouseDragCompatibilityEnabled;
+    // Mouselook warp sync (see injectPointerMoveDelta); guarded by the INPUT_DEVICE lock.
+    private static final long WARP_SYNC_WINDOW_NANOS = 100_000_000L;
+    private long lastWarpNanos = 0;
+    private int pendingWarpDx = 0;
+    private int pendingWarpDy = 0;
     private boolean simulateTouchScreen = false;
     private volatile boolean flatPresentationEnabled = true;
 
@@ -265,45 +270,83 @@ public class XServer {
         }
 
         try (XLock lock = lock(Lockable.WINDOW_MANAGER, Lockable.INPUT_DEVICE)) {
-            ScreenInfo screen = getEffectiveScreenInfo();
-            int minX = 0, minY = 0;
-            int maxX = screen.width - 1, maxY = screen.height - 1;
-            short clampedX = 0, clampedY = 0;
-
-            // ClipCursor
-            Rect confinement = grabManager.getConfinementBounds();
-            if (confinement != null) {
-                minX = Math.max(minX, confinement.left);
-                minY = Math.max(minY, confinement.top);
-                maxX = Math.min(maxX, confinement.right - 1);
-                maxY = Math.min(maxY, confinement.bottom - 1);
-
-                clampedX = (short) Mathf.clamp(pointer.getX() + dx, minX, maxX);
-                clampedY = (short) Mathf.clamp(pointer.getY() + dy, minY, maxY);
-
-                pointer.setPosition(clampedX, clampedY);
-            } else {
-                // Legacy path for old Proton builds with broken ClipCursor
-                // Do NOT remove without confirming no regressions with:
-                // - Games that rely on XWarpPointer (see WindowRequests.java:warpPointer)
-                // - Games that call ClipCursor and happen to work well with this workaround
-                short softMarginX = (short)(screen.width * 0.05f);
-                short softMarginY = (short)(screen.height * 0.05f);
-                short x = (short)Mathf.clamp(pointer.getX() + dx, -softMarginX, maxX + softMarginX);
-                short y = (short)Mathf.clamp(pointer.getY() + dy, -softMarginY, maxY + softMarginY);
-
-                pointer.setPosition(x, y);
-
-                clampedX = (short)Mathf.clamp(x, 0, maxX);
-                clampedY = (short)Mathf.clamp(y, 0, maxY);
-
-                pointer.setX(clampedX);
-                pointer.setY(clampedY);
-            }
-
+            // XI raw motion carries each step as it happens; only the core pointer is synchronised.
             XInput2Extension xi = getExtension(XInput2Extension.MAJOR_OPCODE);
             if (xi != null)
                 xi.emitRawMotion(2, dx, dy);
+
+            long now = System.nanoTime();
+            if (lastWarpNanos != 0 && now - lastWarpNanos < WARP_SYNC_WINDOW_NANOS) {
+                // The client is recentring the pointer every frame (mouselook). Moving the pointer now
+                // would race its next warp: Wine compares the reported position with where it last put
+                // the cursor, so a step landing before the warp is processed is counted twice and one
+                // landing after it is lost. Hold the motion and apply it right after that warp instead.
+                pendingWarpDx += dx;
+                pendingWarpDy += dy;
+            } else {
+                dx += pendingWarpDx;
+                dy += pendingWarpDy;
+                pendingWarpDx = 0;
+                pendingWarpDy = 0;
+                movePointerByLocked(dx, dy);
+            }
+        }
+    }
+
+    /**
+     * Called (under the WINDOW_MANAGER and INPUT_DEVICE locks) when a client warps the pointer.
+     * Injected motion held since the previous warp is applied on top of the new position, so it
+     * reaches the client exactly once, after the client's own recentring.
+     */
+    public void onClientWarpPointer(int x, int y) {
+        lastWarpNanos = System.nanoTime();
+        if (pendingWarpDx == 0 && pendingWarpDy == 0) {
+            pointer.setPosition(x, y);
+            return;
+        }
+        int dx = pendingWarpDx, dy = pendingWarpDy;
+        pendingWarpDx = 0;
+        pendingWarpDy = 0;
+        pointer.setX(x);
+        pointer.setY(y);
+        movePointerByLocked(dx, dy);
+    }
+
+    private void movePointerByLocked(int dx, int dy) {
+        ScreenInfo screen = getEffectiveScreenInfo();
+        int minX = 0, minY = 0;
+        int maxX = screen.width - 1, maxY = screen.height - 1;
+        short clampedX = 0, clampedY = 0;
+
+        // ClipCursor
+        Rect confinement = grabManager.getConfinementBounds();
+        if (confinement != null) {
+            minX = Math.max(minX, confinement.left);
+            minY = Math.max(minY, confinement.top);
+            maxX = Math.min(maxX, confinement.right - 1);
+            maxY = Math.min(maxY, confinement.bottom - 1);
+
+            clampedX = (short) Mathf.clamp(pointer.getX() + dx, minX, maxX);
+            clampedY = (short) Mathf.clamp(pointer.getY() + dy, minY, maxY);
+
+            pointer.setPosition(clampedX, clampedY);
+        } else {
+            // Legacy path for old Proton builds with broken ClipCursor
+            // Do NOT remove without confirming no regressions with:
+            // - Games that rely on XWarpPointer (see WindowRequests.java:warpPointer)
+            // - Games that call ClipCursor and happen to work well with this workaround
+            short softMarginX = (short)(screen.width * 0.05f);
+            short softMarginY = (short)(screen.height * 0.05f);
+            short x = (short)Mathf.clamp(pointer.getX() + dx, -softMarginX, maxX + softMarginX);
+            short y = (short)Mathf.clamp(pointer.getY() + dy, -softMarginY, maxY + softMarginY);
+
+            pointer.setPosition(x, y);
+
+            clampedX = (short)Mathf.clamp(x, 0, maxX);
+            clampedY = (short)Mathf.clamp(y, 0, maxY);
+
+            pointer.setX(clampedX);
+            pointer.setY(clampedY);
         }
     }
 

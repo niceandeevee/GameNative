@@ -1203,6 +1203,9 @@ fun PluviaMain(
                     ),
                 ) { backStackEntry ->
                     val isOffline = backStackEntry.arguments?.getBoolean("offline") ?: false
+                    // The route's flag is fixed when Home opens; Steam may finish logging in while another screen is
+                    // on top (e.g. Settings), so a launch checks the live login instead of trusting a stale "offline".
+                    val launchOffline = { isOffline && !SteamService.isLoggedIn }
 
                     // Show update/crash/support dialogs when Home is first displayed
                     // Skip when offline with Steam credentials (avoid flash when Steam reconnects)
@@ -1229,7 +1232,8 @@ fun PluviaMain(
                             viewModel.setBootToContainer(asContainer)
                             viewModel.setTestGraphics(false)
                             viewModel.setDiagnostics(false)
-                            viewModel.setOffline(isOffline)
+                            val offline = launchOffline()
+                            viewModel.setOffline(offline)
                             preLaunchApp(
                                 context = context,
                                 appId = appId,
@@ -1238,7 +1242,7 @@ fun PluviaMain(
                                 setLoadingMessage = viewModel::setLoadingDialogMessage,
                                 setMessageDialogState = { msgDialogState = it },
                                 onSuccess = viewModel::launchApp,
-                                isOffline = isOffline,
+                                isOffline = offline,
                                 bootToContainer = asContainer,
                             )
                         },
@@ -1247,7 +1251,8 @@ fun PluviaMain(
                             viewModel.setBootToContainer(true)
                             viewModel.setTestGraphics(true)
                             viewModel.setDiagnostics(false)
-                            viewModel.setOffline(isOffline)
+                            val offline = launchOffline()
+                            viewModel.setOffline(offline)
                             preLaunchApp(
                                 context = context,
                                 appId = appId,
@@ -1256,7 +1261,7 @@ fun PluviaMain(
                                 setLoadingMessage = viewModel::setLoadingDialogMessage,
                                 setMessageDialogState = { msgDialogState = it },
                                 onSuccess = viewModel::launchApp,
-                                isOffline = isOffline,
+                                isOffline = offline,
                                 bootToContainer = true,
                             )
                         },
@@ -1265,7 +1270,8 @@ fun PluviaMain(
                             viewModel.setBootToContainer(false)
                             viewModel.setTestGraphics(false)
                             viewModel.setDiagnostics(true)
-                            viewModel.setOffline(isOffline)
+                            val offline = launchOffline()
+                            viewModel.setOffline(offline)
                             preLaunchApp(
                                 context = context,
                                 appId = appId,
@@ -1274,7 +1280,7 @@ fun PluviaMain(
                                 setLoadingMessage = viewModel::setLoadingDialogMessage,
                                 setMessageDialogState = { msgDialogState = it },
                                 onSuccess = viewModel::launchApp,
-                                isOffline = isOffline,
+                                isOffline = offline,
                                 bootToContainer = false,
                             )
                         },
