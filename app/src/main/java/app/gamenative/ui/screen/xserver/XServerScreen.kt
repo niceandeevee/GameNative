@@ -4355,6 +4355,11 @@ private fun setupXEnvironment(
 
     envVars.putAll(container.envVars)
     if (container.isLoadMods && !bootToContainer && !testGraphics) ModDllOverrides.apply(container, envVars)
+    // winemenubuilder writes desktop/menu entries for a Linux desktop that doesn't exist here.
+    val dllOverrides = envVars.get("WINEDLLOVERRIDES")
+    if (!dllOverrides.contains("winemenubuilder")) {
+        envVars.put("WINEDLLOVERRIDES", if (dllOverrides.isEmpty()) "winemenubuilder.exe=d" else "$dllOverrides;winemenubuilder.exe=d")
+    }
     envVars.remove("DXVK_FRAME_RATE")
     envVars.remove("VKD3D_FRAME_RATE")
     if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
