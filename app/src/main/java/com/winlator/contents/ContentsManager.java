@@ -686,8 +686,7 @@ public class ContentsManager {
                 File targetFile = new File(getPathFromTemplate(contentFile.target));
                 File sourceFile = new File(getInstallDir(context, profile), contentFile.source);
 
-                targetFile.delete();
-                FileUtils.copy(sourceFile, targetFile);
+                FileUtils.copyIfChanged(sourceFile, targetFile);
 
                 if (profile.type == ContentProfile.ContentType.CONTENT_TYPE_BOX64) {
                     Log.d("ContentsManager", "found box64 profile type - running chmod on " + targetFile);

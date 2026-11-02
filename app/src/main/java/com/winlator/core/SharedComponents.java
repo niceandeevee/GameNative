@@ -121,7 +121,7 @@ public abstract class SharedComponents {
                 else if (isSymlink) {
                     FileUtils.symlink(FileUtils.readSymlink(file), destFile.getAbsolutePath());
                 }
-                else if (!FileUtils.copy(file, destFile)) return false;
+                else if (!FileUtils.copyIfChanged(file, destFile)) return false;
             }
 
             if (isDirectory && !copyTree(sharedDir, file, destDir, onExtractFileListener)) return false;

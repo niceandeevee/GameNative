@@ -77,4 +77,31 @@ object ExtractionFingerprint {
     fun clear(container: Container, key: String) {
         recordFile(container, key).delete()
     }
+
+    /** Identity of a source archive or file for a signature: its length and mtime, or "missing". */
+    fun sourceState(file: File): String = stateOf(file)
+
+    /**
+     * Runs [extract] unless the files it wrote last time for [key] are untouched and [signature]
+     * is unchanged. [extract] records what it writes through the given [Recorder] (pass it as the
+     * extract listener, or add copied files to [Recorder.files]) and returns false on failure,
+     * in which case nothing is recorded and the next launch tries again.
+     */
+    fun runIfChanged(
+        container: Container,
+        key: String,
+        signature: String,
+        delegate: OnExtractFileListener? = null,
+        extract: (Recorder) -> Boolean,
+    ): Boolean {
+        if (isIntact(container, key, signature)) {
+            Timber.d("Extraction '$key' unchanged, skipped")
+            return true
+        }
+        clear(container, key)
+        val recorder = Recorder(delegate)
+        val ok = extract(recorder)
+        if (ok && !recorder.failed) save(container, key, signature, recorder.files.filter { it.isFile })
+        return ok
+    }
 }
