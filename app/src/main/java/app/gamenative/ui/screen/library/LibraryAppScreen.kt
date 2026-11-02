@@ -418,7 +418,6 @@ private fun buildStoreMedia(
     fallbackImageUrl?.takeIf(String::isNotBlank)?.let {
         add(StoreMediaItem(url = it))
     }
-    details.screenshots.forEach { add(StoreMediaItem(url = it)) }
 }.distinctBy(StoreMediaItem::url)
 
 @Composable
@@ -756,7 +755,6 @@ internal fun AppScreenContent(
     val downloadAllowed = !PrefManager.downloadOnWifiOnly || hasWifiOrEthernet
     val scrollState = rememberScrollState()
     val heroMedia = remember(
-        displayInfo.storeDetails.screenshots,
         displayInfo.heroImageUrl,
     ) {
         buildStoreMedia(displayInfo.storeDetails, displayInfo.heroImageUrl)
@@ -2156,7 +2154,6 @@ private fun Preview_AppScreen() {
             reviewPercentage = 92,
             reviewCount = 12_438,
             tags = listOf("Adventure", "Story Rich", "Controller"),
-            screenshots = listOf(fakeApp.getHeroUrl()),
         ),
     )
     PluviaTheme {

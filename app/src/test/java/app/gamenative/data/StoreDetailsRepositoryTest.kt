@@ -9,7 +9,7 @@ import org.junit.Test
 class StoreDetailsRepositoryTest {
 
     @Test
-    fun `steam parser returns description reviews tags and media`() {
+    fun `steam parser returns description reviews and tags`() {
         val details =
             """
             {
@@ -18,9 +18,7 @@ class StoreDetailsRepositoryTest {
                 "data": {
                   "about_the_game": "<p>Fight &amp; win.</p><p>Bring a friend.</p>",
                   "genres": [{"description": "Action"}],
-                  "categories": [{"description": "Co-op"}],
-                  "screenshots": [{"path_full": "https://cdn.example/shot.jpg"}],
-                  "movies": [{"mp4": {"max": "https://cdn.example/trailer.mp4"}}]
+                  "categories": [{"description": "Co-op"}]
                 }
               }
             }
@@ -43,8 +41,6 @@ class StoreDetailsRepositoryTest {
         assertEquals(100, result.reviewCount)
         assertEquals("Very Positive", result.reviewSummary)
         assertEquals(listOf("Action", "Co-op"), result.tags)
-        assertEquals(listOf("https://cdn.example/shot.jpg"), result.screenshots)
-        assertEquals(listOf("https://cdn.example/trailer.mp4"), result.videos)
     }
 
     @Test
@@ -77,7 +73,6 @@ class StoreDetailsRepositoryTest {
             description = "Old description",
             reviewPercentage = 91,
             tags = listOf("action", "Co-op"),
-            screenshots = listOf("https://cdn.example/local.jpg"),
         )
 
         val result = remote.mergedWith(local)
@@ -85,30 +80,6 @@ class StoreDetailsRepositoryTest {
         assertEquals("Fresh description", result.description)
         assertEquals(91, result.reviewPercentage)
         assertEquals(listOf("Action", "Co-op"), result.tags)
-        assertEquals(listOf("https://cdn.example/local.jpg"), result.screenshots)
-    }
-
-    @Test
-    fun `remote and local media are combined without duplicates`() {
-        val remote = StoreGameDetails(
-            screenshots = listOf("https://cdn.example/remote.jpg"),
-            videos = listOf("https://cdn.example/trailer.mp4"),
-        )
-        val local = StoreGameDetails(
-            screenshots = listOf(
-                "https://cdn.example/local.jpg",
-                "https://cdn.example/remote.jpg",
-            ),
-            videos = listOf("https://cdn.example/trailer.mp4"),
-        )
-
-        val result = remote.mergedWith(local)
-
-        assertEquals(
-            listOf("https://cdn.example/remote.jpg", "https://cdn.example/local.jpg"),
-            result.screenshots,
-        )
-        assertEquals(listOf("https://cdn.example/trailer.mp4"), result.videos)
     }
 
     @Test

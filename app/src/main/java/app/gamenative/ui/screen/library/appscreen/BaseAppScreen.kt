@@ -948,7 +948,7 @@ abstract class BaseAppScreen {
         val appId = libraryItem.appId
 
         // Enrich the locally synced catalog record with public storefront description,
-        // reviews, tags, screenshots, and trailers. The local record remains the fallback.
+        // reviews and tags. The local record remains the fallback.
         val localStoreDetails = displayInfoBase.storeDetails
             .withoutTitleOnlyDescription(libraryItem.name)
         var storeDetails by remember(appId) {
