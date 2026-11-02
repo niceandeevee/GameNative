@@ -97,7 +97,7 @@ android {
     // Keep only the app's own translations (drops library locales such as AppCompat's).
     androidResources {
         localeFilters += listOf(
-            "en", "es", "da", "pt-BR", "zh-TW", "zh-CN", "fr", "de", "uk", "it", "ro", "pl", "ru", "ko", "ja",
+            "en", "es", "da", "pt-rBR", "zh-rTW", "zh-rCN", "fr", "de", "uk", "it", "ro", "pl", "ru", "ko", "ja",
         )
     }
 
