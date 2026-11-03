@@ -68,4 +68,81 @@ class GameFixesRegistryTest {
         verify(exactly = 0) { container.dxWrapperConfig = any() }
         verify(exactly = 0) { container.saveData() }
     }
+
+    @Test
+    fun clearAppliedMarks_removesOnlyFixMarks() {
+        val extras = org.json.JSONObject()
+            .put("steamClientRequiredFixApplied", "1")
+            .put("dxWrapperDefaultFixApplied", "dxvk;maxDeviceMemory=1024")
+            .put("audioDriverDefaultFixApplied", "alsa")
+            .put("profileId", "7")
+        every { container.extraData } returns extras
+
+        GameFixesRegistry.clearAppliedMarks(container)
+
+        assertEquals(listOf("profileId"), extras.keys().asSequence().toList())
+    }
+
+    @Test
+    fun applyFor_clearsMarksBeforeApplying_whenWineVersionChanged() {
+        val installDir = createTempDirectory(prefix = "registry-wine-change").toFile()
+        val extras = org.json.JSONObject().put("audioDriverDefaultFixApplied", "alsa")
+        var marksSeenByFix: List<String>? = null
+        GameFixesRegistry.setFixesProviderForTests {
+            mapOf(
+                (app.gamenative.data.GameSource.CUSTOM_GAME to "game.exe") to object : GameFix {
+                    override fun apply(
+                        context: Context,
+                        gameId: String,
+                        installPath: String,
+                        installPathWindows: String,
+                        container: Container,
+                    ): Boolean {
+                        marksSeenByFix = extras.keys().asSequence().toList()
+                        return true
+                    }
+                },
+            )
+        }
+        every { CustomGameScanner.getFolderPathFromAppId("CUSTOM_GAME_123") } returns installDir.absolutePath
+        every { CustomGameScanner.getLaunchExecutable(container) } returns "Game.exe"
+        every { container.drives } returns "A:${installDir.absolutePath}"
+        every { container.extraData } returns extras
+        every { container.wineVersion } returns "proton-11.0-2-arm64ec-9"
+        every { container.getExtra("gameFixesWineVersion") } returns "proton-9.0-x86_64"
+
+        GameFixesRegistry.applyFor(context, "CUSTOM_GAME_123", container)
+
+        assertEquals(emptyList<String>(), marksSeenByFix)
+        verify { container.putExtra("gameFixesWineVersion", "proton-11.0-2-arm64ec-9") }
+    }
+
+    @Test
+    fun applyFor_keepsMarks_whenWineVersionUnchanged() {
+        val installDir = createTempDirectory(prefix = "registry-wine-same").toFile()
+        val extras = org.json.JSONObject().put("audioDriverDefaultFixApplied", "alsa")
+        GameFixesRegistry.setFixesProviderForTests {
+            mapOf(
+                (app.gamenative.data.GameSource.CUSTOM_GAME to "game.exe") to object : GameFix {
+                    override fun apply(
+                        context: Context,
+                        gameId: String,
+                        installPath: String,
+                        installPathWindows: String,
+                        container: Container,
+                    ): Boolean = true
+                },
+            )
+        }
+        every { CustomGameScanner.getFolderPathFromAppId("CUSTOM_GAME_123") } returns installDir.absolutePath
+        every { CustomGameScanner.getLaunchExecutable(container) } returns "Game.exe"
+        every { container.drives } returns "A:${installDir.absolutePath}"
+        every { container.extraData } returns extras
+        every { container.wineVersion } returns "proton-11.0-2-arm64ec-9"
+        every { container.getExtra("gameFixesWineVersion") } returns "proton-11.0-2-arm64ec-9"
+
+        GameFixesRegistry.applyFor(context, "CUSTOM_GAME_123", container)
+
+        assertEquals(listOf("audioDriverDefaultFixApplied"), extras.keys().asSequence().toList())
+    }
 }
