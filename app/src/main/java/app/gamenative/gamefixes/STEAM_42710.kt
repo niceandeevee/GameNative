@@ -9,7 +9,9 @@ import com.winlator.container.Container
  * - Steam CEG protected: the emulated Steam client / Steamless never get past a black screen, and on
  *   first launch Steam must regenerate the exe ("Updating executable"), so default to the real Steam
  *   client in headless mode, the configuration known to run it.
- * - 32-bit D3D9 under WoW64, so address space is tight: use DXVK rather than WineD3D's GL -> zink
+ * - 32-bit D3D9 under WoW64, so address space is tight: use DXVK (pinned to async-1.10.3, the build it
+ *   runs on; a reset container on an Adreno 750 got 2.4.1-gplasync and crashed in the intro movie)
+ *   rather than WineD3D's GL -> zink
  *   chain, report 1 GB of VRAM (d3d9.maxAvailableMemory) so the engine sizes its pools for a 32-bit
  *   process, and make the process large-address-aware (4 GB instead of 2 GB).
  * - X11 display server: under the gamescope session (the Adreno default) the game's Vulkan bypasses the
@@ -53,7 +55,12 @@ val STEAM_Fix_42710: KeyedGameFix = KeyedCompositeGameFix(
     gameId = "42710",
     fixes = listOf(
         SteamClientRequiredFix(),
-        DxWrapperDefaultFix("dxvk", mapOf("maxDeviceMemory" to "1024")),
+        // Pin the DXVK build it was verified on. Adreno 7xx/8xx devices now default new and reset
+        // containers to 2.4.1-gplasync, and with it the game crashed during the intro movie on an S24.
+        DxWrapperDefaultFix(
+            "dxvk",
+            mapOf("version" to "async-1.10.3", "async" to "1", "asyncCache" to "0", "maxDeviceMemory" to "1024"),
+        ),
         WineEnvVarFix(mapOf("WINE_LARGE_ADDRESS_AWARE" to "1", "EVSHIM_MAX_PLAYERS" to "0")),
         ContainerSettingDefaultFix.displayServer(Container.DISPLAY_SERVER_X11),
         ContainerSettingDefaultFix.audioDriver("alsa"),
