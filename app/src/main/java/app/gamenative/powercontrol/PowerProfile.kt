@@ -98,6 +98,39 @@ object PowerProfiles {
             enablePerClusterTuning = false,
         )
 
+        // Level-based drivers (Samsung Performance SDK: CPU/GPU levels 0-4) expose no Linux governors,
+        // so every governor-gated preset below was skipped and the picker only showed "Custom".
+        // Offer the presets as level ranges instead; the governor is a placeholder these drivers ignore.
+        // Balanced keeps the full range (no raised floor), i.e. the phone's own scheduling.
+        if (availableGovernors.isEmpty()) {
+            return listOf(
+                defaultProfile.copy(
+                    name = PerformancePreset.POWER_SAVE.displayName,
+                    governor = CpuGovernor.SCHEDUTIL,
+                    minCpuFreq = minFreq,
+                    maxCpuFreq = midFreq,
+                    minGpuPowerLevel = 0,
+                    maxGpuPowerLevel = midGpuLevel,
+                ),
+                defaultProfile.copy(
+                    name = PerformancePreset.BALANCED.displayName,
+                    governor = CpuGovernor.SCHEDUTIL,
+                    minCpuFreq = minFreq,
+                    maxCpuFreq = maxFreq,
+                    minGpuPowerLevel = 0,
+                    maxGpuPowerLevel = maxGpuPowerLevel,
+                ),
+                defaultProfile.copy(
+                    name = PerformancePreset.PERFORMANCE.displayName,
+                    governor = CpuGovernor.SCHEDUTIL,
+                    minCpuFreq = highFreq,
+                    maxCpuFreq = maxFreq,
+                    minGpuPowerLevel = highGpuLevel,
+                    maxGpuPowerLevel = maxGpuPowerLevel,
+                ),
+            )
+        }
+
         return buildList {
             // Power Save - lowest frequency range with powersave governor
             // CPU: Odin 3: 384 MHz - 960 MHz, RP6: 307 MHz - 672 MHz
