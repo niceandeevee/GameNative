@@ -43,13 +43,6 @@ jobs:
         with:
           # Lets setup-gradle save Gradle's configuration cache (it is only stored encrypted)
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-      - name: Add swap
-        # Headroom for three test JVMs next to the Gradle and Kotlin daemons
-        run: |
-          sudo fallocate -l 8G /mnt/swapfile.ci
-          sudo chmod 600 /mnt/swapfile.ci
-          sudo mkswap /mnt/swapfile.ci
-          sudo swapon /mnt/swapfile.ci
       - name: Cache Robolectric SDK jars
         # Robolectric downloads its android-all jars into ~/.m2 at test time, outside Gradle's cache
         uses: actions/cache@v5
@@ -63,8 +56,8 @@ jobs:
           : > gradle.log
           tail -n +1 -F gradle.log &
           tail_pid=$!
-          # Three test JVMs (2 GB each) share the runner's 4 cores / 16 GB (+8 GB swap)
-          ./gradlew -PtestForks=3 -PtestHeap=2g :app:test${{ matrix.variant }}DebugUnitTest > gradle.log 2>&1 &
+          # Two test JVMs (3 GB each) share the runner's 4 cores / 16 GB: roughly halves the test time
+          ./gradlew -PtestForks=2 -PtestHeap=3g :app:test${{ matrix.variant }}DebugUnitTest > gradle.log 2>&1 &
           gradle_pid=$!
           last_size=0
           stalled_for=0

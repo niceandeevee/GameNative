@@ -135,7 +135,7 @@ android {
                 it.maxHeapSize = (project.findProperty("testHeap") as String?) ?: "4g"
                 it.testLogging { events("failed") }
                 // The mocking agent appends to the boot classpath, which disables CDS with a warning anyway.
-                it.jvmArgs("-Xshare:off", "-XX:+UseParallelGC")
+                it.jvmArgs("-Xshare:off")
             }
         }
     }
