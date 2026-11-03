@@ -179,13 +179,19 @@ public class PresentExtension implements Extension {
         final long frameNs = 1_000_000_000L / targetFps;
         long now = System.nanoTime();
 
+        // Release each buffer at the later of "now" and one frame after the previous release, as
+        // ShmFramePacer does. The old schedule always pushed the release a full frame past the
+        // previous slot, even for a frame that was already late, so a game running a little under
+        // the limit kept getting its buffers back late and fell far below it (Black Ops: ~40 fps
+        // with the limit at 60, 60-70 with it off).
         WindowTiming wt = windowTimings.computeIfAbsent(window.id, k -> new WindowTiming());
-        if (wt.nextIdleNs <= now - frameNs) {
-            wt.nextIdleNs = now + frameNs;
-        } else {
-            wt.nextIdleNs += frameNs;
-        }
+        if (wt.nextIdleNs < now) wt.nextIdleNs = now;
         long fireTime = wt.nextIdleNs - FIRE_EARLY_NS;
+        wt.nextIdleNs += frameNs;
+        if (fireTime <= now) {
+            sendIdleNotify(window, pixmap, serial, idleFence);
+            return;
+        }
 
         android.view.Choreographer ch = tryGetChoreographer(renderer);
         if (ch != null) {
