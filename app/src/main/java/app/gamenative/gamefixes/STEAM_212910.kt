@@ -7,11 +7,12 @@ import com.winlator.container.Container
  * Call of Duty: Black Ops II - Zombies (Steam)
  *
  * Same engine generation and the same failure mode as Call of Duty: Black Ops (see STEAM_42700):
- * a Steam CEG protected, 32-bit D3D9 title that sits on a black screen with the defaults.
+ * a Steam CEG protected, 32-bit Direct3D title (D3D11 here) that sits on a black screen with the defaults.
  *
  * - Steam CEG protected: the emulated Steam client / Steamless never get past a black screen, so
  *   default to the real Steam client in headless mode, which regenerates the exe on first launch.
- * - 32-bit D3D9 under WoW64: use DXVK, report 1 GB of VRAM and make the process large-address-aware.
+ * - 32-bit under WoW64: use DXVK, report 1 GB of VRAM (dxgi.maxDeviceMemory) so the engine sizes
+ *   its pools for a 32-bit process, and make the process large-address-aware.
  * - X11 display server: the gamescope session lets a 32-bit game's Vulkan bypass the wrapper ICD
  *   and map memory above 4 GB; the X11 path goes through the wrapper, which places mappings correctly.
  * - ALSA audio, builtin DirectSound and WMA decoder, native XAudio: the native dsound.dll fails in
