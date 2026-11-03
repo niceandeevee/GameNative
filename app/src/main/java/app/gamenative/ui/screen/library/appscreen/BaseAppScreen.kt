@@ -31,6 +31,7 @@ import app.gamenative.R
 import app.gamenative.data.GameSource
 import app.gamenative.data.FavoritesManager
 import app.gamenative.data.LibraryItem
+import app.gamenative.gamefixes.GameFixesRegistry
 import app.gamenative.data.StoreDetailsRepository
 import app.gamenative.data.withoutTitleOnlyDescription
 import app.gamenative.mods.ModContainerResolver
@@ -827,6 +828,11 @@ abstract class BaseAppScreen {
         val defaults = ContainerUtils.getDefaultContainerData().copy(drives = container.drives)
 
         ContainerUtils.applyToContainer(context, libraryItem.appId, defaults)
+        // Put back the settings the game's fixes choose (real Steam, audio driver, DX wrapper...):
+        // plain defaults are often exactly what a fixed game fails on.
+        runCatching {
+            GameFixesRegistry.resetToGameDefaults(context, libraryItem.appId, ContainerUtils.getContainer(context, libraryItem.appId))
+        }.onFailure { Timber.w(it, "Failed to reapply game fixes after container reset") }
 
         SnackbarManager.show("Container reset to defaults")
     }
