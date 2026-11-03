@@ -283,6 +283,9 @@ private val isExiting = AtomicBoolean(false)
 // Bumped per launch so a previous session's leftover processes can't end the current one.
 private val guestSession = AtomicInteger(0)
 
+/** Thrown when a setup thread finds its launch was exited or replaced before Wine started. */
+private class StaleLaunchException(message: String) : Exception(message)
+
 private const val EXIT_PROCESS_TIMEOUT_MS = 30_000L
 private const val EXIT_PROCESS_POLL_INTERVAL_MS = 1_000L
 private const val EXIT_PROCESS_RESPONSE_TIMEOUT_MS = 2_000L
@@ -2436,6 +2439,9 @@ fun XServerScreen(
                                     Timber.d("Game paused after environment setup while app was backgrounded")
                                 }
                             }
+                        } catch (e: StaleLaunchException) {
+                            // A newer launch owns the environment now; leave it and its UI alone.
+                            Timber.w(e.message)
                         } catch (e: Exception) {
                             Timber.e(e, "Error during wine setup operations")
                             try {
@@ -4628,6 +4634,12 @@ private fun setupXEnvironment(
         }
     }
 
+    // The setup thread keeps running after its screen is closed. If the user exited during setup
+    // (first-time boot can take half a minute) or a newer launch has begun, starting Wine here
+    // would race the newer launch's stale-process kill and fail it ("Wine processes still present").
+    if (isExiting.get() || session != guestSession.get()) {
+        throw StaleLaunchException("Launch of $appId superseded before Wine started (exiting=${isExiting.get()})")
+    }
     xServer.winHandler.start()
     try {
         environment.startEnvironmentComponents()
