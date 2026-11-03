@@ -133,7 +133,7 @@ import `in`.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback
 import `in`.dragonbra.javasteam.steam.steamclient.configuration.SteamConfiguration
 import `in`.dragonbra.javasteam.types.DepotManifest
 import `in`.dragonbra.javasteam.types.FileData
-import `in`.dragonbra.javasteam.types.KeyValue
+import KeyValue
 import `in`.dragonbra.javasteam.types.SteamID
 import `in`.dragonbra.javasteam.util.log.LogListener
 import `in`.dragonbra.javasteam.util.log.LogManager
@@ -897,6 +897,32 @@ class SteamService : Service(), IChallengeUrlChanged {
             }
             Timber.i("ensureLenderPackageAppIdsReady: updated $filled packages")
             return filled
+        }
+
+        /**
+         * The install script some older titles (e.g. Call of Duty: Black Ops II) keep inline in their
+         * app info (config/installscript) instead of shipping an installscript.vdf. Steam still runs its
+         * "Run Process" steps on first launch, so the caller needs it to mark them as already run.
+         * Returns null when offline or when the app has no inline script.
+         */
+        suspend fun fetchInlineInstallScript(appId: Int): KeyValue? {
+            val svc = instance ?: return null
+            if (!isConnected) return null
+            val steamApps = svc._steamApps ?: return null
+            return try {
+                val accessToken = runCatching {
+                    steamApps.picsGetAccessTokens(appIds = listOf(appId), packageIds = emptyList()).await().appTokens[appId]
+                }.getOrNull() ?: 0L
+                val remote = steamApps.picsGetProductInfo(
+                    apps = listOf(PICSRequest(id = appId, accessToken = accessToken)),
+                    packages = emptyList(),
+                ).await().results.firstNotNullOfOrNull { it.apps[appId] } ?: return null
+                remote.keyValues["config"]["installscript"]
+                    .takeIf { it !== KeyValue.INVALID && it.children.isNotEmpty() }
+            } catch (e: Exception) {
+                Timber.w(e, "fetchInlineInstallScript: PICS failed for appId=$appId")
+                null
+            }
         }
 
         /**

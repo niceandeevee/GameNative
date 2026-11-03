@@ -103,6 +103,7 @@ object SteamInstallScriptRegistry {
             "ubisoft game launcher|rockstar-games-launcher",
     )
     private const val MAX_SCRIPT_BYTES = 64 * 1024
+    private const val INLINE_SCRIPT_TIMEOUT_MS = 10_000L
     private val TOKEN_PATTERN = Regex("(?i)%([A-Z_]+)%([\\\\/]?)")
 
     private fun tokens(installDir: String): Map<String, String> = mapOf(
@@ -146,6 +147,31 @@ object SteamInstallScriptRegistry {
         } catch (e: Exception) {
             Timber.w(e, "Failed to apply run-process marks for app $numericAppId")
         }
+        if (scriptFile == null && scriptName.isNullOrBlank()) {
+            try {
+                applyInlineRunProcessMarks(prefixDir, gameDir, numericAppId)
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to apply inline install-script marks for app $numericAppId")
+            }
+        }
+    }
+
+    /**
+     * Marks the Run Process steps of an install script kept inline in the app info (no
+     * installscript.vdf on disk). Black Ops II does this: its inline script runs
+     * redist\DirectX\dxsetup.exe and vcredist on first launch, which under Wine takes minutes of a
+     * black screen before the game starts. Needs the network; offline launches keep earlier marks.
+     */
+    private fun applyInlineRunProcessMarks(prefixDir: File, gameDir: File, appId: Int) {
+        if (!File(prefixDir, "system.reg").isFile) return
+        val script = kotlinx.coroutines.runBlocking {
+            kotlinx.coroutines.withTimeoutOrNull(INLINE_SCRIPT_TIMEOUT_MS) { SteamService.fetchInlineInstallScript(appId) }
+        } ?: return
+        val runProcess = script["Run Process"].takeUnless { it === KeyValue.INVALID } ?: return
+        val entries = parseRunProcessMarks(runProcess, appId, gameDir)
+        if (entries.isEmpty() || allPresent(prefixDir, entries)) return
+        write(prefixDir, entries, keepHigherDwords = true)
+        Timber.i("Applied ${entries.size} run-process marks from the inline install script of app $appId")
     }
 
     private fun applyRegistrySection(container: Container, appId: Int, gameDir: File, prefixDir: File, scriptFile: File) {
@@ -397,7 +423,10 @@ object SteamInstallScriptRegistry {
         val runProcess = root["InstallScript"]["Run Process"].takeUnless { it === KeyValue.INVALID }
             ?: root["Run Process"].takeUnless { it === KeyValue.INVALID }
             ?: return emptyList()
+        return parseRunProcessMarks(runProcess, appId, gameDir)
+    }
 
+    internal fun parseRunProcessMarks(runProcess: KeyValue, appId: Int, gameDir: File? = null): List<Entry> {
         val entries = mutableListOf<Entry>()
         for (step in runProcess.children) {
             val stepName = step.name?.trim().orEmpty()
