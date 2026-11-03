@@ -125,9 +125,14 @@ public class PresentExtension implements Extension {
                         sendIdleNotify(p.window, p.pixmap, p.serial, p.idleFence);
                     }
                 } else {
+                    // Sleep instead of spinning: the old yield loop covered the last 2 ms of every
+                    // frame at MAX_PRIORITY (~12% of a core at 60 fps). Targets already fire
+                    // FIRE_EARLY_NS early, which absorbs parkNanos wake-up latency.
                     long diff = p.targetNs - now;
-                    if (diff > 2_000_000L)
+                    if (diff > 1_000_000L)
                         java.util.concurrent.locks.LockSupport.parkNanos(1_000_000L);
+                    else if (diff > 100_000L)
+                        java.util.concurrent.locks.LockSupport.parkNanos(diff);
                     else
                         Thread.yield();
                 }
