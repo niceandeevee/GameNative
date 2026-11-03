@@ -37,9 +37,9 @@ jobs:
 
     steps:
       - name: Free disk space
+        # In the background: the deletes take ~30 s and nothing needs the space until the Gradle build
         run: |
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/boost /usr/share/swift
-          df -h /
+          nohup sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/boost /usr/share/swift > /dev/null 2>&1 &
 
       - name: Add swap
         run: |
@@ -62,6 +62,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        with:
+          # Lets setup-gradle save Gradle's configuration cache (it is only stored encrypted)
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Restore cached debug keystore
         id: keystore-cache

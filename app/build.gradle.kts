@@ -19,6 +19,8 @@ val copyDebugManifest by tasks.registering(Copy::class) {
     into(layout.buildDirectory.dir("generated/debugManifest"))
 }
 
+val DEFAULT_VERSION_CODE = 24
+
 android {
     namespace = "app.gamenative"
     compileSdk = 36
@@ -33,9 +35,8 @@ android {
 
         manifestPlaceholders["screenOrientation"] = "unspecified"
 
-        // CI builds pass -PversionCodeOverride so every build is a higher version than the last one
-        // and installs over it as a normal update.
-        versionCode = (project.findProperty("versionCodeOverride") as String?)?.toIntOrNull() ?: 24
+        // CI builds override this with -PversionCodeOverride (see androidComponents below)
+        versionCode = DEFAULT_VERSION_CODE
         versionName = "1.4.0"
 
         val iconValue = "@mipmap/ic_launcher"
@@ -235,4 +236,14 @@ dependencies {
 
 tasks.withType<JavaCompile>().configureEach {
     options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
+}
+
+// CI builds pass -PversionCodeOverride so every build is a higher version than the last one and
+// installs over it as a normal update. Wired lazily rather than read at configuration time: the run
+// number changes on every build and would otherwise invalidate the configuration cache each time.
+androidComponents {
+    onVariants { variant ->
+        val versionCodeOverride = providers.gradleProperty("versionCodeOverride").map { it.toInt() }
+        variant.outputs.forEach { it.versionCode.set(versionCodeOverride.orElse(DEFAULT_VERSION_CODE)) }
+    }
 }
