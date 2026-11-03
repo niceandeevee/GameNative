@@ -116,7 +116,10 @@ public class PresentExtension implements Extension {
             while (!Thread.interrupted()) {
                 PendingIdle p = cpuQueue.peek();
                 if (p == null) {
-                    java.util.concurrent.locks.LockSupport.parkNanos(500_000L);
+                    // Nothing queued: sleep until scheduleIdleNotify() offers a frame and unparks us.
+                    // This used to poll every 0.5 ms (~2000 wake-ups/s for the whole session, even
+                    // in menus or with the limiter off), which kept a core from ever idling.
+                    java.util.concurrent.locks.LockSupport.parkNanos(100_000_000L);
                     continue;
                 }
                 long now = System.nanoTime();
@@ -128,10 +131,9 @@ public class PresentExtension implements Extension {
                     // Sleep instead of spinning: the old yield loop covered the last 2 ms of every
                     // frame at MAX_PRIORITY (~12% of a core at 60 fps). Targets already fire
                     // FIRE_EARLY_NS early, which absorbs parkNanos wake-up latency.
+                    // An earlier frame offered meanwhile unparks us, so sleep straight to the target.
                     long diff = p.targetNs - now;
-                    if (diff > 1_000_000L)
-                        java.util.concurrent.locks.LockSupport.parkNanos(1_000_000L);
-                    else if (diff > 100_000L)
+                    if (diff > 100_000L)
                         java.util.concurrent.locks.LockSupport.parkNanos(diff);
                     else
                         Thread.yield();
@@ -222,6 +224,8 @@ public class PresentExtension implements Extension {
                 }
             }
             cpuQueue.offer(new PendingIdle(window, pixmap, serial, idleFence, fireTime, 0));
+            Thread pacer = cpuPacerThread;
+            if (pacer != null) java.util.concurrent.locks.LockSupport.unpark(pacer);
         }
     }
 
