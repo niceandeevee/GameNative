@@ -1,6 +1,15 @@
 name: Pull Request build check
 
 on:
+  # Runs on master too: only default-branch runs write Gradle's caches, so this is what gives
+  # pull requests a configuration cache and build cache for the test task to start from.
+  push:
+    branches: [ "master" ]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'media/**'
+      - '.github/ISSUE_TEMPLATE/**'
   pull_request:
     branches: [ "master" ]
     paths-ignore:
@@ -31,6 +40,9 @@ jobs:
         uses: gradle/actions/wrapper-validation@v5
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        with:
+          # Lets setup-gradle save Gradle's configuration cache (it is only stored encrypted)
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
       - name: Add swap
         # Headroom for three test JVMs next to the Gradle and Kotlin daemons
         run: |
