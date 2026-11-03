@@ -42,6 +42,14 @@
         android:allowAudioPlaybackCapture="true"
         android:appCategory="game"
         tools:targetApi="29">
+
+        <!-- Samsung Performance SDK: Android 12+ only lets an app dlopen an OEM public library
+             (/system/lib64/libperfsdk.performance.samsung.so) it declares here; without this the
+             SDK failed with "not accessible for the namespace". Optional, so other phones install. -->
+        <uses-native-library
+            android:name="libperfsdk.performance.samsung.so"
+            android:required="false" />
+
         <!--
          android:windowSoftInputMode must always be in the activity block.
          IME padding with composables like 'Scaffold' will have terrible resizing consequences, if in the activity tag.
