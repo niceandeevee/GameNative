@@ -52,6 +52,13 @@ import com.winlator.container.Container
  *   inside the 32-bit process, and while loading a map it keeps creating new GL contexts ("threaded
  *   context created" / wined3d_cs_create). Loading Ascension froze the game every time and the app
  *   stopped responding. no3d keeps DirectDraw working for its 2D/caps queries without any GL.
+ * - Steam calls answered from memory (steamcache, a pass-through xinput1_3.dll placed next to the
+ *   exe and loaded native for it): the game polls ISteamUser::BLoggedOn() and GetSteamID() for
+ *   every UI element, each a ~3 ms pipe round trip to the real Steam client under Wine. Its main
+ *   thread spent ~75% of every second waiting on them, and Create-a-Class (~50 calls per frame) ran
+ *   at ~5 fps with the GPU idle. The DLL forwards all of XInput to Wine's builtins and caches those two
+ *   answers (refreshed every 250 ms). The fix puts the file back on each launch, so removing it
+ *   means dropping these two lines.
  * - No Steam overlay in the game (gameoverlayrenderer disabled for the exe): it is injected into the
  *   32-bit game, hooks every graphics API by creating throwaway devices (the likely source of the
  *   DirectDraw/GL contexts above), and its UI process (gameoverlayui64) crashed on every run.
@@ -75,7 +82,8 @@ val STEAM_Fix_42710: KeyedGameFix = KeyedCompositeGameFix(
         ContainerSettingDefaultFix.winComponent("directsound", "0"),
         ContainerSettingDefaultFix.winComponent("xaudio", "1"),
         WineAppDefaultsFix("BlackOpsMP.exe", "Direct3D", mapOf("renderer" to "no3d")),
-        WineAppDefaultsFix("BlackOpsMP.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
+        WineAppDefaultsFix("BlackOpsMP.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "", "xinput1_3" to "native,builtin")),
+        GameDirAssetFix("gamefixes/steamcache/xinput1_3.dll", "xinput1_3.dll"),
         CfgDvarFloorFix(
             listOf("players/config.cfg", "players/config_mp.cfg"),
             mapOf("r_picmip" to 1, "r_picmip_bump" to 1, "r_picmip_spec" to 1),

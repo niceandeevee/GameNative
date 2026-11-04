@@ -1,0 +1,11 @@
+; Same export table as Wine's xinput1_3.spec (ordinals included), forwarded to Wine's builtins.
+LIBRARY xinput1_3.dll
+EXPORTS
+    XInputGetState = xinput1_4.XInputGetState @2
+    XInputSetState = xinput1_4.XInputSetState @3
+    XInputGetCapabilities = xinput1_4.XInputGetCapabilities @4
+    XInputEnable = xinput1_4.XInputEnable @5
+    XInputGetDSoundAudioDeviceGuids = xinput9_1_0.XInputGetDSoundAudioDeviceGuids @6
+    XInputGetBatteryInformation = xinput1_4.XInputGetBatteryInformation @7
+    XInputGetKeystroke = xinput1_4.XInputGetKeystroke @8
+    XInputGetStateEx = "xinput1_4.#100" @100 NONAME
