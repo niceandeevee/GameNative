@@ -25,6 +25,14 @@ typedef uint64_t *(__attribute__((thiscall)) * GetSteamIdFn)(void *self, uint64_
 static BLoggedOnFn real_logged_on;
 static GetSteamIdFn real_get_steam_id;
 static CRITICAL_SECTION lock;
+/* steam_api.dll's SteamUser(): an in-process global lookup that returns NULL once SteamAPI_Shutdown
+ * has run, so it tells us whether Steam is still up without a call to the Steam client. */
+static void *(__cdecl *steam_user_fn)(void);
+
+static int steam_alive(void)
+{
+    return steam_user_fn && steam_user_fn();
+}
 
 #define REFRESH_MS 250
 
@@ -35,6 +43,15 @@ static uint64_t steam_id;
 
 static _Bool __attribute__((thiscall)) cached_logged_on(void *self)
 {
+    /* After the game shuts Steam down (on exit), never answer "signed in" from the cache, and don't
+     * call into a Steam client that is going away. */
+    if (!steam_alive()) {
+        EnterCriticalSection(&lock);
+        logged_on = 0;
+        steam_id = 0;
+        LeaveCriticalSection(&lock);
+        return 0;
+    }
     DWORD now = GetTickCount();
     EnterCriticalSection(&lock);
     _Bool have = logged_on && now - logged_on_at < REFRESH_MS;
@@ -53,6 +70,10 @@ static _Bool __attribute__((thiscall)) cached_logged_on(void *self)
 
 static uint64_t *__attribute__((thiscall)) cached_get_steam_id(void *self, uint64_t *ret)
 {
+    if (!steam_alive()) {
+        *ret = 0;
+        return ret;
+    }
     DWORD now = GetTickCount();
     EnterCriticalSection(&lock);
     uint64_t value = steam_id;
@@ -95,6 +116,7 @@ static DWORD WINAPI patch_thread(void *unused)
             void *(__cdecl * steam_user)(void) = (void *(__cdecl *)(void))(void (*)(void))GetProcAddress(steam_api, "SteamUser");
             void *user = steam_user ? steam_user() : NULL;
             if (user) {
+                steam_user_fn = steam_user;
                 void **vtable = *(void ***)user;
                 if (vtable[1] == (void *)cached_logged_on) return 0;
                 patch_slot(&vtable[1], (void *)cached_logged_on, (void **)&real_logged_on);
