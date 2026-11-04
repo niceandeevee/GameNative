@@ -690,8 +690,6 @@
     <string name="disable_mouse_input">Desactivar entrada de ratón</string>
     <string name="touchscreen_mode">Modo de pantalla táctil</string>
     <string name="shooter_mode_toggle">Modo tirador</string>
-    <string name="shooter_mode_on">Activar ratón</string>
-    <string name="shooter_mode_off">Activar sticks</string>
 
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">Configuración de gestos táctiles</string>
@@ -1774,8 +1772,6 @@
     <string name="win32_relative_mouse_input_subtitle">Envía el movimiento directamente a Wine como entrada relativa del ratón. Prueba esta opción cuando el ratón no funcione dentro del juego.</string>
     <string name="joystick_opacity">Opacidad del joystick</string>
     <string name="joystick_opacity_subtitle">Opacidad de los anillos y controles de los joysticks dinámicos</string>
-    <string name="show_shooter_runtime_toggle">Mostrar botón en juego</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Muestra el botón Activar ratón / Activar sticks mientras el modo shooter está activo</string>
     <string name="movement_joystick_size">Tamaño del joystick de movimiento</string>
     <string name="movement_joystick_size_subtitle">Multiplicador de tamaño para el joystick dinámico del lado izquierdo</string>
     <string name="movement_joystick_deadzone">Zona muerta de movimiento</string>

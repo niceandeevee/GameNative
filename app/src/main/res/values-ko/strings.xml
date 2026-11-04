@@ -654,8 +654,6 @@
     <string name="disable_mouse_input">마우스 입력 비활성화</string>
     <string name="touchscreen_mode">터치스크린 모드</string>
     <string name="shooter_mode_toggle">슈터 모드</string>
-    <string name="shooter_mode_on">마우스 활성화</string>
-    <string name="shooter_mode_off">스틱 활성화</string>
 
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">터치 제스처 설정</string>
@@ -1776,8 +1774,6 @@
     <string name="win32_relative_mouse_input_subtitle">움직임을 상대 마우스 입력으로 Wine에 직접 전송합니다. 게임 내에서 마우스가 작동하지 않을 때 사용해 보세요.</string>
     <string name="joystick_opacity">조이스틱 불투명도</string>
     <string name="joystick_opacity_subtitle">동적 조이스틱 링과 손잡이의 불투명도</string>
-    <string name="show_shooter_runtime_toggle">게임 중 버튼 표시</string>
-    <string name="show_shooter_runtime_toggle_subtitle">슈터 모드가 활성화된 동안 마우스 활성화 / 스틱 활성화 버튼을 표시합니다</string>
     <string name="movement_joystick_size">이동 조이스틱 크기</string>
     <string name="movement_joystick_size_subtitle">왼쪽 동적 조이스틱의 크기 배율</string>
     <string name="movement_joystick_deadzone">이동 데드존</string>

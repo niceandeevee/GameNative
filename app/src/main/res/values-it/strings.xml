@@ -657,8 +657,6 @@
     <string name="disable_mouse_input">Disabilita Input Mouse</string>
     <string name="touchscreen_mode">Modalità Touchscreen</string>
     <string name="shooter_mode_toggle">Modalità sparatutto</string>
-    <string name="shooter_mode_on">Attiva mouse</string>
-    <string name="shooter_mode_off">Attiva stick</string>
 
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">Impostazioni gesti touch</string>
@@ -1767,8 +1765,6 @@
     <string name="win32_relative_mouse_input_subtitle">Invia il movimento direttamente a Wine come input relativo del mouse. Prova questa opzione quando il mouse non funziona nel gioco.</string>
     <string name="joystick_opacity">Opacità joystick</string>
     <string name="joystick_opacity_subtitle">Opacità di anelli e cursori dei joystick dinamici</string>
-    <string name="show_shooter_runtime_toggle">Mostra pulsante in gioco</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Mostra il pulsante Abilita mouse / Abilita stick mentre la modalità sparatutto è attiva</string>
     <string name="movement_joystick_size">Dimensione joystick di movimento</string>
     <string name="movement_joystick_size_subtitle">Moltiplicatore dimensione per il joystick dinamico sul lato sinistro</string>
     <string name="movement_joystick_deadzone">Zona morta movimento</string>

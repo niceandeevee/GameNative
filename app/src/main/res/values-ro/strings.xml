@@ -653,8 +653,6 @@
 	<string name="disable_mouse_input">Dezactivează input-ul de mouse</string>
 	<string name="touchscreen_mode">Mod touchscreen</string>
 	<string name="shooter_mode_toggle">Mod shooter</string>
-	<string name="shooter_mode_on">Activează mouse-ul</string>
-	<string name="shooter_mode_off">Activează stick-urile</string>
 
 	<!-- Gesture Settings Dialog -->
 	<string name="gesture_settings_title">Setări gesturi touch</string>
@@ -1749,8 +1747,6 @@
     <string name="win32_relative_mouse_input_subtitle">Trimite mișcarea direct către Wine ca intrare relativă a mouse-ului. Încearcă această opțiune când mouse-ul nu funcționează în joc.</string>
     <string name="joystick_opacity">Opacitate joystick</string>
     <string name="joystick_opacity_subtitle">Opacitatea inelelor și butoanelor joystick-urilor dinamice</string>
-    <string name="show_shooter_runtime_toggle">Afișează butonul în joc</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Afișează butonul Activează mouse / Activează stick-uri cât timp modul shooter este activ</string>
     <string name="movement_joystick_size">Dimensiune joystick de mișcare</string>
     <string name="movement_joystick_size_subtitle">Multiplicator de dimensiune pentru joystick-ul dinamic din partea stângă</string>
     <string name="movement_joystick_deadzone">Zonă moartă mișcare</string>

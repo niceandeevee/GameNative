@@ -646,8 +646,6 @@
     <string name="disable_mouse_input">禁用鼠标输入</string>
     <string name="touchscreen_mode">触屏模式</string>
     <string name="shooter_mode_toggle">射击模式</string>
-    <string name="shooter_mode_on">启用鼠标</string>
-    <string name="shooter_mode_off">启用摇杆</string>
 
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">触控手势设置</string>
@@ -1794,8 +1792,6 @@
     <string name="win32_relative_mouse_input_subtitle">将移动作为相对鼠标输入直接发送到 Wine。游戏内鼠标无法正常工作时可尝试启用此选项。</string>
     <string name="joystick_opacity">摇杆不透明度</string>
     <string name="joystick_opacity_subtitle">动态摇杆圆环和拇指点的不透明度</string>
-    <string name="show_shooter_runtime_toggle">显示游戏内按钮</string>
-    <string name="show_shooter_runtime_toggle_subtitle">射击模式启用时显示启用鼠标 / 启用摇杆按钮</string>
     <string name="movement_joystick_size">移动摇杆大小</string>
     <string name="movement_joystick_size_subtitle">左侧动态摇杆的大小倍率</string>
     <string name="movement_joystick_deadzone">移动死区</string>

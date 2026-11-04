@@ -547,8 +547,6 @@
     <string name="disable_mouse_input">Deaktivér musinput</string>
     <string name="touchscreen_mode">Touchskærmstilstand</string>
     <string name="shooter_mode_toggle">Shooter-tilstand</string>
-    <string name="shooter_mode_on">Aktiver mus</string>
-    <string name="shooter_mode_off">Aktiver sticks</string>
 
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">Touch-gestusindstillinger</string>
@@ -1686,8 +1684,6 @@
     <string name="win32_relative_mouse_input_subtitle">Send bevægelse direkte til Wine som relativt museinput. Prøv dette, når musen ikke virker i spillet.</string>
     <string name="joystick_opacity">Joystick-gennemsigtighed</string>
     <string name="joystick_opacity_subtitle">Gennemsigtighed for dynamiske joystick-ringe og knapper</string>
-    <string name="show_shooter_runtime_toggle">Vis knap i spillet</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Vis knappen Aktiver mus / Aktiver sticks, mens shooter-tilstand er aktiv</string>
     <string name="movement_joystick_size">Størrelse på bevægelsesjoystick</string>
     <string name="movement_joystick_size_subtitle">Størrelsesmultiplikator for dynamisk joystick i venstre side</string>
     <string name="movement_joystick_deadzone">Dødzone for bevægelse</string>

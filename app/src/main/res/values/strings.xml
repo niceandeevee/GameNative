@@ -488,8 +488,6 @@
     <string name="joystick_size_subtitle">Dynamic joystick size multiplier</string>
     <string name="joystick_opacity">Joystick Opacity</string>
     <string name="joystick_opacity_subtitle">Opacity for dynamic joystick rings and thumbs</string>
-    <string name="show_shooter_runtime_toggle">Show In-Game Toggle</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Show the Enable Mouse / Enable Sticks button while shooter mode is active</string>
     <string name="movement_joystick_size">Movement Joystick Size</string>
     <string name="movement_joystick_size_subtitle">Size multiplier for the left-side dynamic joystick</string>
     <string name="movement_joystick_deadzone">Movement Dead Zone</string>
@@ -816,8 +814,6 @@
     <string name="disable_mouse_input">Disable Mouse Input</string>
     <string name="touchscreen_mode">Touchscreen Mode</string>
     <string name="shooter_mode_toggle">Shooter Mode</string>
-    <string name="shooter_mode_on">Enable Mouse</string>
-    <string name="shooter_mode_off">Enable Sticks</string>
     <string name="vibration_intensity">Vibration Intensity</string>
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">Touch Gesture Settings</string>
