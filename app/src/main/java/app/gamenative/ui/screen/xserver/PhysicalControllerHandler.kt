@@ -53,7 +53,7 @@ class PhysicalControllerHandler(
         private const val SCROLL_REPEAT_INTERVAL_MS = 90L
         private const val UNKNOWN_DEVICE_ID = -1
         private const val SEQUENCE_PRESS_MS = 80L
-        private const val MOUSE_MOVE_PERIOD_NANOS = 4_000_000L
+        private const val MOUSE_MOVE_PERIOD_MS = 4L
         private const val MOUSE_MOVE_REFERENCE_NANOS = 1_000_000_000.0 / 60
         // A stalled timer thread must not turn into one large jump
         private const val MOUSE_MOVE_MAX_STEP_NANOS = 50_000_000L
@@ -66,7 +66,7 @@ class PhysicalControllerHandler(
     private val mouseMoveLock = Any()
     private var lastMouseMoveNanos = 0L
     private val sequenceHandler = Handler(Looper.getMainLooper())
-    private var mouseMoveTimer: StickMouseThread? = null
+    private var mouseMoveTimer: Timer? = null
     private var scrollRepeatTimer: Timer? = null
     private val scrollRepeatLock = Any()
     private val activeScrollBindings = mutableSetOf<Binding>()
@@ -363,64 +363,38 @@ class PhysicalControllerHandler(
     private fun createMouseMoveTimer() {
         if (profile != null && mouseMoveTimer == null) {
             synchronized(mouseMoveLock) { lastMouseMoveNanos = System.nanoTime() }
-            mouseMoveTimer = StickMouseThread(::stepMouseMove).also { it.start() }
-        }
-    }
+            mouseMoveTimer = Timer("PadStickMouse", true)
+            mouseMoveTimer?.scheduleAtFixedRate(object : TimerTask() {
+                private var priorityRaised = false
 
-    /**
-     * Dedicated 4 ms stepping thread. java.util.Timer's worker ran at normal priority and, with the
-     * game loading every core, woke every 12-25 ms instead of 4: a Black Ops +cursor log showed most
-     * steps arriving as 10-22 px lumps rather than 3-4 px, so each frame's camera turn varied wildly.
-     * An absolute-deadline loop at urgent-display priority keeps the cadence; when it does fall
-     * behind it resynchronises instead of firing a burst of catch-up steps.
-     */
-    private class StickMouseThread(private val step: () -> Unit) : Thread("PadStickMouse") {
-        @Volatile private var running = true
-
-        init { isDaemon = true }
-
-        override fun run() {
-            runCatching { android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY) }
-            var deadline = System.nanoTime()
-            while (running) {
-                step()
-                deadline += MOUSE_MOVE_PERIOD_NANOS
-                val wait = deadline - System.nanoTime()
-                if (wait > 0) {
-                    java.util.concurrent.locks.LockSupport.parkNanos(wait)
-                } else {
-                    deadline = System.nanoTime()
+                override fun run() {
+                    if (!priorityRaised) {
+                        priorityRaised = true
+                        runCatching { android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DISPLAY) }
+                    }
+                    val now = System.nanoTime()
+                    synchronized(mouseMoveLock) {
+                        val elapsedNanos = (now - lastMouseMoveNanos).coerceIn(0L, MOUSE_MOVE_MAX_STEP_NANOS)
+                        lastMouseMoveNanos = now
+                        // Tuning already applies the user's chosen deadzone. Preserve sub-pixel input
+                        // across ticks instead of silently discarding low-sensitivity movement.
+                        if (mouseMoveOffset.x == 0f) mouseMoveRemainder.x = 0f
+                        if (mouseMoveOffset.y == 0f) mouseMoveRemainder.y = 0f
+                        if (mouseMoveOffset.x == 0f && mouseMoveOffset.y == 0f) return@synchronized
+                        // Look up cursor speed dynamically so it updates when profile changes
+                        val cursorSpeed = profile?.cursorSpeed ?: ControlsProfile.DEFAULT_CURSOR_SPEED
+                        val step = 10 * cursorSpeed * (elapsedNanos.toDouble() / MOUSE_MOVE_REFERENCE_NANOS).toFloat()
+                        val scaledX = mouseMoveOffset.x * step + mouseMoveRemainder.x
+                        val scaledY = mouseMoveOffset.y * step + mouseMoveRemainder.y
+                        val deltaX = scaledX.toInt()
+                        val deltaY = scaledY.toInt()
+                        mouseMoveRemainder.set(scaledX - deltaX, scaledY - deltaY)
+                        if (deltaX != 0 || deltaY != 0) {
+                            xServer?.injectPointerMoveDelta(deltaX, deltaY)
+                        }
+                    }
                 }
-            }
-        }
-
-        fun cancel() {
-            running = false
-            java.util.concurrent.locks.LockSupport.unpark(this)
-        }
-    }
-
-    private fun stepMouseMove() {
-        val now = System.nanoTime()
-        synchronized(mouseMoveLock) {
-            val elapsedNanos = (now - lastMouseMoveNanos).coerceIn(0L, MOUSE_MOVE_MAX_STEP_NANOS)
-            lastMouseMoveNanos = now
-            // Tuning already applies the user's chosen deadzone. Preserve sub-pixel input
-            // across ticks instead of silently discarding low-sensitivity movement.
-            if (mouseMoveOffset.x == 0f) mouseMoveRemainder.x = 0f
-            if (mouseMoveOffset.y == 0f) mouseMoveRemainder.y = 0f
-            if (mouseMoveOffset.x == 0f && mouseMoveOffset.y == 0f) return
-            // Look up cursor speed dynamically so it updates when profile changes
-            val cursorSpeed = profile?.cursorSpeed ?: ControlsProfile.DEFAULT_CURSOR_SPEED
-            val step = 10 * cursorSpeed * (elapsedNanos.toDouble() / MOUSE_MOVE_REFERENCE_NANOS).toFloat()
-            val scaledX = mouseMoveOffset.x * step + mouseMoveRemainder.x
-            val scaledY = mouseMoveOffset.y * step + mouseMoveRemainder.y
-            val deltaX = scaledX.toInt()
-            val deltaY = scaledY.toInt()
-            mouseMoveRemainder.set(scaledX - deltaX, scaledY - deltaY)
-            if (deltaX != 0 || deltaY != 0) {
-                xServer?.injectPointerMoveDelta(deltaX, deltaY)
-            }
+            }, 0, MOUSE_MOVE_PERIOD_MS)
         }
     }
 
