@@ -116,7 +116,10 @@ public class PresentExtension implements Extension {
             while (!Thread.interrupted()) {
                 PendingIdle p = cpuQueue.peek();
                 if (p == null) {
-                    java.util.concurrent.locks.LockSupport.parkNanos(500_000L);
+                    // Nothing queued: sleep until scheduleIdleNotify() offers a frame and unparks us.
+                    // This used to poll every 0.5 ms (~2000 wake-ups/s for the whole session, even
+                    // in menus or with the limiter off), which kept a core from ever idling.
+                    java.util.concurrent.locks.LockSupport.parkNanos(100_000_000L);
                     continue;
                 }
                 long now = System.nanoTime();
@@ -125,9 +128,13 @@ public class PresentExtension implements Extension {
                         sendIdleNotify(p.window, p.pixmap, p.serial, p.idleFence);
                     }
                 } else {
+                    // Sleep instead of spinning: the old yield loop covered the last 2 ms of every
+                    // frame at MAX_PRIORITY (~12% of a core at 60 fps). Targets already fire
+                    // FIRE_EARLY_NS early, which absorbs parkNanos wake-up latency.
+                    // An earlier frame offered meanwhile unparks us, so sleep straight to the target.
                     long diff = p.targetNs - now;
-                    if (diff > 2_000_000L)
-                        java.util.concurrent.locks.LockSupport.parkNanos(1_000_000L);
+                    if (diff > 100_000L)
+                        java.util.concurrent.locks.LockSupport.parkNanos(diff);
                     else
                         Thread.yield();
                 }
@@ -179,13 +186,19 @@ public class PresentExtension implements Extension {
         final long frameNs = 1_000_000_000L / targetFps;
         long now = System.nanoTime();
 
+        // Release each buffer at the later of "now" and one frame after the previous release, as
+        // ShmFramePacer does. The old schedule always pushed the release a full frame past the
+        // previous slot, even for a frame that was already late, so a game running a little under
+        // the limit kept getting its buffers back late and fell far below it (Black Ops: ~40 fps
+        // with the limit at 60, 60-70 with it off).
         WindowTiming wt = windowTimings.computeIfAbsent(window.id, k -> new WindowTiming());
-        if (wt.nextIdleNs <= now - frameNs) {
-            wt.nextIdleNs = now + frameNs;
-        } else {
-            wt.nextIdleNs += frameNs;
-        }
+        if (wt.nextIdleNs < now) wt.nextIdleNs = now;
         long fireTime = wt.nextIdleNs - FIRE_EARLY_NS;
+        wt.nextIdleNs += frameNs;
+        if (fireTime <= now) {
+            sendIdleNotify(window, pixmap, serial, idleFence);
+            return;
+        }
 
         android.view.Choreographer ch = tryGetChoreographer(renderer);
         if (ch != null) {
@@ -211,6 +224,8 @@ public class PresentExtension implements Extension {
                 }
             }
             cpuQueue.offer(new PendingIdle(window, pixmap, serial, idleFence, fireTime, 0));
+            Thread pacer = cpuPacerThread;
+            if (pacer != null) java.util.concurrent.locks.LockSupport.unpark(pacer);
         }
     }
 
