@@ -31,11 +31,12 @@ import com.winlator.container.Container
  * - Wine's DirectSound: the native dsound.dll installed by the "directsound" Windows component failed
  *   in its DllMain on a fresh container ("DSOUND.dll" failed to initialize, c0000005), so BlackOps.exe
  *   aborted before opening a window (black screen). directsound=0 uses Wine's builtin DirectSound.
- * - Native XAudio: much of the game's audio is xWMA played through XAudio2. Wine's xaudio2_7 hands
- *   xWMA to the WMA decoder (winegstreamer), which fails on every stream here (Proton's media
- *   converter claims it; "Failed to create winegstreamer transform"), so sounds such as knife hits
- *   are silent. Microsoft's xaudio2_7 decodes xWMA itself. The "xaudio" entry also makes the
- *   component show up in the container's Win Components list, where it can be switched back.
+ * - Wine's builtin XAudio (xaudio=0): Microsoft's xaudio2_7 (the "xaudio" component) decodes the
+ *   xWMA sounds Wine's can't (knife hits and some effects stay silent with builtin), but with it the
+ *   game hangs or dies every time the intro movie starts its audio while the frontend loads, with
+ *   corrupted Wine locks (process heap, loader lock, XInput's update thread). The only run that
+ *   reached the menu used builtin xaudio2_7, and every run after the switch to native failed there,
+ *   on both DXVK versions, Proton 9 and 11 and every FEX preset.
  * - Texture quality no higher than "High" (r_picmip >= 1): the game keeps its video settings in
  *   players\config.cfg (config_mp.cfg for multiplayer) in the game folder, which a container reset
  *   doesn't touch. Once it had run with "Extra" (picmip 0, e.g. after DXVK reported ~4 GB of texture
@@ -73,7 +74,7 @@ val STEAM_Fix_42710: KeyedGameFix = KeyedCompositeGameFix(
         ContainerSettingDefaultFix.audioDriver("alsa"),
         ContainerSettingDefaultFix.winComponent("wmdecoder", "0"),
         ContainerSettingDefaultFix.winComponent("directsound", "0"),
-        ContainerSettingDefaultFix.winComponent("xaudio", "1"),
+        ContainerSettingDefaultFix.winComponent("xaudio", "0"),
         WineAppDefaultsFix("BlackOpsMP.exe", "Direct3D", mapOf("renderer" to "no3d")),
         WineAppDefaultsFix("BlackOpsMP.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
         CfgDvarFloorFix(
