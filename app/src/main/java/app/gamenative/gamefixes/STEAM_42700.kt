@@ -36,6 +36,11 @@ import com.winlator.container.Container
  *   converter claims it; "Failed to create winegstreamer transform"), so sounds such as knife hits
  *   are silent. Microsoft's xaudio2_7 decodes xWMA itself. The "xaudio" entry also makes the
  *   component show up in the container's Win Components list, where it can be switched back.
+ * - Texture quality no higher than "High" (r_picmip >= 1): the game keeps its video settings in
+ *   players\config.cfg (config_mp.cfg for multiplayer) in the game folder, which a container reset
+ *   doesn't touch. Once it had run with "Extra" (picmip 0, e.g. after DXVK reported ~4 GB of texture
+ *   memory), every launch hung or died loading the frontend during the intro movie, while picmip 1
+ *   and 3 runs reached the menu and played. Lower settings the player picks are kept.
  * - The PC version has no controller support, so a physical controller defaults to the bundled
  *   "Call of Duty (Console Layout)" profile, which maps the console layout onto keyboard/mouse.
  * - No virtual gamepad inside Wine (EVSHIM_MAX_PLAYERS=0): the game still polls XInput, and loading
@@ -71,6 +76,10 @@ val STEAM_Fix_42700: KeyedGameFix = KeyedCompositeGameFix(
         ContainerSettingDefaultFix.winComponent("xaudio", "1"),
         WineAppDefaultsFix("BlackOps.exe", "Direct3D", mapOf("renderer" to "no3d")),
         WineAppDefaultsFix("BlackOps.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
+        CfgDvarFloorFix(
+            listOf("players/config.cfg", "players/config_mp.cfg"),
+            mapOf("r_picmip" to 1, "r_picmip_bump" to 1, "r_picmip_spec" to 1),
+        ),
         ControlProfileDefaultFix("Call of Duty (Console Layout)"),
     ),
 )
