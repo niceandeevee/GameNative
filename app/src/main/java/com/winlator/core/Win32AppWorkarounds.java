@@ -114,6 +114,24 @@ public class Win32AppWorkarounds {
         } else if (!className.isEmpty()) {
             winHandler.setProcessAffinity(window.getClassName(), processAffinity);
         }
+        if (!className.equalsIgnoreCase("explorer.exe")) pinSteamWithGame(winHandler, processAffinity);
+    }
+
+    /**
+     * Games on the real Steam client call into it over a pipe, synchronously, from their main thread.
+     * Steam has no window, so it never got the container's CPU list and ran wherever the scheduler put
+     * short bursts of work: the little cores. Black Ops Multiplayer's Create-a-Class screen spent ~75%
+     * of each second waiting on ~250 such calls (~3 ms each, 1.15 ms of it inside Steam), which held
+     * it at ~5 fps. Once the game's own window is pinned, give steam.exe the same cores. Steam itself
+     * is still never pinned before the game starts (the game would inherit its mask at launch).
+     */
+    private volatile int steamAffinity;
+
+    private void pinSteamWithGame(WinHandler winHandler, int processAffinity) {
+        if (steamAffinity == processAffinity) return;
+        steamAffinity = processAffinity;
+        winHandler.setProcessAffinity("steam.exe", processAffinity);
+        Timber.i("Pinned steam.exe to the game's cores (mask 0x%x)", processAffinity);
     }
 
     public void applyWindowWorkarounds(Window window) {
