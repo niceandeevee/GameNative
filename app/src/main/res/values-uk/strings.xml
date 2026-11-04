@@ -656,8 +656,6 @@
     <string name="disable_mouse_input">Вимкнути введення мишею</string>
     <string name="touchscreen_mode">Режим сенсорного екрану</string>
     <string name="shooter_mode_toggle">Режим шутера</string>
-    <string name="shooter_mode_on">Увімкнути мишу</string>
-    <string name="shooter_mode_off">Увімкнути джойстики</string>
 
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">Налаштування сенсорних жестів</string>
@@ -1774,8 +1772,6 @@
     <string name="win32_relative_mouse_input_subtitle">Передає рух безпосередньо до Wine як відносне введення миші. Спробуйте, якщо миша не працює у грі.</string>
     <string name="joystick_opacity">Непрозорість джойстика</string>
     <string name="joystick_opacity_subtitle">Непрозорість кілець і ручок динамічних джойстиків</string>
-    <string name="show_shooter_runtime_toggle">Показувати кнопку в грі</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Показує кнопку Увімкнути мишу / Увімкнути стіки, доки режим шутера активний</string>
     <string name="movement_joystick_size">Розмір джойстика руху</string>
     <string name="movement_joystick_size_subtitle">Множник розміру для динамічного джойстика ліворуч</string>
     <string name="movement_joystick_deadzone">Мертва зона руху</string>

@@ -657,8 +657,6 @@
     <string name="disable_mouse_input">Désactiver l\'entrée souris</string>
     <string name="touchscreen_mode">Mode écran tactile</string>
     <string name="shooter_mode_toggle">Mode tireur</string>
-    <string name="shooter_mode_on">Activer la souris</string>
-    <string name="shooter_mode_off">Activer les sticks</string>
 
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">Paramètres des gestes tactiles</string>
@@ -1776,8 +1774,6 @@
     <string name="win32_relative_mouse_input_subtitle">Envoie les mouvements directement à Wine sous forme d’entrée relative de la souris. Essayez cette option lorsque la souris ne fonctionne pas en jeu.</string>
     <string name="joystick_opacity">Opacité du joystick</string>
     <string name="joystick_opacity_subtitle">Opacité des anneaux et boutons des joysticks dynamiques</string>
-    <string name="show_shooter_runtime_toggle">Afficher le bouton en jeu</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Afficher le bouton Activer la souris / Activer les sticks pendant que le mode tireur est actif</string>
     <string name="movement_joystick_size">Taille du joystick de déplacement</string>
     <string name="movement_joystick_size_subtitle">Multiplicateur de taille pour le joystick dynamique côté gauche</string>
     <string name="movement_joystick_deadzone">Zone morte de déplacement</string>

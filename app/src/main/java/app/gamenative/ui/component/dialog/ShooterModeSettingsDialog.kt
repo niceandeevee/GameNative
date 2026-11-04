@@ -135,16 +135,6 @@ fun ShooterModeSettingsDialog(
                             onValueChange = { config = config.copy(movementZoneSplit = it) },
                         )
 
-                        GestureBlock {
-                            SettingsSwitch(
-                                colors = settingsTileColorsAlt(),
-                                title = { Text(stringResource(R.string.show_shooter_runtime_toggle)) },
-                                subtitle = { Text(stringResource(R.string.show_shooter_runtime_toggle_subtitle)) },
-                                state = config.showRuntimeToggle,
-                                onCheckedChange = { config = config.copy(showRuntimeToggle = it) },
-                            )
-                        }
-
                         GestureRow(
                             title = stringResource(R.string.button_drag_look),
                             subtitle = stringResource(R.string.button_drag_look_subtitle),

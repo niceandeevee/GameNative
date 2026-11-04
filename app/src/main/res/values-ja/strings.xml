@@ -659,8 +659,6 @@
     <string name="disable_mouse_input">マウス入力を無効にする</string>
     <string name="touchscreen_mode">タッチスクリーンモード</string>
     <string name="shooter_mode_toggle">シューターモード</string>
-    <string name="shooter_mode_on">マウスを有効にする</string>
-    <string name="shooter_mode_off">スティックを有効にする</string>
     <!-- Gesture Settings Dialog -->
     <string name="gesture_settings_title">タッチジェスチャー設定</string>
     <string name="gesture_section_single_finger">1本指</string>
@@ -1767,8 +1765,6 @@
     <string name="win32_relative_mouse_input_subtitle">マウスの移動を相対入力として Wine に直接送信します。ゲーム内でマウスが動作しない場合にお試しください。</string>
     <string name="joystick_opacity">ジョイスティックの不透明度</string>
     <string name="joystick_opacity_subtitle">動的ジョイスティックのリングとつまみの不透明度</string>
-    <string name="show_shooter_runtime_toggle">ゲーム中ボタンを表示</string>
-    <string name="show_shooter_runtime_toggle_subtitle">シューターモード中に マウスを有効 / スティックを有効 ボタンを表示します</string>
     <string name="movement_joystick_size">移動ジョイスティックサイズ</string>
     <string name="movement_joystick_size_subtitle">左側の動的ジョイスティックのサイズ倍率</string>
     <string name="movement_joystick_deadzone">移動デッドゾーン</string>

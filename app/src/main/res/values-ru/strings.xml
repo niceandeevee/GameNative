@@ -804,8 +804,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="sharpness_denoise">Шумоподавление чёткости</string>
     <string name="sharpness_effect">Усиление чёткости</string>
     <string name="sharpness_level">Уровень чёткости</string>
-    <string name="shooter_mode_off">Включить стики</string>
-    <string name="shooter_mode_on">Включить мышь</string>
     <string name="shooter_mode_settings">Настройки динамических джойстиков</string>
     <string name="shooter_mode_toggle">Режим стрельбы</string>
     <string name="shortcuts">Ярлыки</string>
@@ -1621,8 +1619,6 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="win32_relative_mouse_input_subtitle">Передаёт движение напрямую в Wine как относительный ввод мыши. Попробуйте эту настройку, если мышь не работает в игре.</string>
     <string name="joystick_opacity">Непрозрачность джойстика</string>
     <string name="joystick_opacity_subtitle">Непрозрачность колец и ручек динамических джойстиков</string>
-    <string name="show_shooter_runtime_toggle">Показывать кнопку в игре</string>
-    <string name="show_shooter_runtime_toggle_subtitle">Показывает кнопку Включить мышь / Включить стики, пока режим шутера активен</string>
     <string name="movement_joystick_size">Размер джойстика движения</string>
     <string name="movement_joystick_size_subtitle">Множитель размера динамического джойстика слева</string>
     <string name="movement_joystick_deadzone">Мертвая зона движения</string>
