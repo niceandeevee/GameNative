@@ -12,7 +12,9 @@ import com.winlator.container.Container
  * - 32-bit D3D9 under WoW64, so address space is tight: use DXVK (pinned to async-1.10.3, the build it
  *   runs on; a reset container on an Adreno 750 got 2.4.1-gplasync and crashed in the intro movie)
  *   rather than WineD3D's GL -> zink
- *   chain, report 1 GB of VRAM (d3d9.maxAvailableMemory) so the engine sizes its pools for a 32-bit
+ *   chain, report 1 GB of VRAM (d3d9.maxAvailableMemory, which DXVK 1.x only reads from dxvk.conf;
+ *   without it the game saw ~4 GB, chose full-resolution textures and died loading the frontend
+ *   during the intro movie) so the engine sizes its pools for a 32-bit
  *   process, and make the process large-address-aware (4 GB instead of 2 GB).
  * - X11 display server: under the gamescope session (the Adreno default) the game's Vulkan bypasses the
  *   wrapper ICD, so a 32-bit process gets memory mappings above 4 GB ("vkMapMemory2KHR returned mapping
