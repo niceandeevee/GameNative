@@ -28,6 +28,12 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class ProcessHelper {
     public static final boolean PRINT_DEBUG = true; // FIXME change to false
+    /**
+     * Whether Wine's stdout/stderr lines are copied into logcat. Off while Wine debug logging is off:
+     * the lines are still drained (so the guest never blocks on a full pipe) but not printed, which
+     * saved two logcat writes per line for output nobody reads.
+     */
+    public static volatile boolean echoToLogcat = true;
     private static final ArrayList<Callback<String>> debugCallbacks = new ArrayList<>();
     private static final byte SIGCONT = 18;
     private static final byte SIGSTOP = 19;
@@ -421,7 +427,7 @@ public abstract class ProcessHelper {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    if (PRINT_DEBUG) System.out.println(line);
+                    if (PRINT_DEBUG && echoToLogcat) System.out.println(line);
                     synchronized (debugCallbacks) {
                         if (!debugCallbacks.isEmpty()) {
                             for (Callback<String> callback : debugCallbacks) callback.call(line);
@@ -451,7 +457,7 @@ public abstract class ProcessHelper {
                         Log.d("ProcessOutput", line);
                     }
 
-                    if (PRINT_DEBUG) System.out.println(line);
+                    if (PRINT_DEBUG && echoToLogcat) System.out.println(line);
                     synchronized (debugCallbacks) {
                         if (!debugCallbacks.isEmpty()) {
                             for (Callback<String> callback : debugCallbacks) callback.call(line);

@@ -1725,7 +1725,7 @@ fun XServerScreen(
         }
     }
     val debugCallback = Callback<String> { outputLine ->
-        Timber.i(outputLine ?: "")
+        if (ProcessHelper.echoToLogcat) Timber.i(outputLine ?: "")
     }
 
     DisposableEffect(Unit) {
@@ -4269,6 +4269,14 @@ private fun setupXEnvironment(
     // capture debug output to file if either Wine or Box64 logging is enabled
     var logFile: File? = null
     val captureLogs = enableWineDebug || enableBox86Logs
+    ProcessHelper.echoToLogcat = captureLogs || diagnostics
+    if (!captureLogs && !diagnostics) {
+        // Nothing reads the guest's output with logging off: keep FEX and VKD3D quiet at the source
+        // (Wine is already -all, DXVK none, Mesa silent). Values set in the container win.
+        for ((name, value) in listOf("FEX_SILENTLOG" to "1", "VKD3D_DEBUG" to "none", "VKD3D_SHADER_DEBUG" to "none")) {
+            if (!envVars.has(name)) envVars.put(name, value)
+        }
+    }
     if (captureLogs) {
         val wineLogDir = File(context.getExternalFilesDir(null), "wine_logs")
         wineLogDir.mkdirs()
