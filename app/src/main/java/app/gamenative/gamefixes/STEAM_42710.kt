@@ -9,13 +9,12 @@ import com.winlator.container.Container
  * - Steam CEG protected: the emulated Steam client / Steamless never get past a black screen, and on
  *   first launch Steam must regenerate the exe ("Updating executable"), so default to the real Steam
  *   client in headless mode, the configuration known to run it.
- * - 32-bit D3D9 under WoW64, so address space is tight: use DXVK (pinned to async-1.10.3, the build it
- *   runs on; a reset container on an Adreno 750 got 2.4.1-gplasync and crashed in the intro movie)
- *   rather than WineD3D's GL -> zink
- *   chain, report 1 GB of VRAM (d3d9.maxAvailableMemory, which DXVK 1.x only reads from dxvk.conf;
- *   without it the game saw ~4 GB, chose full-resolution textures and died loading the frontend
- *   during the intro movie) so the engine sizes its pools for a 32-bit
- *   process, and make the process large-address-aware (4 GB instead of 2 GB).
+ * - 32-bit D3D9 under WoW64, so address space is tight: use DXVK rather than WineD3D's GL -> zink
+ *   chain, pinned to 2.4.1-gplasync (DXVK 2.x unmaps the managed textures it isn't using, which 1.x
+ *   keeps mapped in the game's 4 GB; an intro-movie crash once blamed on it was a damaged
+ *   en_frontend.ff that Verify Files repaired). Report 1 GB of VRAM (d3d9.maxAvailableMemory, which
+ *   DXVK 1.x only reads from dxvk.conf) so the engine sizes its pools for a 32-bit process, and make
+ *   the process large-address-aware (4 GB instead of 2 GB).
  * - X11 display server: under the gamescope session (the Adreno default) the game's Vulkan bypasses the
  *   wrapper ICD, so a 32-bit process gets memory mappings above 4 GB ("vkMapMemory2KHR returned mapping
  *   ... does not fit 32-bit pointer") and DXVK fails with "DirectX encountered an unrecoverable error".
@@ -36,11 +35,6 @@ import com.winlator.container.Container
  *   converter claims it; "Failed to create winegstreamer transform"), so sounds such as knife hits
  *   are silent. Microsoft's xaudio2_7 decodes xWMA itself. The "xaudio" entry also makes the
  *   component show up in the container's Win Components list, where it can be switched back.
- * - Texture quality no higher than "High" (r_picmip >= 1): the game keeps its video settings in
- *   players\config.cfg (config_mp.cfg for multiplayer) in the game folder, which a container reset
- *   doesn't touch. Once it had run with "Extra" (picmip 0, e.g. after DXVK reported ~4 GB of texture
- *   memory), every launch hung or died loading the frontend during the intro movie, while picmip 1
- *   and 3 runs reached the menu and played. Lower settings the player picks are kept.
  * - The PC version has no controller support, so a physical controller defaults to the bundled
  *   "Call of Duty (Console Layout)" profile, which maps the console layout onto keyboard/mouse.
  * - No virtual gamepad inside Wine (EVSHIM_MAX_PLAYERS=0): the game still polls XInput, and loading
@@ -71,11 +65,9 @@ val STEAM_Fix_42710: KeyedGameFix = KeyedCompositeGameFix(
     gameId = "42710",
     fixes = listOf(
         SteamClientRequiredFix(),
-        // Pin the DXVK build it was verified on. Adreno 7xx/8xx devices now default new and reset
-        // containers to 2.4.1-gplasync, and with it the game crashed during the intro movie on an S24.
         DxWrapperDefaultFix(
             "dxvk",
-            mapOf("version" to "async-1.10.3", "async" to "1", "asyncCache" to "0", "maxDeviceMemory" to "1024"),
+            mapOf("version" to "2.4.1-gplasync", "async" to "1", "asyncCache" to "1", "maxDeviceMemory" to "1024"),
         ),
         WineEnvVarFix(mapOf("WINE_LARGE_ADDRESS_AWARE" to "1", "EVSHIM_MAX_PLAYERS" to "0")),
         ContainerSettingDefaultFix.displayServer(Container.DISPLAY_SERVER_X11),
@@ -86,10 +78,6 @@ val STEAM_Fix_42710: KeyedGameFix = KeyedCompositeGameFix(
         WineAppDefaultsFix("BlackOpsMP.exe", "Direct3D", mapOf("renderer" to "no3d")),
         WineAppDefaultsFix("BlackOpsMP.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "", "xinput1_3" to "native,builtin")),
         GameDirAssetFix("gamefixes/steamcache/xinput1_3.dll", "xinput1_3.dll"),
-        CfgDvarFloorFix(
-            listOf("players/config.cfg", "players/config_mp.cfg"),
-            mapOf("r_picmip" to 1, "r_picmip_bump" to 1, "r_picmip_spec" to 1),
-        ),
         ControlProfileDefaultFix("Call of Duty (Console Layout)"),
     ),
 )
