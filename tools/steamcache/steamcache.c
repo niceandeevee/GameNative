@@ -13,9 +13,15 @@
  * for steam_api.dll to hand out its ISteamUser and patches vtable slots 1 (BLoggedOn) and
  * 2 (GetSteamID) to the cached versions below. Nothing in the game's own files is modified;
  * deleting this DLL restores the original behaviour.
+ *
+ * Also, when the app launched the game with Wine debug logging off (WINEDEBUG=-all), the game's debug
+ * prints are dropped: Wine turns every OutputDebugString into an exception (for debuggers), which the
+ * 32-bit emulation makes expensive, and with logging off nothing reads them. Black Ops prints a
+ * stream of them while loading. With any debug channel on, they are left alone.
  */
 #include <windows.h>
 #include <stdint.h>
+#include <string.h>
 
 typedef _Bool(__attribute__((thiscall)) * BLoggedOnFn)(void *self);
 /* MSVC returns a class by value from a member function through a hidden pointer passed on the stack
@@ -105,6 +111,32 @@ static int patch_slot(void **slot, void *replacement, void **original)
     return 1;
 }
 
+/* Turns a one-argument stdcall function into an immediate return ("ret 4"). */
+static void make_return(void *fn)
+{
+    static const unsigned char ret4[] = {0xC2, 0x04, 0x00};
+    DWORD old;
+    if (!fn || !VirtualProtect(fn, sizeof(ret4), PAGE_EXECUTE_READWRITE, &old)) return;
+    memcpy(fn, ret4, sizeof(ret4));
+    VirtualProtect(fn, sizeof(ret4), old, &old);
+    FlushInstructionCache(GetCurrentProcess(), fn, sizeof(ret4));
+}
+
+static void drop_debug_prints_when_logging_off(void)
+{
+    char value[16];
+    DWORD n = GetEnvironmentVariableA("WINEDEBUG", value, sizeof(value));
+    if (n == 0 || n >= sizeof(value) || lstrcmpiA(value, "-all") != 0) return;
+    /* Wine has its own copies in kernel32 and kernelbase; the game may reach either. */
+    const char *modules[] = {"kernel32.dll", "kernelbase.dll"};
+    const char *names[] = {"OutputDebugStringA", "OutputDebugStringW"};
+    for (int m = 0; m < 2; m++) {
+        HMODULE module = GetModuleHandleA(modules[m]);
+        if (!module) continue;
+        for (int i = 0; i < 2; i++) make_return((void *)GetProcAddress(module, names[i]));
+    }
+}
+
 static DWORD WINAPI patch_thread(void *unused)
 {
     (void)unused;
@@ -136,6 +168,9 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, void *reserved)
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(instance);
         InitializeCriticalSection(&lock);
+        /* Here, not in the thread: the game imports this DLL, so DllMain runs before any game thread
+         * exists and none can be inside the functions while their first bytes are rewritten. */
+        drop_debug_prints_when_logging_off();
         HANDLE thread = CreateThread(NULL, 0, patch_thread, NULL, 0, NULL);
         if (thread) CloseHandle(thread);
     }

@@ -57,7 +57,9 @@ import com.winlator.container.Container
  *   every UI element, each a ~3 ms pipe round trip to the real Steam client under Wine. Its main
  *   thread spent ~75% of every second waiting on them, and Create-a-Class (~50 calls per frame) ran
  *   at ~5 fps with the GPU idle. The DLL forwards all of XInput to Wine's builtins and caches those two
- *   answers (refreshed every 250 ms). The fix puts the file back on each launch, so removing it
+ *   answers (refreshed every 250 ms). With Wine debug logging off it also drops the game's
+ *   OutputDebugString prints (each an exception under Wine). The fix puts the file back on each
+ *   launch, so removing it
  *   means dropping these two lines.
  * - No Steam overlay in the game (gameoverlayrenderer disabled for the exe): it is injected into the
  *   32-bit game, hooks every graphics API by creating throwaway devices (the likely source of the
