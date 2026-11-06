@@ -22,7 +22,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import app.gamenative.PrefManager
 import app.gamenative.powercontrol.PowerManager
-import app.gamenative.powercontrol.fan.FanController
 import app.gamenative.powercontrol.metrics.CpuUsageSampler
 import app.gamenative.powercontrol.metrics.GpuUsageSampler
 import app.gamenative.powercontrol.metrics.SystemMetricsSources
@@ -111,7 +110,6 @@ class PerformanceHudView(
     private val cpuTempMetric = createMetricViews(MetricId.CPU_TEMP, 0xFFBDBDBD.toInt())
     private val gpuTempMetric = createMetricViews(MetricId.GPU_TEMP, 0xFFBDBDBD.toInt())
     private val batteryTempMetric = createMetricViews(MetricId.BATTERY_TEMP, 0xFFBDBDBD.toInt())
-    private val fanMetric = createMetricViews(MetricId.FAN, 0xFF80DEEA.toInt())
     private val tuneMetric = createMetricViews(MetricId.TUNE, 0xFFCE93D8.toInt())
 
     private val allMetrics = listOf(
@@ -126,7 +124,6 @@ class PerformanceHudView(
         cpuTempMetric,
         gpuTempMetric,
         batteryTempMetric,
-        fanMetric,
         tuneMetric,
     )
 
@@ -329,15 +326,8 @@ class PerformanceHudView(
                 ?.let { "CPU TEMP ${it}°C" },
             gpuTemp = SystemMetricsSources.readTemperatureC(SystemMetricsSources.gpuTempPaths())
                 ?.let { "GPU TEMP ${it}°C" },
-            fan = readFanText(),
             tune = readTuneText(),
         )
-    }
-
-    private fun readFanText(): String? {
-        if (!PrefManager.showPerformanceHudFan) return null
-        if (!FanController.isRunning()) return null
-        return FanController.latestSample?.let { "FAN ${it.appliedPercent}%" }
     }
 
     private fun readTuneText(): String? {
@@ -436,7 +426,6 @@ class PerformanceHudView(
         updateMetricText(clockMetric, snapshot.clock)
         updateMetricText(cpuTempMetric, snapshot.cpuTemp)
         updateMetricText(gpuTempMetric, snapshot.gpuTemp)
-        updateMetricText(fanMetric, snapshot.fan)
         updateMetricText(tuneMetric, snapshot.tune)
     }
 
@@ -459,7 +448,6 @@ class PerformanceHudView(
             addMetricIfVisible(cpuTempMetric, config.showCpuTemperature)
             addMetricIfVisible(gpuTempMetric, config.showGpuTemperature)
             addMetricIfVisible(batteryTempMetric, config.showBatteryTemperature)
-            addMetricIfVisible(fanMetric, true)
             addMetricIfVisible(tuneMetric, true)
         }
 

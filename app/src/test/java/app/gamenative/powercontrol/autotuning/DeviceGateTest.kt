@@ -7,7 +7,7 @@ import org.junit.Test
 /**
  * Unit test for DeviceGate.isDeviceSupported() covering device detection logic and normalization.
  * This gate controls runtime defaults for enableAutoTuning, adaptiveFpsCapEnabled,
- * enablePerClusterTuning, enableGamePinning, and enableFanControl in PServerDriver.getDefaultProfile().
+ * enablePerClusterTuning and enableGamePinning in PServerDriver.getDefaultProfile().
  */
 class DeviceGateTest {
 

@@ -1640,18 +1640,6 @@ private fun PerformanceHudQuickMenuTab(
             },
             accentColor = accentColor,
         )
-        if (PowerManager.isFanControlAvailable()) {
-            var showFan by remember { mutableStateOf(PrefManager.showPerformanceHudFan) }
-            QuickMenuToggleRow(
-                title = stringResource(R.string.power_control_hud_show_fan),
-                enabled = showFan,
-                onToggle = {
-                    showFan = !showFan
-                    PrefManager.showPerformanceHudFan = showFan
-                },
-                accentColor = accentColor,
-            )
-        }
         if (PowerManager.isClusterTuningAvailable()) {
             var showTunerCaps by remember { mutableStateOf(PrefManager.showPerformanceHudTunerCaps) }
             QuickMenuToggleRow(

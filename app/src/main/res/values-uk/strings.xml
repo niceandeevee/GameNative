@@ -1966,11 +1966,8 @@
     <string name="power_control_tuning_mode">Режим налаштування</string>
     <string name="power_control_tuning_mode_per_cluster">За кластерами (перевірено на Retroid Pocket 6)</string>
     <string name="power_control_tuning_mode_whole_cpu">ПІД-регулятор</string>
-    <string name="power_control_fan_control">Керування вентилятором</string>
-    <string name="power_control_fan_control_desc">Підтримує задану температуру за мінімального шуму вентилятора. Перевірено на Retroid Pocket 6.</string>
     <string name="power_control_game_pinning">Закріплення гри</string>
     <string name="power_control_game_pinning_desc">Утримує гру на швидких ядрах CPU. Перевірено на Retroid Pocket 6.</string>
-    <string name="power_control_hud_show_fan">Показувати швидкість вентилятора</string>
     <string name="power_control_hud_show_tuner">Показувати межі частот налаштування</string>
     <string name="power_control_tuning_strategy">Стратегія налаштування</string>
     <string name="power_control_strategy_balanced">Збалансована</string>

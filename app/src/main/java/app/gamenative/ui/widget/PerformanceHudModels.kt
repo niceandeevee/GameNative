@@ -12,7 +12,6 @@ internal enum class MetricId {
     CLOCK,
     CPU_TEMP,
     GPU_TEMP,
-    FAN,
     TUNE,
 }
 
@@ -43,7 +42,6 @@ internal data class HudSnapshot(
     val clock: String,
     val cpuTemp: String?,
     val gpuTemp: String?,
-    val fan: String?,
     val tune: String?,
 )
 

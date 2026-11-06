@@ -1872,11 +1872,8 @@
     <string name="power_control_tuning_mode">Justeringstilstand</string>
     <string name="power_control_tuning_mode_per_cluster">Pr. klynge (verificeret på Retroid Pocket 6)</string>
     <string name="power_control_tuning_mode_whole_cpu">PID-regulator</string>
-    <string name="power_control_fan_control">Blæserstyring</string>
-    <string name="power_control_fan_control_desc">Holder en måltemperatur med mindst mulig blæserstøj. Verificeret på Retroid Pocket 6.</string>
     <string name="power_control_game_pinning">Spilfastgørelse</string>
     <string name="power_control_game_pinning_desc">Holder spillet på de hurtige CPU-kerner. Verificeret på Retroid Pocket 6.</string>
-    <string name="power_control_hud_show_fan">Vis blæserhastighed</string>
     <string name="power_control_hud_show_tuner">Vis tunerens frekvensgrænser</string>
     <string name="power_control_tuning_strategy">Justeringsstrategi</string>
     <string name="power_control_strategy_balanced">Afbalanceret</string>

@@ -2111,11 +2111,8 @@
     <string name="power_control_tuning_mode">Tuning Mode</string>
     <string name="power_control_tuning_mode_per_cluster">Per-cluster (verified on Retroid Pocket 6)</string>
     <string name="power_control_tuning_mode_whole_cpu">PID Controller</string>
-    <string name="power_control_fan_control">Fan Control</string>
-    <string name="power_control_fan_control_desc">Holds a target temperature with minimum fan noise. Verified on Retroid Pocket 6.</string>
     <string name="power_control_game_pinning">Game Pinning</string>
     <string name="power_control_game_pinning_desc">Keeps the game on the fast CPU cores. Verified on Retroid Pocket 6.</string>
-    <string name="power_control_hud_show_fan">Show fan speed</string>
     <string name="power_control_hud_show_tuner">Show tuner clock caps</string>
     <string name="power_control_tuning_strategy">Tuning Strategy</string>
     <string name="power_control_strategy_balanced">Balanced</string>

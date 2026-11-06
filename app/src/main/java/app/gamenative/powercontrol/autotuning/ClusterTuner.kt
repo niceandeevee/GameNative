@@ -1,7 +1,6 @@
 package app.gamenative.powercontrol.autotuning
 
 import app.gamenative.powercontrol.AutoTuningStrategy
-import app.gamenative.powercontrol.fan.FanSample
 import app.gamenative.powercontrol.metrics.JsonlSessionLog
 import app.gamenative.powercontrol.metrics.MetricsSnapshot
 import java.io.File
@@ -28,7 +27,6 @@ class ClusterTuner(
     private val applyGpuMaxLevel: (Int) -> Boolean,
     private val metricsProvider: () -> MetricsSnapshot?,
     private val targetFpsProvider: () -> Int,
-    private val fanSampleProvider: () -> FanSample? = { null },
     private val strategyProvider: () -> AutoTuningStrategy = { AutoTuningStrategy.BALANCED },
     private val fpsCapProvider: () -> FpsCapSnapshot? = { null },
     private val stateFile: File?,
@@ -464,7 +462,6 @@ class ClusterTuner(
         frozen: Set<TunerDomain>,
         slowRatio: Float,
     ) {
-        val fanSample = fanSampleProvider()
         val fpsCap = fpsCapProvider()
         val line = String.format(
             Locale.US,
@@ -472,7 +469,7 @@ class ClusterTuner(
                 "\"cpu\":%s,\"cpuSrc\":\"%s\",\"gpu\":%s,\"cpuTemp\":%s,\"gpuTemp\":%s," +
                 "\"capPrime\":%s,\"capPerf\":%s,\"capGpu\":%s,\"frozen\":[%s]," +
                 "\"action\":\"%s\",\"reason\":\"%s\",\"steadyCount\":%d," +
-                "\"strategy\":\"%s\",\"fanPercent\":%s,\"fanTempC\":%s," +
+                "\"strategy\":\"%s\"," +
                 "\"userCap\":%d,\"effectiveCap\":%d,\"capState\":\"%s\"}",
             System.currentTimeMillis(),
             snapshot?.let { String.format(Locale.US, "%.2f", it.fps) } ?: "null",
@@ -493,8 +490,6 @@ class ClusterTuner(
             reason,
             steadyCycles,
             strategyProvider().name,
-            fanSample?.appliedPercent?.toString() ?: "null",
-            fanSample?.tempC?.toString() ?: "null",
             fpsCap?.userCapFps ?: 0,
             fpsCap?.effectiveCapFps ?: 0,
             fpsCap?.capState ?: CAP_STATE_OFF,

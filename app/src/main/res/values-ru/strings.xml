@@ -1813,11 +1813,8 @@ Ubuntu RootFs - releases.ubuntu.com/focal</string>
     <string name="power_control_tuning_mode">Режим настройки</string>
     <string name="power_control_tuning_mode_per_cluster">По кластерам (проверено на Retroid Pocket 6)</string>
     <string name="power_control_tuning_mode_whole_cpu">ПИД-регулятор</string>
-    <string name="power_control_fan_control">Управление вентилятором</string>
-    <string name="power_control_fan_control_desc">Поддерживает заданную температуру при минимальном шуме вентилятора. Проверено на Retroid Pocket 6.</string>
     <string name="power_control_game_pinning">Закрепление игры</string>
     <string name="power_control_game_pinning_desc">Удерживает игру на быстрых ядрах CPU. Проверено на Retroid Pocket 6.</string>
-    <string name="power_control_hud_show_fan">Показывать скорость вентилятора</string>
     <string name="power_control_hud_show_tuner">Показывать пределы частот настройки</string>
     <string name="power_control_tuning_strategy">Стратегия настройки</string>
     <string name="power_control_strategy_balanced">Сбалансированная</string>

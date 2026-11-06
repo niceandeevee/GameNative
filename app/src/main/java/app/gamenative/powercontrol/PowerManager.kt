@@ -13,7 +13,6 @@ import app.gamenative.powercontrol.drivers.NoOpPerformanceDriver
 import app.gamenative.powercontrol.drivers.PServerDriver
 import app.gamenative.powercontrol.drivers.PerformanceDriver
 import app.gamenative.powercontrol.drivers.SamsungPerformanceDriver
-import app.gamenative.powercontrol.fan.FanController
 import app.gamenative.powercontrol.metrics.MetricsSnapshot
 import app.gamenative.powercontrol.metrics.PerformanceMetricsCollector
 import app.gamenative.powercontrol.profiles.CpuGovernor
@@ -261,7 +260,6 @@ object PowerManager {
     @Synchronized
     fun stopPowerControl() {
         stopAutoTuning()
-        FanController.stop()
         if (::driver.isInitialized) {
             driver.stop()
         } else {
@@ -423,7 +421,6 @@ object PowerManager {
             applyGpuMaxLevel = { level -> pserver.setMaxGpuPowerLevel(level) },
             metricsProvider = { latestMetrics },
             targetFpsProvider = { targetFps },
-            fanSampleProvider = { FanController.latestSample },
             strategyProvider = { currentProfile.tuningStrategy },
             fpsCapProvider = { AdaptiveFpsCapController.snapshot() },
             stateFile = ClusterTuner.stateFileFor(containerDir),
@@ -563,14 +560,6 @@ object PowerManager {
         }
 
         if (isGameStarted) {
-            if (previousProfile.enableFanControl != profile.enableFanControl) {
-                if (profile.enableFanControl) {
-                    FanController.start(driver)
-                } else {
-                    FanController.stop()
-                }
-            }
-
             if (previousProfile.enableGamePinning != profile.enableGamePinning) {
                 val processName = pinnedGameProcessName
                 if (profile.enableGamePinning) {
@@ -681,7 +670,6 @@ object PowerManager {
                 enableAutoTuning = currentProfile.enableAutoTuning,
                 enablePerClusterTuning = currentProfile.enablePerClusterTuning,
                 adaptiveFpsCapEnabled = currentProfile.adaptiveFpsCapEnabled,
-                enableFanControl = currentProfile.enableFanControl,
                 enableGamePinning = currentProfile.enableGamePinning,
                 tuningStrategy = currentProfile.tuningStrategy
             )
@@ -710,14 +698,6 @@ object PowerManager {
      * Caps currently applied by the cluster tuner, or null when it is not running.
      */
     fun latestTunerCaps(): ClusterTuner.Caps? = clusterTuner?.latestCaps()
-
-    /**
-     * True when driver support fan control and the FanController is usable
-     */
-    fun isFanControlAvailable(): Boolean {
-        val driver = driver
-        return driver.isFanSupported() && FanController.isAvailable(driver)
-    }
 
     /**
      * True when this session can hold the game on the fast CPU cores.
@@ -1518,10 +1498,6 @@ object PowerManager {
 
                 if (currentProfile.enableAutoTuning) {
                     startAutoTuning()
-                }
-
-                if (currentProfile.enableFanControl) {
-                    FanController.start(driver)
                 }
             } catch (e: Exception) {
                 Timber.tag("PowerManager").e(e, "Failed to apply current profile")

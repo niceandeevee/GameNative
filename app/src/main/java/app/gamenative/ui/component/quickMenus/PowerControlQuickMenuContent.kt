@@ -55,7 +55,6 @@ fun PowerControlQuickMenuContent(
     firstItemFocusRequester: FocusRequester? = null,
     onAdaptiveFpsCapToggled: (Boolean) -> Unit = {},
     onPowerControlToggled: (Boolean) -> Unit = {},
-    onFanControlToggled: (Boolean) -> Unit = {},
     onGamePinningToggled: (Boolean) -> Unit = {},
     onAutoTuningToggled: (Boolean) -> Unit = {},
     onTuningModeSelected: (Boolean) -> Unit = {},
@@ -93,7 +92,6 @@ fun PowerControlQuickMenuContent(
                         firstItemFocusRequester = firstItemFocusRequester,
                         onAdaptiveFpsCapToggled = onAdaptiveFpsCapToggled,
                         onPowerControlToggled = onPowerControlToggled,
-                        onFanControlToggled = onFanControlToggled,
                         onGamePinningToggled = onGamePinningToggled,
                         onAutoTuningToggled = onAutoTuningToggled,
                         onTuningModeSelected = onTuningModeSelected,
@@ -168,7 +166,6 @@ private fun FlowRowScope.SuccessView(
     firstItemFocusRequester: FocusRequester? = null,
     onAdaptiveFpsCapToggled: (Boolean) -> Unit,
     onPowerControlToggled: (Boolean) -> Unit,
-    onFanControlToggled: (Boolean) -> Unit,
     onGamePinningToggled: (Boolean) -> Unit,
     onAutoTuningToggled: (Boolean) -> Unit,
     onTuningModeSelected: (Boolean) -> Unit,
@@ -246,21 +243,6 @@ private fun FlowRowScope.SuccessView(
 
     // All controls below only make sense while power control is active
     if (state.selectedProfile.enablePowerControl) {
-        val isFanControlAvailable = PowerManager.isFanControlAvailable()
-        QuickMenuToggleRow(
-            title = stringResource(R.string.power_control_fan_control),
-            subtitle = stringResource(R.string.power_control_fan_control_desc),
-            modifier = Modifier.weight(1f),
-            selectable = isDriverSupported && isFanControlAvailable,
-            enabled = state.selectedProfile.enableFanControl,
-            onToggle = {
-                if (isFanControlAvailable) {
-                    onFanControlToggled(!state.selectedProfile.enableFanControl)
-                }
-            },
-            accentColor = accentColor,
-        )
-
         val isGamePinningAvailable = PowerManager.isGamePinningAvailable()
         QuickMenuToggleRow(
             title = stringResource(R.string.power_control_game_pinning),

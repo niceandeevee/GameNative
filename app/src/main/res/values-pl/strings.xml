@@ -1966,11 +1966,8 @@
     <string name="power_control_tuning_mode">Tryb dostrajania</string>
     <string name="power_control_tuning_mode_per_cluster">Na klaster (zweryfikowano na Retroid Pocket 6)</string>
     <string name="power_control_tuning_mode_whole_cpu">Regulator PID</string>
-    <string name="power_control_fan_control">Sterowanie wentylatorem</string>
-    <string name="power_control_fan_control_desc">Utrzymuje docelową temperaturę przy minimalnym hałasie wentylatora. Zweryfikowano na Retroid Pocket 6.</string>
     <string name="power_control_game_pinning">Przypinanie gry</string>
     <string name="power_control_game_pinning_desc">Utrzymuje grę na szybkich rdzeniach CPU. Zweryfikowano na Retroid Pocket 6.</string>
-    <string name="power_control_hud_show_fan">Pokaż prędkość wentylatora</string>
     <string name="power_control_hud_show_tuner">Pokaż limity taktowania dostrajania</string>
     <string name="power_control_tuning_strategy">Strategia dostrajania</string>
     <string name="power_control_strategy_balanced">Zrównoważona</string>

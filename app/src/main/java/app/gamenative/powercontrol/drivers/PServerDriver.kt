@@ -193,14 +193,6 @@ class PServerDriver(private val context: Context? = null) : PerformanceDriver() 
     }
 
     /**
-     * Check if fan control is supported
-     * Currently not implemented for PServer devices
-     */
-    override fun isFanSupported(): Boolean {
-        return isDriverSupported()
-    }
-
-    /**
      * Check if per-cluster frequency caps are supported
      * Root access to the cpufreq nodes of every policy is what the cluster tuner needs
      */
@@ -414,26 +406,6 @@ class PServerDriver(private val context: Context? = null) : PerformanceDriver() 
      * Run a command as root on the driver's executor.
      */
     fun executeRootCommand(command: String): Result<String?> = executeAsRoot(command)
-
-    /**
-     * Attach (or clear) the command that hands the fan back to the vendor controller and
-     * rewrite the on-disk artifacts, so the babysitter and any dirty-session recovery
-     * carry it too.
-     */
-    fun updateFanRestoreCommand(command: String?): Boolean {
-        val baseline = sessionBaseline
-        if (baseline == null) {
-            Timber.tag(POWER_TAG).w("No session baseline, fan restore command not persisted")
-            return false
-        }
-        if (baseline.fanRestoreCommand == command) return true
-
-        val updated = baseline.copy(fanRestoreCommand = command)
-        val scriptPath = writeBaselineArtifacts(updated) ?: return false
-        sessionBaseline = updated
-        rootRestoreScriptPath = scriptPath
-        return true
-    }
 
     /**
      * Capture the pre-session sysfs values, persist them together with a restore script,
@@ -1306,7 +1278,6 @@ class PServerDriver(private val context: Context? = null) : PerformanceDriver() 
             enableAutoTuning = isTestedDevice,
             enablePerClusterTuning = isTestedDevice,
             enableGamePinning = isTestedDevice,
-            enableFanControl = isTestedDevice,
             name = PerformancePreset.BALANCED.displayName,
             governor = CpuGovernor.SCHEDUTIL,
             minCpuFreq = getCurrentMinCpuValue(),
