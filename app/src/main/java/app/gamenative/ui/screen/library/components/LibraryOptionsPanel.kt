@@ -107,11 +107,6 @@ fun LibraryOptionsPanel(
     isOffline: Boolean,
     onSteamCollectionToggle: (String) -> Unit,
     onClearSteamCollections: () -> Unit,
-    curatedLists: List<SteamCollection>?,
-    selectedCuratedListIds: Set<String>,
-    curatedListCounts: Map<String, Int>,
-    onCuratedListToggle: (String) -> Unit,
-    onClearCuratedLists: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val firstItemFocusRequester = remember { FocusRequester() }
@@ -343,24 +338,6 @@ fun LibraryOptionsPanel(
                                 onClear = onClearSteamCollections,
                             )
                         }
-                        if (isSteamConnected || hasSteamCredentials) {
-                            CollectionFilterSection(
-                                collections = curatedLists,
-                                selectedIds = selectedCuratedListIds,
-                                counts = curatedListCounts,
-                                titleRes = R.string.curated_lists_title,
-                                loadingRes = R.string.curated_lists_loading,
-                                clearRes = R.string.curated_lists_clear,
-                                emptyRes = R.string.curated_lists_empty,
-                                messageRes = if (isOffline) {
-                                    listOf(R.string.curated_lists_offline)
-                                } else {
-                                    emptyList()
-                                },
-                                onToggle = onCuratedListToggle,
-                                onClear = onClearCuratedLists,
-                            )
-                        }
 
                         Spacer(modifier = Modifier.height(24.dp))
                     }
@@ -526,13 +503,6 @@ private fun Preview_LibraryOptionsPanel() {
                     isOffline = false,
                     onSteamCollectionToggle = { },
                     onClearSteamCollections = { },
-                    curatedLists = listOf(
-                        SteamCollection(id = "curated:4-3", name = "4:3 games", appIds = setOf(730, 240)),
-                    ),
-                    selectedCuratedListIds = emptySet(),
-                    curatedListCounts = mapOf("curated:4-3" to 2),
-                    onCuratedListToggle = { },
-                    onClearCuratedLists = { },
                 )
             }
         }

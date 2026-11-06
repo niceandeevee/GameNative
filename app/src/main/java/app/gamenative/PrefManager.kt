@@ -984,22 +984,6 @@ object PrefManager {
             setPref(LIBRARY_STEAM_COLLECTIONS, value.joinToString(COLLECTION_ID_SEPARATOR))
         }
 
-    private val LIBRARY_CURATED_LISTS = stringPreferencesKey("library_curated_lists")
-    var libraryCuratedLists: Set<String>
-        get() {
-            val raw = getPref(LIBRARY_CURATED_LISTS, "")
-            if (raw.isEmpty()) return emptySet()
-            return raw.split(COLLECTION_ID_SEPARATOR).filter { it.isNotEmpty() }.toSet()
-        }
-        set(value) {
-            setPref(LIBRARY_CURATED_LISTS, value.joinToString(COLLECTION_ID_SEPARATOR))
-        }
-
-    private val LIBRARY_CURATED_LISTS_CACHE = stringPreferencesKey("library_curated_lists_cache")
-    var libraryCuratedListsCache: String
-        get() = getPref(LIBRARY_CURATED_LISTS_CACHE, "")
-        set(value) { setPref(LIBRARY_CURATED_LISTS_CACHE, value) }
-
     private val LIBRARY_TAB_PREFERENCES = stringPreferencesKey("library_tab_preferences")
     var libraryTabs: List<LibraryTab>
         get() = LibraryTab.normalizeVisibleTabs(
