@@ -4434,7 +4434,7 @@ private fun getWineStartCommand(
             container.executablePath = SteamService.getInstalledExe(gameId)
             container.saveData()
         }
-        if (!container.isUseLegacyDRM && !ContainerUtils.isAbsoluteWindowsPath(container.executablePath)){
+        if (!ContainerUtils.isAbsoluteWindowsPath(container.executablePath)){
             // Create ColdClientLoader.ini file
             SteamUtils.writeColdClientIni(gameId, container, appLaunchInfo)
         }
@@ -4567,7 +4567,7 @@ private fun getWineStartCommand(
                 container.executablePath = executablePath
                 container.saveData()
             }
-            if (container.isUseLegacyDRM || executablePath.endsWith(".bat", ignoreCase = true)) {
+            if (executablePath.endsWith(".bat", ignoreCase = true)) {
                 val appDirPath = SteamService.getAppDirPath(gameId)
                 val executableDir = appDirPath + "/" + executablePath.substringBeforeLast("/", "")
                 guestProgramLauncherComponent.workingDir = File(executableDir);

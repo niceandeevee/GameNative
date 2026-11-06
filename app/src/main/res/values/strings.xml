@@ -695,7 +695,6 @@
     <string name="remove_driver_confirmation">Are you sure you want to remove driver "%s"? This cannot be undone</string>
 
     <!-- Container Configuration: Steam Integration -->
-    <string name="use_legacy_drm">Use Legacy DRM</string>
     <string name="unpack_files">Unpack Files</string>
     <string name="unpack_files_description">Only use if you get \'Application Load Error 3:0000065432\'.</string>
     <string name="load_mods">Enable mod loaders</string>

@@ -316,7 +316,7 @@ fun PluviaMain(
                         !SteamUtils.awaitSteamLogin()
                     }
                 }
-                // sync viewModel — dialog retries + replaceSteamApi read isOffline.value
+                // sync viewModel — dialog retries read isOffline.value
                 viewModel.setOffline(isOffline)
                 preLaunchApp(
                     context = context,
@@ -1553,7 +1553,7 @@ fun preLaunchApp(
                 ).await()
             }
 
-            if (!container.isUseLegacyDRM && !container.isLaunchRealSteam &&
+            if (!container.isLaunchRealSteam &&
                 !SteamService.isFileInstallable(context, "experimental-drm-20260116.tzst")
             ) {
                 setLoadingMessage("Downloading extras")

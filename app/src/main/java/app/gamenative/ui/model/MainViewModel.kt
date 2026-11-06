@@ -533,12 +533,7 @@ class MainViewModel @Inject constructor(
                     if (container.isLaunchRealSteam() || container.isLaunchBionicSteam()) {
                         SteamUtils.restoreSteamApi(context, appId)
                     } else {
-                        val offline = _offline.value
-                        if (container.isUseLegacyDRM) {
-                            SteamUtils.replaceSteamApi(context, appId, offline)
-                        } else {
-                            SteamUtils.replaceSteamclientDll(context, appId, offline)
-                        }
+                        SteamUtils.replaceSteamclientDll(context, appId, _offline.value)
                     }
                 }
                 container
