@@ -703,8 +703,6 @@ fun PluviaMain(
             }
         }
 
-        }
-
         DialogType.SYNC_FAIL -> {
             onConfirmClick = null
             onDismissClick = {
@@ -1605,6 +1603,7 @@ fun preLaunchApp(
                     REAL_STEAM_CLIENT_ARCHIVE,
                 ).await()
             }
+            if ((container.isLaunchBionicSteam || (container.isLaunchRealSteam && !container.isLaunchHeadlessSteam)) &&
                 !SteamService.isFileInstallable(context, "steam.tzst")
             ) {
                 setLoadingMessage(context.getString(R.string.main_downloading_steam))
