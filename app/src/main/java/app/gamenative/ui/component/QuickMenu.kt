@@ -133,11 +133,6 @@ object QuickMenuAction {
     const val CONTROL_PROFILES = 12
     const val CONTROL_PROFILE_APPLIED = 13
     const val PHYSICAL_CONTROLLER_SETTINGS = 14
-    // Steam Controller (Triton) live editors — shown in the CONTROLLER tab only when an SC is connected.
-    const val SC_BINDINGS = 15
-    const val SC_LAYOUT = 16
-    // Single root entry that opens the Steam Controller editor hub (lists the editors above).
-    const val SC_ROOT = 17
 }
 
 private object QuickMenuTab {
@@ -380,9 +375,6 @@ fun QuickMenu(
     onEndWineProcess: (ProcessInfo) -> Unit = {},
     performance: PerformanceQuickMenuState = PerformanceQuickMenuState(),
     hasPhysicalController: Boolean = false,
-    /** A Steam Controller (Triton) is live this session — surface its rich editors and hide the generic gamepad
-     *  mapper (the BLE Triton isn't an Android input device, so the generic mapper doesn't apply to it). */
-    isSteamControllerLive: Boolean = false,
     isTouchscreenModeActive: Boolean = false,
     onTouchGestureSettingsClick: () -> Unit = {},
     isShooterModeActive: Boolean = false,
@@ -422,10 +414,6 @@ fun QuickMenu(
     val gyroMenu = remember(container?.id) { container?.let(::GyroQuickMenuState) }
 
     val controllerItems = buildList {
-        // Steam Controller editors live behind a single root entry (most relevant when a Triton is connected).
-        if (isSteamControllerLive) {
-            add(QuickMenuItem(QuickMenuAction.SC_ROOT, Icons.Filled.Gamepad, R.string.sc_edit_root, PluviaTheme.colors.accentPurple))
-        }
         add(
             QuickMenuItem(
                 id = QuickMenuAction.DISABLE_MOUSE,
@@ -450,8 +438,7 @@ fun QuickMenu(
                 accentColor = PluviaTheme.colors.accentPurple,
             )
         )
-        // The generic gamepad mapper doesn't apply to the BLE Steam Controller — hide it when an SC is live.
-        if (hasPhysicalController && !isSteamControllerLive) {
+        if (hasPhysicalController) {
             add(
                 QuickMenuItem(
                     id = QuickMenuAction.EDIT_PHYSICAL_CONTROLLER,
