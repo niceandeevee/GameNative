@@ -77,7 +77,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
-import app.gamenative.utils.LocaleHelper
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -120,18 +119,6 @@ fun SettingsGroupInterface(
     var showAchievementNotifications by rememberSaveable { mutableStateOf(PrefManager.achievementShowNotification) }
     var playAchievementSound by rememberSaveable { mutableStateOf(PrefManager.achievementPlaySound) }
 
-    // Language selection dialog
-    var openLanguageDialog by rememberSaveable { mutableStateOf(false) }
-    var showLanguageRestartDialog by rememberSaveable { mutableStateOf(false) }
-    var pendingLanguageCode by rememberSaveable { mutableStateOf<String?>(null) }
-    var showLanguageLoadingDialog by rememberSaveable { mutableStateOf(false) }
-    val languageCodes = remember { LocaleHelper.getSupportedLanguageCodes() }
-    val languageNames = remember { LocaleHelper.getSupportedLanguageNames() }
-    var selectedLanguageIndex by rememberSaveable {
-        mutableStateOf(
-            languageCodes.indexOf(PrefManager.appLanguage).takeIf { it >= 0 } ?: 0,
-        )
-    }
 
     // Load Steam regions from assets
     val steamRegionsMap: Map<Int, String> = remember {
@@ -352,13 +339,6 @@ fun SettingsGroupInterface(
             subtitle = { Text(text = stringResource(R.string.settings_interface_library_tabs_subtitle)) },
         )
 
-        // Language selection
-        SettingsMenuLink(
-            colors = settingsTileColorsAlt(),
-            title = { Text(text = stringResource(R.string.settings_language)) },
-            subtitle = { Text(text = LocaleHelper.getLanguageDisplayName(PrefManager.appLanguage)) },
-            onClick = { openLanguageDialog = true },
-        )
 
         // Unified visual icon picker (affects app and notification icons)
         var selectedVariant by rememberSaveable { mutableStateOf(if (PrefManager.useAltLauncherIcon || PrefManager.useAltNotificationIcon) 1 else 0) }
@@ -632,76 +612,6 @@ fun SettingsGroupInterface(
         message = context.getString(R.string.settings_saving_restarting),
     )
 
-    // Language selection dialog
-    SingleChoiceDialog(
-        openDialog = openLanguageDialog,
-        icon = Icons.Default.Map,
-        iconDescription = stringResource(R.string.settings_language),
-        title = stringResource(R.string.settings_select_language),
-        items = languageNames,
-        currentItem = selectedLanguageIndex,
-        onSelected = { index ->
-            selectedLanguageIndex = index
-            val selectedCode = languageCodes[index]
-            // Check if language actually changed
-            if (selectedCode != PrefManager.appLanguage) {
-                pendingLanguageCode = selectedCode
-                showLanguageRestartDialog = true
-            }
-            openLanguageDialog = false
-        },
-        onDismiss = { openLanguageDialog = false },
-    )
-
-    // Language change restart confirmation dialog
-    MessageDialog(
-        visible = showLanguageRestartDialog,
-        title = stringResource(R.string.settings_language_restart_title),
-        message = stringResource(R.string.settings_language_restart_message),
-        confirmBtnText = stringResource(R.string.settings_language_restart_confirm),
-        dismissBtnText = stringResource(R.string.cancel),
-        onConfirmClick = {
-            showLanguageRestartDialog = false
-            val newLanguage = pendingLanguageCode ?: return@MessageDialog
-            // Save preference and show loading dialog
-            PrefManager.appLanguage = newLanguage
-            showLanguageLoadingDialog = true
-            pendingLanguageCode = null
-        },
-        onDismissRequest = {
-            showLanguageRestartDialog = false
-            // Revert selection to original value
-            selectedLanguageIndex = languageCodes.indexOf(PrefManager.appLanguage).takeIf { it >= 0 } ?: 0
-            pendingLanguageCode = null
-        },
-        onDismissClick = {
-            showLanguageRestartDialog = false
-            // Revert selection to original value
-            selectedLanguageIndex = languageCodes.indexOf(PrefManager.appLanguage).takeIf { it >= 0 } ?: 0
-            pendingLanguageCode = null
-        },
-    )
-
-    // Loading dialog while saving and restarting for language change
-    LaunchedEffect(showLanguageLoadingDialog) {
-        if (showLanguageLoadingDialog) {
-            // Wait a bit for the preference to be saved (DataStore operations are async)
-            delay(300)
-            // Verify the preference was saved by reading it back
-            withContext(Dispatchers.IO) {
-                // Small delay to ensure DataStore write completes
-                delay(200)
-            }
-            // Restart the app
-            AppUtils.restartApplication(context)
-        }
-    }
-
-    LoadingDialog(
-        visible = showLanguageLoadingDialog,
-        progress = -1f, // Indeterminate progress
-        message = stringResource(R.string.settings_language_changing),
-    )
 
 
 }

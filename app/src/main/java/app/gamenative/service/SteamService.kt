@@ -60,7 +60,6 @@ import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.DepotManifestFiles
 import app.gamenative.utils.FileUtils
 import app.gamenative.utils.LicenseSerializer
-import app.gamenative.utils.LocaleHelper
 import app.gamenative.utils.LsfgVkManager
 import app.gamenative.utils.MarkerUtils
 import app.gamenative.utils.Net
@@ -212,9 +211,7 @@ class SteamService : Service(), IChallengeUrlChanged {
 
     override fun attachBaseContext(newBase: Context) {
         PrefManager.init(newBase)
-        val languageCode = PrefManager.appLanguage
-        val context = LocaleHelper.applyLanguage(newBase, languageCode)
-        super.attachBaseContext(context)
+        super.attachBaseContext(newBase)
     }
 
     // To view log messages in android logcat properly
@@ -3195,6 +3192,10 @@ class SteamService : Service(), IChallengeUrlChanged {
             }.orEmpty()
         }
 
+        /** True while a game is running; background library refreshes wait until it exits. */
+        @Volatile
+        var gameRunning: Boolean = false
+
         suspend fun notifyRunningProcesses(vararg gameProcesses: GameProcessInfo) = withContext(Dispatchers.IO) {
             instance?.let { steamInstance ->
                 if (isConnected) {
@@ -5389,6 +5390,9 @@ class SteamService : Service(), IChallengeUrlChanged {
         while (isActive && isLoggedIn) {
             // Initial delay before each check
             delay(60.seconds)
+
+            // Library metadata changes can wait: don't wake the radio or write the database mid-game.
+            if (gameRunning) continue
 
             PICSChangesCheck()
         }

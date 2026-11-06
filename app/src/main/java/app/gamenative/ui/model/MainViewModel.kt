@@ -581,6 +581,7 @@ class MainViewModel @Inject constructor(
                 val gameId = ContainerUtils.extractGameIdFromContainerId(appId)
                 Timber.tag("Exit").i("Got game id: $gameId")
                 ActiveGameRegistry.clearIfMatches(gameId)
+                SteamService.gameRunning = false
                 SteamService.notifyRunningProcesses()
 
                 handleExitCloudSync(context, appId, gameId)
@@ -715,6 +716,7 @@ class MainViewModel @Inject constructor(
                             false
                         }
 
+                        SteamService.gameRunning = true
                         if (!shouldLaunchRealSteam) {
                             ActiveGameRegistry.set(it)
                             SteamService.notifyRunningProcesses(it)

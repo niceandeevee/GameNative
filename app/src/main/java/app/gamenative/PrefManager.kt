@@ -1403,12 +1403,6 @@ object PrefManager {
         get() = getPref(USE_ALT_NOTIFICATION_ICON, false)
         set(value) = setPref(USE_ALT_NOTIFICATION_ICON, value)
 
-    // App language preference (empty string means system default)
-    private val APP_LANGUAGE = stringPreferencesKey("app_language")
-    var appLanguage: String
-        get() = getPref(APP_LANGUAGE, "")
-        set(value) = setPref(APP_LANGUAGE, value)
-
     private val ACHIEVEMENT_SHOW_NOTIFICATION = booleanPreferencesKey("achievement_show_notification")
     var achievementShowNotification: Boolean
         get() = getPref(ACHIEVEMENT_SHOW_NOTIFICATION, true)

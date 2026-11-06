@@ -930,12 +930,8 @@
     <string name="remove_content_confirmation">Are you sure you want to remove %1$s (%2$s)?</string>
 
     <!-- Settings -->
-    <string name="settings_language">Language</string>
-    <string name="settings_select_language">Select Language</string>
-    <string name="settings_language_restart_title">Restart Required</string>
     <string name="settings_language_restart_message">Changing the language requires the app to restart. Do you want to continue?</string>
     <string name="settings_language_restart_confirm">Restart</string>
-    <string name="settings_language_changing">Changing language and restarting...</string>
 
     <!-- Settings: Performance Group -->
     <string name="settings_performance_title">Performance</string>
