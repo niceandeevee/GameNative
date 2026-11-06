@@ -875,14 +875,6 @@
     <string name="gesture_show_cursor_touchscreen_mode">Show Cursor in Touchscreen Mode</string>
     <string name="gesture_show_cursor_touchscreen_mode_subtitle">Keep the mouse cursor visible while touchscreen gestures are active</string>
 
-    <string name="external_display_input">External Display Input</string>
-    <string name="external_display_input_subtitle">Choose how a connected presentation display should behave</string>
-    <string name="external_display_mode_off">Do not use external display</string>
-    <string name="external_display_mode_touchpad">Use as touchpad surface</string>
-    <string name="external_display_mode_keyboard">Use as full keyboard</string>
-    <string name="external_display_mode_hybrid">Hybrid (touchpad + keyboard button)</string>
-    <string name="external_display_swap">Show Game on External Display</string>
-    <string name="external_display_swap_subtitle">Swap screens so the game renders on the external display and this device becomes the controller surface</string>
 
     <!-- Container Configuration: Rendering -->
     <string name="renderer">Renderer</string>

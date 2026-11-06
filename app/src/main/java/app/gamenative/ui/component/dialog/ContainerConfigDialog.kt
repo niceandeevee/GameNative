@@ -148,7 +148,6 @@ private data class ContainerConfigDialogStaticData(
     val renderingModes: List<String>,
     val videoMemSizes: List<String>,
     val mouseWarps: List<String>,
-    val externalDisplayModes: List<String>,
     val winCompOpts: List<String>,
     val wowBox64VersionsBase: List<String>,
     val box64BionicVersionsBase: List<String>,
@@ -197,12 +196,6 @@ private fun rememberContainerConfigDialogStaticData(): ContainerConfigDialogStat
         renderingModes = stringArrayResource(R.array.offscreen_rendering_modes).toList(),
         videoMemSizes = stringArrayResource(R.array.video_memory_size_entries).toList(),
         mouseWarps = stringArrayResource(R.array.mouse_warp_override_entries).toList(),
-        externalDisplayModes = listOf(
-            stringResource(R.string.external_display_mode_off),
-            stringResource(R.string.external_display_mode_touchpad),
-            stringResource(R.string.external_display_mode_keyboard),
-            stringResource(R.string.external_display_mode_hybrid),
-        ),
         winCompOpts = stringArrayResource(R.array.win_component_entries).toList(),
         wowBox64VersionsBase = stringArrayResource(R.array.wowbox64_version_entries).toList(),
         box64BionicVersionsBase = stringArrayResource(R.array.box64_bionic_version_entries).toList(),
@@ -283,7 +276,6 @@ fun ContainerConfigDialog(
         val renderingModes = staticData.renderingModes
         val videoMemSizes = staticData.videoMemSizes
         val mouseWarps = staticData.mouseWarps
-        val externalDisplayModes = staticData.externalDisplayModes
         val winCompOpts = staticData.winCompOpts
         val wowBox64VersionsBase = staticData.wowBox64VersionsBase
         val box64BionicVersionsBase = staticData.box64BionicVersionsBase
@@ -885,16 +877,6 @@ fun ContainerConfigDialog(
             mutableIntStateOf(if (index >= 0) index else 0)
         }
         var mouseWarpIndex by mouseWarpIndexRef
-        val externalDisplayModeIndexRef = rememberSaveable {
-            val index = when (config.externalDisplayMode.lowercase()) {
-                Container.EXTERNAL_DISPLAY_MODE_TOUCHPAD -> 1
-                Container.EXTERNAL_DISPLAY_MODE_KEYBOARD -> 2
-                Container.EXTERNAL_DISPLAY_MODE_HYBRID -> 3
-                else -> 0
-            }
-            mutableIntStateOf(index)
-        }
-        var externalDisplayModeIndex by externalDisplayModeIndexRef
         val languageIndexRef = rememberSaveable {
             val idx = languages.indexOfFirst { it == config.language.lowercase() }
             mutableIntStateOf(if (idx >= 0) idx else languages.indexOf("english"))
@@ -1043,7 +1025,6 @@ fun ContainerConfigDialog(
             renderingModeIndex = renderingModeIndexRef,
             videoMemIndex = videoMemIndexRef,
             mouseWarpIndex = mouseWarpIndexRef,
-            externalDisplayModeIndex = externalDisplayModeIndexRef,
             languageIndex = languageIndexRef,
             showEnvVarCreateDialog = showEnvVarCreateDialogRef,
             showAddDriveDialog = showAddDriveDialogRef,
@@ -1067,7 +1048,6 @@ fun ContainerConfigDialog(
             renderingModes = renderingModes,
             videoMemSizes = videoMemSizes,
             mouseWarps = mouseWarps,
-            externalDisplayModes = externalDisplayModes,
             winCompOpts = winCompOpts,
             wowBox64VersionsBase = wowBox64VersionsBase,
             box64BionicVersionsBase = box64BionicVersionsBase,

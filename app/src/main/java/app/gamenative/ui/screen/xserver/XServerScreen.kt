@@ -107,9 +107,6 @@ import app.gamenative.events.AndroidEvent
 import app.gamenative.events.SteamEvent
 import app.gamenative.ui.enums.Orientation
 import java.util.EnumSet
-import app.gamenative.externaldisplay.ExternalDisplayInputController
-import app.gamenative.externaldisplay.ExternalDisplaySwapController
-import app.gamenative.externaldisplay.SwapInputOverlayView
 import app.gamenative.powercontrol.PowerManager
 import app.gamenative.service.AchievementWatcher
 import app.gamenative.service.SteamHostAchievementPoller
@@ -1920,11 +1917,6 @@ fun XServerScreen(
                 val radialMenuHandled = PluviaApp.radialMenuCoordinator?.onHostTouchEvent(event) == true
                 if (radialMenuHandled) return@pointerInteropFilter true
 
-                val overlayHandled = ui.swapInputOverlay
-                    ?.takeIf { it.visibility == View.VISIBLE }
-                    ?.dispatchTouchEvent(event) == true
-                if (overlayHandled) return@pointerInteropFilter true
-
                 if (isPortrait) {
                     ui.gameRoot?.dispatchTouchEvent(event)
                 } else {
@@ -2732,73 +2724,6 @@ fun XServerScreen(
             } else {
                 frameLayout.addView(icView)
             }
-            val configuredExternalMode = ExternalDisplayInputController.fromConfig(container.externalDisplayMode)
-            val swapEnabled = container.isExternalDisplaySwap
-
-            val overlay = SwapInputOverlayView(context, xServerView.getxServer()).apply {
-                visibility = View.GONE
-                setMode(ExternalDisplayInputController.Mode.OFF)
-            }
-            frameLayout.addView(overlay)
-            ui.swapInputOverlay = overlay
-
-            val externalDisplayController =
-                if (!swapEnabled && configuredExternalMode != ExternalDisplayInputController.Mode.OFF) {
-                    ExternalDisplayInputController(
-                        context = context,
-                        xServer = xServerView.getxServer(),
-                        touchpadViewProvider = { PluviaApp.touchpadView },
-                    ).apply {
-                        setMode(configuredExternalMode)
-                        start()
-                    }
-                } else {
-                    null
-                }
-
-            val swapController =
-                if (swapEnabled) {
-                    val surfaceBg = ContextCompat.getColor(context, R.color.external_display_surface_background)
-                    ExternalDisplaySwapController(
-                        context = context,
-                        xServerViewProvider = { xServerView as? View },
-                        internalGameHostProvider = { gameHost },
-                        onGameOnExternalChanged = { gameOnExternal ->
-                            if (gameOnExternal) {
-                                PluviaApp.touchpadView?.setBackgroundColor(surfaceBg)
-                                when (configuredExternalMode) {
-                                    ExternalDisplayInputController.Mode.KEYBOARD,
-                                    ExternalDisplayInputController.Mode.HYBRID,
-                                    -> {
-                                        overlay.visibility = View.VISIBLE
-                                        overlay.setMode(configuredExternalMode)
-                                    }
-                                    else -> {
-                                        overlay.visibility = View.GONE
-                                        overlay.setMode(ExternalDisplayInputController.Mode.OFF)
-                                    }
-                                }
-                            } else {
-                                PluviaApp.touchpadView?.setBackgroundColor(Color.TRANSPARENT)
-                                overlay.visibility = View.GONE
-                                overlay.setMode(ExternalDisplayInputController.Mode.OFF)
-                            }
-                        },
-                    ).apply {
-                        setSwapEnabled(true)
-                        start()
-                    }
-                } else {
-                    null
-                }
-            mainRoot.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View) {}
-
-                override fun onViewDetachedFromWindow(v: View) {
-                    externalDisplayController?.stop()
-                    swapController?.stop()
-                }
-            })
             // Don't call hideInputControls() here - let the auto-show logic below handle visibility
             // so that the view gets measured/laid out and has valid dimensions for element loading
 

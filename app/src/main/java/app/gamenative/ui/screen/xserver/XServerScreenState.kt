@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.gamenative.PrefManager
 import app.gamenative.data.ShooterModeConfig
-import app.gamenative.externaldisplay.SwapInputOverlayView
 import app.gamenative.ui.data.PerformanceHudConfig
 import app.gamenative.ui.data.PerformanceHudSize
 import app.gamenative.ui.widget.PerformanceHudView
@@ -37,7 +36,6 @@ internal class XServerScreenState(container: Container, context: Context) {
     var touchMouse by mutableStateOf<TouchMouse?>(null)
     var keyboard by mutableStateOf<Keyboard?>(null)
     var xServerView: XServerRendererView? by mutableStateOf<XServerRendererView?>(null)
-    var swapInputOverlay: SwapInputOverlayView? by mutableStateOf(null)
     var imeInputReceiver: app.gamenative.externaldisplay.IMEInputReceiver? by mutableStateOf(null)
     var win32AppWorkarounds: Win32AppWorkarounds? by mutableStateOf(null)
     var physicalControllerHandler: PhysicalControllerHandler? by mutableStateOf(null)
