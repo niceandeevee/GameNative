@@ -1192,16 +1192,6 @@
     <string name="settings_interface_swap_face_buttons_title">Scambia i pulsanti frontali</string>
     <string name="settings_interface_swap_face_buttons_subtitle">Scambia le icone dei pulsanti A↔B e X↔Y</string>
 
-    <!-- Workshop -->
-    <string name="workshop_checking_mods">Controllo mod del Workshop…</string>
-    <string name="workshop_update_title">Aggiornamenti mod del Workshop</string>
-    <string name="workshop_update_prompt">%1$s MB di aggiornamenti mod disponibili. Scaricare ora o saltare?</string>
-    <string name="workshop_download_btn">Scarica</string>
-    <string name="workshop_skip_btn">Salta</string>
-    <string name="workshop_downloading">Download mod del Workshop (%1$d/%2$d)</string>
-    <string name="workshop_processing">Elaborazione mod…</string>
-    <string name="workshop_failed_count">%1$d mod del Workshop non aggiornati</string>
-    <string name="workshop_download_failed">Download non riuscito</string>
     <string name="option_open_store_page">Apri pagina dello store</string>
     <string name="option_export_for_frontend">Esporta per frontend</string>
     <string name="option_copy_launch_link">Copia link di avvio</string>
@@ -1246,7 +1236,6 @@
     <string name="option_force_upload_local">Forza caricamento salvataggi locali</string>
     <string name="option_test_graphics">Prova grafica</string>
     <string name="option_manage_dlc">Gestisci DLC</string>
-    <string name="option_manage_workshop">Gestisci Workshop</string>
     <!-- HLTB (How Long To Beat) -->
 
     <!-- LSFG-VK frame generation -->

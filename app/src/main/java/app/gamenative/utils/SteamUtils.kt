@@ -20,7 +20,6 @@ import app.gamenative.service.SteamService
 import app.gamenative.service.SteamService.Companion.getAppDirName
 import app.gamenative.service.SteamService.Companion.getAppInfoOf
 import app.gamenative.ui.component.TIMEOUT_SHOW_OFFLINE_OPTION_SECONDS
-import app.gamenative.workshop.compatibility.SlayTheSpireModTheSpireCompatibility
 import com.winlator.container.Container
 import com.winlator.core.TarCompressorUtils
 import com.winlator.core.WineRegistryEditor
@@ -521,21 +520,6 @@ object SteamUtils {
     ): ColdClientLaunchConfig {
         val sanitizedExecutablePath = sanitizeColdClientArgumentText(executablePath)
         val sanitizedExeCommandLine = sanitizeColdClientArgumentText(exeCommandLine)
-        if (steamAppId == SlayTheSpireModTheSpireCompatibility.APP_ID) {
-            SlayTheSpireModTheSpireCompatibility.resolveLaunchConfig(
-                gameRootDir = gameRootDir,
-                fallbackCommandLine = sanitizedExeCommandLine,
-            )?.let { slayLaunchConfig ->
-                Timber.i("Using Slay the Spire ModTheSpire Workshop launch")
-                return ColdClientLaunchConfig(
-                    executablePath = sanitizeColdClientArgumentText(slayLaunchConfig.executablePath),
-                    exeCommandLine = sanitizeColdClientArgumentText(slayLaunchConfig.exeCommandLine),
-                    exeRunDirOverride = sanitizeColdClientArgumentText(
-                        slayLaunchConfig.exeRunDirOverride
-                    ),
-                )
-            }
-        }
 
         return ColdClientLaunchConfig(
             executablePath = sanitizedExecutablePath,

@@ -29,7 +29,6 @@ enum class AppOptionMenuType(@StringRes val title: Int) {
     PlayWithDiagnostics(R.string.option_play_with_diagnostics),
     ShareDiagnostics(R.string.option_share_diagnostics),
     ManageGameContent(R.string.option_manage_dlc),
-    ManageWorkshop(R.string.option_manage_workshop),
     ImportFiles(R.string.option_import_files),
     ExportFiles(R.string.option_export_files),
     ManageMods(R.string.option_manage_mods),

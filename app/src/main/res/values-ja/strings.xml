@@ -1221,16 +1221,6 @@
     <string name="manifest_install_failed">%1$sのインストールに失敗しました</string>
     <string name="manifest_install_success">%1$sがインストールされました</string>
 
-    <!-- Workshop -->
-    <string name="workshop_checking_mods">ワークショップの MOD を確認しています…</string>
-    <string name="workshop_update_title">ワークショップMODのアップデート</string>
-    <string name="workshop_update_prompt">%1$s MB の MOD アップデートが利用可能です。今すぐダウンロードしますか、それともスキップしますか?</string>
-    <string name="workshop_download_btn">ダウンロード</string>
-    <string name="workshop_skip_btn">スキップ</string>
-    <string name="workshop_downloading">ワークショップ Mod のダウンロード (%1$d/%2$d)</string>
-    <string name="workshop_processing">MODを処理中…</string>
-    <string name="workshop_failed_count">%1$d ワークショップ MOD の更新に失敗しました</string>
-    <string name="workshop_download_failed">ダウンロードに失敗しました</string>
 
     <!-- App option menu labels -->
     <string name="option_open_store_page">ストアページを開く</string>
@@ -1252,7 +1242,6 @@
     <string name="option_force_upload_local">ローカル保存を強制的にアップロードする</string>
     <string name="option_test_graphics">テストグラフィックス</string>
     <string name="option_manage_dlc">DLCの管理</string>
-    <string name="option_manage_workshop">ワークショップの管理</string>
     <!-- Recommendations -->
     <string name="recommended_about_heading">このゲームについて</string>
     <string name="recommended_review_count">%1$s のレビューに基づく</string>

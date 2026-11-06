@@ -1,7 +1,5 @@
 package app.gamenative.mods
 
-import app.gamenative.workshop.WorkshopModPathDetector
-import app.gamenative.workshop.WorkshopModPathStrategy
 import java.io.File
 
 data class ModPathDetectionResult(

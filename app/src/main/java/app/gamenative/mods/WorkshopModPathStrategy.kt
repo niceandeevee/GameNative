@@ -1,4 +1,4 @@
-package app.gamenative.workshop
+package app.gamenative.mods
 
 import java.io.File
 

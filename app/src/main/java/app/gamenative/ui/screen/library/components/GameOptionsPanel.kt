@@ -353,7 +353,6 @@ private fun getIconForOption(type: AppOptionMenuType): ImageVector {
         AppOptionMenuType.ImportSaves -> Icons.Default.ArrowDownward
         AppOptionMenuType.ExportSaves -> Icons.Default.ArrowUpward
         AppOptionMenuType.ManageGameContent -> Icons.Default.Apps
-        AppOptionMenuType.ManageWorkshop -> Icons.Default.Build
         AppOptionMenuType.ImportFiles -> Icons.Default.UploadFile
         AppOptionMenuType.ExportFiles -> Icons.Default.FileDownload
         AppOptionMenuType.ManageMods -> Icons.Default.Extension
@@ -417,7 +416,6 @@ private fun groupOptions(options: List<AppMenuOption>): Map<OptionCategory, List
             AppOptionMenuType.PlayWithDiagnostics,
             AppOptionMenuType.ShareDiagnostics,
             AppOptionMenuType.ManageGameContent,
-            AppOptionMenuType.ManageWorkshop,
             AppOptionMenuType.ManageMods,
             -> helpInfo.add(option)
         }
