@@ -176,6 +176,11 @@ public class XConnectorEpoll implements Runnable {
             this.requestHandler.handleRequest(client);
         } catch (IOException e) {
             killConnection(client);
+        } catch (RuntimeException e) {
+            // A malformed request from one guest client used to escape this thread and crash the
+            // whole app (and with it the game). Drop just that client instead.
+            android.util.Log.e("XConnectorEpoll", "Request handler failed, dropping the client", e);
+            killConnection(client);
         }
     }
 

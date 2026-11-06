@@ -16,6 +16,7 @@ import java.nio.ByteBuffer;
 
 public class ALSARequestHandler implements RequestHandler {
     private int maxSHMemoryId = 0;
+    private boolean warnedOversizedWrite = false;
 
     @Override // com.winlator.xconnector.RequestHandler
     public boolean handleRequest(Client client) throws IOException {
@@ -55,7 +56,16 @@ public class ALSARequestHandler implements RequestHandler {
             case RequestCodes.WRITE:
                 ByteBuffer sharedBuffer = alsaClient.getSharedBuffer();
                 if (sharedBuffer != null) {
-                    sharedBuffer.limit(requestLength);
+                    // The guest can only have written into the segment it mapped, so a longer request
+                    // (seen at 19200 bytes against a 15364-byte segment in Black Ops) is clamped to it.
+                    // limit() beyond the capacity threw on this thread and took the whole app down.
+                    int length = Math.max(0, Math.min(requestLength, sharedBuffer.capacity()));
+                    if (length != requestLength && !warnedOversizedWrite) {
+                        warnedOversizedWrite = true;
+                        Log.w("ALSARequestHandler", "Write of " + requestLength + " bytes clamped to the "
+                            + sharedBuffer.capacity() + "-byte shared buffer");
+                    }
+                    sharedBuffer.limit(length);
                     alsaClient.writeDataToTrack(sharedBuffer);
                 }
                 else {
