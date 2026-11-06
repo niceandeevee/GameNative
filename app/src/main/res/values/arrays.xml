@@ -176,12 +176,10 @@
         <item>Builtin (Wine)</item>
         <item>Native (Windows)</item>
     </string-array>
-    <!-- Only the bundled defaults (main/assets); other versions install from the online manifest. -->
+    <!-- Nothing bundled: Box64 and WoWBox64 install from the online manifest when a container uses them. -->
     <string-array name="box64_bionic_version_entries">
-        <item>0.4.2 (Default)</item>
     </string-array>
     <string-array name="wowbox64_version_entries">
-        <item>0.4.2</item>
     </string-array>
     <string-array name="fexcore_version_entries">
     </string-array>

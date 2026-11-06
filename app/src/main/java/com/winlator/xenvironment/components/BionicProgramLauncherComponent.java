@@ -772,15 +772,18 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         Log.d("Extraction", "box64Version in use: " + wowbox64Version);
         Log.d("Extraction", "fexcoreVersion in use: " + fexcoreVersion);
 
-        ContentProfile wowboxprofile = contentsManager.getProfileByEntryName("wowbox64-" + wowbox64Version);
-        if (wowboxprofile != null) {
-            contentsManager.applyContent(wowboxprofile);
-        } else {
-            Log.d("Extraction", "Extracting box64Version: " + wowbox64Version);
-            SharedComponents.extractAndLink(environment.getContext(), "wowbox64-" + wowbox64Version, TarCompressorUtils.Type.ZSTD, "wowbox64/wowbox64-" + wowbox64Version + ".tzst", system32dir, null);
+        // WoWBox64 is only the 32-bit emulator when the container picks it over FEX; it is not bundled,
+        // so it comes from an installed content profile (the launch installs it from the manifest).
+        if (!"fexcore".equalsIgnoreCase(container.getEmulator())) {
+            ContentProfile wowboxprofile = contentsManager.getProfileByEntryName("wowbox64-" + wowbox64Version);
+            if (wowboxprofile != null) {
+                contentsManager.applyContent(wowboxprofile);
+            } else {
+                Log.w("Extraction", "WoWBox64 " + wowbox64Version + " is not installed");
+            }
+            container.putExtra("box64Version", wowbox64Version);
+            containerDataChanged = true;
         }
-        container.putExtra("box64Version", wowbox64Version);
-        containerDataChanged = true;
 
         ContentProfile fexprofile = contentsManager.getProfileByEntryName("fexcore-" + fexcoreVersion);
         if (fexprofile != null) {
