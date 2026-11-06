@@ -27,8 +27,6 @@ import app.gamenative.db.dao.SteamAppDao
 import app.gamenative.service.DownloadService
 import app.gamenative.service.SteamService
 import app.gamenative.steam.SteamCollectionFilter
-import app.gamenative.steam.curated.CuratedListDescriptor
-import app.gamenative.steam.curated.CuratedListRepository
 import app.gamenative.ui.data.LibraryState
 import app.gamenative.ui.data.LibraryCounts
 import app.gamenative.ui.enums.AppFilter
@@ -59,7 +57,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -127,9 +124,6 @@ class LibraryViewModel @Inject constructor(
 
     // Mirrors PrefManager.showHiddenGamesByDefault without the async DataStore write race.
     @Volatile private var showHiddenGamesByDefault: Boolean = PrefManager.showHiddenGamesByDefault
-
-    @Volatile private var curatedLists: List<SteamCollection>? = null
-    private val curatedSelectionLock = Any()
 
     // Track if this is the first load to apply minimum load time
     private var isFirstLoad = true
@@ -218,32 +212,6 @@ class LibraryViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            CuratedListRepository.curatedLists.filterNotNull().collect { raw ->
-                val resolved = buildCuratedCollections(raw)
-                curatedLists = resolved
-                synchronized(curatedSelectionLock) {
-                    var cleanedSelection: Set<String>? = null
-                    _state.update { currentState ->
-                        val recon = SteamCollectionFilter.reconcile(
-                            currentState.selectedCuratedListIds,
-                            resolved,
-                        )
-                        cleanedSelection = if (recon.removedAny) recon.cleaned else null
-                        currentState.copy(
-                            curatedLists = resolved,
-                            selectedCuratedListIds = recon.cleaned,
-                        )
-                    }
-                    cleanedSelection?.let { PrefManager.libraryCuratedLists = it }
-                }
-                onFilterApps(paginationCurrentPage)
-            }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            CuratedListRepository.loadFromCache()
-            CuratedListRepository.refreshFourThreeIfNeeded()
-        }
 
         PluviaApp.events.on<AndroidEvent.LibraryInstallStatusChanged, Unit>(onInstallStatusChanged)
         PluviaApp.events.on<AndroidEvent.PreferredCopyChanged, Unit>(onPreferredCopyChanged)
@@ -251,17 +219,6 @@ class LibraryViewModel @Inject constructor(
         PluviaApp.events.on<AndroidEvent.LibraryTabsChanged, Unit>(onLibraryTabsChanged)
         PluviaApp.events.on<AndroidEvent.AllowedAppsLoaded, Unit>(onAllowedAppsLoaded)
 
-    }
-
-    private fun buildCuratedCollections(raw: Map<String, Set<Int>>): List<SteamCollection> {
-        return CuratedListDescriptor.entries.mapNotNull { descriptor ->
-            val appIds = raw[descriptor.id] ?: return@mapNotNull null
-            SteamCollection(
-                id = descriptor.id,
-                name = context.getString(descriptor.nameRes),
-                appIds = appIds,
-            )
-        }
     }
 
     override fun onCleared() {
@@ -406,29 +363,6 @@ class LibraryViewModel @Inject constructor(
         onFilterApps()
     }
 
-    fun onCuratedListToggle(id: String) {
-        synchronized(curatedSelectionLock) {
-            var updatedSelection: Set<String> = emptySet()
-            _state.update { currentState ->
-                val updated = currentState.selectedCuratedListIds.toMutableSet()
-                if (!updated.add(id)) updated.remove(id)
-                updatedSelection = updated
-                currentState.copy(selectedCuratedListIds = updated)
-            }
-            PrefManager.libraryCuratedLists = updatedSelection
-        }
-        onFilterApps()
-    }
-
-    fun onClearCuratedLists() {
-        synchronized(curatedSelectionLock) {
-            PrefManager.libraryCuratedLists = emptySet()
-            _state.update { currentState ->
-                currentState.copy(selectedCuratedListIds = emptySet())
-            }
-        }
-        onFilterApps()
-    }
 
     fun onPageChange(pageIncrement: Int) {
         // Amount to change by
@@ -575,7 +509,6 @@ class LibraryViewModel @Inject constructor(
                 .toList()
 
             // Apply the Steam collection filter — union/OR, fail-open (see SteamCollectionFilter).
-            // Curated-list selections use the same rules, then passesAll intersects the sections.
             // Resolve the allowed app-id set once for the whole pass instead of per app.
             val allowedSteamAppIds = SteamCollectionFilter.allowedAppIds(
                 selectedIds = currentState.selectedSteamCollectionIds,
@@ -607,19 +540,9 @@ class LibraryViewModel @Inject constructor(
                 preHiddenAppIds = preHiddenAppIds,
             )
 
-            // Curated-list counts use the same visible set as the rendered library. Unlike the
-            // built-in Hidden collection, curated lists do not need a full pre-hidden count.
-            val curatedListCounts: Map<String, Int> = curatedLists?.associate { collection ->
-                collection.id to visibleAppIds.count { it in collection.appIds }
-            } ?: emptyMap()
-
-            val allowedCuratedAppIds = SteamCollectionFilter.allowedAppIds(
-                selectedIds = currentState.selectedCuratedListIds,
-                collections = curatedLists,
-            )
             val steamFilteredBeforeCompatibility: List<SteamApp> = steamOwnerTypeFiltered
                 .filter { app ->
-                    SteamCollectionFilter.passesAll(app.id, allowedSteamAppIds, allowedCuratedAppIds)
+                    SteamCollectionFilter.passesAll(app.id, allowedSteamAppIds, null)
                 }
                 .filter { item ->
                     HiddenGameFilter.passesSteam(
@@ -752,8 +675,7 @@ class LibraryViewModel @Inject constructor(
 
             // A Steam collection can only contain Steam apps, so when one is selected the non-Steam
             // sources can't match it — keep them out of the combined list (and their tab counts).
-            // Curated lists have the same source restriction.
-            val steamListFilterSelected = allowedSteamAppIds != null || allowedCuratedAppIds != null
+            val steamListFilterSelected = allowedSteamAppIds != null
 
             val favoriteIds = FavoritesManager.favorites.value
 
@@ -822,7 +744,6 @@ class LibraryViewModel @Inject constructor(
                     steamCount = if (currentState.showSteamInLibrary) steamEntries.size else 0,
                     localCount = if (currentState.showCustomGamesInLibrary) customEntries.size else 0,
                     steamCollectionCounts = steamCollectionCounts,
-                    curatedListCounts = curatedListCounts,
                     favoritesCount = FavoritesUtils.countPresent(favoriteIds, favoriteEligible),
                 )
             }

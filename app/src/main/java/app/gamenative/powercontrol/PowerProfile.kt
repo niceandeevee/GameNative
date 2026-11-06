@@ -22,6 +22,7 @@ data class PowerProfile(
     var enableAutoTuning: Boolean = false,
     var enablePerClusterTuning: Boolean = false,
     var tuningStrategy: AutoTuningStrategy = AutoTuningStrategy.BALANCED,
+    // Unused since fan control was removed; kept so saved power profiles still load.
     var enableFanControl: Boolean = false,
     var enableGamePinning: Boolean = false,
     var name: String,

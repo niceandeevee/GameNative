@@ -31,7 +31,6 @@ import app.gamenative.ui.component.GradientProgressBar
 import app.gamenative.ui.component.InfoCard
 import app.gamenative.ui.component.topbar.BackButton
 import app.gamenative.ui.data.Achievement
-import app.gamenative.ui.screen.library.components.ambient.AmbientDownloadOverlay
 import android.view.KeyEvent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
@@ -116,19 +115,13 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.changedToDownIgnoreConsumed
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -218,7 +211,6 @@ private fun PrimaryActionButton(
     isDownloading: Boolean = false,
     downloadProgress: Float = 0f,
     focusRequester: FocusRequester = remember { FocusRequester() },
-    onProgressBarPositioned: ((Rect) -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -283,16 +275,7 @@ private fun PrimaryActionButton(
                     modifier = Modifier
                         .width(80.dp)
                         .height(4.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .then(
-                            if (onProgressBarPositioned != null) {
-                                Modifier.onGloballyPositioned { coordinates ->
-                                    onProgressBarPositioned(coordinates.boundsInRoot())
-                                }
-                            } else {
-                                Modifier
-                            },
-                        ),
+                        .clip(RoundedCornerShape(2.dp)),
                     color = Color.White,
                     trackColor = Color.White.copy(alpha = 0.3f),
                 )
@@ -765,9 +748,6 @@ internal fun AppScreenContent(
 
     var optionsMenuVisible by remember { mutableStateOf(false) }
 
-    // Track the original progress bar bounds for ambient mode morph animation
-    var progressBarBounds by remember { mutableStateOf<Rect?>(null) }
-    var ambientInteractionCounter by remember { mutableStateOf(0) }
 
     // Focus requesters for gamepad navigation
     val playButtonFocusRequester = remember { FocusRequester() }
@@ -931,20 +911,7 @@ internal fun AppScreenContent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (true) {
-                        val pointerEvent = awaitPointerEvent(PointerEventPass.Initial)
-                        if (pointerEvent.changes.any { it.changedToDownIgnoreConsumed() }) {
-                            ambientInteractionCounter++
-                        }
-                    }
-                }
-            }
             .onKeyEvent {
-                if (it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
-                    ambientInteractionCounter++
-                }
                 handleKeyEvent(it.nativeKeyEvent)
             },
     ) {
@@ -1164,7 +1131,6 @@ internal fun AppScreenContent(
                                 isDownloading = isDownloading,
                                 downloadProgress = downloadProgress,
                                 focusRequester = playButtonFocusRequester,
-                                onProgressBarPositioned = { progressBarBounds = it },
                             )
                         } else {
                             val text = when {
@@ -1541,16 +1507,6 @@ internal fun AppScreenContent(
             modifier = Modifier.align(Alignment.CenterEnd),
         )
 
-        // Ambient mode during downloads
-        if (isDownloading) {
-            AmbientDownloadOverlay(
-                gameName = displayInfo.name,
-                downloadProgress = downloadProgress,
-                iconUrl = displayInfo.iconUrl,
-                originBounds = progressBarBounds,
-                userInteractionCounter = ambientInteractionCounter,
-            )
-        }
     }
 }
 

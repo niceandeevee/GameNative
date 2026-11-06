@@ -66,19 +66,6 @@ import app.gamenative.gamefixes.GameFixesRegistry
 import app.gamenative.service.ActiveGameRegistry
 import app.gamenative.service.SteamService
 import app.gamenative.service.download.SteamDownloadMode
-import app.gamenative.service.ea.EaCloudPreference
-import app.gamenative.service.ea.EaCloudSavesManager
-import app.gamenative.service.ea.EaLaunchSupport
-import app.gamenative.service.ea.EaLoginGate
-import app.gamenative.service.rockstar.RockstarCloudPreference
-import app.gamenative.service.rockstar.RockstarCloudSavesManager
-import app.gamenative.service.rockstar.RockstarLaunchSupport
-import app.gamenative.service.rockstar.RockstarHelperArchive
-import app.gamenative.service.rockstar.RockstarHelperDeployment
-import app.gamenative.service.rockstar.RockstarConstants
-import app.gamenative.service.rockstar.RockstarLoginGate
-import app.gamenative.service.rockstar.RockstarTitleMetadata
-import app.gamenative.service.rockstar.RockstarRuntime
 import app.gamenative.ui.component.AchievementOverlay
 import app.gamenative.ui.component.ConnectionStatusBanner
 import app.gamenative.ui.component.GameInviteOverlay
@@ -110,8 +97,6 @@ import app.gamenative.utils.ManifestInstaller
 import app.gamenative.utils.IntentLaunchManager
 import app.gamenative.utils.SteamUtils
 import app.gamenative.utils.LaunchDependencies
-import app.gamenative.workshop.WorkshopManager
-import app.gamenative.workshop.compatibility.SlayTheSpireModTheSpireCompatibility
 import com.winlator.container.Container
 import com.winlator.container.ContainerData
 import com.winlator.container.ContainerManager
@@ -136,9 +121,6 @@ import timber.log.Timber
 
 private const val PENDING_LAUNCH_TIMEOUT_MS = 10_000L
 private const val SNACKBAR_SHOW_TIMEOUT_MS = 15_000L
-
-/** Used to suspend preLaunchApp while the user decides on large workshop updates. */
-private var workshopUpdateDeferred: CompletableDeferred<Boolean>? = null
 
 /** Used to suspend preLaunchApp while the user decides on a pending update for a real-Steam launch. */
 private var steamUpdateDeferred: CompletableDeferred<Boolean>? = null
@@ -334,7 +316,7 @@ fun PluviaMain(
                         !SteamUtils.awaitSteamLogin()
                     }
                 }
-                // sync viewModel — dialog retries + replaceSteamApi read isOffline.value
+                // sync viewModel — dialog retries read isOffline.value
                 viewModel.setOffline(isOffline)
                 preLaunchApp(
                     context = context,
@@ -721,78 +703,6 @@ fun PluviaMain(
             }
         }
 
-        DialogType.EA_SYNC_CONFLICT -> {
-            onConfirmClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    eaPreferredSave = SaveLocation.Remote,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    eaPreferredSave = SaveLocation.Local,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissRequest = {
-                msgDialogState = MessageDialogState(false)
-            }
-        }
-
-        DialogType.ROCKSTAR_SYNC_CONFLICT -> {
-            onConfirmClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    rockstarPreferredSave = SaveLocation.Remote,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    rockstarPreferredSave = SaveLocation.Local,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissRequest = {
-                msgDialogState = MessageDialogState(false)
-            }
-        }
-
         DialogType.SYNC_FAIL -> {
             onConfirmClick = null
             onDismissClick = {
@@ -802,7 +712,6 @@ fun PluviaMain(
                 setMessageDialogState(MessageDialogState(false))
             }
         }
-
 
         DialogType.EXECUTABLE_NOT_FOUND -> {
             onConfirmClick = null
@@ -1011,18 +920,6 @@ fun PluviaMain(
                 }
                 pendingSaveAppId = null
                 setMessageDialogState(MessageDialogState(false))
-            }
-        }
-
-        DialogType.WORKSHOP_UPDATE_PROMPT -> {
-            onConfirmClick = {
-                workshopUpdateDeferred?.complete(true)
-            }
-            onDismissClick = {
-                workshopUpdateDeferred?.complete(false)
-            }
-            onDismissRequest = {
-                workshopUpdateDeferred?.complete(false)
             }
         }
 
@@ -1477,8 +1374,6 @@ fun preLaunchApp(
     appId: String,
     ignorePendingOperations: Boolean = false,
     preferredSave: SaveLocation = SaveLocation.None,
-    eaPreferredSave: SaveLocation = SaveLocation.None,
-    rockstarPreferredSave: SaveLocation = SaveLocation.None,
     useTemporaryOverride: Boolean = false,
     skipCloudSync: Boolean = false,
     setLoadingDialogVisible: (Boolean) -> Unit,
@@ -1658,7 +1553,7 @@ fun preLaunchApp(
                 ).await()
             }
 
-            if (!container.isUseLegacyDRM && !container.isLaunchRealSteam &&
+            if (!container.isLaunchRealSteam &&
                 !SteamService.isFileInstallable(context, "experimental-drm-20260116.tzst")
             ) {
                 setLoadingMessage("Downloading extras")
@@ -1707,93 +1602,6 @@ fun preLaunchApp(
                     context = context,
                     REAL_STEAM_CLIENT_ARCHIVE,
                 ).await()
-            }
-            if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM &&
-                EaLaunchSupport.isEaTitle(gameId, File(SteamService.getAppDirPath(gameId)))
-            ) {
-                setLoadingMessage(context.getString(R.string.ea_preparing))
-                app.gamenative.service.ea.EaHelperArchive.download(context) { setLoadingProgress(it) }
-                val signIn = EaLoginGate.ensureSignedIn(context)
-                if (signIn.isFailure) {
-                    Timber.tag("preLaunchApp").w(signIn.exceptionOrNull(), "EA sign-in did not complete")
-                    setLoadingDialogVisible(false)
-                    setMessageDialogState(
-                        MessageDialogState(
-                            visible = true,
-                            type = DialogType.SYNC_FAIL,
-                            title = context.getString(R.string.ea_login_required_title),
-                            message = context.getString(R.string.ea_login_failed, signIn.exceptionOrNull()?.message ?: ""),
-                            dismissBtnText = context.getString(R.string.ok),
-                        ),
-                    )
-                    return@launch
-                }
-                app.gamenative.service.ea.EaSteamLinkGate.offerSteamLink(context)
-            }
-            /*
-             * Rockstar titles sign in through Social Club, and the Windows stub needs the
-             * resulting ScAuthToken on disk before the game starts: it mints the ROS ticket with
-             * CreateTicketScAuthToken2 and exits when the token file is missing. Minting from
-             * Steam ownership instead was tried and refused by the server, so the account sign-in
-             * is required rather than a convenience.
-             */
-            if (gameSource == GameSource.STEAM && (container.isLaunchHeadlessSteam || container.isLaunchBionicSteam) &&
-                RockstarLaunchSupport.isRockstarTitle(File(SteamService.getAppDirPath(gameId)))
-            ) {
-                val rockstarGameDir = File(SteamService.getAppDirPath(gameId))
-                setLoadingMessage(context.getString(R.string.rockstar_preparing))
-                RockstarHelperArchive.downloadAndExtract(context) { setLoadingProgress(it) }
-                val activeTitle = RockstarTitleMetadata.find(rockstarGameDir)?.let { RockstarTitleMetadata.parse(it) }?.titleId
-                    ?.takeIf { it.matches(Regex("[a-z0-9_]{1,127}")) } ?: "launcher"
-                val activationMarker = File(
-                    RockstarHelperArchive.titleDir(rockstarGameDir),
-                    "${RockstarHelperDeployment.DIRECTORY}/${RockstarConstants.ACTIVATION_MARKER}",
-                )
-                val signIn = RockstarLoginGate.ensureSignedIn(context, activeTitle, gameId, activationMarker.isFile)
-                if (signIn.isSuccess && RockstarLoginGate.titleValidated) activationMarker.delete()
-                if (signIn.isFailure && RockstarLaunchSupport.hasUsableToken(File(SteamService.getAppDirPath(gameId)))) {
-                    /* A token is already in place, so carry on rather than block a launch that works. */
-                    Timber.tag("preLaunchApp").w("Rockstar sign-in did not complete; using the token already in the game directory")
-                } else if (signIn.isFailure) {
-                    Timber.tag("preLaunchApp").w(signIn.exceptionOrNull(), "Rockstar sign-in did not complete")
-                    setLoadingDialogVisible(false)
-                    setMessageDialogState(
-                        MessageDialogState(
-                            visible = true,
-                            type = DialogType.SYNC_FAIL,
-                            title = context.getString(R.string.rockstar_login_required_title),
-                            message = context.getString(R.string.rockstar_login_failed, signIn.exceptionOrNull()?.message ?: ""),
-                            dismissBtnText = context.getString(R.string.ok),
-                        ),
-                    )
-                    return@launch
-                }
-                val prefixDriveC = File(container.rootDir, ".wine/drive_c")
-                if (!RockstarRuntime.isInstalled(prefixDriveC)) {
-                    val installer = RockstarRuntime.installer(rockstarGameDir)
-                    if (installer == null) {
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.SYNC_FAIL,
-                                title = context.getString(R.string.rockstar_login_required_title),
-                                message = context.getString(R.string.rockstar_installer_missing),
-                                dismissBtnText = context.getString(R.string.ok),
-                            ),
-                        )
-                        return@launch
-                    }
-                    setLoadingMessage(context.getString(R.string.rockstar_runtime_installing))
-                    withContext(Dispatchers.IO) { RockstarRuntime.install(context, installer, prefixDriveC) { setLoadingProgress(it) } }
-                }
-                withContext(Dispatchers.IO) { RockstarRuntime.ensureX86(context, RockstarRuntime.installer(rockstarGameDir), prefixDriveC) { setLoadingProgress(it) } }
-                withContext(Dispatchers.IO) {
-                    check(RockstarLaunchSupport.placeToken(context, rockstarGameDir) || RockstarLaunchSupport.hasUsableToken(rockstarGameDir)) {
-                        "Could not place Rockstar sign-in credentials in the game directory"
-                    }
-                    RockstarHelperDeployment.prepare(context.filesDir, rockstarGameDir)
-                }
             }
             if ((container.isLaunchBionicSteam || (container.isLaunchRealSteam && !container.isLaunchHeadlessSteam)) &&
                 !SteamService.isFileInstallable(context, "steam.tzst")
@@ -1907,249 +1715,8 @@ fun preLaunchApp(
             PathType.from(prefix).toAbsPath(container, gameId, SteamService.userSteamId!!.accountID)
         }
 
-        // Workshop mod sync: check for updates and download if needed
-        val appDao = SteamService.instance?.appDao
-        val workshopMods = appDao?.getWorkshopMods(gameId) ?: false
-        val enabledWorkshopIds = WorkshopManager.parseEnabledIds(
-            appDao?.getEnabledWorkshopItemIds(gameId),
-        )
-        Timber.tag("Workshop").i(
-            "Workshop launch check: workshopMods=$workshopMods, enabledIds=${enabledWorkshopIds.size}"
-        )
-        if (workshopMods && enabledWorkshopIds.isNotEmpty()) {
-            try {
-                // Skip workshop sync if Steam isn't fully connected yet
-                // (can happen if the user taps Play immediately after opening the app).
-                if (isOffline || !SteamService.isConnected || !SteamService.isLoggedIn) {
-                    Timber.tag("Workshop").w(
-                        "Steam not connected/logged in or offline, skipping workshop sync for appId=$gameId"
-                    )
-                    if (gameId == SlayTheSpireModTheSpireCompatibility.APP_ID) {
-                        setLoadingMessage(context.getString(R.string.workshop_processing))
-                        setLoadingProgress(-1f)
-                        WorkshopManager.configureLocalWorkshopContentForEnabledIds(
-                            context = context,
-                            appId = gameId,
-                            enabledIds = enabledWorkshopIds,
-                        )
-                    }
-                } else {
-                // If a background download is still running from the save
-                // handler, wait for it to finish so its markers are on disk
-                // before we check for updates (avoids false re-download prompt).
-                SteamService.getAppDownloadInfo(gameId)?.let { activeDownload ->
-                    Timber.tag("Workshop").i(
-                        "Active workshop download in progress for appId=$gameId, waiting…"
-                    )
-                    setLoadingMessage(context.getString(R.string.workshop_checking_mods))
-                    setLoadingProgress(-1f)
-                    activeDownload.awaitCompletion(timeoutMs = 120_000)
-                    Timber.tag("Workshop").i("Active download finished, proceeding with update check")
-                }
-
-                setLoadingMessage(context.getString(R.string.workshop_checking_mods))
-                setLoadingProgress(-1f)
-
-                val updateCheck = WorkshopManager.checkForWorkshopUpdates(
-                    appId = gameId,
-                    enabledIds = enabledWorkshopIds,
-                    context = context,
-                )
-
-                if (updateCheck != null) {
-                    val totalBytes = updateCheck.totalUpdateBytes
-                    val thresholdBytes = WorkshopManager.getUpdateThresholdBytes()
-                    val sizeMB = String.format(Locale.US, "%.0f", totalBytes / 1_048_576.0)
-                    Timber.tag("Workshop").i(
-                        "${updateCheck.itemsToSync.size} mod update(s), ${sizeMB}MB total"
-                    )
-
-                    // Decide whether to download: auto if under threshold, prompt if over
-                    val shouldDownload = if (totalBytes > thresholdBytes) {
-                        val userChoice = CompletableDeferred<Boolean>()
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.WORKSHOP_UPDATE_PROMPT,
-                                title = context.getString(R.string.workshop_update_title),
-                                message = context.getString(R.string.workshop_update_prompt, sizeMB),
-                                confirmBtnText = context.getString(R.string.workshop_download_btn),
-                                dismissBtnText = context.getString(R.string.workshop_skip_btn),
-                            )
-                        )
-                        workshopUpdateDeferred = userChoice
-                        val result = userChoice.await()
-                        workshopUpdateDeferred = null
-                        setMessageDialogState(MessageDialogState(false))
-                        setLoadingDialogVisible(true)
-                        result
-                    } else {
-                        true // Under threshold, download automatically
-                    }
-
-                    var downloadedItems = false
-
-                    if (shouldDownload) {
-                        val spaceError = WorkshopManager.checkDiskSpace(
-                            updateCheck.workshopContentDir, totalBytes * 2,
-                        )
-                        if (spaceError != null) {
-                            Timber.tag("Workshop").e(spaceError)
-                            SnackbarManager.show(spaceError)
-                        } else {
-                            val steamClient = SteamService.instance?.steamClient
-                            if (steamClient != null) {
-                                setLoadingMessage("Downloading Workshop Mods (0/${updateCheck.itemsToSync.size})")
-                                val licenses = SteamService.getLicensesFromDb()
-                                var currentCompleted = 0
-                                var currentTitle = updateCheck.itemsToSync.firstOrNull()?.title ?: ""
-
-                                val successCount = WorkshopManager.downloadItems(
-                                    items = updateCheck.itemsToSync,
-                                    steamClient = steamClient,
-                                    licenses = licenses,
-                                    workshopContentDir = updateCheck.workshopContentDir,
-                                    onItemProgress = { completed, total, title ->
-                                        currentCompleted = completed
-                                        currentTitle = title
-                                        setLoadingMessage(
-                                            context.getString(R.string.workshop_downloading, completed, total) +
-                                                "\n$title"
-                                        )
-                                    },
-                                    onBytesProgress = { downloaded, total ->
-                                        if (total > 0) {
-                                            setLoadingProgress(downloaded.toFloat() / total.toFloat())
-                                            setLoadingMessage(
-                                                context.getString(R.string.workshop_downloading, currentCompleted, updateCheck.itemsToSync.size) +
-                                                    "\n$currentTitle\n" +
-                                                    "${StringUtils.formatBytes(downloaded)} / ${StringUtils.formatBytes(total)}"
-                                            )
-                                        }
-                                    },
-                                )
-
-                                val failedCount = updateCheck.itemsToSync.size - successCount
-                                if (failedCount > 0) {
-                                    Timber.tag("Workshop").w("$failedCount mod update(s) failed")
-                                    SnackbarManager.show(context.getString(R.string.workshop_failed_count, failedCount))
-                                }
-                                downloadedItems = true
-                            }
-                        }
-                    } else {
-                        Timber.tag("Workshop").i("User skipped workshop mod updates")
-                    }
-
-                    // Post-processing and symlinks (runs for both download and skip paths)
-                    setLoadingMessage(context.getString(R.string.workshop_processing))
-                    setLoadingProgress(-1f)
-                    WorkshopManager.runPostProcessing(
-                        if (downloadedItems) updateCheck.itemsToSync else null,
-                        updateCheck.allItems, updateCheck.workshopContentDir,
-                    ) { status ->
-                        setLoadingMessage(status)
-                    }
-                    WorkshopManager.configureSymlinksForApp(
-                        context, gameId, updateCheck.allItems,
-                        updateCheck.winePrefix, updateCheck.workshopContentDir,
-                    )
-                }
-                // If updateCheck is null, checkForWorkshopUpdates already handled everything
-                Timber.tag("Workshop").i("Workshop mod sync complete for appId=$gameId")
-                } // else (isLoggedIn)
-            } catch (e: Exception) {
-                Timber.tag("Workshop").e(e, "Workshop mod sync failed, continuing without mods")
-            }
-        } else if (
-            gameId == SlayTheSpireModTheSpireCompatibility.APP_ID &&
-            File(SteamService.getAppDirPath(gameId)).isDirectory
-        ) {
-            withContext(Dispatchers.IO) {
-                WorkshopManager.cleanupDisabledWorkshopArtifactsForApp(context, gameId)
-            }
-        }
-
         setLoadingMessage("Syncing cloud saves")
         setLoadingProgress(-1f)
-        if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM) {
-            try {
-                val eaGameDir = File(SteamService.getAppDirPath(gameId))
-                if (EaLaunchSupport.isEaTitle(gameId, eaGameDir)) {
-                    val eaPreference = when (eaPreferredSave) {
-                        SaveLocation.Local -> EaCloudPreference.LOCAL
-                        SaveLocation.Remote -> EaCloudPreference.REMOTE
-                        SaveLocation.None -> EaCloudPreference.NONE
-                    }
-                    val eaPull = EaCloudSavesManager.syncBeforeLaunch(context, container, gameId, eaGameDir, eaPreference)
-                    if (eaPull is EaCloudSavesManager.PullResult.Conflict) {
-                        Timber.tag("EA").i("Cloud save conflict for $appId, prompting user")
-                        val localDate = Date(eaPull.localMillis).toString()
-                        val remoteDate = eaPull.remoteMillis?.let { Date(it).toString() }
-                            ?: context.getString(R.string.container_storage_source_unknown)
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.EA_SYNC_CONFLICT,
-                                title = context.getString(R.string.main_save_conflict_title),
-                                message = context.getString(R.string.main_save_conflict_message, localDate, remoteDate),
-                                dismissBtnText = context.getString(R.string.main_keep_local),
-                                confirmBtnText = context.getString(R.string.main_keep_remote),
-                            ),
-                        )
-                        return@launch
-                    }
-                    Timber.tag("EA").i("Cloud save pull for $appId: $eaPull")
-                }
-            } catch (e: kotlinx.coroutines.CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                Timber.tag("EA").w("Cloud save pull failed for $appId: ${e.javaClass.simpleName}")
-            }
-        }
-
-        if (gameSource == GameSource.STEAM && (container.isLaunchHeadlessSteam || container.isLaunchBionicSteam) &&
-            !container.isLocalSavesOnly && !bootToContainer && !isOffline
-        ) {
-            try {
-                val rockstarGameDir = File(SteamService.getAppDirPath(gameId))
-                if (RockstarLaunchSupport.isRockstarTitle(rockstarGameDir)) {
-                    val rockstarPreference = when (rockstarPreferredSave) {
-                        SaveLocation.Local -> RockstarCloudPreference.LOCAL
-                        SaveLocation.Remote -> RockstarCloudPreference.REMOTE
-                        SaveLocation.None -> RockstarCloudPreference.NONE
-                    }
-                    val rockstarPull = RockstarCloudSavesManager.syncBeforeLaunch(context, container, rockstarGameDir, rockstarPreference)
-                    if (rockstarPull is RockstarCloudSavesManager.PullResult.Conflict) {
-                        Timber.tag("RockstarCloud").i("Cloud save conflict for $appId, prompting user")
-                        val localDate = Date(rockstarPull.localMillis).toString()
-                        val remoteDate = rockstarPull.remoteMillis?.let { Date(it).toString() }
-                            ?: context.getString(R.string.container_storage_source_unknown)
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.ROCKSTAR_SYNC_CONFLICT,
-                                title = context.getString(R.string.main_save_conflict_title),
-                                message = context.getString(R.string.main_save_conflict_message, localDate, remoteDate),
-                                dismissBtnText = context.getString(R.string.main_keep_local),
-                                confirmBtnText = context.getString(R.string.main_keep_remote),
-                            ),
-                        )
-                        return@launch
-                    }
-                    Timber.tag("RockstarCloud").i("Cloud save pull for $appId: $rockstarPull")
-                }
-            } catch (e: kotlinx.coroutines.CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                Timber.tag("RockstarCloud").w("Cloud save pull failed for $appId: ${e.javaClass.simpleName}")
-            }
-        } else {
-            runCatching { RockstarCloudSavesManager.forgetSession(File(SteamService.getAppDirPath(gameId))) }
-        }
 
         val postSyncInfo = SteamService.beginLaunchApp(
             appId = gameId,
@@ -2210,8 +1777,6 @@ fun preLaunchApp(
                         appId = appId,
                         ignorePendingOperations = ignorePendingOperations,
                         preferredSave = preferredSave,
-                        eaPreferredSave = eaPreferredSave,
-                        rockstarPreferredSave = rockstarPreferredSave,
                         useTemporaryOverride = useTemporaryOverride,
                         setLoadingDialogVisible = setLoadingDialogVisible,
                         setLoadingProgress = setLoadingProgress,

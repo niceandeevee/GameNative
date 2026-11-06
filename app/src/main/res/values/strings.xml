@@ -95,12 +95,6 @@
     <string name="steam_collections_clear">Clear</string>
     <string name="steam_collections_smart_unsupported">Only standard collections are shown. Smart collections aren\'t supported yet.</string>
 
-    <string name="curated_lists_title">Steam curated lists</string>
-    <string name="curated_lists_loading">Loading curated lists…</string>
-    <string name="curated_lists_offline">Using the saved list. Connect to update.</string>
-    <string name="curated_lists_clear">Clear</string>
-    <string name="curated_lists_empty">No curated lists available right now.</string>
-    <string name="curated_list_4_3_name">Does it 4:3?</string>
     <string name="settings_interface_library_tabs_title">Library tabs</string>
     <string name="settings_interface_library_tabs_subtitle">Choose which tabs appear in the library.</string>
     <string name="settings_interface_library_tabs_none">No store tabs</string>
@@ -241,11 +235,6 @@
     <string name="mouse_speed_subtitle">Adjust pointer speed for touch movement and controls assigned to move the mouse. Shooter Mode uses its own look sensitivity.</string>
     <string name="reset_mouse_speed">Reset mouse speed</string>
     <string name="edit_physical_controller">Edit Physical Controller</string>
-    <string name="sc_edit_root">Steam Controller</string>
-    <string name="sc_edit_bindings">Buttons &amp; Bindings</string>
-    <string name="sc_edit_layout">Overlay Layout</string>
-    <string name="sc_edit_keyboard">Keyboard Layout</string>
-    <string name="sc_edit_configs">Manage Configs</string>
     <string name="control_profiles">Control Profiles</string>
     <string name="control_profiles_empty">No control profiles are available.</string>
     <string name="control_profile_applied_sections">Settings applied: %1$d/%2$d</string>
@@ -706,7 +695,6 @@
     <string name="remove_driver_confirmation">Are you sure you want to remove driver "%s"? This cannot be undone</string>
 
     <!-- Container Configuration: Steam Integration -->
-    <string name="use_legacy_drm">Use Legacy DRM</string>
     <string name="unpack_files">Unpack Files</string>
     <string name="unpack_files_description">Only use if you get \'Application Load Error 3:0000065432\'.</string>
     <string name="load_mods">Enable mod loaders</string>
@@ -714,7 +702,7 @@
     <string name="force_dlc">Force DLC</string>
     <string name="force_dlc_description">Only enable if DLCs are not detected or saves with DLC are not working</string>
     <string name="launch_steam_client_beta">Launch Steam Client</string>
-    <string name="launch_steam_client_description">Headless is recommended\nRequired for EA, Rockstar, Ubisoft and other launchers\nEnables multiplayer and fixes DRM and controller issues</string>
+    <string name="launch_steam_client_description">Headless is recommended\nRequired for games that need their publisher\'s launcher\nEnables multiplayer and fixes DRM and controller issues</string>
     <string name="steam_starting">Starting Steam…</string>
     <string name="steam_logging_in">Logging in to Steam…</string>
     <string name="steam_connecting">Connecting to Steam servers… this can take a minute on a slow network</string>
@@ -881,14 +869,6 @@
     <string name="gesture_show_cursor_touchscreen_mode">Show Cursor in Touchscreen Mode</string>
     <string name="gesture_show_cursor_touchscreen_mode_subtitle">Keep the mouse cursor visible while touchscreen gestures are active</string>
 
-    <string name="external_display_input">External Display Input</string>
-    <string name="external_display_input_subtitle">Choose how a connected presentation display should behave</string>
-    <string name="external_display_mode_off">Do not use external display</string>
-    <string name="external_display_mode_touchpad">Use as touchpad surface</string>
-    <string name="external_display_mode_keyboard">Use as full keyboard</string>
-    <string name="external_display_mode_hybrid">Hybrid (touchpad + keyboard button)</string>
-    <string name="external_display_swap">Show Game on External Display</string>
-    <string name="external_display_swap_subtitle">Swap screens so the game renders on the external display and this device becomes the controller surface</string>
 
     <!-- Container Configuration: Rendering -->
     <string name="renderer">Renderer</string>
@@ -936,12 +916,8 @@
     <string name="remove_content_confirmation">Are you sure you want to remove %1$s (%2$s)?</string>
 
     <!-- Settings -->
-    <string name="settings_language">Language</string>
-    <string name="settings_select_language">Select Language</string>
-    <string name="settings_language_restart_title">Restart Required</string>
     <string name="settings_language_restart_message">Changing the language requires the app to restart. Do you want to continue?</string>
     <string name="settings_language_restart_confirm">Restart</string>
-    <string name="settings_language_changing">Changing language and restarting...</string>
 
     <!-- Settings: Performance Group -->
     <string name="settings_performance_title">Performance</string>
@@ -950,10 +926,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">Emulation</string>
-    <string name="settings_accounts_title">Game launcher accounts</string>
-    <string name="settings_accounts_signed_out">Not signed in</string>
-    <string name="settings_accounts_ea_title">EA account</string>
-    <string name="settings_accounts_rockstar_title">Rockstar account</string>
     <string name="settings_emulation_orientations_title">Allowed Orientations</string>
     <string name="settings_emulation_orientations_subtitle">Choose which orientations can be rotated to when in-game</string>
     <string name="settings_emulation_default_config_title">Modify Default Config</string>
@@ -1004,10 +976,6 @@
     <string name="settings_interface_hide_statusbar_subtitle">Hide Android status bar in game list, settings, etc. App will restart when changed.</string>
     <string name="settings_interface_swap_face_buttons_title">Swap face buttons</string>
     <string name="settings_interface_swap_face_buttons_subtitle">Swap A↔B and X↔Y button icons</string>
-    <string name="settings_interface_steam_controller_title">Steam Controller (2026)</string>
-    <string name="settings_interface_steam_controller_subtitle">Connect a paired Steam Controller over Bluetooth when a game starts. Off unless you own one.</string>
-    <string name="settings_interface_steam_controller_denied">Steam Controller support needs the Bluetooth (Nearby devices) permission.</string>
-    <string name="settings_interface_steam_controller_denied_forever">Android won\'t ask again — turn on "Nearby devices" for GameNative in app permissions.</string>
     <string name="settings_interface_warn_before_exit_title">Warn before exiting</string>
     <string name="settings_interface_warn_before_exit_subtitle">Require double back press to exit — first press shows a warning</string>
     <string name="settings_interface_show_gamepad_hints_title">Show controller hints</string>
@@ -1358,41 +1326,13 @@
     <string name="wine_proton_install_error">Installation error: %s</string>
     <string name="wine_proton_install_success">%1$s %2$s installed successfully</string>
     <string name="wine_proton_glibc_incompatible">This Wine/Proton build requires GLIBC containers and is not compatible with GameNative. Please use ARM64/bionic builds only.</string>
-    <string name="auth_webview_title">Authorization</string>
 
-    <!-- EA / Rockstar launchers -->
-    <string name="rockstar_login_required_title">Rockstar sign-in required</string>
-    <string name="rockstar_login_failed">Rockstar sign-in failed: %1$s</string>
-    <string name="rockstar_link_refused">This Rockstar account is linked to a different Steam account.</string>
-    <string name="rockstar_link_title">Link Steam account?</string>
-    <string name="rockstar_link_text">Link your Steam account %1$s to Rockstar account %2$s so this game can be played here. Rockstar does not allow this link to be undone later.</string>
-    <string name="rockstar_link_confirm">Link</string>
-    <string name="rockstar_link_skip">Not now</string>
-    <string name="rockstar_link_done">Steam account linked to Rockstar</string>
-    <string name="rockstar_link_failed">Could not link the Steam account: %1$s</string>
-    <string name="rockstar_link_unchecked">Could not check the Steam link. Sign out of Rockstar in Settings and sign in again to retry.</string>
-    <string name="ea_login_required_title">EA sign-in required</string>
-    <string name="ea_login_failed">EA sign-in failed: %1$s</string>
-    <string name="ea_preparing">Preparing EA launcher support</string>
-    <string name="rockstar_preparing">Preparing Rockstar launcher support</string>
-    <string name="rockstar_runtime_installing">Installing the Social Club runtime</string>
-    <string name="rockstar_installer_missing">The Social Club installer is missing from the game files. Verify the game files in Steam and try again.</string>
 
     <string name="manifest_downloading_item">Downloading %1$s...</string>
     <string name="manifest_download_failed">Download failed: %1$s</string>
     <string name="manifest_install_failed">Failed to install %1$s</string>
     <string name="manifest_install_success">%1$s installed</string>
 
-    <!-- Workshop -->
-    <string name="workshop_checking_mods">Checking Workshop mods…</string>
-    <string name="workshop_update_title">Workshop Mod Updates</string>
-    <string name="workshop_update_prompt">%1$s MB of mod updates available. Download now or skip?</string>
-    <string name="workshop_download_btn">Download</string>
-    <string name="workshop_skip_btn">Skip</string>
-    <string name="workshop_downloading">Downloading Workshop Mods (%1$d/%2$d)</string>
-    <string name="workshop_processing">Processing mods…</string>
-    <string name="workshop_failed_count">%1$d workshop mod(s) failed to update</string>
-    <string name="workshop_download_failed">Download failed</string>
 
     <!-- App option menu labels -->
     <string name="option_open_store_page">Open store page</string>
@@ -1426,7 +1366,6 @@
     <string name="diagnostics_share_title">Share diagnostics log</string>
     <string name="diagnostics_share_none">No diagnostics log yet. Use \"Diagnostic Run\" first.</string>
     <string name="option_manage_dlc">Manage DLC</string>
-    <string name="option_manage_workshop">Manage Workshop</string>
     <string name="option_import_files">Import Files</string>
     <string name="option_export_files">Export Files</string>
     <string name="container_files_up">Up</string>
@@ -2111,11 +2050,8 @@
     <string name="power_control_tuning_mode">Tuning Mode</string>
     <string name="power_control_tuning_mode_per_cluster">Per-cluster (verified on Retroid Pocket 6)</string>
     <string name="power_control_tuning_mode_whole_cpu">PID Controller</string>
-    <string name="power_control_fan_control">Fan Control</string>
-    <string name="power_control_fan_control_desc">Holds a target temperature with minimum fan noise. Verified on Retroid Pocket 6.</string>
     <string name="power_control_game_pinning">Game Pinning</string>
     <string name="power_control_game_pinning_desc">Keeps the game on the fast CPU cores. Verified on Retroid Pocket 6.</string>
-    <string name="power_control_hud_show_fan">Show fan speed</string>
     <string name="power_control_hud_show_tuner">Show tuner clock caps</string>
     <string name="power_control_tuning_strategy">Tuning Strategy</string>
     <string name="power_control_strategy_balanced">Balanced</string>

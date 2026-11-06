@@ -22,13 +22,6 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <!-- Bluetooth LE for the Steam Controller direct-BLE path (no Puck dongle). CONNECT only: the transport
-         talks exclusively to a BONDED controller and never scans, so neither BLUETOOTH_SCAN nor location is
-         needed. Legacy perms gated to <=30. -->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-
     <application
         android:name=".PluviaApp"
         android:usesCleartextTraffic="true"
@@ -109,25 +102,6 @@
                     android:scheme="app.gamenative" />
             </intent-filter>
         </activity>
-
-        <!-- EA OAuth (in-app WebView; intercepts the qrc:// redirect for automatic code capture) -->
-        <activity
-            android:name=".ui.screen.auth.EaOAuthActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Pluvia" />
-
-        <!-- Rockstar / Social Club sign-in (in-app WebView; the page needs a real browser
-             because it runs reCAPTCHA Enterprise and adds its own Castle token) -->
-        <activity
-            android:name=".ui.screen.auth.RockstarOAuthActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Pluvia" />
-
-        <!-- EA account connections page, for linking Steam before a first launch -->
-        <activity
-            android:name=".ui.screen.auth.EaSteamLinkActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Pluvia" />
 
         <!-- Launcher icon aliases to allow switching app icon at runtime -->
         <activity-alias

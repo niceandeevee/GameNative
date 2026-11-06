@@ -102,11 +102,9 @@ android {
         jvmTarget = "17"
     }
 
-    // Keep only the app's own translations (drops library locales such as AppCompat's).
+    // English only: also drops the translations bundled with libraries such as AppCompat.
     androidResources {
-        localeFilters += listOf(
-            "en", "es", "da", "pt-rBR", "zh-rTW", "zh-rCN", "fr", "de", "uk", "it", "ro", "pl", "ru", "ko", "ja",
-        )
+        localeFilters += listOf("en")
     }
 
     buildFeatures {

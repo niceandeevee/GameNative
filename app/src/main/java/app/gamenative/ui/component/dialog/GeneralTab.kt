@@ -296,19 +296,11 @@ fun GeneralTabContent(
 
         SettingsSwitch(
             colors = settingsTileColorsAlt(),
-            title = { Text(text = stringResource(R.string.use_legacy_drm)) },
-            state = config.useLegacyDRM,
-            onCheckedChange = { state.config.value = config.copy(useLegacyDRM = it) },
+            title = { Text(text = stringResource(R.string.unpack_files)) },
+            subtitle = { Text(text = stringResource(R.string.unpack_files_description)) },
+            state = config.unpackFiles,
+            onCheckedChange = { state.config.value = config.copy(unpackFiles = it) },
         )
-        if (!config.useLegacyDRM) {
-            SettingsSwitch(
-                colors = settingsTileColorsAlt(),
-                title = { Text(text = stringResource(R.string.unpack_files)) },
-                subtitle = { Text(text = stringResource(R.string.unpack_files_description)) },
-                state = config.unpackFiles,
-                onCheckedChange = { state.config.value = config.copy(unpackFiles = it) },
-            )
-        }
         SettingsSwitch(
             colors = settingsTileColorsAlt(),
             title = { Text(text = stringResource(R.string.load_mods)) },

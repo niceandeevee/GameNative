@@ -18,7 +18,6 @@ import app.gamenative.ui.data.DownloadItemStatus
 import app.gamenative.ui.data.DownloadsState
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.CustomGameScanner
-import app.gamenative.utils.LocaleHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.LinkedHashMap
@@ -49,11 +48,7 @@ class DownloadsViewModel @Inject constructor(
         val info: DownloadInfo,
     )
 
-    // The application context follows the OS locale; wrap it so status labels resolve in the
-    // app's configured language (PrefManager is initialized before any ViewModel exists).
-    private val localizedContext: Context by lazy {
-        LocaleHelper.applyLanguage(appContext, app.gamenative.PrefManager.appLanguage)
-    }
+    private val localizedContext: Context get() = appContext
 
     private data class ObservedDownload(
         val info: DownloadInfo,

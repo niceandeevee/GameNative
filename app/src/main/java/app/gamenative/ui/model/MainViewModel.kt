@@ -32,7 +32,6 @@ import com.winlator.xserver.Window
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.dragonbra.javasteam.steam.handlers.steamapps.AppProcessInfo
-import java.io.File
 import java.nio.file.Paths
 import javax.inject.Inject
 import kotlin.io.path.name
@@ -534,12 +533,7 @@ class MainViewModel @Inject constructor(
                     if (container.isLaunchRealSteam() || container.isLaunchBionicSteam()) {
                         SteamUtils.restoreSteamApi(context, appId)
                     } else {
-                        val offline = _offline.value
-                        if (container.isUseLegacyDRM) {
-                            SteamUtils.replaceSteamApi(context, appId, offline)
-                        } else {
-                            SteamUtils.replaceSteamclientDll(context, appId, offline)
-                        }
+                        SteamUtils.replaceSteamclientDll(context, appId, _offline.value)
                     }
                 }
                 container
@@ -582,6 +576,7 @@ class MainViewModel @Inject constructor(
                 val gameId = ContainerUtils.extractGameIdFromContainerId(appId)
                 Timber.tag("Exit").i("Got game id: $gameId")
                 ActiveGameRegistry.clearIfMatches(gameId)
+                SteamService.gameRunning = false
                 SteamService.notifyRunningProcesses()
 
                 handleExitCloudSync(context, appId, gameId)
@@ -611,14 +606,8 @@ class MainViewModel @Inject constructor(
         val isLocalSavesOnly = ContainerUtils.isLocalSavesOnly(context, appId)
         if (isLocalSavesOnly || (gameSource == GameSource.STEAM && isOffline.value)) {
             Timber.tag("Exit").i("Local saves only or offline mode enabled for $appId — skipping cloud sync on exit")
-            if (!isLocalSavesOnly && gameSource == GameSource.STEAM) {
-                pushEaCloudSaves(context, appId, gameId)
-                pushRockstarCloudSaves(context, appId, gameId)
-            }
             return
         }
-
-
 
         if (gameSource == GameSource.STEAM) {
             try {
@@ -633,36 +622,6 @@ class MainViewModel @Inject constructor(
             } catch (t: Throwable) {
                 Timber.tag("Steam").e(t, "[Cloud Saves] Exception during close app sync for $gameId")
             }
-            pushEaCloudSaves(context, appId, gameId)
-            pushRockstarCloudSaves(context, appId, gameId)
-        }
-    }
-
-    private suspend fun pushEaCloudSaves(context: Context, appId: String, gameId: Int) {
-        try {
-            withContext(Dispatchers.IO) {
-                val container = ContainerUtils.getContainer(context, appId)
-                app.gamenative.service.ea.EaCloudSavesManager.syncAfterExit(context, container, gameId)
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (t: Throwable) {
-            Timber.tag("EA").w("Cloud save push failed for $gameId: ${t.javaClass.simpleName}")
-        }
-    }
-
-    private suspend fun pushRockstarCloudSaves(context: Context, appId: String, gameId: Int) {
-        try {
-            withContext(Dispatchers.IO) {
-                val gameDir = File(SteamService.getAppDirPath(gameId))
-                if (!app.gamenative.service.rockstar.RockstarLaunchSupport.isRockstarTitle(gameDir)) return@withContext
-                val container = ContainerUtils.getContainer(context, appId)
-                app.gamenative.service.rockstar.RockstarCloudSavesManager.syncAfterExit(context, container, gameDir)
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (t: Throwable) {
-            Timber.tag("RockstarCloud").w("Cloud save push failed for $gameId: ${t.javaClass.simpleName}")
         }
     }
 
@@ -752,6 +711,7 @@ class MainViewModel @Inject constructor(
                             false
                         }
 
+                        SteamService.gameRunning = true
                         if (!shouldLaunchRealSteam) {
                             ActiveGameRegistry.set(it)
                             SteamService.notifyRunningProcesses(it)

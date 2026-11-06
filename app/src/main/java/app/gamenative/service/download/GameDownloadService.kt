@@ -6,7 +6,6 @@ import app.gamenative.data.DownloadInfo
 import app.gamenative.data.SteamApp
 import app.gamenative.service.SteamService
 import app.gamenative.utils.DepotManifestFiles
-import app.gamenative.utils.LocaleHelper
 import app.gamenative.utils.SteamUtils
 import app.gamenative.utils.generateSteamApp
 import `in`.dragonbra.javasteam.enums.EResult
@@ -976,9 +975,6 @@ object GameDownloadService {
      * [queueLock]; the store startup itself runs unlocked on the caller's coroutine.
      */
     private fun resumeNextDownload(context: Context) {
-        // The queue relaunches with the bare application context, which follows the OS locale;
-        // wrap it so store managers resolve status strings in the app's configured language.
-        val context = LocaleHelper.applyLanguage(context, app.gamenative.PrefManager.appLanguage)
         val nextEntry: DownloadEntry?
         synchronized(queueLock) {
             val nextKey = downloadQueue.firstOrNull()

@@ -60,7 +60,6 @@ import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.DepotManifestFiles
 import app.gamenative.utils.FileUtils
 import app.gamenative.utils.LicenseSerializer
-import app.gamenative.utils.LocaleHelper
 import app.gamenative.utils.LsfgVkManager
 import app.gamenative.utils.MarkerUtils
 import app.gamenative.utils.Net
@@ -68,7 +67,6 @@ import app.gamenative.utils.SteamUtils
 import app.gamenative.utils.asyncIsolated
 import app.gamenative.utils.CURRENT_UFS_PARSE_VERSION
 import app.gamenative.utils.generateSteamApp
-import app.gamenative.workshop.WorkshopManager
 import com.winlator.container.Container
 import com.winlator.xenvironment.ImageFs
 import dagger.hilt.android.AndroidEntryPoint
@@ -213,9 +211,7 @@ class SteamService : Service(), IChallengeUrlChanged {
 
     override fun attachBaseContext(newBase: Context) {
         PrefManager.init(newBase)
-        val languageCode = PrefManager.appLanguage
-        val context = LocaleHelper.applyLanguage(newBase, languageCode)
-        super.attachBaseContext(context)
+        super.attachBaseContext(newBase)
     }
 
     // To view log messages in android logcat properly
@@ -442,9 +438,6 @@ class SteamService : Service(), IChallengeUrlChanged {
 
         private val downloadJobs = ConcurrentHashMap<Int, DownloadInfo>()
 
-        /** Apps with a workshop download that was paused (cancelled) by the user. */
-        val workshopPausedApps: MutableSet<Int> = ConcurrentHashMap.newKeySet()
-
         // Depot-key acquisition progress, keyed by appId. Useful for games with many depots like Borderlands 2
         private val depotKeyPrep = ConcurrentHashMap<Int, DepotKeyPrep>()
 
@@ -518,8 +511,6 @@ class SteamService : Service(), IChallengeUrlChanged {
 
         /** Returns true if there is an incomplete download on disk (no complete marker). */
         fun hasPartialDownload(appId: Int): Boolean {
-            if (workshopPausedApps.contains(appId)) return true
-
             val downloadingApp = getDownloadingAppInfoOf(appId)
             if (downloadingApp != null) {
                 return true
@@ -2162,7 +2153,6 @@ class SteamService : Service(), IChallengeUrlChanged {
             }
 
             // Remove from DB
-            workshopPausedApps.remove(appId)
             with(instance!!) {
                 db.withTransaction {
                     appInfoDao.deleteApp(appId)
@@ -3201,6 +3191,10 @@ class SteamService : Service(), IChallengeUrlChanged {
                 }
             }.orEmpty()
         }
+
+        /** True while a game is running; background library refreshes wait until it exits. */
+        @Volatile
+        var gameRunning: Boolean = false
 
         suspend fun notifyRunningProcesses(vararg gameProcesses: GameProcessInfo) = withContext(Dispatchers.IO) {
             instance?.let { steamInstance ->
@@ -4974,11 +4968,6 @@ class SteamService : Service(), IChallengeUrlChanged {
 
                 _loginResult = LoginResult.Success
 
-                // Resume any workshop downloads that were interrupted
-                scope.launch {
-                    resumePendingWorkshopDownloads()
-                }
-
                 syncPendingOfflineAchievements()
             }
 
@@ -4995,41 +4984,6 @@ class SteamService : Service(), IChallengeUrlChanged {
 
         val event = SteamEvent.LogonEnded(PrefManager.username, _loginResult)
         PluviaApp.events.emit(event)
-    }
-
-    private suspend fun resumePendingWorkshopDownloads() {
-        if (PrefManager.downloadOnWifiOnly && !hasWifiOrEthernet) {
-            Timber.i("Skipping pending workshop downloads — WiFi-only mode and no WiFi")
-            return
-        }
-
-        val dao = appDao ?: return
-        val pendingAppIds = dao.getAppsWithPendingWorkshopDownloads()
-        if (pendingAppIds.isEmpty()) return
-
-        Timber.i("Resuming ${pendingAppIds.size} pending workshop download(s)")
-        val context = this@SteamService
-        for (appId in pendingAppIds) {
-            // If the game is no longer installed, the pending flag is stale — clear it.
-            if (!isAppInstalled(appId)) {
-                Timber.i("App $appId no longer installed, clearing stale workshop state")
-                dao.clearWorkshopState(appId)
-                continue
-            }
-
-            // Skip if a download is already running for this app
-            if (getAppDownloadInfo(appId) != null) continue
-
-            val enabledIds = WorkshopManager.parseEnabledIds(
-                dao.getEnabledWorkshopItemIds(appId),
-            )
-            if (enabledIds.isEmpty()) {
-                dao.setWorkshopDownloadPending(appId, false)
-                continue
-            }
-
-            WorkshopManager.startWorkshopDownload(appId, enabledIds, context)
-        }
     }
 
     internal fun addPendingSyncApp(appId: Int) {
@@ -5436,6 +5390,9 @@ class SteamService : Service(), IChallengeUrlChanged {
         while (isActive && isLoggedIn) {
             // Initial delay before each check
             delay(60.seconds)
+
+            // Library metadata changes can wait: don't wake the radio or write the database mid-game.
+            if (gameRunning) continue
 
             PICSChangesCheck()
         }

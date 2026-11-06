@@ -58,14 +58,6 @@ fun PowerControlQuickMenuTab(
                 PowerManager.refreshUiState()
             }
         },
-        onFanControlToggled = { enabled ->
-            coroutineScope.launch(Dispatchers.IO) {
-                PowerManager.currentProfile.let { profile ->
-                    PowerManager.setPowerProfile(profile.copy(enableFanControl = enabled))
-                }
-                PowerManager.refreshUiState()
-            }
-        },
         onGamePinningToggled = { enabled ->
             coroutineScope.launch(Dispatchers.IO) {
                 PowerManager.currentProfile.let { profile ->
@@ -113,7 +105,7 @@ fun PowerControlQuickMenuTab(
         onProfileSelected = { profile ->
             coroutineScope.launch(Dispatchers.IO) {
                 // Update PowerManager's current profile reference immediately
-                // Preserve current enableFanControl and enableGamePinning settings
+                // Preserve current enableGamePinning setting
                 val currentProfile = PowerManager.currentProfile.copy()
                 Timber.d("Current profile: $currentProfile")
 
@@ -122,7 +114,6 @@ fun PowerControlQuickMenuTab(
                     adaptiveFpsCapEnabled = currentProfile.adaptiveFpsCapEnabled,
                     enableAutoTuning = false,
                     enablePerClusterTuning = false,
-                    enableFanControl = currentProfile.enableFanControl,
                     enableGamePinning = currentProfile.enableGamePinning,
                 )
 

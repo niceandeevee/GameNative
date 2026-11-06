@@ -52,7 +52,6 @@ import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.IconDecoder
 import app.gamenative.utils.IntentLaunchManager
 import app.gamenative.utils.LauncherOrientation
-import app.gamenative.utils.LocaleHelper
 import app.gamenative.ui.util.SnackbarManager
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import com.winlator.core.AppUtils
@@ -190,13 +189,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        // Initialize PrefManager to read language setting
         PrefManager.init(newBase)
-
-        // Apply the saved language preference before creating the activity
-        val languageCode = PrefManager.appLanguage
-        val context = LocaleHelper.applyLanguage(newBase, languageCode)
-        super.attachBaseContext(context)
+        super.attachBaseContext(newBase)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

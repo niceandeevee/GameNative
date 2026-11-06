@@ -20,7 +20,6 @@ import app.gamenative.service.SteamService
 import app.gamenative.service.SteamService.Companion.getAppDirName
 import app.gamenative.service.SteamService.Companion.getAppInfoOf
 import app.gamenative.ui.component.TIMEOUT_SHOW_OFFLINE_OPTION_SECONDS
-import app.gamenative.workshop.compatibility.SlayTheSpireModTheSpireCompatibility
 import com.winlator.container.Container
 import com.winlator.core.TarCompressorUtils
 import com.winlator.core.WineRegistryEditor
@@ -31,13 +30,11 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-import java.nio.file.StandardOpenOption
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -212,160 +209,6 @@ object SteamUtils {
      */
     fun removeSpecialChars(s: String): String = s.replace(Regex("[^\\u0000-\\u007F]"), "")
 
-    private fun generateInterfacesFile(dllPath: Path) {
-        val outFile = dllPath.parent.resolve("steam_interfaces.txt")
-        if (Files.exists(outFile)) return          // already generated on a previous boot
-
-        // -------- read DLL into memory ----------------------------------------
-        val bytes = Files.readAllBytes(dllPath)
-        val strings = mutableSetOf<String>()
-
-        val sb = StringBuilder()
-        fun flush() {
-            if (sb.length >= 10) {                 // only consider reasonably long strings
-                val candidate = sb.toString()
-                if (candidate.matches(Regex("^Steam[A-Za-z]+[0-9]{3}\$", RegexOption.IGNORE_CASE)))
-                    strings += candidate
-            }
-            sb.setLength(0)
-        }
-
-        for (b in bytes) {
-            val ch = b.toInt() and 0xFF
-            if (ch in 0x20..0x7E) {                // printable ASCII
-                sb.append(ch.toChar())
-            } else {
-                flush()
-            }
-        }
-        flush()                                    // catch trailing string
-
-        if (strings.isEmpty()) {
-            Timber.w("No Steam interface strings found in ${dllPath.fileName}")
-            return
-        }
-
-        val sorted = strings.sorted()
-        Files.write(outFile, sorted)
-        Timber.i("Generated steam_interfaces.txt (${sorted.size} interfaces)")
-    }
-
-    private fun copyOriginalSteamDll(dllPath: Path, appDirPath: String): String? {
-        // 1️⃣  back-up next to the original DLL
-        val backup = dllPath.parent.resolve("${dllPath.fileName}.orig")
-        if (Files.notExists(backup)) {
-            try {
-                Files.copy(dllPath, backup)
-                Timber.i("Copied original ${dllPath.fileName} to $backup")
-            } catch (e: IOException) {
-                Timber.w(e, "Failed to back up ${dllPath.fileName}")
-                return null
-            }
-        }
-        // 2️⃣  return the relative path inside the app directory (even if backup already existed)
-        return try {
-            val relPath = Paths.get(appDirPath).relativize(backup)
-            relPath.toString()
-        } catch (e: Exception) {
-            Timber.w(e, "Failed to compute relative path for ${dllPath.fileName}")
-            null
-        }
-    }
-
-    /**
-     * Replaces any existing `steam_api.dll` or `steam_api64.dll` in the app directory
-     * with our pipe dll stored in assets
-     */
-    suspend fun replaceSteamApi(context: Context, appId: String, isOffline: Boolean = false) {
-        val steamAppId = ContainerUtils.extractGameIdFromContainerId(appId)
-        val appDirPath = SteamService.getAppDirPath(steamAppId)
-        if (MarkerUtils.hasMarker(appDirPath, Marker.STEAM_DLL_REPLACED)) {
-            return
-        }
-        MarkerUtils.removeMarker(appDirPath, Marker.STEAM_DLL_RESTORED)
-        MarkerUtils.removeMarker(appDirPath, Marker.STEAM_COLDCLIENT_USED)
-        Timber.i("Starting replaceSteamApi for appId: $appId")
-        Timber.i("Checking directory: $appDirPath")
-        var replaced32Count = 0
-        var replaced64Count = 0
-        val backupPaths = mutableSetOf<String>()
-        val imageFs = ImageFs.find(context)
-        autoLoginUserChanges(imageFs)
-        // userdata is keyed by Steam3 accountID (matches restoreSteamApi). userSteamId is null on offline.
-        setupLightweightSteamConfig(imageFs, getSteam3AccountId()?.toString())
-
-        val rootPath = Paths.get(appDirPath)
-        // Get ticket once for all DLLs
-        val ticketBase64 = SteamService.instance?.getEncryptedAppTicketBase64(steamAppId)
-
-        rootPath.toFile().walkTopDown().maxDepth(10).forEach { file ->
-            val path = file.toPath()
-            if (!file.isFile || !path.name.startsWith("steam_api", ignoreCase = true)) return@forEach
-
-            val is64Bit = path.name.equals("steam_api64.dll", ignoreCase = true)
-            val is32Bit = path.name.equals("steam_api.dll", ignoreCase = true)
-
-            if (is64Bit || is32Bit) {
-                val dllName = if (is64Bit) "steam_api64.dll" else "steam_api.dll"
-                Timber.i("Found $dllName at ${path.absolutePathString()}, replacing...")
-                generateInterfacesFile(path)
-                val relPath = copyOriginalSteamDll(path, appDirPath)
-                if (relPath != null) {
-                    backupPaths.add(relPath)
-                }
-                Files.delete(path)
-                Files.createFile(path)
-                FileOutputStream(path.absolutePathString()).use { fos ->
-                    context.assets.open("steampipe/$dllName").use { fs ->
-                        fs.copyTo(fos)
-                    }
-                }
-                Timber.i("Replaced $dllName")
-                if (is64Bit) replaced64Count++ else replaced32Count++
-                ensureSteamSettings(context, path, appId, ticketBase64, isOffline)
-            }
-        }
-
-        // Write all collected backup paths to orig_dll_path.txt
-        if (backupPaths.isNotEmpty()) {
-            try {
-                Files.write(
-                    Paths.get(appDirPath).resolve("orig_dll_path.txt"),
-                    backupPaths.sorted(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING
-                )
-                Timber.i("Wrote ${backupPaths.size} DLL backup paths to orig_dll_path.txt")
-            } catch (e: IOException) {
-                Timber.w(e, "Failed to write orig_dll_path.txt")
-            }
-        }
-
-        Timber.i("Finished replaceSteamApi for appId: $appId. Replaced 32bit: $replaced32Count, Replaced 64bit: $replaced64Count")
-
-        // Restore unpacked executable if it exists (for DRM-free mode)
-        restoreUnpackedExecutable(context, steamAppId)
-
-        // Restore original steamclient.dll files if they exist
-        restoreSteamclientFiles(context, steamAppId)
-
-        val container = ContainerUtils.getOrCreateContainer(context, appId)
-
-        // Create Steam ACF manifest for real Steam compatibility
-        createAppManifest(context, steamAppId, container.language)
-
-        // Game-specific Handling
-        ensureSaveLocationsForGames(context, steamAppId, container)
-
-        // Generate achievements.json
-        generateAchievementsFile(rootPath.resolve("steam_settings"), appId)
-
-        MarkerUtils.addMarker(appDirPath, Marker.STEAM_DLL_REPLACED)
-    }
-
-    /**
-     * Replaces any existing `steamclient.dll` or `steamclient64.dll` in the Steam directory
-     */
     suspend fun replaceSteamclientDll(context: Context, appId: String, isOffline: Boolean = false) {
         val steamAppId = ContainerUtils.extractGameIdFromContainerId(appId)
         val appDirPath = SteamService.getAppDirPath(steamAppId)
@@ -521,21 +364,6 @@ object SteamUtils {
     ): ColdClientLaunchConfig {
         val sanitizedExecutablePath = sanitizeColdClientArgumentText(executablePath)
         val sanitizedExeCommandLine = sanitizeColdClientArgumentText(exeCommandLine)
-        if (steamAppId == SlayTheSpireModTheSpireCompatibility.APP_ID) {
-            SlayTheSpireModTheSpireCompatibility.resolveLaunchConfig(
-                gameRootDir = gameRootDir,
-                fallbackCommandLine = sanitizedExeCommandLine,
-            )?.let { slayLaunchConfig ->
-                Timber.i("Using Slay the Spire ModTheSpire Workshop launch")
-                return ColdClientLaunchConfig(
-                    executablePath = sanitizeColdClientArgumentText(slayLaunchConfig.executablePath),
-                    exeCommandLine = sanitizeColdClientArgumentText(slayLaunchConfig.exeCommandLine),
-                    exeRunDirOverride = sanitizeColdClientArgumentText(
-                        slayLaunchConfig.exeRunDirOverride
-                    ),
-                )
-            }
-        }
 
         return ColdClientLaunchConfig(
             executablePath = sanitizedExecutablePath,

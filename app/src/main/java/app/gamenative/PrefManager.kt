@@ -491,12 +491,6 @@ object PrefManager {
             setPref(PERFORMANCE_HUD_SHOW_GPU_TEMPERATURE, value)
         }
 
-    private val PERFORMANCE_HUD_SHOW_FAN = booleanPreferencesKey("performance_hud_show_fan")
-    var showPerformanceHudFan: Boolean
-        get() = getPref(PERFORMANCE_HUD_SHOW_FAN, true)
-        set(value) {
-            setPref(PERFORMANCE_HUD_SHOW_FAN, value)
-        }
 
     private val PERFORMANCE_HUD_SHOW_TUNER_CAPS = booleanPreferencesKey("performance_hud_show_tuner_caps")
     var showPerformanceHudTunerCaps: Boolean
@@ -990,22 +984,6 @@ object PrefManager {
             setPref(LIBRARY_STEAM_COLLECTIONS, value.joinToString(COLLECTION_ID_SEPARATOR))
         }
 
-    private val LIBRARY_CURATED_LISTS = stringPreferencesKey("library_curated_lists")
-    var libraryCuratedLists: Set<String>
-        get() {
-            val raw = getPref(LIBRARY_CURATED_LISTS, "")
-            if (raw.isEmpty()) return emptySet()
-            return raw.split(COLLECTION_ID_SEPARATOR).filter { it.isNotEmpty() }.toSet()
-        }
-        set(value) {
-            setPref(LIBRARY_CURATED_LISTS, value.joinToString(COLLECTION_ID_SEPARATOR))
-        }
-
-    private val LIBRARY_CURATED_LISTS_CACHE = stringPreferencesKey("library_curated_lists_cache")
-    var libraryCuratedListsCache: String
-        get() = getPref(LIBRARY_CURATED_LISTS_CACHE, "")
-        set(value) { setPref(LIBRARY_CURATED_LISTS_CACHE, value) }
-
     private val LIBRARY_TAB_PREFERENCES = stringPreferencesKey("library_tab_preferences")
     var libraryTabs: List<LibraryTab>
         get() = LibraryTab.normalizeVisibleTabs(
@@ -1330,14 +1308,6 @@ object PrefManager {
             setPref(CUSTOM_GAME_MANUAL_FOLDERS, Json.encodeToString(value))
         }
 
-    // Steam Controller (2026 "Triton") BLE support. OFF by default: enabling it makes every game launch connect to
-    // the controller over BLE, which is pure overhead (and a runtime BT-permission prompt) for anyone without the
-    // hardware. The settings switch requests the Bluetooth permissions before it can be turned on.
-    private val STEAM_CONTROLLER_ENABLED = booleanPreferencesKey("steam_controller_enabled")
-    var steamControllerEnabled: Boolean
-        get() = getPref(STEAM_CONTROLLER_ENABLED, false)
-        set(value) = setPref(STEAM_CONTROLLER_ENABLED, value)
-
     private val FAVORITE_APP_IDS = stringPreferencesKey("favorite_app_ids")
     var favoriteAppIds: Set<String>
         get() {
@@ -1424,12 +1394,6 @@ object PrefManager {
     var useAltNotificationIcon: Boolean
         get() = getPref(USE_ALT_NOTIFICATION_ICON, false)
         set(value) = setPref(USE_ALT_NOTIFICATION_ICON, value)
-
-    // App language preference (empty string means system default)
-    private val APP_LANGUAGE = stringPreferencesKey("app_language")
-    var appLanguage: String
-        get() = getPref(APP_LANGUAGE, "")
-        set(value) = setPref(APP_LANGUAGE, value)
 
     private val ACHIEVEMENT_SHOW_NOTIFICATION = booleanPreferencesKey("achievement_show_notification")
     var achievementShowNotification: Boolean

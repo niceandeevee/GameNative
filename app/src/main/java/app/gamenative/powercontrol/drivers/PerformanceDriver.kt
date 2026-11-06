@@ -47,11 +47,6 @@ abstract class PerformanceDriver {
     open fun isBusSupported(): Boolean = false
 
     /**
-     * Check if fan control is supported
-     */
-    open fun isFanSupported(): Boolean = false
-
-    /**
      * Check if this driver can cap each CPU cluster separately, as the cluster tuner needs
      */
     open fun isPerClusterSupported(): Boolean = false
