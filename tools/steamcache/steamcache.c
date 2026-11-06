@@ -18,10 +18,15 @@
  * prints are dropped: Wine turns every OutputDebugString into an exception (for debuggers), which the
  * 32-bit emulation makes expensive, and with logging off nothing reads them. Black Ops prints a
  * stream of them while loading. With any debug channel on, they are left alone.
+ *
+ * And the game's .iwd archives get a self-checking read-ahead cache (iwdcache.c, iwdhooks.c): Black
+ * Ops reads them in 512-byte pieces with a seek before each, ~270,000 calls at startup.
  */
 #include <windows.h>
 #include <stdint.h>
 #include <string.h>
+
+void install_iwd_cache(void); /* iwdhooks.c: read-ahead cache for the game's .iwd archives */
 
 typedef _Bool(__attribute__((thiscall)) * BLoggedOnFn)(void *self);
 /* MSVC returns a class by value from a member function through a hidden pointer passed on the stack
@@ -171,6 +176,7 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, void *reserved)
         /* Here, not in the thread: the game imports this DLL, so DllMain runs before any game thread
          * exists and none can be inside the functions while their first bytes are rewritten. */
         drop_debug_prints_when_logging_off();
+        install_iwd_cache();
         HANDLE thread = CreateThread(NULL, 0, patch_thread, NULL, 0, NULL);
         if (thread) CloseHandle(thread);
     }
