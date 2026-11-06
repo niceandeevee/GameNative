@@ -1099,7 +1099,6 @@
     <string name="wine_proton_install_error">Installationsfehler: %s</string>
     <string name="wine_proton_install_success">%1$s %2$s erfolgreich installiert</string>
     <string name="wine_proton_glibc_incompatible">Dieses Wine/Proton benötigt GLIBC-Container und ist mit GameNative nicht kompatibel. Bitte nur ARM64/Bionic-Builds verwenden.</string>
-    <string name="auth_webview_title">Autorisierung</string>
 
 
     <!-- GOG Install/Uninstall -->

@@ -1160,7 +1160,6 @@
     <string name="wine_proton_install_error">Error de instalación: %s.</string>
     <string name="wine_proton_install_success">%1$s %2$s instalado correctamente.</string>
     <string name="wine_proton_glibc_incompatible">Esta compilación de Wine/Proton requiere contenedores GLIBC y no es compatible con GameNative. Usa únicamente compilaciones ARM64/bionic.</string>
-    <string name="auth_webview_title">Autorización</string>
 
 
 

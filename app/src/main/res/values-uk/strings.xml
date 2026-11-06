@@ -1159,7 +1159,6 @@
     <string name="wine_proton_install_error">Помилка інсталяції: %s</string>
     <string name="wine_proton_install_success">%1$s %2$s успішно інстальовано</string>
     <string name="wine_proton_glibc_incompatible">Ця збірка Wine/Proton вимагає контейнерів GLIBC і несумісна з GameNative. Будь ласка, використовуйте лише збірки ARM64/bionic.</string>
-    <string name="auth_webview_title">Авторизація</string>
 
 
 

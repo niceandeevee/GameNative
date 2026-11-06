@@ -1071,7 +1071,6 @@
     <string name="base_app_exported">Exportado</string>
     <string name="base_app_export_failed">Falha ao exportar: %s</string>
     <string name="base_app_export_cancelled">Exportação cancelada</string>
-    <string name="auth_webview_title">Autorização</string>
 
 
 

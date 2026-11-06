@@ -1144,7 +1144,6 @@
     <string name="wine_proton_install_error">安装错误：%s</string>
     <string name="wine_proton_install_success">%1$s %2$s 已安装成功</string>
     <string name="wine_proton_glibc_incompatible">此 Wine/Proton 版本需搭配 GLIBC 容器运行，且不兼容 GameNative。\n请使用 ARM64/bionic 版本。</string>
-    <string name="auth_webview_title">授权</string>
 
 
 

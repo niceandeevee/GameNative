@@ -1192,7 +1192,6 @@
     <string name="wine_proton_install_error">インストールエラー: %s</string>
     <string name="wine_proton_install_success">%1$s %2$s は正常にインストールされました</string>
     <string name="wine_proton_glibc_incompatible">この Wine/Proton ビルドには GLIBC コンテナが必要であり、GameNative とは互換性がありません。 ARM64/bionic ビルドのみを使用してください。</string>
-    <string name="auth_webview_title">認可</string>
 
 
 
