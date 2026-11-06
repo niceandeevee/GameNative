@@ -825,10 +825,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">Емуляція</string>
-    <string name="settings_accounts_title">Облікові записи ігрових лаунчерів</string>
-    <string name="settings_accounts_signed_out">Вхід не виконано</string>
-    <string name="settings_accounts_ea_title">Обліковий запис EA</string>
-    <string name="settings_accounts_rockstar_title">Обліковий запис Rockstar</string>
     <string name="settings_emulation_orientations_title">Дозволені орієнтації екрану</string>
     <string name="settings_emulation_orientations_subtitle">Виберіть можливі орієнтації екрана під час гри.</string>
     <string name="settings_emulation_default_config_title">Змінити стандартну конфігурацію</string>
@@ -1165,22 +1161,6 @@
     <string name="wine_proton_glibc_incompatible">Ця збірка Wine/Proton вимагає контейнерів GLIBC і несумісна з GameNative. Будь ласка, використовуйте лише збірки ARM64/bionic.</string>
     <string name="auth_webview_title">Авторизація</string>
 
-    <string name="rockstar_login_required_title">Потрібен вхід у Rockstar</string>
-    <string name="rockstar_login_failed">Не вдалося увійти в Rockstar: %1$s</string>
-    <string name="rockstar_link_refused">Цей обліковий запис Rockstar прив’язано до іншого облікового запису Steam.</string>
-    <string name="rockstar_link_title">Прив’язати обліковий запис Steam?</string>
-    <string name="rockstar_link_text">Прив’яжіть свій обліковий запис Steam %1$s до облікового запису Rockstar %2$s, щоб грати в цю гру тут. Rockstar не дозволяє скасувати цю прив’язку пізніше.</string>
-    <string name="rockstar_link_confirm">Прив’язати</string>
-    <string name="rockstar_link_skip">Не зараз</string>
-    <string name="rockstar_link_done">Обліковий запис Steam прив’язано до Rockstar</string>
-    <string name="rockstar_link_failed">Не вдалося прив’язати обліковий запис Steam: %1$s</string>
-    <string name="rockstar_link_unchecked">Не вдалося перевірити прив’язку Steam. Вийдіть із Rockstar у Налаштуваннях і увійдіть знову, щоб повторити спробу.</string>
-    <string name="ea_login_required_title">Потрібен вхід в EA</string>
-    <string name="ea_login_failed">Не вдалося увійти в EA: %1$s</string>
-    <string name="ea_preparing">Підготовка підтримки лаунчера EA</string>
-    <string name="rockstar_preparing">Підготовка підтримки лаунчера Rockstar</string>
-    <string name="rockstar_runtime_installing">Встановлення середовища Social Club</string>
-    <string name="rockstar_installer_missing">У файлах гри відсутній інсталятор Social Club. Перевірте файли гри в Steam і спробуйте ще раз.</string>
 
 
 

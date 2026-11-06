@@ -793,10 +793,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">エミュレーション</string>
-    <string name="settings_accounts_title">ゲームランチャーのアカウント</string>
-    <string name="settings_accounts_signed_out">サインインしていません</string>
-    <string name="settings_accounts_ea_title">EA アカウント</string>
-    <string name="settings_accounts_rockstar_title">Rockstar アカウント</string>
     <string name="settings_emulation_orientations_title">画面方向</string>
     <string name="settings_emulation_orientations_subtitle">ゲーム画面をどの方向に回転できるかを選択する</string>
     <string name="settings_emulation_default_config_title">デフォルト設定の変更</string>
@@ -1198,22 +1194,6 @@
     <string name="wine_proton_glibc_incompatible">この Wine/Proton ビルドには GLIBC コンテナが必要であり、GameNative とは互換性がありません。 ARM64/bionic ビルドのみを使用してください。</string>
     <string name="auth_webview_title">認可</string>
 
-    <string name="rockstar_login_required_title">Rockstar へのサインインが必要です</string>
-    <string name="rockstar_login_failed">Rockstar へのサインインに失敗しました: %1$s</string>
-    <string name="rockstar_link_refused">この Rockstar アカウントは別の Steam アカウントにリンクされています。</string>
-    <string name="rockstar_link_title">Steam アカウントをリンクしますか？</string>
-    <string name="rockstar_link_text">このゲームをここでプレイできるように、Steam アカウント %1$s を Rockstar アカウント %2$s にリンクします。Rockstar では、このリンクを後で解除することはできません。</string>
-    <string name="rockstar_link_confirm">リンク</string>
-    <string name="rockstar_link_skip">後で</string>
-    <string name="rockstar_link_done">Steam アカウントを Rockstar にリンクしました</string>
-    <string name="rockstar_link_failed">Steam アカウントをリンクできませんでした: %1$s</string>
-    <string name="rockstar_link_unchecked">Steam のリンクを確認できませんでした。設定で Rockstar からサインアウトし、再度サインインしてやり直してください。</string>
-    <string name="ea_login_required_title">EA へのサインインが必要です</string>
-    <string name="ea_login_failed">EA へのサインインに失敗しました: %1$s</string>
-    <string name="ea_preparing">EA ランチャーのサポートを準備中</string>
-    <string name="rockstar_preparing">Rockstar ランチャーのサポートを準備中</string>
-    <string name="rockstar_runtime_installing">Social Club ランタイムをインストール中</string>
-    <string name="rockstar_installer_missing">ゲームファイルに Social Club のインストーラーがありません。Steam でゲームファイルを検証してから、もう一度起動してください。</string>
 
 
     <string name="manifest_downloading_item">%1$s をダウンロード中...</string>

@@ -7,7 +7,6 @@ import app.gamenative.utils.launchdependencies.BionicDefaultProtonDependency
 import app.gamenative.utils.launchdependencies.LaunchDependencyCallbacks
 import app.gamenative.utils.launchdependencies.LaunchDependency
 import app.gamenative.utils.launchdependencies.BionicSteamAssetsDependency
-import app.gamenative.utils.launchdependencies.RockstarHelperDependency
 import com.winlator.container.Container
 
 const val LOADING_PROGRESS_UNKNOWN: Float = -1f
@@ -22,7 +21,6 @@ class LaunchDependencies {
         private val launchDependencies: List<LaunchDependency> = listOf(
             BionicDefaultProtonDependency,
             BionicSteamAssetsDependency,
-            RockstarHelperDependency,
         )
 
         private var dependenciesProvider: () -> List<LaunchDependency> = { launchDependencies }

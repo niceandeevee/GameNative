@@ -717,10 +717,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">Emulering</string>
-    <string name="settings_accounts_title">Spilstarter-konti</string>
-    <string name="settings_accounts_signed_out">Ikke logget ind</string>
-    <string name="settings_accounts_ea_title">EA-konto</string>
-    <string name="settings_accounts_rockstar_title">Rockstar-konto</string>
     <string name="settings_emulation_orientations_title">Tilladte orienteringer</string>
     <string name="settings_emulation_orientations_subtitle">Vælg hvilke orienteringer der kan roteres til i spillet</string>
     <string name="settings_emulation_default_config_title">Redigér standardkonfiguration</string>
@@ -1077,22 +1073,6 @@
     <string name="base_app_export_cancelled">Eksport annulleret</string>
     <string name="auth_webview_title">Godkendelse</string>
 
-    <string name="rockstar_login_required_title">Rockstar-login påkrævet</string>
-    <string name="rockstar_login_failed">Rockstar-login mislykkedes: %1$s</string>
-    <string name="rockstar_link_refused">Denne Rockstar-konto er knyttet til en anden Steam-konto.</string>
-    <string name="rockstar_link_title">Knyt Steam-konto?</string>
-    <string name="rockstar_link_text">Knyt din Steam-konto %1$s til Rockstar-kontoen %2$s, så dette spil kan spilles her. Rockstar tillader ikke, at denne tilknytning fortrydes senere.</string>
-    <string name="rockstar_link_confirm">Knyt</string>
-    <string name="rockstar_link_skip">Ikke nu</string>
-    <string name="rockstar_link_done">Steam-konto knyttet til Rockstar</string>
-    <string name="rockstar_link_failed">Kunne ikke knytte Steam-kontoen: %1$s</string>
-    <string name="rockstar_link_unchecked">Kunne ikke kontrollere Steam-tilknytningen. Log ud af Rockstar i Indstillinger, og log ind igen for at prøve igen.</string>
-    <string name="ea_login_required_title">EA-login påkrævet</string>
-    <string name="ea_login_failed">EA-login mislykkedes: %1$s</string>
-    <string name="ea_preparing">Forbereder understøttelse af EA-launcheren</string>
-    <string name="rockstar_preparing">Forbereder understøttelse af Rockstar-launcheren</string>
-    <string name="rockstar_runtime_installing">Installerer Social Club-runtime</string>
-    <string name="rockstar_installer_missing">Social Club-installationsprogrammet mangler i spilfilerne. Verificer spilfilerne i Steam, og prøv igen.</string>
 
 
 

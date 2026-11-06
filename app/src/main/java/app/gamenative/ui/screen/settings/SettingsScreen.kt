@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Gamepad
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Speed
@@ -131,15 +130,6 @@ private fun SettingsScreenContent(
                     iconTint = PluviaTheme.colors.accentCyan,
                 ) {
                     SettingsGroupEmulation()
-                }
-
-                // Game launcher accounts section
-                SettingsSection(
-                    title = stringResource(R.string.settings_accounts_title),
-                    icon = Icons.Default.ManageAccounts,
-                    iconTint = PluviaTheme.colors.accentCyan,
-                ) {
-                    SettingsGroupAccounts()
                 }
 
                 // Performance section

@@ -708,7 +708,7 @@
     <string name="force_dlc">Force DLC</string>
     <string name="force_dlc_description">Only enable if DLCs are not detected or saves with DLC are not working</string>
     <string name="launch_steam_client_beta">Launch Steam Client</string>
-    <string name="launch_steam_client_description">Headless is recommended\nRequired for EA, Rockstar, Ubisoft and other launchers\nEnables multiplayer and fixes DRM and controller issues</string>
+    <string name="launch_steam_client_description">Headless is recommended\nRequired for games that need their publisher\'s launcher\nEnables multiplayer and fixes DRM and controller issues</string>
     <string name="steam_starting">Starting Steam…</string>
     <string name="steam_logging_in">Logging in to Steam…</string>
     <string name="steam_connecting">Connecting to Steam servers… this can take a minute on a slow network</string>
@@ -944,10 +944,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">Emulation</string>
-    <string name="settings_accounts_title">Game launcher accounts</string>
-    <string name="settings_accounts_signed_out">Not signed in</string>
-    <string name="settings_accounts_ea_title">EA account</string>
-    <string name="settings_accounts_rockstar_title">Rockstar account</string>
     <string name="settings_emulation_orientations_title">Allowed Orientations</string>
     <string name="settings_emulation_orientations_subtitle">Choose which orientations can be rotated to when in-game</string>
     <string name="settings_emulation_default_config_title">Modify Default Config</string>
@@ -1354,23 +1350,6 @@
     <string name="wine_proton_glibc_incompatible">This Wine/Proton build requires GLIBC containers and is not compatible with GameNative. Please use ARM64/bionic builds only.</string>
     <string name="auth_webview_title">Authorization</string>
 
-    <!-- EA / Rockstar launchers -->
-    <string name="rockstar_login_required_title">Rockstar sign-in required</string>
-    <string name="rockstar_login_failed">Rockstar sign-in failed: %1$s</string>
-    <string name="rockstar_link_refused">This Rockstar account is linked to a different Steam account.</string>
-    <string name="rockstar_link_title">Link Steam account?</string>
-    <string name="rockstar_link_text">Link your Steam account %1$s to Rockstar account %2$s so this game can be played here. Rockstar does not allow this link to be undone later.</string>
-    <string name="rockstar_link_confirm">Link</string>
-    <string name="rockstar_link_skip">Not now</string>
-    <string name="rockstar_link_done">Steam account linked to Rockstar</string>
-    <string name="rockstar_link_failed">Could not link the Steam account: %1$s</string>
-    <string name="rockstar_link_unchecked">Could not check the Steam link. Sign out of Rockstar in Settings and sign in again to retry.</string>
-    <string name="ea_login_required_title">EA sign-in required</string>
-    <string name="ea_login_failed">EA sign-in failed: %1$s</string>
-    <string name="ea_preparing">Preparing EA launcher support</string>
-    <string name="rockstar_preparing">Preparing Rockstar launcher support</string>
-    <string name="rockstar_runtime_installing">Installing the Social Club runtime</string>
-    <string name="rockstar_installer_missing">The Social Club installer is missing from the game files. Verify the game files in Steam and try again.</string>
 
     <string name="manifest_downloading_item">Downloading %1$s...</string>
     <string name="manifest_download_failed">Download failed: %1$s</string>

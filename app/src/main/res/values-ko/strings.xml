@@ -823,10 +823,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">에뮬레이션</string>
-    <string name="settings_accounts_title">게임 런처 계정</string>
-    <string name="settings_accounts_signed_out">로그인하지 않음</string>
-    <string name="settings_accounts_ea_title">EA 계정</string>
-    <string name="settings_accounts_rockstar_title">Rockstar 계정</string>
     <string name="settings_emulation_orientations_title">허용된 방향</string>
     <string name="settings_emulation_orientations_subtitle">게임 중 회전할 수 있는 방향 선택</string>
     <string name="settings_emulation_default_config_title">기본 설정 수정</string>
@@ -1160,22 +1156,6 @@
     <string name="wine_proton_glibc_incompatible">이 Wine/Proton 빌드는 GLIBC 컨테이너가 필요하며 GameNative와 호환되지 않습니다. ARM64/bionic 빌드만 사용하세요.</string>
     <string name="auth_webview_title">인증</string>
 
-    <string name="rockstar_login_required_title">Rockstar 로그인 필요</string>
-    <string name="rockstar_login_failed">Rockstar 로그인 실패: %1$s</string>
-    <string name="rockstar_link_refused">이 Rockstar 계정은 다른 Steam 계정에 연결되어 있습니다.</string>
-    <string name="rockstar_link_title">Steam 계정을 연결할까요?</string>
-    <string name="rockstar_link_text">이 게임을 여기에서 플레이할 수 있도록 Steam 계정 %1$s을(를) Rockstar 계정 %2$s에 연결합니다. Rockstar에서는 나중에 이 연결을 해제할 수 없습니다.</string>
-    <string name="rockstar_link_confirm">연결</string>
-    <string name="rockstar_link_skip">나중에</string>
-    <string name="rockstar_link_done">Steam 계정이 Rockstar에 연결되었습니다</string>
-    <string name="rockstar_link_failed">Steam 계정을 연결할 수 없습니다: %1$s</string>
-    <string name="rockstar_link_unchecked">Steam 연결을 확인할 수 없습니다. 설정에서 Rockstar 로그아웃 후 다시 로그인하여 재시도하세요.</string>
-    <string name="ea_login_required_title">EA 로그인 필요</string>
-    <string name="ea_login_failed">EA 로그인 실패: %1$s</string>
-    <string name="ea_preparing">EA 런처 지원 준비 중</string>
-    <string name="rockstar_preparing">Rockstar 런처 지원 준비 중</string>
-    <string name="rockstar_runtime_installing">Social Club 런타임 설치 중</string>
-    <string name="rockstar_installer_missing">게임 파일에 Social Club 설치 프로그램이 없습니다. Steam에서 게임 파일을 검증한 후 다시 시도하세요.</string>
 
 
 

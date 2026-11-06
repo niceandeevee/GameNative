@@ -826,10 +826,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">Émulation</string>
-    <string name="settings_accounts_title">Comptes de lanceurs de jeux</string>
-    <string name="settings_accounts_signed_out">Non connecté</string>
-    <string name="settings_accounts_ea_title">Compte EA</string>
-    <string name="settings_accounts_rockstar_title">Compte Rockstar</string>
     <string name="settings_emulation_orientations_title">Orientations autorisées</string>
     <string name="settings_emulation_orientations_subtitle">Choisir les orientations vers lesquelles pivoter en jeu</string>
     <string name="settings_emulation_default_config_title">Modifier la configuration par défaut</string>
@@ -1167,22 +1163,6 @@
     <string name="wine_proton_glibc_incompatible">Cette build Wine/Proton nécessite des conteneurs GLIBC et n\'est pas compatible avec GameNative. Veuillez utiliser uniquement des builds ARM64/bionic.</string>
     <string name="auth_webview_title">Autorisation</string>
 
-    <string name="rockstar_login_required_title">Connexion Rockstar requise</string>
-    <string name="rockstar_login_failed">Échec de la connexion Rockstar : %1$s</string>
-    <string name="rockstar_link_refused">Ce compte Rockstar est lié à un autre compte Steam.</string>
-    <string name="rockstar_link_title">Lier le compte Steam ?</string>
-    <string name="rockstar_link_text">Liez votre compte Steam %1$s au compte Rockstar %2$s pour pouvoir jouer à ce jeu ici. Rockstar ne permet pas d\'annuler cette liaison par la suite.</string>
-    <string name="rockstar_link_confirm">Lier</string>
-    <string name="rockstar_link_skip">Pas maintenant</string>
-    <string name="rockstar_link_done">Compte Steam lié à Rockstar</string>
-    <string name="rockstar_link_failed">Impossible de lier le compte Steam : %1$s</string>
-    <string name="rockstar_link_unchecked">Impossible de vérifier la liaison Steam. Déconnectez-vous de Rockstar dans les Paramètres, puis reconnectez-vous pour réessayer.</string>
-    <string name="ea_login_required_title">Connexion EA requise</string>
-    <string name="ea_login_failed">Échec de la connexion EA : %1$s</string>
-    <string name="ea_preparing">Préparation de la prise en charge du launcher EA</string>
-    <string name="rockstar_preparing">Préparation de la prise en charge du launcher Rockstar</string>
-    <string name="rockstar_runtime_installing">Installation de l\'environnement Social Club</string>
-    <string name="rockstar_installer_missing">L\'installateur Social Club est absent des fichiers du jeu. Vérifiez les fichiers du jeu dans Steam et réessayez.</string>
 
 
 

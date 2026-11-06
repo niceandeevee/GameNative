@@ -815,10 +815,6 @@
 
     <!-- 设置：模拟组 -->
     <string name="settings_emulation_title">模拟设置</string>
-    <string name="settings_accounts_title">游戏启动器账户</string>
-    <string name="settings_accounts_signed_out">未登录</string>
-    <string name="settings_accounts_ea_title">EA 账户</string>
-    <string name="settings_accounts_rockstar_title">Rockstar 账户</string>
     <string name="settings_emulation_orientations_title">允许的屏幕方向</string>
     <string name="settings_emulation_orientations_subtitle">选择游戏中可使用的屏幕方向</string>
     <string name="settings_emulation_default_config_title">修改默认配置</string>
@@ -1150,22 +1146,6 @@
     <string name="wine_proton_glibc_incompatible">此 Wine/Proton 版本需搭配 GLIBC 容器运行，且不兼容 GameNative。\n请使用 ARM64/bionic 版本。</string>
     <string name="auth_webview_title">授权</string>
 
-    <string name="rockstar_login_required_title">需要登录 Rockstar</string>
-    <string name="rockstar_login_failed">Rockstar 登录失败：%1$s</string>
-    <string name="rockstar_link_refused">此 Rockstar 账户已关联到其他 Steam 账户。</string>
-    <string name="rockstar_link_title">要关联 Steam 账户吗？</string>
-    <string name="rockstar_link_text">将你的 Steam 账户 %1$s 关联到 Rockstar 账户 %2$s，即可在此处游玩此游戏。Rockstar 不允许之后解除此关联。</string>
-    <string name="rockstar_link_confirm">关联</string>
-    <string name="rockstar_link_skip">以后再说</string>
-    <string name="rockstar_link_done">已将 Steam 账户关联到 Rockstar</string>
-    <string name="rockstar_link_failed">无法关联 Steam 账户：%1$s</string>
-    <string name="rockstar_link_unchecked">无法检查 Steam 关联。请在设置中退出 Rockstar 登录，然后重新登录以重试。</string>
-    <string name="ea_login_required_title">需要登录 EA</string>
-    <string name="ea_login_failed">EA 登录失败：%1$s</string>
-    <string name="ea_preparing">正在准备 EA 启动器支持</string>
-    <string name="rockstar_preparing">正在准备 Rockstar 启动器支持</string>
-    <string name="rockstar_runtime_installing">正在安装 Social Club 运行环境</string>
-    <string name="rockstar_installer_missing">游戏文件中缺少 Social Club 安装程序。请在 Steam 中验证游戏文件后重试。</string>
 
 
 

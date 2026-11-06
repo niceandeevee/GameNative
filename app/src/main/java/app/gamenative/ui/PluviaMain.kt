@@ -66,19 +66,6 @@ import app.gamenative.gamefixes.GameFixesRegistry
 import app.gamenative.service.ActiveGameRegistry
 import app.gamenative.service.SteamService
 import app.gamenative.service.download.SteamDownloadMode
-import app.gamenative.service.ea.EaCloudPreference
-import app.gamenative.service.ea.EaCloudSavesManager
-import app.gamenative.service.ea.EaLaunchSupport
-import app.gamenative.service.ea.EaLoginGate
-import app.gamenative.service.rockstar.RockstarCloudPreference
-import app.gamenative.service.rockstar.RockstarCloudSavesManager
-import app.gamenative.service.rockstar.RockstarLaunchSupport
-import app.gamenative.service.rockstar.RockstarHelperArchive
-import app.gamenative.service.rockstar.RockstarHelperDeployment
-import app.gamenative.service.rockstar.RockstarConstants
-import app.gamenative.service.rockstar.RockstarLoginGate
-import app.gamenative.service.rockstar.RockstarTitleMetadata
-import app.gamenative.service.rockstar.RockstarRuntime
 import app.gamenative.ui.component.AchievementOverlay
 import app.gamenative.ui.component.ConnectionStatusBanner
 import app.gamenative.ui.component.GameInviteOverlay
@@ -716,76 +703,6 @@ fun PluviaMain(
             }
         }
 
-        DialogType.EA_SYNC_CONFLICT -> {
-            onConfirmClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    eaPreferredSave = SaveLocation.Remote,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    eaPreferredSave = SaveLocation.Local,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissRequest = {
-                msgDialogState = MessageDialogState(false)
-            }
-        }
-
-        DialogType.ROCKSTAR_SYNC_CONFLICT -> {
-            onConfirmClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    rockstarPreferredSave = SaveLocation.Remote,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissClick = {
-                preLaunchApp(
-                    context = context,
-                    appId = state.launchedAppId,
-                    rockstarPreferredSave = SaveLocation.Local,
-                    setLoadingDialogVisible = viewModel::setLoadingDialogVisible,
-                    setLoadingProgress = viewModel::setLoadingDialogProgress,
-                    setLoadingMessage = viewModel::setLoadingDialogMessage,
-                    setMessageDialogState = setMessageDialogState,
-                    onSuccess = viewModel::launchApp,
-                    isOffline = viewModel.isOffline.value,
-                    bootToContainer = state.bootToContainer,
-                )
-                msgDialogState = MessageDialogState(false)
-            }
-            onDismissRequest = {
-                msgDialogState = MessageDialogState(false)
-            }
         }
 
         DialogType.SYNC_FAIL -> {
@@ -797,7 +714,6 @@ fun PluviaMain(
                 setMessageDialogState(MessageDialogState(false))
             }
         }
-
 
         DialogType.EXECUTABLE_NOT_FOUND -> {
             onConfirmClick = null
@@ -1460,8 +1376,6 @@ fun preLaunchApp(
     appId: String,
     ignorePendingOperations: Boolean = false,
     preferredSave: SaveLocation = SaveLocation.None,
-    eaPreferredSave: SaveLocation = SaveLocation.None,
-    rockstarPreferredSave: SaveLocation = SaveLocation.None,
     useTemporaryOverride: Boolean = false,
     skipCloudSync: Boolean = false,
     setLoadingDialogVisible: (Boolean) -> Unit,
@@ -1691,94 +1605,6 @@ fun preLaunchApp(
                     REAL_STEAM_CLIENT_ARCHIVE,
                 ).await()
             }
-            if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM &&
-                EaLaunchSupport.isEaTitle(gameId, File(SteamService.getAppDirPath(gameId)))
-            ) {
-                setLoadingMessage(context.getString(R.string.ea_preparing))
-                app.gamenative.service.ea.EaHelperArchive.download(context) { setLoadingProgress(it) }
-                val signIn = EaLoginGate.ensureSignedIn(context)
-                if (signIn.isFailure) {
-                    Timber.tag("preLaunchApp").w(signIn.exceptionOrNull(), "EA sign-in did not complete")
-                    setLoadingDialogVisible(false)
-                    setMessageDialogState(
-                        MessageDialogState(
-                            visible = true,
-                            type = DialogType.SYNC_FAIL,
-                            title = context.getString(R.string.ea_login_required_title),
-                            message = context.getString(R.string.ea_login_failed, signIn.exceptionOrNull()?.message ?: ""),
-                            dismissBtnText = context.getString(R.string.ok),
-                        ),
-                    )
-                    return@launch
-                }
-                app.gamenative.service.ea.EaSteamLinkGate.offerSteamLink(context)
-            }
-            /*
-             * Rockstar titles sign in through Social Club, and the Windows stub needs the
-             * resulting ScAuthToken on disk before the game starts: it mints the ROS ticket with
-             * CreateTicketScAuthToken2 and exits when the token file is missing. Minting from
-             * Steam ownership instead was tried and refused by the server, so the account sign-in
-             * is required rather than a convenience.
-             */
-            if (gameSource == GameSource.STEAM && (container.isLaunchHeadlessSteam || container.isLaunchBionicSteam) &&
-                RockstarLaunchSupport.isRockstarTitle(File(SteamService.getAppDirPath(gameId)))
-            ) {
-                val rockstarGameDir = File(SteamService.getAppDirPath(gameId))
-                setLoadingMessage(context.getString(R.string.rockstar_preparing))
-                RockstarHelperArchive.downloadAndExtract(context) { setLoadingProgress(it) }
-                val activeTitle = RockstarTitleMetadata.find(rockstarGameDir)?.let { RockstarTitleMetadata.parse(it) }?.titleId
-                    ?.takeIf { it.matches(Regex("[a-z0-9_]{1,127}")) } ?: "launcher"
-                val activationMarker = File(
-                    RockstarHelperArchive.titleDir(rockstarGameDir),
-                    "${RockstarHelperDeployment.DIRECTORY}/${RockstarConstants.ACTIVATION_MARKER}",
-                )
-                val signIn = RockstarLoginGate.ensureSignedIn(context, activeTitle, gameId, activationMarker.isFile)
-                if (signIn.isSuccess && RockstarLoginGate.titleValidated) activationMarker.delete()
-                if (signIn.isFailure && RockstarLaunchSupport.hasUsableToken(File(SteamService.getAppDirPath(gameId)))) {
-                    /* A token is already in place, so carry on rather than block a launch that works. */
-                    Timber.tag("preLaunchApp").w("Rockstar sign-in did not complete; using the token already in the game directory")
-                } else if (signIn.isFailure) {
-                    Timber.tag("preLaunchApp").w(signIn.exceptionOrNull(), "Rockstar sign-in did not complete")
-                    setLoadingDialogVisible(false)
-                    setMessageDialogState(
-                        MessageDialogState(
-                            visible = true,
-                            type = DialogType.SYNC_FAIL,
-                            title = context.getString(R.string.rockstar_login_required_title),
-                            message = context.getString(R.string.rockstar_login_failed, signIn.exceptionOrNull()?.message ?: ""),
-                            dismissBtnText = context.getString(R.string.ok),
-                        ),
-                    )
-                    return@launch
-                }
-                val prefixDriveC = File(container.rootDir, ".wine/drive_c")
-                if (!RockstarRuntime.isInstalled(prefixDriveC)) {
-                    val installer = RockstarRuntime.installer(rockstarGameDir)
-                    if (installer == null) {
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.SYNC_FAIL,
-                                title = context.getString(R.string.rockstar_login_required_title),
-                                message = context.getString(R.string.rockstar_installer_missing),
-                                dismissBtnText = context.getString(R.string.ok),
-                            ),
-                        )
-                        return@launch
-                    }
-                    setLoadingMessage(context.getString(R.string.rockstar_runtime_installing))
-                    withContext(Dispatchers.IO) { RockstarRuntime.install(context, installer, prefixDriveC) { setLoadingProgress(it) } }
-                }
-                withContext(Dispatchers.IO) { RockstarRuntime.ensureX86(context, RockstarRuntime.installer(rockstarGameDir), prefixDriveC) { setLoadingProgress(it) } }
-                withContext(Dispatchers.IO) {
-                    check(RockstarLaunchSupport.placeToken(context, rockstarGameDir) || RockstarLaunchSupport.hasUsableToken(rockstarGameDir)) {
-                        "Could not place Rockstar sign-in credentials in the game directory"
-                    }
-                    RockstarHelperDeployment.prepare(context.filesDir, rockstarGameDir)
-                }
-            }
-            if ((container.isLaunchBionicSteam || (container.isLaunchRealSteam && !container.isLaunchHeadlessSteam)) &&
                 !SteamService.isFileInstallable(context, "steam.tzst")
             ) {
                 setLoadingMessage(context.getString(R.string.main_downloading_steam))
@@ -1892,83 +1718,6 @@ fun preLaunchApp(
 
         setLoadingMessage("Syncing cloud saves")
         setLoadingProgress(-1f)
-        if (container.isLaunchHeadlessSteam && gameSource == GameSource.STEAM) {
-            try {
-                val eaGameDir = File(SteamService.getAppDirPath(gameId))
-                if (EaLaunchSupport.isEaTitle(gameId, eaGameDir)) {
-                    val eaPreference = when (eaPreferredSave) {
-                        SaveLocation.Local -> EaCloudPreference.LOCAL
-                        SaveLocation.Remote -> EaCloudPreference.REMOTE
-                        SaveLocation.None -> EaCloudPreference.NONE
-                    }
-                    val eaPull = EaCloudSavesManager.syncBeforeLaunch(context, container, gameId, eaGameDir, eaPreference)
-                    if (eaPull is EaCloudSavesManager.PullResult.Conflict) {
-                        Timber.tag("EA").i("Cloud save conflict for $appId, prompting user")
-                        val localDate = Date(eaPull.localMillis).toString()
-                        val remoteDate = eaPull.remoteMillis?.let { Date(it).toString() }
-                            ?: context.getString(R.string.container_storage_source_unknown)
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.EA_SYNC_CONFLICT,
-                                title = context.getString(R.string.main_save_conflict_title),
-                                message = context.getString(R.string.main_save_conflict_message, localDate, remoteDate),
-                                dismissBtnText = context.getString(R.string.main_keep_local),
-                                confirmBtnText = context.getString(R.string.main_keep_remote),
-                            ),
-                        )
-                        return@launch
-                    }
-                    Timber.tag("EA").i("Cloud save pull for $appId: $eaPull")
-                }
-            } catch (e: kotlinx.coroutines.CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                Timber.tag("EA").w("Cloud save pull failed for $appId: ${e.javaClass.simpleName}")
-            }
-        }
-
-        if (gameSource == GameSource.STEAM && (container.isLaunchHeadlessSteam || container.isLaunchBionicSteam) &&
-            !container.isLocalSavesOnly && !bootToContainer && !isOffline
-        ) {
-            try {
-                val rockstarGameDir = File(SteamService.getAppDirPath(gameId))
-                if (RockstarLaunchSupport.isRockstarTitle(rockstarGameDir)) {
-                    val rockstarPreference = when (rockstarPreferredSave) {
-                        SaveLocation.Local -> RockstarCloudPreference.LOCAL
-                        SaveLocation.Remote -> RockstarCloudPreference.REMOTE
-                        SaveLocation.None -> RockstarCloudPreference.NONE
-                    }
-                    val rockstarPull = RockstarCloudSavesManager.syncBeforeLaunch(context, container, rockstarGameDir, rockstarPreference)
-                    if (rockstarPull is RockstarCloudSavesManager.PullResult.Conflict) {
-                        Timber.tag("RockstarCloud").i("Cloud save conflict for $appId, prompting user")
-                        val localDate = Date(rockstarPull.localMillis).toString()
-                        val remoteDate = rockstarPull.remoteMillis?.let { Date(it).toString() }
-                            ?: context.getString(R.string.container_storage_source_unknown)
-                        setLoadingDialogVisible(false)
-                        setMessageDialogState(
-                            MessageDialogState(
-                                visible = true,
-                                type = DialogType.ROCKSTAR_SYNC_CONFLICT,
-                                title = context.getString(R.string.main_save_conflict_title),
-                                message = context.getString(R.string.main_save_conflict_message, localDate, remoteDate),
-                                dismissBtnText = context.getString(R.string.main_keep_local),
-                                confirmBtnText = context.getString(R.string.main_keep_remote),
-                            ),
-                        )
-                        return@launch
-                    }
-                    Timber.tag("RockstarCloud").i("Cloud save pull for $appId: $rockstarPull")
-                }
-            } catch (e: kotlinx.coroutines.CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                Timber.tag("RockstarCloud").w("Cloud save pull failed for $appId: ${e.javaClass.simpleName}")
-            }
-        } else {
-            runCatching { RockstarCloudSavesManager.forgetSession(File(SteamService.getAppDirPath(gameId))) }
-        }
 
         val postSyncInfo = SteamService.beginLaunchApp(
             appId = gameId,
@@ -2029,8 +1778,6 @@ fun preLaunchApp(
                         appId = appId,
                         ignorePendingOperations = ignorePendingOperations,
                         preferredSave = preferredSave,
-                        eaPreferredSave = eaPreferredSave,
-                        rockstarPreferredSave = rockstarPreferredSave,
                         useTemporaryOverride = useTemporaryOverride,
                         setLoadingDialogVisible = setLoadingDialogVisible,
                         setLoadingProgress = setLoadingProgress,

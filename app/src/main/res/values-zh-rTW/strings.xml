@@ -817,10 +817,6 @@
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">模擬設定</string>
-    <string name="settings_accounts_title">遊戲啟動器帳戶</string>
-    <string name="settings_accounts_signed_out">未登入</string>
-    <string name="settings_accounts_ea_title">EA 帳戶</string>
-    <string name="settings_accounts_rockstar_title">Rockstar 帳戶</string>
     <string name="settings_emulation_orientations_title">允許的螢幕方向</string>
     <string name="settings_emulation_orientations_subtitle">選擇遊戲中可使用的螢幕方向</string>
     <string name="settings_emulation_default_config_title">修改預設配置</string>
@@ -1152,22 +1148,6 @@
         請使用 ARM64/bionic 版本.</string>
     <string name="auth_webview_title">授權</string>
 
-    <string name="rockstar_login_required_title">需要登入 Rockstar</string>
-    <string name="rockstar_login_failed">Rockstar 登入失敗：%1$s</string>
-    <string name="rockstar_link_refused">此 Rockstar 帳戶已連結至其他 Steam 帳戶。</string>
-    <string name="rockstar_link_title">要連結 Steam 帳戶嗎？</string>
-    <string name="rockstar_link_text">將你的 Steam 帳戶 %1$s 連結至 Rockstar 帳戶 %2$s，即可在這裡遊玩此遊戲。Rockstar 不允許之後解除此連結。</string>
-    <string name="rockstar_link_confirm">連結</string>
-    <string name="rockstar_link_skip">稍後再說</string>
-    <string name="rockstar_link_done">已將 Steam 帳戶連結至 Rockstar</string>
-    <string name="rockstar_link_failed">無法連結 Steam 帳戶：%1$s</string>
-    <string name="rockstar_link_unchecked">無法檢查 Steam 連結。請在設定中登出 Rockstar，然後重新登入以重試。</string>
-    <string name="ea_login_required_title">需要登入 EA</string>
-    <string name="ea_login_failed">EA 登入失敗：%1$s</string>
-    <string name="ea_preparing">正在準備 EA 啟動器支援</string>
-    <string name="rockstar_preparing">正在準備 Rockstar 啟動器支援</string>
-    <string name="rockstar_runtime_installing">正在安裝 Social Club 執行環境</string>
-    <string name="rockstar_installer_missing">遊戲檔案中缺少 Social Club 安裝程式。請在 Steam 中驗證遊戲檔案後再試一次。</string>
 
 
 
