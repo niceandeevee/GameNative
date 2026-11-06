@@ -62,7 +62,6 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger-hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger-hilt" }
 javasteam = { group = "io.github.joshuatam", name = "javasteam", version.ref = "javasteam" }
-javasteam-depotdownloader = { group = "io.github.joshuatam", name = "javasteam-depotdownloader", version.ref = "javasteam" }
 jetbrains-kotlinx-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "json" }
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 landscapist-coil = { module = "com.github.skydoves:landscapist-coil", version.ref = "landscapistCoil" }

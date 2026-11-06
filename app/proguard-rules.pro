@@ -20,11 +20,14 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Needed for release build
--keep class in.dragonbra.javasteam.** { *; }
-
-# UnifiedService subclasses are built via reflection in SteamUnifiedMessages.createService; keep their ctor.
--keep class * extends in.dragonbra.javasteam.steam.handlers.steamunifiedmessages.UnifiedService { *; }
+# JavaSteam: R8 may drop classes the app never reaches (most of the generated protobuf messages and
+# unified services), but any class it keeps stays whole. JavaSteam reflects only on classes it is handed
+# as Class objects, never on names: newBuilder() on protobuf messages (ClientMsgProtobuf), no-arg
+# constructors of handlers, message bodies and headers, the UnifiedService(SteamUnifiedMessages)
+# constructor (SteamUnifiedMessages.createService), and the code field / from() method of enums
+# (KeyValue.asEnum). Protobuf's own reflection (FieldAccessorTable, toString) looks up getters and
+# setters by name, which keeping every member of the surviving classes also covers.
+-keepclassmembers class in.dragonbra.javasteam.** { *; }
 
 -keep class org.spongycastle.**
 -dontwarn org.spongycastle.jce.provider.X509LDAPCertStoreSpi
