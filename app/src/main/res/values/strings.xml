@@ -943,6 +943,9 @@
     <!-- Settings: Debug Group -->
     <string name="settings_debug_title">Debug</string>
     <string name="settings_debug_wine_channels_title">Select Wine Debug Channels</string>
+    <string name="settings_debug_wine_channels_reset_title">Reset Wine log channels</string>
+    <string name="settings_debug_wine_channels_reset_subtitle">Back to the defaults: %1$s</string>
+    <string name="settings_debug_wine_channels_reset_is_default">Already using the default channels</string>
     <string name="settings_debug_wine_logs_title">Enable Wine Debug Logs</string>
     <string name="settings_debug_wine_logs_subtitle">Write Wine debug output to file</string>
     <string name="settings_debug_box_logs_title">Enable Box86/64 Logs</string>
