@@ -29,6 +29,7 @@ import app.gamenative.ui.theme.settingsTileColorsDebug
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
+import app.gamenative.Constants
 import app.gamenative.PrefManager
 import app.gamenative.ui.util.SnackbarManager
 import app.gamenative.ui.theme.settingsTileColorsAlt
@@ -233,6 +234,31 @@ fun SettingsGroupDebug() {
                 )
             },
             onClick = { showChannelsDialog = true },
+        )
+        val defaultWineChannels = remember { Constants.XServer.DEFAULT_WINE_DEBUG_CHANNELS.split(",") }
+        val channelsAreDefault = selectedWineChannels.filter { it.isNotBlank() }.toSet() == defaultWineChannels.toSet()
+        SettingsMenuLink(
+            colors = settingsTileColorsAlt(),
+            title = { Text(text = stringResource(R.string.settings_debug_wine_channels_reset_title)) },
+            subtitle = {
+                Text(
+                    text = if (channelsAreDefault) {
+                        stringResource(R.string.settings_debug_wine_channels_reset_is_default)
+                    } else {
+                        stringResource(
+                            R.string.settings_debug_wine_channels_reset_subtitle,
+                            defaultWineChannels.joinToString(", "),
+                        )
+                    },
+                )
+            },
+            enabled = !channelsAreDefault,
+            onClick = {
+                selectedWineChannels = defaultWineChannels
+                if (!isPreview) {
+                    PrefManager.wineDebugChannels = Constants.XServer.DEFAULT_WINE_DEBUG_CHANNELS
+                }
+            },
         )
         SettingsSwitch(
             colors = settingsTileColorsAlt(),
