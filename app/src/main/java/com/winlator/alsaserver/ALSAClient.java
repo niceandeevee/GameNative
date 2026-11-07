@@ -3,7 +3,9 @@ package com.winlator.alsaserver;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioRouting;
 import android.media.AudioTrack;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.winlator.container.Container;
@@ -29,6 +31,21 @@ public class ALSAClient {
     private int sampleRate = 0;
     private short previousUnderrunCount = 0;
     private String containerVariant = null;
+
+    /*
+     * When Android's audio server dies (it restarts under heavy load), AudioTrack quietly reconnects
+     * ("restoreTrack_l: dead IAudioTrack") and keeps accepting writes, but on some devices the
+     * restored track plays silence for the rest of the session. The reconnect shows up as a routing
+     * change, so a routing change after the track has settled marks it for a rebuild, which the
+     * writer thread does before its next write. A headphone or speaker switch also rebuilds the
+     * track; that only costs a few milliseconds of audio.
+     */
+    private static final long ROUTING_SETTLE_MS = 1000;
+    private volatile boolean rebuildTrack = false;
+    private volatile long trackBuiltAt = 0;
+    private final AudioRouting.OnRoutingChangedListener routingListener = router -> {
+        if (SystemClock.elapsedRealtime() - trackBuiltAt > ROUTING_SETTLE_MS) rebuildTrack = true;
+    };
 
     public enum DataType {
         U8(1),
@@ -83,11 +100,16 @@ public class ALSAClient {
             SysVSharedMemory.unmapSHMSegment(byteBuffer, byteBuffer.capacity());
             this.sharedBuffer = null;
         }
+        releaseTrack();
+    }
+
+    private void releaseTrack() {
         AudioTrack audioTrack = this.audioTrack;
         if (audioTrack != null) {
+            audioTrack.removeOnRoutingChangedListener(routingListener);
             audioTrack.pause();
-            this.audioTrack.flush();
-            this.audioTrack.release();
+            audioTrack.flush();
+            audioTrack.release();
             this.audioTrack = null;
         }
     }
@@ -121,16 +143,37 @@ public class ALSAClient {
         this.previousUnderrunCount = (short) 0;
         this.frameBytes = (byte) (this.channels * this.dataType.byteCount);
         release();
-        if (isValidBufferSize()) {
-            AudioFormat format = new AudioFormat.Builder().setEncoding(getPCMEncoding(this.dataType)).setSampleRate(this.sampleRate).setChannelMask(getChannelConfig(this.channels)).build();
-            AudioTrack build = new AudioTrack.Builder().setPerformanceMode(this.options.performanceMode).setAudioFormat(format).setBufferSizeInBytes(getBufferSizeInBytes()).build();
-            this.audioTrack = build;
-            this.bufferCapacity = build.getBufferCapacityInFrames();
-            float f = this.options.volume;
-            if (f != 1.0f) {
-                this.audioTrack.setVolume(f);
-            }
-            this.audioTrack.play();
+        if (isValidBufferSize()) buildTrack();
+    }
+
+    private void buildTrack() {
+        AudioFormat format = new AudioFormat.Builder().setEncoding(getPCMEncoding(this.dataType)).setSampleRate(this.sampleRate).setChannelMask(getChannelConfig(this.channels)).build();
+        AudioTrack build = new AudioTrack.Builder().setPerformanceMode(this.options.performanceMode).setAudioFormat(format).setBufferSizeInBytes(getBufferSizeInBytes()).build();
+        this.rebuildTrack = false;
+        this.trackBuiltAt = SystemClock.elapsedRealtime();
+        this.audioTrack = build;
+        this.bufferCapacity = build.getBufferCapacityInFrames();
+        float f = this.options.volume;
+        if (f != 1.0f) {
+            build.setVolume(f);
+        }
+        build.addOnRoutingChangedListener(routingListener, null);
+        build.play();
+    }
+
+    /** Replaces a track whose output was rerouted or restored, keeping the stream position. */
+    private void rebuildTrackIfNeeded() {
+        if (!rebuildTrack || this.audioTrack == null) return;
+        Log.w("ALSAClient", "Audio output was rerouted or restored; rebuilding the track");
+        boolean playing = this.audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING;
+        releaseTrack();
+        this.previousUnderrunCount = 0;
+        try {
+            buildTrack();
+            if (!playing) this.audioTrack.pause();
+        } catch (Exception e) {
+            Log.e("ALSAClient", "Could not rebuild the audio track", e);
+            this.audioTrack = null;
         }
     }
 
@@ -170,6 +213,7 @@ public class ALSAClient {
         } else if (dataType == DataType.S16BE || dataType == DataType.FLOATBE) {
             data.order(ByteOrder.BIG_ENDIAN);
         }
+        rebuildTrackIfNeeded();
         if (this.audioTrack != null) {
             data.position(0);
             do {
