@@ -4,18 +4,12 @@ import `in`.dragonbra.javasteam.enums.ELicenseFlags
 import `in`.dragonbra.javasteam.enums.ELicenseType
 import `in`.dragonbra.javasteam.enums.EPaymentMethod
 import `in`.dragonbra.javasteam.steam.handlers.steamapps.License
-import `in`.dragonbra.javasteam.types.DepotManifest
 import `in`.dragonbra.javasteam.protobufs.steamclient.SteammessagesClientserver
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import java.util.Date
 import java.util.EnumSet
-import android.util.Base64
 
 object LicenseSerializer {
 
@@ -115,41 +109,4 @@ object LicenseSerializer {
             null
         }
     }
-
-    /**
-     * Serialize a DepotManifest object using Java serialization.
-     * Since DepotManifest is a Java object from JavaSteam, we use Java's built-in serialization.
-     */
-    fun serializeManifest(manifest: DepotManifest): String {
-        return try {
-            val baos = ByteArrayOutputStream()
-            ObjectOutputStream(baos).use { oos ->
-                oos.writeObject(manifest)
-            }
-            Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT)
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to serialize manifest")
-            ""
-        }
-    }
-
-    /**
-     * Deserialize Base64 string to DepotManifest object using Java deserialization.
-     */
-    fun deserializeManifest(encodedStr: String): DepotManifest? {
-        return try {
-            if (encodedStr.isEmpty()) return null
-
-            val bytes = Base64.decode(encodedStr, Base64.DEFAULT)
-            ByteArrayInputStream(bytes).use { bais ->
-                ObjectInputStream(bais).use { ois ->
-                    ois.readObject() as? DepotManifest
-                }
-            }
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to deserialize manifest")
-            null
-        }
-    }
 }
-

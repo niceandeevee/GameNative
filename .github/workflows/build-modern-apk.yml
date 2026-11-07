@@ -195,8 +195,15 @@ jobs:
           tag="modern-${{ inputs.build_type }}"
           stable="dist/GameNative-modern-${{ inputs.build_type }}.apk"
           cp "$(ls dist/*.apk | head -n 1)" "$stable"
+          # R8's name map, to decode stack traces from this build (release builds are obfuscated).
+          assets=("$stable")
+          mapping="$(find app/build/outputs/mapping -name mapping.txt 2>/dev/null | head -n 1)"
+          if [ -n "$mapping" ]; then
+            cp "$mapping" "dist/GameNative-modern-${{ inputs.build_type }}-mapping.txt"
+            assets+=("dist/GameNative-modern-${{ inputs.build_type }}-mapping.txt")
+          fi
           gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag 2>/dev/null || true
-          gh release create "$tag" "$stable" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease \
+          gh release create "$tag" "${assets[@]}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease \
             --title "GameNative Modern ${{ inputs.build_type }} (${branch} @ ${GITHUB_SHA::7})" \
             --notes "Built by the Build Modern APK workflow from ${branch} at ${GITHUB_SHA}."
           echo "Direct download: https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$(basename "$stable")" | tee -a "$GITHUB_STEP_SUMMARY"

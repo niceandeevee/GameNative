@@ -55,9 +55,9 @@ android {
         }
 
         proguardFiles(
-            // Not proguard-android-optimize.txt: optimizing R8 (with AGP 8.8's R8) broke zstd-jni
-            // (archive extraction hung on boot) and achievement loading on device.
-            getDefaultProguardFile("proguard-android.txt"),
+            // Optimizing R8 (inlining, class merging, dead-branch removal). What it could break without
+            // anything in bytecode showing it (JNI, reflection) is pinned in proguard-rules.pro.
+            getDefaultProguardFile("proguard-android-optimize.txt"),
             "proguard-rules.pro",
         )
     }
@@ -121,6 +121,11 @@ android {
         }
         jniLibs {
             // Native libs must be extracted to nativeLibraryDir: several are exec'd or LD_PRELOADed
+            useLegacyPackaging = true
+        }
+        dex {
+            // Store the dex compressed: the APK download is about 10 MB smaller. Android unpacks and
+            // compiles it at install time either way, so installed size is about the same.
             useLegacyPackaging = true
         }
     }
