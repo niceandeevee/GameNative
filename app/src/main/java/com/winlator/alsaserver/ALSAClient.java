@@ -16,6 +16,7 @@ import com.winlator.xenvironment.ImageFs;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.concurrent.locks.LockSupport;
 
 public class ALSAClient {
     private static short framesPerBuffer = 256;
@@ -41,6 +42,16 @@ public class ALSAClient {
      * track; that only costs a few milliseconds of audio.
      */
     private static final long ROUTING_SETTLE_MS = 1000;
+    /*
+     * Writes never block for long. A blocking AudioTrack.write waits forever if Android's audio
+     * server stalls, and the guest's audio thread waits on that write, which can freeze the whole
+     * game. Instead the writer polls with non-blocking writes and gives up after STALL_MS without
+     * progress: a playing track is then rebuilt, and the chunk counts as played so the guest's
+     * position keeps moving.
+     */
+    private static final long STALL_MS = 1000;
+    private static final long MIN_WAIT_NANOS = 1_000_000L;
+    private static final long MAX_WAIT_NANOS = 20_000_000L;
     private volatile boolean rebuildTrack = false;
     private volatile long trackBuiltAt = 0;
     private final AudioRouting.OnRoutingChangedListener routingListener = router -> {
@@ -214,20 +225,49 @@ public class ALSAClient {
             data.order(ByteOrder.BIG_ENDIAN);
         }
         rebuildTrackIfNeeded();
-        if (this.audioTrack != null) {
+        AudioTrack track = this.audioTrack;
+        if (track != null) {
             data.position(0);
-            do {
+            long stalledSince = 0;
+            while (data.position() != data.limit()) {
+                int bytesWritten;
                 try {
-                    int bytesWritten = this.audioTrack.write(data, data.remaining(), 0);
-                    if (bytesWritten <= 0) {
-                        break;
-                    } else {
-                        increaseBufferSizeIfUnderrunOccurs();
-                    }
+                    bytesWritten = track.write(data, data.remaining(), AudioTrack.WRITE_NON_BLOCKING);
                 } catch (Exception e) {
                     break;
                 }
-            } while (data.position() != data.limit());
+                if (bytesWritten < 0) {
+                    // ERROR_DEAD_OBJECT and friends: replace the track before the next write.
+                    Log.w("ALSAClient", "Audio write failed (" + bytesWritten + "); rebuilding the track");
+                    this.rebuildTrack = true;
+                    data.position(data.limit());
+                    break;
+                }
+                if (bytesWritten > 0) {
+                    stalledSince = 0;
+                    increaseBufferSizeIfUnderrunOccurs();
+                    continue;
+                }
+                // Buffer full: wait for room, but not forever.
+                if (track.getPlayState() != AudioTrack.PLAYSTATE_PLAYING) {
+                    data.position(data.limit()); // paused or stopped: drop the chunk rather than wait
+                    break;
+                }
+                long now = SystemClock.elapsedRealtime();
+                if (stalledSince == 0) {
+                    stalledSince = now;
+                } else if (now - stalledSince > STALL_MS) {
+                    Log.w("ALSAClient", "Audio output stopped accepting data; rebuilding the track");
+                    this.rebuildTrack = true;
+                    data.position(data.limit());
+                    break;
+                }
+                // Sleep about as long as the rest of the chunk takes to play, so a full buffer costs
+                // one wake-up per write, much like a blocking write.
+                long frames = data.remaining() / Math.max(1, this.frameBytes);
+                long waitNanos = this.sampleRate > 0 ? frames * 1_000_000_000L / this.sampleRate : MIN_WAIT_NANOS;
+                LockSupport.parkNanos(Math.max(MIN_WAIT_NANOS, Math.min(MAX_WAIT_NANOS, waitNanos)));
+            }
             this.position += data.position();
             data.rewind();
         }
