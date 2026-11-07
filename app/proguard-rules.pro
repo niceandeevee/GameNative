@@ -12,13 +12,10 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Names are obfuscated; keep line numbers so crash logs can be decoded with the build's mapping.txt
+# (published next to the APK by the Build Modern APK workflow).
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
 # JavaSteam: R8 may drop classes the app never reaches (most of the generated protobuf messages and
 # unified services), but any class it keeps stays whole. JavaSteam reflects only on classes it is handed
@@ -41,8 +38,29 @@
 -dontwarn org.spongycastle.jce.provider.X509LDAPCertStoreSpi
 -dontwarn org.spongycastle.x509.util.LDAPStoreHelper
 
-# From Winlator
--dontobfuscate
+# Winlator's emulator core talks to its native libraries in both directions (callbacks looked up by
+# name and signature, fields read from native code, classes built with FindClass), so it is kept
+# exactly as written: no renaming, removal or optimization.
+-keep class com.winlator.** { *; }
+
+# JavaSteam class names: SteamService reaches LogManager through Class.forName, and
+# LicenseSerializer stores JavaSteam objects with Java serialization, which records class names.
+-keepnames class in.dragonbra.javasteam.**
+# Protobuf's runtime loads some of its own classes by name and reflects on generated messages.
+-keep class com.google.protobuf.** { *; }
+
+# Native-backed libraries whose JNI code constructs classes and reads fields by name.
+# zstd-jni: optimizing R8 once left ZstdInputStream without its inner stream and hung extraction.
+-keep class com.github.luben.zstd.** { *; }
+-keep class me.zhanghai.android.libarchive.** { *; }
+
+# RadialMenuCoordinator copies the view-tree owners onto its overlay through these classes by name.
+-keep class androidx.lifecycle.ViewTreeLifecycleOwner { *; }
+-keep class androidx.lifecycle.ViewTreeViewModelStoreOwner { *; }
+-keep class androidx.savedstate.ViewTreeSavedStateRegistryOwner { *; }
+
+# Error messages show exception class names to the user.
+-keepnames class * extends java.lang.Throwable
 
 # Timber Logging
 -keep class timber.log.Timber { *; }
@@ -64,8 +82,8 @@
 # release builds (debug is unminified). The class itself is reached from Kotlin/Java through its
 # native* entry points, so the callbacks need an explicit keep; the native members need their
 # names pinned because the JVM derives the symbol it looks up in the daemon from class and method
-# name, so a rename breaks the pairing silently at runtime. -dontobfuscate already holds both, and
-# keepnames guards the FindClass string should that setting ever change.
+# name, so a rename breaks the pairing silently at runtime. keepnames pins the class name the
+# daemon passes to FindClass.
 -keepclassmembers class app.gamenative.display.GameNativeDrm {
     public static void clearBootingSplash();
     public static void onFramePublished();
@@ -73,10 +91,6 @@
 }
 -keepnames class app.gamenative.display.GameNativeDrm
 
--keep class horizon.** { *; }
--keep class com.meta.horizon.** { *; }
--dontwarn horizon.**
--dontwarn com.meta.horizon.**
 
 # Samsung Performance SDK (bundled stub jar, referenced by powercontrol Samsung driver)
 -keep class com.samsung.sdk.sperf.** { *; }
