@@ -28,6 +28,14 @@
 # (KeyValue.asEnum). Protobuf's own reflection (FieldAccessorTable, toString) looks up getters and
 # setters by name, which keeping every member of the surviving classes also covers.
 -keepclassmembers class in.dragonbra.javasteam.** { *; }
+# The same reflection reaches the app's own subclasses (app.gamenative.steam.CloudConfigStoreService is
+# built through createService), so their constructors must survive too.
+-keepclassmembers class * extends in.dragonbra.javasteam.steam.handlers.steamunifiedmessages.UnifiedService {
+    <init>(...);
+}
+-keepclassmembers class * extends in.dragonbra.javasteam.steam.handlers.ClientMsgHandler {
+    <init>();
+}
 
 -keep class org.spongycastle.**
 -dontwarn org.spongycastle.jce.provider.X509LDAPCertStoreSpi
