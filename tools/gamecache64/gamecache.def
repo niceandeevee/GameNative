@@ -1,0 +1,20 @@
+; version.dll exports. The ones games use are forwarded to Wine's kernelbase (where Wine and
+; Windows 10 implement them); the installer-only ones are stubs in gamecache.c.
+LIBRARY version.dll
+EXPORTS
+    GetFileVersionInfoA = kernelbase.GetFileVersionInfoA
+    GetFileVersionInfoExA = kernelbase.GetFileVersionInfoExA
+    GetFileVersionInfoExW = kernelbase.GetFileVersionInfoExW
+    GetFileVersionInfoSizeA = kernelbase.GetFileVersionInfoSizeA
+    GetFileVersionInfoSizeExA = kernelbase.GetFileVersionInfoSizeExA
+    GetFileVersionInfoSizeExW = kernelbase.GetFileVersionInfoSizeExW
+    GetFileVersionInfoSizeW = kernelbase.GetFileVersionInfoSizeW
+    GetFileVersionInfoW = kernelbase.GetFileVersionInfoW
+    VerLanguageNameA = kernel32.VerLanguageNameA
+    VerLanguageNameW = kernel32.VerLanguageNameW
+    VerQueryValueA = kernelbase.VerQueryValueA
+    VerQueryValueW = kernelbase.VerQueryValueW
+    VerFindFileA = gc_VerFindFileA
+    VerFindFileW = gc_VerFindFileW
+    VerInstallFileA = gc_VerInstallFileA
+    VerInstallFileW = gc_VerInstallFileW
