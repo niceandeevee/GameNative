@@ -9,7 +9,13 @@ import app.gamenative.data.GameSource
  * override in [WorkshopCompatibilityRegistry].
  */
 data class WorkshopCompatibilityOverride(
-    val exposureMode: WorkshopExposureMode,
+    val exposureMode: WorkshopExposureMode? = null,
+    /**
+     * Command-line arguments that make the game load downloaded Workshop items, for games that take
+     * mods on the command line (no in-game list) and run under the real Steam client, which doesn't
+     * know about items GameNative downloaded. Gets the enabled, fully downloaded item ids (sorted).
+     */
+    val launchArgs: ((itemIds: List<Long>) -> String)? = null,
     val ignoreManualModPath: Boolean = false,
     val cleanupNestedSteamSettingsArtifacts: Boolean = false,
 )

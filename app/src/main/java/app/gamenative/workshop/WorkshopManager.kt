@@ -4029,6 +4029,29 @@ object WorkshopManager {
     }
 
     /** Parses a comma-separated string of IDs into a [Set]. */
+    /**
+     * Command-line arguments that make [appId] load its enabled, fully downloaded Workshop items, for
+     * games whose [WorkshopCompatibilityOverride.launchArgs] says how (empty otherwise, or when no
+     * enabled item has finished downloading).
+     */
+    suspend fun launchArgsFor(context: Context, appId: Int): String {
+        val build = WorkshopCompatibilityRegistry.get(GameSource.STEAM, appId.toString())?.launchArgs
+            ?: return ""
+        val dao = SteamService.instance?.appDao ?: return ""
+        if (dao.getWorkshopMods(appId) != true) return ""
+        val enabled = parseEnabledIds(dao.getEnabledWorkshopItemIds(appId))
+        if (enabled.isEmpty()) return ""
+        val contentDir = getWorkshopContentDir(getContainerWinePrefix(context, appId), appId)
+        val ready = enabled.filter { File(File(contentDir, it.toString()), COMPLETE_MARKER).isFile }.sorted()
+        if (ready.isEmpty()) {
+            Timber.tag(TAG).w("Workshop launch args for $appId: none of ${enabled.size} enabled item(s) downloaded yet")
+            return ""
+        }
+        val args = build(ready)
+        Timber.tag(TAG).i("Workshop launch args for $appId: $args")
+        return args
+    }
+
     fun parseEnabledIds(idsString: String?): Set<Long> =
         (idsString ?: "").split(",").mapNotNull { it.trim().toLongOrNull() }.toSet()
 
