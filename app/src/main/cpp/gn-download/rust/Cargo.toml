@@ -18,11 +18,14 @@ jni = "0.21"
 # Direct dep for pwrite/fallocate/statvfs on the download write path.
 libc = "0.2"
 flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
-lzma-rs = { version = "0.3", features = ["raw_decoder"] }
+# C liblzma (bundled xz sources, built with the NDK clang) for VZip chunks: much faster than a pure-Rust
+# LZMA decoder on the download path.
+liblzma = { version = "0.4", features = ["static"] }
 rand = "0.8"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "gzip"] }
 rsa = "0.9"
-ruzstd = "0.7"
+# C libzstd (bundled, built with the NDK clang) for VSZa chunks.
+zstd = { version = "0.13", default-features = false }
 # Async fetch layer for depot chunk downloads (see fetch_core / depot_writer).
 tokio = { version = "1", default-features = false, features = ["rt", "net", "time", "sync"] }
 futures-util = { version = "0.3", default-features = false, features = ["std"] }
@@ -30,6 +33,10 @@ serde_json = { version = "1", features = ["preserve_order"] }
 sha1 = "0.10"
 sha2 = "0.10"
 zeroize = "1"
+
+[dev-dependencies]
+# Only to build LZMA-alone test vectors.
+lzma-rs = "0.3"
 
 [profile.release]
 codegen-units = 1

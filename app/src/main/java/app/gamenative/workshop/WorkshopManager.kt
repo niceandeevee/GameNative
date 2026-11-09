@@ -1,6 +1,8 @@
 package app.gamenative.workshop
 
 import `in`.dragonbra.javasteam.depotdownloader.DepotDownloader
+import app.gamenative.service.download.GameDownloadService
+import app.gamenative.service.download.NativeSteamDownload
 import `in`.dragonbra.javasteam.depotdownloader.IDownloadListener
 import `in`.dragonbra.javasteam.depotdownloader.data.DownloadItem
 import `in`.dragonbra.javasteam.depotdownloader.data.PubFileItem
@@ -992,13 +994,64 @@ object WorkshopManager {
             }
         }
 
+        // === Depot items, first through the native engine ===
+        // Same Rust pipeline as game downloads (adaptive CDN window, C decompressors, every core on
+        // Blazing) instead of JavaSteam's DepotDownloader: a Workshop item is a manifest of the
+        // game's own depot. Items it can't handle (no manifest id, a failed run) fall back to the
+        // DepotDownloader path below.
+        var ddItems = depotItems
+        if (depotItems.isNotEmpty() && NativeSteamDownload.isAvailable()) {
+            val fallback = mutableListOf<WorkshopItem>()
+            for (item in depotItems) {
+                ensureActive()
+                if (item.manifestId == 0L) {
+                    fallback += item
+                    continue
+                }
+                val itemDir = File(workshopContentDir, item.publishedFileId.toString())
+                val completeMarker = File(itemDir, COMPLETE_MARKER)
+                try {
+                    Timber.tag(TAG).i(
+                        "[DL] Downloading depot item (native): '${item.title}' (${item.publishedFileId})"
+                    )
+                    completeMarker.delete()
+                    itemDir.mkdirs()
+                    bytesDownloadedMap[item.publishedFileId] = 0L
+                    GameDownloadService.downloadWorkshopItem(
+                        appId = item.appId,
+                        manifestId = item.manifestId,
+                        installDir = itemDir.absolutePath,
+                        onBytes = { written, _ ->
+                            bytesDownloadedMap[item.publishedFileId] = written
+                            onBytesProgress(bytesDownloadedMap.values.sum(), fixedTotalBytes)
+                        },
+                        parentScope = this,
+                    )
+                    completeMarker.writeText(item.timeUpdated.toString())
+                    File(workshopContentDir, "${item.publishedFileId}.partial").deleteRecursively()
+                    val done = completedCount.incrementAndGet()
+                    Timber.tag(TAG).i("Workshop item $done/$totalItems completed: '${item.title}'")
+                    onItemProgress(done, totalItems, item.title)
+                    launch { downloadPreviewImage(item, itemDir) }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Timber.tag(TAG).w(
+                        e, "[DL] Native download failed for '${item.title}', retrying with DepotDownloader"
+                    )
+                    fallback += item
+                }
+            }
+            ddItems = fallback
+        }
+
         // === Depot items: one DepotDownloader per item ===
         // DepotDownloader's internal pipeline shuts down after the first
         // PubFileItem completes.  Process depot items one at a time.
         // To eliminate the ~3s gap (Steam API manifest resolution),
         // pre-start the NEXT item's DepotDownloader while the current
         // one is still downloading chunks.
-        if (depotItems.isNotEmpty()) {
+        if (ddItems.isNotEmpty()) {
             patchSupportedWorkshopFileTypes()
             val (maxDownloads, maxDecompress) = computeDownloadThreads()
 
@@ -1087,7 +1140,7 @@ object WorkshopManager {
                 val openedDDs = mutableListOf<DepotDownloader>()
 
                 try {
-                for ((index, item) in depotItems.withIndex()) {
+                for ((index, item) in ddItems.withIndex()) {
                     ensureActive()
 
                     val (depotDownloader, itemDir, completeMarker) =
@@ -1102,8 +1155,8 @@ object WorkshopManager {
 
                     // Pre-start the NEXT item so its API call overlaps
                     // with this item's chunk download.
-                    if (index + 1 < depotItems.size) {
-                        pending = startDepotDownload(depotItems[index + 1])
+                    if (index + 1 < ddItems.size) {
+                        pending = startDepotDownload(ddItems[index + 1])
                     }
 
                     try {

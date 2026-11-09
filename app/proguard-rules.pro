@@ -34,7 +34,9 @@
     <init>();
 }
 
--keep class org.spongycastle.**
+# SpongyCastle: JavaSteam's CryptoHelper loads the provider by name, and the provider builds its algorithm
+# classes by name too, so keep them whole (R8 full mode would otherwise drop their constructors).
+-keep class org.spongycastle.** { *; }
 -dontwarn org.spongycastle.jce.provider.X509LDAPCertStoreSpi
 -dontwarn org.spongycastle.x509.util.LDAPStoreHelper
 

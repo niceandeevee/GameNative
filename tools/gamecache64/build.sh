@@ -1,9 +1,9 @@
 #!/bin/sh
-# Builds the gamecache proxy version.dll (64-bit) into the app's assets.
+# Builds the gamecache proxy psapi.dll (64-bit) into the app's assets.
 # Needs gcc-mingw-w64-x86-64 (apt install gcc-mingw-w64-x86-64).
 set -e
 cd "$(dirname "$0")"
-out=../../app/src/main/assets/gamefixes/gamecache64/version.dll
+out=../../app/src/main/assets/gamefixes/gamecache64/psapi.dll
 mkdir -p "$(dirname "$out")"
 x86_64-w64-mingw32-gcc -O2 -s -shared -static-libgcc -Wall -Wextra -Werror \
     -o "$out" gamecache.c dircache.c ../steamcache/iwdcache.c gamecache.def

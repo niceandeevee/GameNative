@@ -1,10 +1,13 @@
 /*
- * Smoke test under Wine: a stand-in "game" in <root>\corruption that imports version.dll (so the
+ * Smoke test under Wine: a stand-in "game" in <root>\corruption that imports psapi.dll (so the
  * gamecache proxy loads like it does for StarWarsG.exe), reads a .meg file the way Empire at War
  * does (64-byte reads, each after a seek), probes missing folders, and checks every result.
- * Run it from <root>\corruption with WINEDLLOVERRIDES=version=n,b (cache) or version=b (plain Wine).
+ * Run it from <root>\corruption with WINEDLLOVERRIDES=psapi=n,b (cache) or psapi=b (plain Wine).
+ * Build: x86_64-w64-mingw32-gcc -O2 -o test_wine.exe test_wine.c -lpsapi.
  */
+#define PSAPI_VERSION 1 /* import psapi.dll itself, like the game */
 #include <windows.h>
+#include <psapi.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,17 +26,19 @@ static double now_s(void)
 
 int main(void)
 {
-    /* version.dll forwards work. */
-    DWORD dummy;
-    DWORD vsize = GetFileVersionInfoSizeW(L"C:\\windows\\system32\\kernel32.dll", &dummy);
-    CHECK(vsize > 0, "GetFileVersionInfoSizeW returned 0 (err %lu)", GetLastError());
-    if (vsize) {
-        void *vi = malloc(vsize);
-        CHECK(GetFileVersionInfoW(L"C:\\windows\\system32\\kernel32.dll", 0, vsize, vi), "GetFileVersionInfoW");
-        VS_FIXEDFILEINFO *ffi;
-        UINT len;
-        CHECK(VerQueryValueW(vi, L"\\", (void **)&ffi, &len) && len, "VerQueryValueW");
-        free(vi);
+    /* psapi.dll forwards work. */
+    {
+        DWORD pids[1024], got = 0;
+        CHECK(EnumProcesses(pids, sizeof(pids), &got) && got > 0, "EnumProcesses (err %lu)", GetLastError());
+        HMODULE mods[256];
+        DWORD needed = 0;
+        CHECK(EnumProcessModules(GetCurrentProcess(), mods, sizeof(mods), &needed) && needed > 0, "EnumProcessModules");
+        WCHAR name[MAX_PATH];
+        CHECK(GetModuleBaseNameW(GetCurrentProcess(), NULL, name, MAX_PATH) > 0, "GetModuleBaseNameW");
+        HMODULE ps = GetModuleHandleW(L"psapi.dll");
+        WCHAR path[MAX_PATH] = L"";
+        if (ps) GetModuleFileNameW(ps, path, MAX_PATH);
+        printf("psapi.dll loaded from %ls\n", path);
     }
 
     /* Build a test archive. */

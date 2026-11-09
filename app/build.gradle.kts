@@ -136,7 +136,11 @@ android {
                 // CI passes -PtestForks=2 -PtestHeap=3g to split the suite over two test JVMs
                 it.maxParallelForks = (project.findProperty("testForks") as String?)?.toIntOrNull() ?: 1
                 it.maxHeapSize = (project.findProperty("testHeap") as String?) ?: "4g"
-                it.testLogging { events("failed") }
+                it.testLogging {
+                    events("failed")
+                    // Print the assertion message in the CI log (the HTML report is not uploaded).
+                    exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+                }
                 // The mocking agent appends to the boot classpath, which disables CDS with a warning anyway.
                 it.jvmArgs("-Xshare:off")
             }
@@ -182,6 +186,8 @@ dependencies {
             isChanging = version?.contains("SNAPSHOT") ?: false
         }
     }
+    // Security provider JavaSteam loads by name (CryptoHelper) to decrypt depot manifests in Workshop downloads.
+    implementation(libs.spongycastle)
     implementation(libs.okhttp.dnsoverhttps)
 
 

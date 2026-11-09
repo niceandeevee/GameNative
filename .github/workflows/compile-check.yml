@@ -27,5 +27,7 @@ jobs:
         with:
           # Lets setup-gradle save Gradle's configuration cache (it is only stored encrypted)
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+      - name: Download Gradle (retried, with checksum-verified mirrors as fallback)
+        run: .github/scripts/fetch-gradle.sh
       - name: Compile app and unit tests (Modern debug)
         run: ./gradlew --continue :app:compileModernDebugUnitTestKotlin :app:compileModernDebugUnitTestJavaWithJavac
