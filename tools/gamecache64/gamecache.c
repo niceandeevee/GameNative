@@ -1,10 +1,9 @@
 /*
- * gamecache: a pass-through psapi.dll for 64-bit games that load slowly under Wine because of
+ * gamecache: a pass-through powrprof.dll for 64-bit games that load slowly under Wine because of
  * many tiny file operations (Star Wars: Empire at War: Gold Pack, StarWarsG.exe).
  *
- * psapi.dll is in the game's static imports (StarWarsG.exe pulls it in while it starts, before any
- * file is read), and all its functions are kernel32's K32* ones, so gamecache.def forwards every
- * export there. (It was a version.dll first; the game never loads that one itself.) On load, the
+ * The game imports powrprof.dll itself, so this copy in its folder loads before any game code runs;
+ * every export is passed to Wine's own powrprof.dll (proxy.c, proxy_stubs.S). On load, the
  * game's own import table (not kernel32 itself: in arm64ec Wine those functions are ARM64 code
  * that x86 jumps can't patch) is pointed at the hooks below:
  *
@@ -30,6 +29,8 @@
 
 #include "../steamcache/iwdcache.h"
 #include "dircache.h"
+
+BOOL proxy_init(HINSTANCE self);
 
 extern IMAGE_DOS_HEADER __ImageBase;
 
@@ -469,6 +470,13 @@ BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)
     (void)inst;
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(inst);
+        if (!proxy_init(inst)) log_line("gamecache: Wine's powrprof.dll not found; power calls will fail\n");
+        {
+            /* Shows which arguments (MODPATH=... for a Workshop mod) reached the game. */
+            char cmd[600];
+            snprintf(cmd, sizeof(cmd), "gamecache: command line: %.500ls\n", GetCommandLineW());
+            log_line(cmd);
+        }
         install();
     } else if (reason == DLL_PROCESS_DETACH) {
         (void)reserved;
