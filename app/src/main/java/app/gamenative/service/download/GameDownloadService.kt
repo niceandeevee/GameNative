@@ -388,6 +388,15 @@ object GameDownloadService {
             ) = Unit // handled by the suspension below
         }
 
+        awaitNativeRun(plan, listener, "app $appId")
+    }
+
+    /**
+     * Runs one plan on the native engine and suspends until it finishes: returns on success, throws
+     * [DownloadFailedException] on failure, and cancels the run when the calling job is cancelled.
+     * [listener]'s own onComplete is not called.
+     */
+    private suspend fun awaitNativeRun(plan: String, listener: NativeSteamDownloadListener, label: String) {
         // The handle owns a registry slot in native; release it exactly once no matter
         // how the run ends (success, failure, or cancellation).
         var handle = 0L
@@ -403,7 +412,7 @@ object GameDownloadService {
                     ) {
                         if (success) {
                             Timber.tag(TAG).i(
-                                "Steam download for app $appId complete: $bytesWritten bytes, " +
+                                "Steam download for $label complete: $bytesWritten bytes, " +
                                     "$depotsCompleted depots completed, $depotsSkipped skipped",
                             )
                             if (cont.isActive) cont.resume(Unit)
@@ -433,6 +442,110 @@ object GameDownloadService {
                 NativeSteamDownload.release(handle)
             }
         }
+    }
+
+    /**
+     * Downloads one Steam Workshop item's content through the native engine, the same pipeline (and
+     * adaptive CDN window) game downloads use. A Workshop item is a manifest of the game's own
+     * depot: depot = [appId], manifest = the item's hcontent_file ([manifestId]).
+     *
+     * [onBytes] gets (written, total) uncompressed bytes as chunks land. Throws
+     * [DownloadFailedException] when the item can't be resolved or the run fails.
+     */
+    suspend fun downloadWorkshopItem(
+        appId: Int,
+        manifestId: Long,
+        installDir: String,
+        onBytes: (written: Long, total: Long) -> Unit,
+        parentScope: CoroutineScope,
+    ) {
+        val steamClient = SteamService.instance?.steamClient
+            ?: throw DownloadFailedException("Steam client not available")
+        val steamApps = steamClient.getHandler(SteamApps::class.java)
+            ?: throw DownloadFailedException("SteamApps handler not available")
+        val steamContent = steamClient.getHandler(SteamContent::class.java)
+            ?: throw DownloadFailedException("SteamContent handler not available")
+        val depotId = appId
+
+        val servers = resolveCdnServers(steamContent, parentScope)
+        if (servers.isEmpty()) throw DownloadFailedException("No CDN servers available")
+        val key = steamApps.getDepotDecryptionKey(depotId, appId).await()
+        if (key.result != EResult.OK || key.depotKey.size != 32) {
+            throw DownloadFailedException("Workshop depot key denied (${key.result})")
+        }
+        val requestCode = requestManifestCode(
+            steamContent, depotId, manifestId, "public", appId, appId, parentScope,
+        ) ?: 0L
+
+        val speed = app.gamenative.utils.DownloadSpeedConfig()
+        val plan = JSONObject()
+            .put("install_dir", installDir)
+            .put("ca_bundle_path", "")
+            .put("fresh", false)
+            .put("untrusted_paths", JSONArray())
+            .put("max_workers", speed.maxDownloads)
+            .put("process_workers", speed.maxDecompress)
+            .put("pipeline_logs", SHOW_PIPELINE_LOGS)
+            .put("servers", serversToJson(servers))
+            .put(
+                "depots",
+                JSONArray().put(
+                    JSONObject()
+                        .put("depot_id", depotId)
+                        .put("manifest_id", java.lang.Long.toUnsignedString(manifestId))
+                        .put("depot_key_hex", key.depotKey.toHex())
+                        .put("manifest_request_code", java.lang.Long.toUnsignedString(requestCode)),
+                ),
+            )
+            .toString()
+
+        val listener = object : NativeSteamDownloadListener {
+            override fun onProgress(
+                depotId: Int,
+                depotDone: Long,
+                depotTotal: Long,
+                depotsDone: Int,
+                depotsTotal: Int,
+                verifying: Boolean,
+            ) {
+                onBytes(depotDone, depotTotal)
+            }
+
+            override fun refreshManifestRequestCode(depotId: Int, manifestId: Long): Long = try {
+                kotlinx.coroutines.runBlocking {
+                    requestManifestCode(steamContent, depotId, manifestId, "public", appId, appId, this) ?: 0L
+                }
+            } catch (e: Exception) {
+                Timber.tag(TAG).w(e, "refreshManifestRequestCode failed for Workshop depot $depotId")
+                0L
+            }
+
+            override fun getCdnAuthToken(depotId: Int, host: String): String? = try {
+                kotlinx.coroutines.runBlocking {
+                    kotlinx.coroutines.withTimeoutOrNull(CDN_AUTH_TOKEN_TIMEOUT_MS) {
+                        steamContent.getCDNAuthToken(app = appId, depot = depotId, hostName = host, parentScope = this)
+                            .await()
+                    }?.takeIf { it.result == EResult.OK && it.token.isNotEmpty() }?.token
+                }
+            } catch (e: Exception) {
+                Timber.tag(TAG).w(e, "getCdnAuthToken failed for Workshop depot $depotId host $host")
+                null
+            }
+
+            override fun onComplete(
+                success: Boolean,
+                error: String,
+                bytesWritten: Long,
+                depotsCompleted: Int,
+                depotsSkipped: Int,
+            ) = Unit
+        }
+
+        awaitNativeRun(plan, listener, "Workshop manifest ${java.lang.Long.toUnsignedString(manifestId)} (app $appId)")
+        DepotManifestFiles.decryptFilenames(
+            DepotManifestFiles.manifestFile(installDir, depotId, manifestId),
+            key.depotKey,
+        )
     }
 
     private suspend fun resolveCdnServers(
