@@ -4039,8 +4039,6 @@ object WorkshopManager {
      * enabled item has finished downloading).
      */
     suspend fun launchArgsFor(context: Context, appId: Int): String {
-        val override = WorkshopCompatibilityRegistry.get(GameSource.STEAM, appId.toString()) ?: return ""
-        val build = override.launchArgs ?: return ""
         val dao = SteamService.instance?.appDao ?: return ""
         if (dao.getWorkshopMods(appId) != true) return ""
         val enabled = parseEnabledIds(dao.getEnabledWorkshopItemIds(appId))
@@ -4051,6 +4049,11 @@ object WorkshopManager {
             Timber.tag(TAG).w("Workshop launch args for $appId: none of ${enabled.size} enabled item(s) downloaded yet")
             return ""
         }
+        // The real Steam client only reports items it has recorded as installed (what a game's own mod
+        // menu lists through ISteamUGC), and items this app downloaded aren't recorded anywhere.
+        registerInstalledItems(contentDir, appId, ready)
+        val override = WorkshopCompatibilityRegistry.get(GameSource.STEAM, appId.toString()) ?: return ""
+        val build = override.launchArgs ?: return ""
         for (id in ready) {
             // What the game will find there (a mod needs its Data folder at the top), and whether the
             // download looks whole.
@@ -4068,6 +4071,65 @@ object WorkshopManager {
         Timber.tag(TAG).i("Workshop launch args for $appId: $args")
         return args
     }
+
+    /**
+     * Records [ids] as installed in steamapps/workshop/appworkshop_<appId>.acf (next to the content
+     * folder), the file the Steam client keeps for each game's Workshop items: without it the client
+     * doesn't know about items this app downloaded, so ISteamUGC (a game's own mod menu) can't see them.
+     */
+    internal fun registerInstalledItems(contentDir: File, appId: Int, ids: List<Long>) {
+        val workshopDir = contentDir.parentFile?.parentFile ?: return
+        val accountId = runCatching { SteamService.userSteamId?.accountID ?: 0L }.getOrDefault(0L)
+        val items = ids.map { id ->
+            val dir = File(contentDir, id.toString())
+            val files = dir.walkTopDown().filter { it.isFile && !it.path.contains("/.") }.toList()
+            val manifest = dir.walkTopDown().maxDepth(3)
+                .mapNotNull { Regex("""^\d+_(\d+)\.manifest$""").find(it.name)?.groupValues?.get(1) }
+                .firstOrNull() ?: "0"
+            val updated = runCatching { File(dir, COMPLETE_MARKER).readText().trim().toLong() }.getOrDefault(0L)
+            WorkshopInstallRecord(id, files.sumOf { it.length() }, updated, manifest)
+        }
+        try {
+            val acf = File(workshopDir, "appworkshop_$appId.acf")
+            acf.writeText(appWorkshopAcf(appId, items, accountId, System.currentTimeMillis() / 1000))
+            Timber.tag(TAG).i("Registered ${items.size} Workshop item(s) with the Steam client in ${acf.absolutePath}")
+        } catch (e: Exception) {
+            Timber.tag(TAG).w(e, "Could not write appworkshop_$appId.acf")
+        }
+    }
+
+    internal data class WorkshopInstallRecord(val id: Long, val size: Long, val timeUpdated: Long, val manifest: String)
+
+    /** The Steam client's appworkshop_<appId>.acf for [items], all installed and up to date. */
+    internal fun appWorkshopAcf(appId: Int, items: List<WorkshopInstallRecord>, accountId: Long, now: Long): String =
+        buildString {
+            append("\"AppWorkshop\"\n{\n")
+            append("\t\"appid\"\t\t\"$appId\"\n")
+            append("\t\"SizeOnDisk\"\t\t\"${items.sumOf { it.size }}\"\n")
+            append("\t\"NeedsUpdate\"\t\t\"0\"\n")
+            append("\t\"NeedsDownload\"\t\t\"0\"\n")
+            append("\t\"TimeLastUpdated\"\t\t\"$now\"\n")
+            append("\t\"TimeLastAppRan\"\t\t\"$now\"\n")
+            append("\t\"WorkshopItemsInstalled\"\n\t{\n")
+            for (it in items) {
+                append("\t\t\"${it.id}\"\n\t\t{\n")
+                append("\t\t\t\"size\"\t\t\"${it.size}\"\n")
+                append("\t\t\t\"timeupdated\"\t\t\"${it.timeUpdated}\"\n")
+                append("\t\t\t\"manifest\"\t\t\"${it.manifest}\"\n")
+                append("\t\t}\n")
+            }
+            append("\t}\n")
+            append("\t\"WorkshopItemDetails\"\n\t{\n")
+            for (it in items) {
+                append("\t\t\"${it.id}\"\n\t\t{\n")
+                append("\t\t\t\"manifest\"\t\t\"${it.manifest}\"\n")
+                append("\t\t\t\"timeupdated\"\t\t\"${it.timeUpdated}\"\n")
+                append("\t\t\t\"timetouched\"\t\t\"$now\"\n")
+                append("\t\t\t\"subscribedby\"\t\t\"$accountId\"\n")
+                append("\t\t}\n")
+            }
+            append("\t}\n}\n")
+        }
 
     /**
      * Links each item in [ids] as [modsDir]/<id>, pointing at the item's folder that holds

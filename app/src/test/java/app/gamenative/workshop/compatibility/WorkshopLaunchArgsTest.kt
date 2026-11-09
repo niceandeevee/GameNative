@@ -46,4 +46,24 @@ class WorkshopLaunchArgsTest {
         assertFalse(File(mods, "3").exists())
         assertTrue(File(mods, "MyLocalMod").isDirectory)
     }
+
+    @Test
+    fun appWorkshopAcfRecordsItemsAsInstalled() {
+        val acf = WorkshopManager.appWorkshopAcf(
+            32470,
+            listOf(WorkshopManager.WorkshopInstallRecord(1426753815L, 1000L, 1700000000L, "4820289828202043605")),
+            accountId = 42L,
+            now = 1800000000L,
+        )
+        assertTrue(acf.startsWith("\"AppWorkshop\"\n{\n\t\"appid\"\t\t\"32470\"\n"))
+        assertTrue(acf.contains("\t\"NeedsDownload\"\t\t\"0\"\n"))
+        assertTrue(
+            acf.contains(
+                "\t\"WorkshopItemsInstalled\"\n\t{\n\t\t\"1426753815\"\n\t\t{\n\t\t\t\"size\"\t\t\"1000\"\n" +
+                    "\t\t\t\"timeupdated\"\t\t\"1700000000\"\n\t\t\t\"manifest\"\t\t\"4820289828202043605\"\n",
+            ),
+        )
+        assertTrue(acf.contains("\t\t\t\"subscribedby\"\t\t\"42\"\n"))
+        assertEquals(acf.count { it == '{' }, acf.count { it == '}' })
+    }
 }
