@@ -158,9 +158,61 @@ static void maybe_track(HANDLE h, LPCWSTR name, DWORD access, DWORD creation, DW
     SetLastError(err);
 }
 
+/*
+ * Intro movies. Before playing a movie the game looks for it as a loose file in
+ * <exe dir>\DATA\ART\MOVIES\BINKED\ and only then reads it from Movies.meg, so handing it an empty
+ * file there (a zero-byte file in the temp folder) leaves nothing to play. Every movie
+ * the game opens is logged, so the names of the others can be added here.
+ */
+static const WCHAR *const skipped_movies[] = {L"lucasartslogo.bik"};
+static volatile LONG movies_logged;
+
+/* 0: not a movie; 1: a movie to play normally; 2: an intro to skip. */
+static int movie_kind(LPCWSTR name, DWORD access, DWORD creation)
+{
+    if (!name || !read_only_open(access, creation)) return 0;
+    size_t n = wcslen(name);
+    if (n < 4 || name[n - 4] != L'.' || (name[n - 3] | 0x20) != L'b' || (name[n - 2] | 0x20) != L'i' ||
+        (name[n - 1] | 0x20) != L'k')
+        return 0;
+    const WCHAR *base = name + n;
+    while (base > name && base[-1] != L'\\' && base[-1] != L'/') base--;
+    char msg[300];
+    if (InterlockedIncrement(&movies_logged) <= 64) {
+        snprintf(msg, sizeof(msg), "gamecache: movie %ls\n", base);
+        log_line(msg);
+    }
+    for (size_t i = 0; i < sizeof(skipped_movies) / sizeof(skipped_movies[0]); i++)
+        if (!_wcsicmp(base, skipped_movies[i])) return 2;
+    return 1;
+}
+
+/* A zero-byte file in the temp folder, opened read-only like the game asked for. */
+static HANDLE open_empty(void)
+{
+    static WCHAR path[MAX_PATH];
+    if (!path[0]) {
+        WCHAR dir[MAX_PATH];
+        DWORD n = GetTempPathW(MAX_PATH, dir);
+        if (!n || n + 32 >= MAX_PATH) return INVALID_HANDLE_VALUE;
+        swprintf(path, MAX_PATH, L"%lsgamecache_empty.bik", dir);
+        HANDLE w = CreateFileW(path, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (w == INVALID_HANDLE_VALUE) {
+            path[0] = 0;
+            return INVALID_HANDLE_VALUE;
+        }
+        CloseHandle(w);
+    }
+    return CreateFileW(path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+}
+
 static HANDLE WINAPI hook_CreateFileW(LPCWSTR name, DWORD access, DWORD share, LPSECURITY_ATTRIBUTES sa,
                                       DWORD creation, DWORD flags, HANDLE templ)
 {
+    if (movie_kind(name, access, creation) == 2) {
+        HANDLE h = open_empty();
+        if (h != INVALID_HANDLE_VALUE) return h;
+    }
     if (probe_misses(name, access, creation)) {
         SetLastError(ERROR_PATH_NOT_FOUND);
         return INVALID_HANDLE_VALUE;
@@ -175,6 +227,10 @@ static HANDLE WINAPI hook_CreateFileA(LPCSTR name, DWORD access, DWORD share, LP
 {
     WCHAR wide[DC_MAX_PATH];
     int ok = name && MultiByteToWideChar(CP_ACP, 0, name, -1, wide, DC_MAX_PATH) > 0;
+    if (ok && movie_kind(wide, access, creation) == 2) {
+        HANDLE h = open_empty();
+        if (h != INVALID_HANDLE_VALUE) return h;
+    }
     if (ok && probe_misses(wide, access, creation)) {
         SetLastError(ERROR_PATH_NOT_FOUND);
         return INVALID_HANDLE_VALUE;

@@ -115,6 +115,30 @@ int main(void)
     RemoveDirectoryW(L"Data\\Art");
     DeleteFileW(L"Data\\Test.MEG");
 
+    /* Intro movies get an empty file; other movies are left alone (here: not found). */
+    {
+        HANDLE m = CreateFileW(L"DATA\\ART\\MOVIES\\BINKED\\LUCASARTSLOGO.BIK", GENERIC_READ, FILE_SHARE_READ, NULL,
+                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        int skipping = GetEnvironmentVariableW(L"EXPECT_SKIP", NULL, 0) > 0;
+        if (skipping) {
+            CHECK(m != INVALID_HANDLE_VALUE, "intro movie got no handle (err %lu)", GetLastError());
+            if (m != INVALID_HANDLE_VALUE) {
+                LARGE_INTEGER sz = {0};
+                BOOL szok = GetFileSizeEx(m, &sz);
+                CHECK(szok && sz.QuadPart == 0 && GetFileType(m) == FILE_TYPE_DISK, "intro stand-in not an empty disk file");
+                char b[64];
+                DWORD got = 1;
+                CHECK(ReadFile(m, b, sizeof(b), &got, NULL) && got == 0, "intro stand-in read %lu bytes", got);
+                CloseHandle(m);
+            }
+        } else {
+            CHECK(m == INVALID_HANDLE_VALUE, "intro movie opened without the cache");
+        }
+        HANDLE o = CreateFileW(L"DATA\\ART\\MOVIES\\BINKED\\LIGHT_LOOP.BIK", GENERIC_READ, FILE_SHARE_READ, NULL,
+                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        CHECK(o == INVALID_HANDLE_VALUE, "menu movie was replaced");
+    }
+
     printf("archive reads: %.3f s, 20000 missing-folder probes: %.3f s\n", t_reads, t_probes);
     printf(failures ? "FAILED (%d)\n" : "ALL OK\n", failures);
     free(data);
