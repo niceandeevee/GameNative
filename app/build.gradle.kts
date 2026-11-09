@@ -171,9 +171,14 @@ dependencies {
     val localBuild = false // Change to 'true' needed when building JavaSteam manually
     if (localBuild) {
         implementation(files("../../JavaSteam/build/libs/javasteam-1.8.0.1-26-SNAPSHOT.jar"))
+        implementation(files("../../JavaSteam/javasteam-depotdownloader/build/libs/javasteam-depotdownloader-1.8.0.1-26-SNAPSHOT.jar"))
         implementation(libs.bundles.javasteam.dev)
     } else {
         implementation(libs.javasteam) {
+            isChanging = version?.contains("SNAPSHOT") ?: false
+        }
+        // Steam Workshop item downloads (game installs use the Rust downloader).
+        implementation(libs.javasteam.depotdownloader) {
             isChanging = version?.contains("SNAPSHOT") ?: false
         }
     }

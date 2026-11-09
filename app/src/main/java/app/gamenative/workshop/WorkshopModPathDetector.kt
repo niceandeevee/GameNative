@@ -1,4 +1,4 @@
-package app.gamenative.mods
+package app.gamenative.workshop
 
 import timber.log.Timber
 import java.io.BufferedInputStream
