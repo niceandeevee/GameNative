@@ -164,7 +164,11 @@ static void maybe_track(HANDLE h, LPCWSTR name, DWORD access, DWORD creation, DW
  * file there (a zero-byte file in the temp folder) leaves nothing to play. Every movie
  * the game opens is logged, so the names of the others can be added here.
  */
-static const WCHAR *const skipped_movies[] = {L"lucasartslogo.bik"};
+/* The LucasArts logo is confirmed by a file trace; the Petroglyph logo that follows isn't in a trace
+ * yet, so the likely spellings are listed (a name that doesn't occur does nothing). */
+static const WCHAR *const skipped_movies[] = {
+    L"lucasartslogo.bik", L"petroglyphlogo.bik", L"petroglyph_logo.bik", L"petroglyph.bik", L"pglogo.bik",
+};
 static volatile LONG movies_logged;
 
 /* 0: not a movie; 1: a movie to play normally; 2: an intro to skip. */

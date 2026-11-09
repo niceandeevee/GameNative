@@ -15,9 +15,9 @@ import app.gamenative.data.GameSource
  *     Missing folders are re-checked every 10 s, and creating a folder clears the cache.
  *   - It reads the archive indexes 64 bytes at a time, each after a seek. Read-only .meg opens are
  *     served from 128 KB blocks by the same self-checking cache as Black Ops' .iwd files.
- * - No LucasArts intro: before playing a movie the game looks for it as a loose file under
+ * - No LucasArts or Petroglyph intro: before playing a movie the game looks for it as a loose file under
  *   DATA\ART\MOVIES\BINKED and only then reads Movies.meg, so the same DLL answers that open for
- *   LUCASARTSLOGO.BIK with a zero-byte file and there is nothing to play. Every movie the game opens
+ *   the intro logos with a zero-byte file and there is nothing to play. Every movie the game opens
  *   is logged ("gamecache: movie <name>"), so other intros can be added to its list.
  *   The game is 64-bit, so the hooks go through the import tables of the game's own modules (in
  *   arm64ec Wine, kernel32 is ARM64 code). The read cache only turns on when every file-position call
