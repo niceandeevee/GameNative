@@ -1,8 +1,10 @@
 /*
- * gamecache: a pass-through version.dll for 64-bit games that load slowly under Wine because of
+ * gamecache: a pass-through psapi.dll for 64-bit games that load slowly under Wine because of
  * many tiny file operations (Star Wars: Empire at War: Gold Pack, StarWarsG.exe).
  *
- * The game's version.dll calls are forwarded to Wine's kernelbase (gamecache.def). On load, the
+ * psapi.dll is in the game's static imports (StarWarsG.exe pulls it in while it starts, before any
+ * file is read), and all its functions are kernel32's K32* ones, so gamecache.def forwards every
+ * export there. (It was a version.dll first; the game never loads that one itself.) On load, the
  * game's own import table (not kernel32 itself: in arm64ec Wine those functions are ARM64 code
  * that x86 jumps can't patch) is pointed at the hooks below:
  *
@@ -478,26 +480,4 @@ BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)
         log_line(msg);
     }
     return TRUE;
-}
-
-/* version.dll calls this proxy doesn't forward: installers only, never used by games. */
-DWORD WINAPI gc_VerFindFileA(DWORD f, LPCSTR a, LPCSTR b, LPCSTR c, LPSTR d, PUINT e, LPSTR g, PUINT h)
-{
-    (void)f; (void)a; (void)b; (void)c; (void)d; (void)e; (void)g; (void)h;
-    return 0;
-}
-DWORD WINAPI gc_VerFindFileW(DWORD f, LPCWSTR a, LPCWSTR b, LPCWSTR c, LPWSTR d, PUINT e, LPWSTR g, PUINT h)
-{
-    (void)f; (void)a; (void)b; (void)c; (void)d; (void)e; (void)g; (void)h;
-    return 0;
-}
-DWORD WINAPI gc_VerInstallFileA(DWORD f, LPCSTR a, LPCSTR b, LPCSTR c, LPCSTR d, LPCSTR e, LPSTR g, PUINT h)
-{
-    (void)f; (void)a; (void)b; (void)c; (void)d; (void)e; (void)g; (void)h;
-    return 0x00010000; /* VIF_CANNOTREADSRC */
-}
-DWORD WINAPI gc_VerInstallFileW(DWORD f, LPCWSTR a, LPCWSTR b, LPCWSTR c, LPCWSTR d, LPCWSTR e, LPWSTR g, PUINT h)
-{
-    (void)f; (void)a; (void)b; (void)c; (void)d; (void)e; (void)g; (void)h;
-    return 0x00010000;
 }

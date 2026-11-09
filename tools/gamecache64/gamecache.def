@@ -1,20 +1,31 @@
-; version.dll exports. The ones games use are forwarded to Wine's kernelbase (where Wine and
-; Windows 10 implement them); the installer-only ones are stubs in gamecache.c.
-LIBRARY version.dll
+; psapi.dll exports, all forwarded to kernel32's K32* functions (where Wine and Windows 7+
+; implement them).
+LIBRARY psapi.dll
 EXPORTS
-    GetFileVersionInfoA = kernelbase.GetFileVersionInfoA
-    GetFileVersionInfoExA = kernelbase.GetFileVersionInfoExA
-    GetFileVersionInfoExW = kernelbase.GetFileVersionInfoExW
-    GetFileVersionInfoSizeA = kernelbase.GetFileVersionInfoSizeA
-    GetFileVersionInfoSizeExA = kernelbase.GetFileVersionInfoSizeExA
-    GetFileVersionInfoSizeExW = kernelbase.GetFileVersionInfoSizeExW
-    GetFileVersionInfoSizeW = kernelbase.GetFileVersionInfoSizeW
-    GetFileVersionInfoW = kernelbase.GetFileVersionInfoW
-    VerLanguageNameA = kernel32.VerLanguageNameA
-    VerLanguageNameW = kernel32.VerLanguageNameW
-    VerQueryValueA = kernelbase.VerQueryValueA
-    VerQueryValueW = kernelbase.VerQueryValueW
-    VerFindFileA = gc_VerFindFileA
-    VerFindFileW = gc_VerFindFileW
-    VerInstallFileA = gc_VerInstallFileA
-    VerInstallFileW = gc_VerInstallFileW
+    EmptyWorkingSet = kernel32.K32EmptyWorkingSet
+    EnumDeviceDrivers = kernel32.K32EnumDeviceDrivers
+    EnumPageFilesA = kernel32.K32EnumPageFilesA
+    EnumPageFilesW = kernel32.K32EnumPageFilesW
+    EnumProcessModules = kernel32.K32EnumProcessModules
+    EnumProcessModulesEx = kernel32.K32EnumProcessModulesEx
+    EnumProcesses = kernel32.K32EnumProcesses
+    GetDeviceDriverBaseNameA = kernel32.K32GetDeviceDriverBaseNameA
+    GetDeviceDriverBaseNameW = kernel32.K32GetDeviceDriverBaseNameW
+    GetDeviceDriverFileNameA = kernel32.K32GetDeviceDriverFileNameA
+    GetDeviceDriverFileNameW = kernel32.K32GetDeviceDriverFileNameW
+    GetMappedFileNameA = kernel32.K32GetMappedFileNameA
+    GetMappedFileNameW = kernel32.K32GetMappedFileNameW
+    GetModuleBaseNameA = kernel32.K32GetModuleBaseNameA
+    GetModuleBaseNameW = kernel32.K32GetModuleBaseNameW
+    GetModuleFileNameExA = kernel32.K32GetModuleFileNameExA
+    GetModuleFileNameExW = kernel32.K32GetModuleFileNameExW
+    GetModuleInformation = kernel32.K32GetModuleInformation
+    GetPerformanceInfo = kernel32.K32GetPerformanceInfo
+    GetProcessImageFileNameA = kernel32.K32GetProcessImageFileNameA
+    GetProcessImageFileNameW = kernel32.K32GetProcessImageFileNameW
+    GetProcessMemoryInfo = kernel32.K32GetProcessMemoryInfo
+    GetWsChanges = kernel32.K32GetWsChanges
+    GetWsChangesEx = kernel32.K32GetWsChangesEx
+    InitializeProcessForWsWatch = kernel32.K32InitializeProcessForWsWatch
+    QueryWorkingSet = kernel32.K32QueryWorkingSet
+    QueryWorkingSetEx = kernel32.K32QueryWorkingSetEx

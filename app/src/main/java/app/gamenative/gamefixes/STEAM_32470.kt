@@ -5,8 +5,11 @@ import app.gamenative.data.GameSource
 /**
  * STAR WARS Empire at War: Gold Pack (Steam)
  *
- * - Faster loading (gamecache, a pass-through version.dll placed next to each StarWarsG.exe and loaded
- *   native for it; source in tools/gamecache64). A file trace of a launch showed two costs, each a
+ * - Faster loading (gamecache, a pass-through psapi.dll placed next to each StarWarsG.exe and loaded
+ *   native for it; source in tools/gamecache64). StarWarsG.exe loads psapi.dll while it starts, before
+ *   any file is read. (The first version was a version.dll, which the game never loads itself: only
+ *   Steam's overlay did, from system32, so the hooks never ran. version is pinned to builtin so the
+ *   old copy left in the game folder can't load next to the new one.) A file trace of a launch showed two costs, each a
  *   trip through Wine and FEX:
  *   - Before reading any model from its .meg archives, the game probes for it as a loose file under
  *     corruption\Data\Art\Models and GameData\Data\Art\Models, folders a Steam install doesn't have
@@ -37,12 +40,12 @@ val STEAM_Fix_32470: KeyedGameFix = KeyedCompositeGameFix(
         WineAppDefaultsFix(
             "StarWarsG.exe",
             "DllOverrides",
-            mapOf("version" to "native,builtin", "gameoverlayrenderer64" to ""),
+            mapOf("psapi" to "native,builtin", "version" to "builtin", "gameoverlayrenderer64" to ""),
         ),
         WineAppDefaultsFix("swfoc.exe", "DllOverrides", mapOf("gameoverlayrenderer64" to "")),
         WineAppDefaultsFix("runme2.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
         // Forces of Corruption and the original campaign each run their own StarWarsG.exe.
-        GameDirAssetFix("gamefixes/gamecache64/version.dll", "corruption/version.dll"),
-        GameDirAssetFix("gamefixes/gamecache64/version.dll", "GameData/version.dll"),
+        GameDirAssetFix("gamefixes/gamecache64/psapi.dll", "corruption/psapi.dll"),
+        GameDirAssetFix("gamefixes/gamecache64/psapi.dll", "GameData/psapi.dll"),
     ),
 )
