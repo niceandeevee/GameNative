@@ -27,5 +27,13 @@ jobs:
         with:
           # Lets setup-gradle save Gradle's configuration cache (it is only stored encrypted)
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+      - name: Download Gradle (retried; the download servers have outages)
+        run: |
+          for i in 1 2 3 4 5; do
+            ./gradlew --version && exit 0
+            echo "Gradle download failed (attempt $i), retrying in $((i * 30)) s"
+            sleep $((i * 30))
+          done
+          exit 1
       - name: Compile app and unit tests (Modern debug)
         run: ./gradlew --continue :app:compileModernDebugUnitTestKotlin :app:compileModernDebugUnitTestJavaWithJavac
