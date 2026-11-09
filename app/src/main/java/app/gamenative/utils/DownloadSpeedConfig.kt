@@ -15,7 +15,9 @@ class DownloadSpeedConfig {
             8 -> (cpuCores * 0.2).toInt().coerceAtLeast(1)
             16 -> (cpuCores * 0.4).toInt().coerceAtLeast(1)
             24 -> (cpuCores * 0.5).toInt().coerceAtLeast(1)
-            32 -> (cpuCores * 0.8).toInt().coerceAtLeast(1)
+            // Blazing: every core. A device run (300-530 Mbps) kept the fetch budget full while
+            // only 6 of 8 cores unpacked, so the process pool, not the network, was the limit.
+            32 -> cpuCores.coerceAtLeast(1)
             else -> 1
         }
 
