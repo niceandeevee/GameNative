@@ -4051,6 +4051,16 @@ object WorkshopManager {
             Timber.tag(TAG).w("Workshop launch args for $appId: none of ${enabled.size} enabled item(s) downloaded yet")
             return ""
         }
+        for (id in ready) {
+            // What the game will find there (a mod needs its Data folder at the top), and whether the
+            // download looks whole.
+            val dir = File(contentDir, id.toString())
+            val files = dir.walkTopDown().filter { it.isFile && !it.path.contains("/.") }.toList()
+            Timber.tag(TAG).i(
+                "Workshop item $id: ${files.size} files, ${files.sumOf { it.length() } / (1024 * 1024)} MB; top level: " +
+                    (dir.listFiles()?.filter { !it.name.startsWith(".") }?.joinToString { it.name + if (it.isDirectory) "/" else "" } ?: "")
+            )
+        }
         val args = build(ready)
         Timber.tag(TAG).i("Workshop launch args for $appId: $args")
         return args
