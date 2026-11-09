@@ -443,6 +443,31 @@ private fun windowMatchesExecutable(window: Window, targetExecutable: String): B
     }
 }
 
+// Basenames (normalized, no ".exe") of the programs in a game's install folder, by folder.
+private val installExecutablesCache = java.util.concurrent.ConcurrentHashMap<String, Set<String>>()
+
+/**
+ * Whether [window] belongs to a program shipped with the game, found by its window name or class
+ * among the .exe files in [installDir] (up to 3 folders deep). Games launched through a launcher
+ * (Empire at War: runme2.exe starts corruption\StarWarsG.exe) close a window whose name isn't the
+ * launch executable's.
+ */
+private fun windowIsInstallExecutable(window: Window, installDir: String): Boolean {
+    if (installDir.isBlank()) return false
+    val exes = installExecutablesCache.getOrPut(installDir) {
+        runCatching {
+            File(installDir).walkTopDown().maxDepth(4)
+                .filter { it.isFile && it.name.endsWith(".exe", ignoreCase = true) }
+                .map { normalizeProcessName(it.name) }
+                .toSet()
+        }.getOrDefault(emptySet())
+    }
+    if (exes.isEmpty()) return false
+    return listOf(window.name, window.className).any { candidate ->
+        candidate.split('\u0000').any { it.isNotBlank() && normalizeProcessName(it) in exes }
+    }
+}
+
 private val REAL_STEAM_PROCESSES = setOf(
     "steam",
     "steamerrorreporter",
@@ -935,7 +960,12 @@ fun XServerScreen(
         val targetExecutable = extractExecutableBasename(
             if (container.isLaunchRealSteam && realSteamGameExecutable.isNotEmpty()) realSteamGameExecutable else container.executablePath,
         )
-        if (!windowMatchesExecutable(window, targetExecutable)) return
+        if (!windowMatchesExecutable(window, targetExecutable) &&
+            !(ContainerUtils.extractGameSourceFromContainerId(appId) == GameSource.STEAM &&
+                windowIsInstallExecutable(window, runCatching { SteamService.getAppDirPath(gameId) }.getOrDefault("")))
+        ) {
+            return
+        }
         Timber.i("Exit watch started for $targetExecutable (unmapped class=${window.className})")
 
         ui.exitWatchJob = CoroutineScope(Dispatchers.IO).launch {

@@ -232,7 +232,9 @@ public class PresentExtension implements Extension {
     private static abstract class ClientOpcodes {
         static final byte QUERY_VERSION = 0;
         static final byte PRESENT_PIXMAP = 1;
+        static final byte NOTIFY_MSC = 2;
         static final byte SELECT_INPUT = 3;
+        static final byte QUERY_CAPABILITIES = 4;
     }
 
     private static class Event {
@@ -404,6 +406,36 @@ public class PresentExtension implements Extension {
         }
     }
 
+    // PresentNotifyMSC: there is no real vblank counter, so report the requested MSC as reached now.
+    private void notifyMsc(XClient client, XInputStream inputStream) throws IOException, XRequestError {
+        int windowId = inputStream.readInt();
+        int serial = inputStream.readInt();
+        inputStream.skip(4);
+        long targetMsc = inputStream.readLong();
+        inputStream.skip(client.getRemainingRequestLength());
+
+        Window window = client.xServer.windowManager.getWindow(windowId);
+        if (window == null) throw new BadWindow(windowId);
+        int fps = frameRateLimit > 0 ? frameRateLimit : 60;
+        long ust = System.nanoTime() / 1000;
+        long msc = Math.max(targetMsc, ust / (1_000_000L / fps));
+        sendCompleteNotify(window, serial, Kind.MSC_NOTIFY, Mode.COPY, ust, msc);
+    }
+
+    // PresentQueryCapabilities: no optional capabilities (async flips, fences, UST). Vulkan WSI asks
+    // for this when it creates a swapchain; it used to get BadImplementation.
+    private static void queryCapabilities(XClient client, XInputStream inputStream, XOutputStream outputStream) throws IOException {
+        inputStream.skip(client.getRemainingRequestLength());
+        try (XStreamLock lock = outputStream.lock()) {
+            outputStream.writeByte(RESPONSE_CODE_SUCCESS);
+            outputStream.writeByte((byte)0);
+            outputStream.writeShort(client.getSequenceNumber());
+            outputStream.writeInt(0);
+            outputStream.writeInt(0);
+            outputStream.writePad(20);
+        }
+    }
+
     @Override
     public void handleRequest(XClient client, XInputStream inputStream, XOutputStream outputStream) throws IOException, XRequestError {
         int opcode = client.getRequestData();
@@ -422,6 +454,14 @@ public class PresentExtension implements Extension {
                 try (XLock lock = client.xServer.lock(XServer.Lockable.WINDOW_MANAGER)) {
                     selectInput(client, inputStream, outputStream);
                 }
+                break;
+            case ClientOpcodes.NOTIFY_MSC:
+                try (XLock lock = client.xServer.lock(XServer.Lockable.WINDOW_MANAGER)) {
+                    notifyMsc(client, inputStream);
+                }
+                break;
+            case ClientOpcodes.QUERY_CAPABILITIES:
+                queryCapabilities(client, inputStream, outputStream);
                 break;
             default:
                 throw new BadImplementation();
