@@ -182,6 +182,8 @@ dependencies {
             isChanging = version?.contains("SNAPSHOT") ?: false
         }
     }
+    // Security provider JavaSteam loads by name (CryptoHelper) to decrypt depot manifests in Workshop downloads.
+    implementation(libs.spongycastle)
     implementation(libs.okhttp.dnsoverhttps)
 
 

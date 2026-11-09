@@ -31,6 +31,7 @@ protobuf = "4.31.1" # https://mvnrepository.com/artifact/com.google.protobuf/pro
 robolectric = "4.14.1" # https://mvnrepository.com/artifact/org.robolectric/robolectric
 room-runtime = "2.8.4" # https://mvnrepository.com/artifact/androidx.room/room-runtime
 settings = "2.10.0" # https://github.com/alorma/Compose-Settings/releases
+spongycastle = "1.58.0.0" # https://mvnrepository.com/artifact/com.madgag.spongycastle/prov
 timber = "5.0.1" # https://mvnrepository.com/artifact/com.jakewharton.timber/timber
 zstd-jni = "1.5.7-5" # https://mvnrepository.com/artifact/com.github.luben/zstd-jni
 zxing = "3.5.3" # https://mvnrepository.com/artifact/com.google.zxing/core
@@ -72,6 +73,7 @@ material-kolor = { group = "com.materialkolor", name = "material-kolor", version
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 orgJson = { module = "org.json:json", version.ref = "orgJson" }
+spongycastle = { group = "com.madgag.spongycastle", name = "prov", version.ref = "spongycastle" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 zstd-jni = { group = "com.github.luben", name = "zstd-jni", version.ref = "zstd-jni" }
 zxing = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
