@@ -62,7 +62,7 @@ class ManifestIdCorrelationTest {
         var installedId: String? = null
         try {
             println("Driver download/install id=${entry.id} name=${entry.name} url=${entry.url}")
-            val result = ManifestInstaller.downloadAndInstallDriver(context, entry)
+            val result = withRetries(entry.id, { it.success }) { ManifestInstaller.downloadAndInstallDriver(context, entry) }
             println("Driver install result id=${entry.id} success=${result.success} message=${result.message}")
             assertTrue(
                 "Driver install failed for ${entry.id}: ${result.message}",
@@ -93,7 +93,7 @@ class ManifestIdCorrelationTest {
         var installedProfile: ContentProfile? = null
         try {
             println("Content download/install type=$typeKey id=${entry.id} name=${entry.name} url=${entry.url}")
-            val result = ManifestInstaller.downloadAndInstallContent(context, entry, expectedType)
+            val result = withRetries(entry.id, { it.success }) { ManifestInstaller.downloadAndInstallContent(context, entry, expectedType) }
             println("Content install result type=$typeKey id=${entry.id} success=${result.success} message=${result.message}")
             manager.syncContents()
             val profiles = manager.getProfiles(expectedType).orEmpty()
@@ -128,7 +128,7 @@ class ManifestIdCorrelationTest {
         val cacheFile = File(File(context.filesDir, "assets/dxwrapper"), entry.url.substringAfterLast("/"))
         try {
             println("Tzst download/install type=$typeKey id=${entry.id} name=${entry.name} url=${entry.url}")
-            val result = ManifestInstaller.downloadAndInstallContent(context, entry, expectedType)
+            val result = withRetries(entry.id, { it.success }) { ManifestInstaller.downloadAndInstallContent(context, entry, expectedType) }
             println("Tzst install result type=$typeKey id=${entry.id} success=${result.success} message=${result.message}")
             assertTrue(
                 "Tzst install failed for ${entry.id} ($typeKey): ${result.message}",
@@ -141,6 +141,21 @@ class ManifestIdCorrelationTest {
         } finally {
             cacheFile.delete()
         }
+    }
+
+    /**
+     * Each entry is downloaded from the internet, so one dropped connection among ~160 downloads used
+     * to fail the build. Retry a failed install a couple of times; a real mismatch still fails.
+     */
+    private suspend fun <T> withRetries(id: String, succeeded: (T) -> Boolean, attempt: suspend () -> T): T {
+        var result = attempt()
+        for (retry in 1..2) {
+            if (succeeded(result)) break
+            println("Install of $id failed, retry $retry after ${retry * 5}s")
+            kotlinx.coroutines.delay(retry * 5_000L)
+            result = attempt()
+        }
+        return result
     }
 
     private fun contentTypeForKey(key: String): ContentProfile.ContentType {
