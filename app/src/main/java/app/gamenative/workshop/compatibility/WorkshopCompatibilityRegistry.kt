@@ -5,6 +5,7 @@ import app.gamenative.data.GameSource
 object WorkshopCompatibilityRegistry {
     private val overrides: Map<Pair<GameSource, String>, WorkshopCompatibilityOverride> = listOf(
         STEAM_WorkshopOverride_331470,
+        STEAM_WorkshopOverride_32470,
     ).associate { keyedOverride ->
         (keyedOverride.gameSource to keyedOverride.gameId) to keyedOverride.override
     }

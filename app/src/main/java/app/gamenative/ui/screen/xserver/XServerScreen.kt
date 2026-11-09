@@ -111,6 +111,7 @@ import app.gamenative.powercontrol.PowerManager
 import app.gamenative.service.AchievementWatcher
 import app.gamenative.service.SteamHostAchievementPoller
 import app.gamenative.service.SteamService
+import app.gamenative.workshop.WorkshopManager
 import app.gamenative.ui.component.LsfgQuickMenuState
 import app.gamenative.ui.component.PerformanceQuickMenuState
 import app.gamenative.ui.component.QuickMenu
@@ -479,6 +480,10 @@ private val REAL_STEAM_PROCESSES = setOf(
 )
 
 private var realSteamGameExecutable = ""
+
+// Set by getWineStartCommand when it put the container's extra arguments on the game's own command
+// line (real Steam: the wine command is steam.exe's), so they aren't appended to steam.exe too.
+private var execArgsPassedToGame = false
 
 private fun buildEssentialProcessAllowlist(realSteam: Boolean): Set<String> {
     val essentialServices = WineUtils.getEssentialServiceNames()
@@ -4064,9 +4069,14 @@ private fun setupXEnvironment(
         }
     }
 
-    gameExecutable = "wine explorer /desktop=shell," + xServer.screenInfo + " " +
-        getWineStartCommand(context, appId, container, bootToContainer, testGraphics, appLaunchInfo, envVars, guestProgramLauncherComponent, gameSource, offline) +
-        (if (finalExecArgs.isNotEmpty()) " $finalExecArgs" else "")
+    execArgsPassedToGame = false
+    val startCommand = getWineStartCommand(
+        context, appId, container, bootToContainer, testGraphics, appLaunchInfo, envVars,
+        guestProgramLauncherComponent, gameSource, offline, finalExecArgs,
+    )
+    gameExecutable = "wine explorer /desktop=shell," + xServer.screenInfo + " " + startCommand +
+        // Under real Steam the command line is steam.exe's; the arguments went to the game instead.
+        (if (finalExecArgs.isNotEmpty() && !execArgsPassedToGame) " $finalExecArgs" else "")
     preInstallCommands = PreInstallSteps.getPreInstallCommands(
         container,
         appId,
@@ -4446,7 +4456,9 @@ private fun getWineStartCommand(
     envVars: EnvVars,
     guestProgramLauncherComponent: GuestProgramLauncherComponent,
     gameSource: GameSource,
-    offline: Boolean
+    offline: Boolean,
+    /** The container's (or launch request's) extra arguments, meant for the game. */
+    gameArgs: String = "",
 ): String {
     val tempDir = File(container.getRootDir(), ".wine/drive_c/windows/temp")
     FileUtils.clear(tempDir)
@@ -4564,7 +4576,14 @@ private fun getWineStartCommand(
             val normalizedExe = exePath.replace('/', '\\').trimStart('\\')
             val gameFolderName = appDirPath.substringAfterLast('/').ifEmpty { gameId.toString() }
             val steamRoot = "C:\\Program Files (x86)\\Steam"
-            val gameCmd = "\"$steamRoot\\steamapps\\common\\$gameFolderName\\$normalizedExe\"" + (if (launchArgs.isNotEmpty()) " $launchArgs" else "")
+            // Workshop items GameNative downloaded aren't known to the real Steam client, so games that
+            // take mods on the command line get them here (WorkshopCompatibilityOverride.launchArgs).
+            val workshopArgs = runCatching {
+                kotlinx.coroutines.runBlocking(Dispatchers.IO) { WorkshopManager.launchArgsFor(context, gameId) }
+            }.getOrDefault("")
+            val extraArgs = listOf(launchArgs, workshopArgs, gameArgs.trim()).filter { it.isNotEmpty() }.joinToString(" ")
+            execArgsPassedToGame = true
+            val gameCmd = "\"$steamRoot\\steamapps\\common\\$gameFolderName\\$normalizedExe\"" + (if (extraArgs.isNotEmpty()) " $extraArgs" else "")
             val launchWorkDir = appLaunchInfo?.workingDir?.trim('/').orEmpty()
             val relDir = if (launchWorkDir.isNotEmpty()) launchWorkDir else exePath.replace('\\', '/').substringBeforeLast("/", "")
             val exeSubDir = relDir.replace('/', '\\')
