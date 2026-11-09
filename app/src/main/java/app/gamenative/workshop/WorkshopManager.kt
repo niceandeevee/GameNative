@@ -4039,8 +4039,8 @@ object WorkshopManager {
      * enabled item has finished downloading).
      */
     suspend fun launchArgsFor(context: Context, appId: Int): String {
-        val build = WorkshopCompatibilityRegistry.get(GameSource.STEAM, appId.toString())?.launchArgs
-            ?: return ""
+        val override = WorkshopCompatibilityRegistry.get(GameSource.STEAM, appId.toString()) ?: return ""
+        val build = override.launchArgs ?: return ""
         val dao = SteamService.instance?.appDao ?: return ""
         if (dao.getWorkshopMods(appId) != true) return ""
         val enabled = parseEnabledIds(dao.getEnabledWorkshopItemIds(appId))
@@ -4061,9 +4061,49 @@ object WorkshopManager {
                     (dir.listFiles()?.filter { !it.name.startsWith(".") }?.joinToString { it.name + if (it.isDirectory) "/" else "" } ?: "")
             )
         }
+        override.linkModsInto?.let { rel ->
+            linkModsIntoGame(File(SteamService.getAppDirPath(appId), rel), contentDir, ready, override.modRootMarker)
+        }
         val args = build(ready)
         Timber.tag(TAG).i("Workshop launch args for $appId: $args")
         return args
+    }
+
+    /**
+     * Links each item in [ids] as [modsDir]/<id>, pointing at the item's folder that holds
+     * [rootMarker] (the item folder itself, or the one subfolder that has it). Links this app made
+     * earlier for items no longer in [ids] are removed; anything else in [modsDir] is left alone.
+     */
+    internal fun linkModsIntoGame(modsDir: File, contentDir: File, ids: List<Long>, rootMarker: String) {
+        try {
+            modsDir.mkdirs()
+            val wanted = ids.map { it.toString() }.toSet()
+            modsDir.listFiles()?.forEach { entry ->
+                val path = entry.toPath()
+                if (!Files.isSymbolicLink(path) || entry.name in wanted) return@forEach
+                val target = runCatching { Files.readSymbolicLink(path).toString() }.getOrDefault("")
+                if (target.startsWith(contentDir.absolutePath)) Files.deleteIfExists(path)
+            }
+            for (id in ids) {
+                val itemDir = File(contentDir, id.toString())
+                val hasMarker = { d: File -> d.listFiles()?.any { it.isDirectory && it.name.equals(rootMarker, true) } == true }
+                val root = if (hasMarker(itemDir)) itemDir else {
+                    itemDir.listFiles()?.filter { it.isDirectory && !it.name.startsWith(".") && hasMarker(it) }
+                        ?.singleOrNull() ?: itemDir
+                }
+                val link = File(modsDir, id.toString()).toPath()
+                if (Files.isSymbolicLink(link) && Files.readSymbolicLink(link).toString() == root.absolutePath) continue
+                if (Files.isSymbolicLink(link)) Files.delete(link)
+                else if (Files.exists(link)) {
+                    Timber.tag(TAG).w("Not linking Workshop item $id: ${link} exists and isn't a link")
+                    continue
+                }
+                Files.createSymbolicLink(link, root.toPath())
+                Timber.tag(TAG).i("Linked Workshop item $id as $link -> ${root.absolutePath}")
+            }
+        } catch (e: Exception) {
+            Timber.tag(TAG).w(e, "Could not link Workshop items into ${modsDir.absolutePath}")
+        }
     }
 
     fun parseEnabledIds(idsString: String?): Set<Long> =
