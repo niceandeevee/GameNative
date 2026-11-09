@@ -1169,20 +1169,24 @@ object WorkshopManager {
                         // getCompletion() returns CompletableFuture<Void>
                         // whose await() always returns null. Use withTimeout
                         // so we can distinguish real timeouts from completion.
+                        var timedOut = false
                         try {
                             withTimeout(timeoutMs) {
                                 depotDownloader.getCompletion().await()
                             }
                         } catch (_: TimeoutCancellationException) {
+                            timedOut = true
                             Timber.tag(TAG).w(
-                                "[DL] Depot download timed out: '${item.title}'"
+                                "[DL] Depot download timed out: '${item.title}' — not marked complete"
                             )
                         }
 
-                        // Write marker if content was downloaded
+                        // Write the marker only for a download that finished: a timed-out one may
+                        // have written some files, and marking it complete would hand a partial mod
+                        // to the game (and skip re-downloading it next time).
                         val hasContent = itemDir.exists() &&
                             (itemDir.listFiles()?.any { !it.name.startsWith(".") } == true)
-                        if (hasContent) {
+                        if (hasContent && !timedOut) {
                             completeMarker.writeText(item.timeUpdated.toString())
                             File(workshopContentDir, "${item.publishedFileId}.partial")
                                 .deleteRecursively()
