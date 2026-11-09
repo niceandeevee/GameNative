@@ -16,6 +16,14 @@ data class WorkshopCompatibilityOverride(
      * know about items GameNative downloaded. Gets the enabled, fully downloaded item ids (sorted).
      */
     val launchArgs: ((itemIds: List<Long>) -> String)? = null,
+    /**
+     * Folder inside the game's install folder (e.g. "corruption/Mods") where each enabled, downloaded
+     * item is linked as <item id> before launch, for games that load a mod from their own folder
+     * ([launchArgs] then names it relative to the game). The link points at the item's folder that
+     * holds [modRootMarker], which some items keep one level down.
+     */
+    val linkModsInto: String? = null,
+    val modRootMarker: String = "Data",
     val ignoreManualModPath: Boolean = false,
     val cleanupNestedSteamSettingsArtifacts: Boolean = false,
 )

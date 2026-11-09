@@ -23,6 +23,9 @@
 #define PSAPI_VERSION 2
 #include <windows.h>
 #include <psapi.h>
+#include <shellapi.h>
+#include <winternl.h>
+#include <wchar.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -65,6 +68,22 @@ static volatile LONG served_reads, failed_probes, tracked_files;
 
 static void log_line(const char *msg)
 {
+    /*
+     * Wine's own debug output goes straight to the Unix stderr, which the app logs. A game started by
+     * a launcher (Empire at War: steam -> runme2 -> swfoc -> StarWarsG) has no Windows stderr handle.
+     */
+    typedef int(__cdecl * dbg_output_fn)(const char *);
+    static dbg_output_fn dbg_output;
+    static int looked_up;
+    if (!looked_up) {
+        HMODULE ntdll = GetModuleHandleA("ntdll.dll");
+        dbg_output = ntdll ? (dbg_output_fn)(void *)GetProcAddress(ntdll, "__wine_dbg_output") : NULL;
+        looked_up = 1;
+    }
+    if (dbg_output) {
+        dbg_output(msg);
+        return;
+    }
     HANDLE err = GetStdHandle(STD_ERROR_HANDLE);
     DWORD written;
     if (err && err != INVALID_HANDLE_VALUE) WriteFile(err, msg, (DWORD)strlen(msg), &written, NULL);
@@ -339,6 +358,175 @@ static BOOL WINAPI hook_CreateDirectoryA(LPCSTR name, LPSECURITY_ATTRIBUTES sa)
     return ok;
 }
 
+/* ---- extra command-line arguments ----
+ *
+ * GAMECACHE_ADD_ARGS (set by the app, inherited through the launchers) is appended to the game's
+ * command line when it isn't already there: Empire at War reads a Workshop mod from MODPATH=<folder>,
+ * and its launcher chain doesn't reliably pass arguments on. The C runtime has already built its own
+ * copies by the time this DLL runs, so those are replaced too.
+ */
+static WCHAR *cmd_w;
+static char *cmd_a;
+typedef LPWSTR(WINAPI *GetCommandLineWFn)(void);
+typedef LPSTR(WINAPI *GetCommandLineAFn)(void);
+static GetCommandLineWFn real_GetCommandLineW;
+static GetCommandLineAFn real_GetCommandLineA;
+
+static LPWSTR WINAPI hook_GetCommandLineW(void)
+{
+    return cmd_w ? cmd_w : real_GetCommandLineW();
+}
+
+static LPSTR WINAPI hook_GetCommandLineA(void)
+{
+    return cmd_a ? cmd_a : real_GetCommandLineA();
+}
+
+/* The C runtime's startup arguments (what main()/WinMain() get), hooked in the game's imports. */
+static int my_argc;
+static char **my_argv;
+static WCHAR **my_wargv;
+typedef int(__cdecl *getmainargs_fn)(int *, char ***, char ***, int, void *);
+typedef int(__cdecl *wgetmainargs_fn)(int *, WCHAR ***, WCHAR ***, int, void *);
+typedef void *(__cdecl *crt_getter)(void);
+static getmainargs_fn real_getmainargs;
+static wgetmainargs_fn real_wgetmainargs;
+static crt_getter real_p_argc, real_p_argv, real_p_wargv, real_narrow_winmain, real_wide_winmain;
+
+static int __cdecl hook_getmainargs(int *argc, char ***argv, char ***envp, int wildcards, void *si)
+{
+    int r = real_getmainargs(argc, argv, envp, wildcards, si);
+    if (my_argv) {
+        *argc = my_argc;
+        *argv = my_argv;
+    }
+    return r;
+}
+
+static int __cdecl hook_wgetmainargs(int *argc, WCHAR ***argv, WCHAR ***envp, int wildcards, void *si)
+{
+    int r = real_wgetmainargs(argc, argv, envp, wildcards, si);
+    if (my_wargv) {
+        *argc = my_argc;
+        *argv = my_wargv;
+    }
+    return r;
+}
+
+static void *__cdecl hook_p_argc(void) { return my_argv ? (void *)&my_argc : real_p_argc(); }
+static void *__cdecl hook_p_argv(void) { return my_argv ? (void *)&my_argv : real_p_argv(); }
+static void *__cdecl hook_p_wargv(void) { return my_wargv ? (void *)&my_wargv : real_p_wargv(); }
+
+/* WinMain's lpCmdLine: the command line after the program name (Microsoft's rules). */
+static const WCHAR *skip_program_w(const WCHAR *c)
+{
+    if (*c == L'"') {
+        for (c++; *c && *c != L'"'; c++) {}
+        if (*c) c++;
+    } else {
+        while (*c > L' ') c++;
+    }
+    while (*c == L' ' || *c == L'\t') c++;
+    return c;
+}
+
+static const char *skip_program_a(const char *c)
+{
+    if (*c == '"') {
+        for (c++; *c && *c != '"'; c++) {}
+        if (*c) c++;
+    } else {
+        while ((unsigned char)*c > ' ') c++;
+    }
+    while (*c == ' ' || *c == '\t') c++;
+    return c;
+}
+
+static void *__cdecl hook_narrow_winmain(void) { return cmd_a ? (void *)skip_program_a(cmd_a) : real_narrow_winmain(); }
+static void *__cdecl hook_wide_winmain(void) { return cmd_w ? (void *)skip_program_w(cmd_w) : real_wide_winmain(); }
+
+static char *to_ansi(const WCHAR *w)
+{
+    int n = WideCharToMultiByte(CP_ACP, 0, w, -1, NULL, 0, NULL, NULL);
+    char *a = n > 0 ? HeapAlloc(GetProcessHeap(), 0, n) : NULL;
+    if (a) WideCharToMultiByte(CP_ACP, 0, w, -1, a, n, NULL, NULL);
+    return a;
+}
+
+/* Points one C runtime's command-line globals (ucrtbase or msvcrt) at the new command line. */
+static void update_crt(const WCHAR *crt, WCHAR **argv_w, int argc)
+{
+    HMODULE m = GetModuleHandleW(crt);
+    if (!m) return;
+    char ***p_argv = NULL;
+    WCHAR ***p_wargv = NULL;
+    int *p_argc = NULL;
+    char **p_acmd = NULL;
+    WCHAR **p_wcmd = NULL;
+    typedef void *(__cdecl * getter)(void);
+    getter g;
+    if ((g = (getter)(void *)GetProcAddress(m, "__p___argc"))) p_argc = g();
+    if ((g = (getter)(void *)GetProcAddress(m, "__p___argv"))) p_argv = g();
+    if ((g = (getter)(void *)GetProcAddress(m, "__p___wargv"))) p_wargv = g();
+    if ((g = (getter)(void *)GetProcAddress(m, "__p__acmdln"))) p_acmd = g();
+    if ((g = (getter)(void *)GetProcAddress(m, "__p__wcmdln"))) p_wcmd = g();
+    if (p_acmd) *p_acmd = cmd_a;
+    if (p_wcmd) *p_wcmd = cmd_w;
+    if (argv_w && p_argc && (p_argv || p_wargv)) {
+        char **argv_a = HeapAlloc(GetProcessHeap(), 0, (argc + 1) * sizeof(char *));
+        if (!argv_a) return;
+        for (int i = 0; i < argc; i++) argv_a[i] = to_ansi(argv_w[i]);
+        argv_a[argc] = NULL;
+        *p_argc = argc;
+        if (p_argv) *p_argv = argv_a;
+        if (p_wargv) *p_wargv = argv_w;
+    }
+}
+
+static void add_args(void)
+{
+    WCHAR extra[1024];
+    DWORD n = GetEnvironmentVariableW(L"GAMECACHE_ADD_ARGS", extra, 1024);
+    if (!n || n >= 1024) return;
+    const WCHAR *cur = GetCommandLineW();
+    if (wcsstr(cur, extra)) return; /* the launchers passed it on */
+    size_t len = wcslen(cur) + 1 + n + 1;
+    cmd_w = HeapAlloc(GetProcessHeap(), 0, len * sizeof(WCHAR));
+    if (!cmd_w) return;
+    swprintf(cmd_w, len, L"%ls %ls", cur, extra);
+    cmd_a = to_ansi(cmd_w);
+    if (!cmd_a) {
+        cmd_w = NULL;
+        return;
+    }
+    /* The process parameters (GetCommandLineW reads them; so may anything else in the process). */
+    typedef PEB *(WINAPI * get_peb_fn)(void);
+    get_peb_fn get_peb = (get_peb_fn)(void *)GetProcAddress(GetModuleHandleA("ntdll.dll"), "RtlGetCurrentPeb");
+    PRTL_USER_PROCESS_PARAMETERS pp = get_peb ? get_peb()->ProcessParameters : NULL;
+    if (pp) {
+        pp->CommandLine.Buffer = cmd_w;
+        pp->CommandLine.Length = (USHORT)(wcslen(cmd_w) * sizeof(WCHAR));
+        pp->CommandLine.MaximumLength = (USHORT)(len * sizeof(WCHAR));
+    }
+    int argc = 0;
+    WCHAR **argv_w = CommandLineToArgvW(cmd_w, &argc);
+    if (argv_w) {
+        char **argv_a = HeapAlloc(GetProcessHeap(), 0, (argc + 1) * sizeof(char *));
+        if (argv_a) {
+            for (int i = 0; i < argc; i++) argv_a[i] = to_ansi(argv_w[i]);
+            argv_a[argc] = NULL;
+            my_argc = argc;
+            my_wargv = argv_w;
+            my_argv = argv_a;
+        }
+    }
+    update_crt(L"ucrtbase.dll", argv_w, argc);
+    update_crt(L"msvcrt.dll", argv_w, argc);
+    char msg[1200];
+    snprintf(msg, sizeof(msg), "gamecache: added to the command line: %.1000ls\n", extra);
+    log_line(msg);
+}
+
 /* ---- import table patching ---- */
 
 typedef struct {
@@ -357,6 +545,16 @@ static hook_def hooks[] = {
     {"CloseHandle", (void *)hook_CloseHandle, (void **)&real_CloseHandle, 0},
     {"CreateDirectoryW", (void *)hook_CreateDirectoryW, (void **)&real_CreateDirectoryW, 0},
     {"CreateDirectoryA", (void *)hook_CreateDirectoryA, (void **)&real_CreateDirectoryA, 0},
+    {"GetCommandLineW", (void *)hook_GetCommandLineW, (void **)&real_GetCommandLineW, 0},
+    {"GetCommandLineA", (void *)hook_GetCommandLineA, (void **)&real_GetCommandLineA, 0},
+    /* C runtime (ucrtbase / api-ms-win-crt-runtime / msvcrt imports): */
+    {"__getmainargs", (void *)hook_getmainargs, (void **)&real_getmainargs, 0},
+    {"__wgetmainargs", (void *)hook_wgetmainargs, (void **)&real_wgetmainargs, 0},
+    {"__p___argc", (void *)hook_p_argc, (void **)&real_p_argc, 0},
+    {"__p___argv", (void *)hook_p_argv, (void **)&real_p_argv, 0},
+    {"__p___wargv", (void *)hook_p_wargv, (void **)&real_p_wargv, 0},
+    {"_get_narrow_winmain_command_line", (void *)hook_narrow_winmain, (void **)&real_narrow_winmain, 0},
+    {"_get_wide_winmain_command_line", (void *)hook_wide_winmain, (void **)&real_wide_winmain, 0},
 };
 #define N_HOOKS (sizeof(hooks) / sizeof(hooks[0]))
 
@@ -366,7 +564,8 @@ static const char *const unhookable[] = {"DuplicateHandle", "ReadFileEx", "ReadF
 static int kernel_dll(const char *name)
 {
     return !_stricmp(name, "kernel32.dll") || !_stricmp(name, "kernelbase.dll") ||
-           !_strnicmp(name, "api-ms-win-core-file-", 21) || !_strnicmp(name, "api-ms-win-core-handle-", 23);
+           !_strnicmp(name, "api-ms-win-core-", 16) || !_strnicmp(name, "api-ms-win-crt-", 15) ||
+           !_stricmp(name, "ucrtbase.dll") || !_stricmp(name, "msvcrt.dll") || !_strnicmp(name, "msvcr1", 6);
 }
 
 static hook_def *find_hook(const char *name)
@@ -471,10 +670,11 @@ BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(inst);
         if (!proxy_init(inst)) log_line("gamecache: Wine's powrprof.dll not found; power calls will fail\n");
+        add_args();
         {
             /* Shows which arguments (MODPATH=... for a Workshop mod) reached the game. */
             char cmd[600];
-            snprintf(cmd, sizeof(cmd), "gamecache: command line: %.500ls\n", GetCommandLineW());
+            snprintf(cmd, sizeof(cmd), "gamecache: command line from the launcher: %.500ls\n", GetCommandLineW());
             log_line(cmd);
         }
         install();
