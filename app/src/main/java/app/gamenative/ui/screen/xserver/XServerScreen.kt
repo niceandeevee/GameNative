@@ -126,6 +126,7 @@ import app.gamenative.utils.AssetUtils
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.ExtractionFingerprint
 import app.gamenative.utils.downloader.CoreDriverDownloader
+import app.gamenative.utils.protonFixes.CommonControlsV6
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.utils.LsfgQuickMenuHelper
 import app.gamenative.utils.LsfgVkManager
@@ -5330,6 +5331,9 @@ private suspend fun setupWineSystemFiles(
 
     WineStartMenuCreator.create(context, container)
     WineUtils.createDosdevicesSymlinks(context, container)
+
+    // Wine 11 moved TaskDialog (ordinals 344/345) into the Common-Controls 6.0 SxS assembly; heal prefixes that lack it.
+    CommonControlsV6.ensureInstalled(context, container, xServerState.value.wineInfo)
 
     val effectiveStartupSelection = container.startupSelection
     val startupSelection = effectiveStartupSelection.toString()
