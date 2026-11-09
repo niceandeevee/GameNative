@@ -46,6 +46,9 @@
 # JavaSteam class names: SteamService reaches LogManager through Class.forName, and
 # LicenseSerializer stores JavaSteam objects with Java serialization, which records class names.
 -keepnames class in.dragonbra.javasteam.**
+# Workshop downloads go through DepotDownloader, which was never run with optimized R8 before;
+# keep it whole (it is small) so nothing it reaches by reflection or serialization is dropped.
+-keep class in.dragonbra.javasteam.depotdownloader.** { *; }
 # Protobuf's runtime loads some of its own classes by name and reflects on generated messages.
 -keep class com.google.protobuf.** { *; }
 

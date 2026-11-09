@@ -80,6 +80,29 @@ class CrashHandler(
             "Failed to retrieve logcat: ${e.message}"
         }
 
+    /**
+     * Also puts the report in the public Download/GameNative folder, so it can be sent even when the
+     * app crashes before Settings > Debug can be opened (Android/data isn't reachable in file managers).
+     */
+    private fun copyToDownloads(name: String, text: String) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) return
+        try {
+            val values = android.content.ContentValues().apply {
+                put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                put(
+                    android.provider.MediaStore.MediaColumns.RELATIVE_PATH,
+                    android.os.Environment.DIRECTORY_DOWNLOADS + "/GameNative",
+                )
+            }
+            val resolver = context.contentResolver
+            val uri = resolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return
+            resolver.openOutputStream(uri)?.use { it.write(text.toByteArray()) }
+        } catch (_: Exception) {
+            // Best effort: the copy in crash_logs is already written.
+        }
+    }
+
     private val cleanupOldCrashFiles: () -> Unit = {
         crashFileDir.listFiles()?.let { files ->
             if (files.size > CRASH_FILE_HISTORY_COUNT) {
@@ -128,6 +151,7 @@ class CrashHandler(
             File(crashFileDir, "pluvia_crash_$timestamp.txt").writeText(crashReport)
 
             cleanupOldCrashFiles()
+            copyToDownloads("pluvia_crash_$timestamp.txt", crashReport)
         } catch (e: Exception) {
             defaultHandler?.uncaughtException(Thread.currentThread(), throwable)
         }
