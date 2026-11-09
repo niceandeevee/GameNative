@@ -4582,6 +4582,9 @@ private fun getWineStartCommand(
                 kotlinx.coroutines.runBlocking(Dispatchers.IO) { WorkshopManager.launchArgsFor(context, gameId) }
             }.getOrDefault("")
             val extraArgs = listOf(launchArgs, workshopArgs, gameArgs.trim()).filter { it.isNotEmpty() }.joinToString(" ")
+            // Launcher chains don't always pass arguments on (Empire at War: runme2 -> swfoc -> StarWarsG).
+            // A game fix DLL inside the game (gamecache) appends this when it's missing.
+            if (workshopArgs.isNotEmpty()) envVars.put("GAMECACHE_ADD_ARGS", workshopArgs)
             execArgsPassedToGame = true
             val gameCmd = "\"$steamRoot\\steamapps\\common\\$gameFolderName\\$normalizedExe\"" + (if (extraArgs.isNotEmpty()) " $extraArgs" else "")
             val launchWorkDir = appLaunchInfo?.workingDir?.trim('/').orEmpty()

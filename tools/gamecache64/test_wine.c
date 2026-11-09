@@ -23,8 +23,19 @@ static double now_s(void)
     return (double)c.QuadPart / (double)f.QuadPart;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    /* GAMECACHE_ADD_ARGS reaches the command line and the C runtime's argv. */
+    {
+        WCHAR want[256];
+        if (GetEnvironmentVariableW(L"GAMECACHE_ADD_ARGS", want, 256) && GetEnvironmentVariableW(L"EXPECT_SKIP", NULL, 0)) {
+            CHECK(wcsstr(GetCommandLineW(), want) != NULL, "GetCommandLineW lacks the added args: %ls", GetCommandLineW());
+            CHECK(strstr(GetCommandLineA(), "MODPATH=") != NULL, "GetCommandLineA lacks the added args");
+            CHECK(argc >= 2 && !strncmp(argv[argc - 1], "MODPATH=", 8), "argv lacks the added args (argc %d)", argc);
+            printf("argv[%d] = %s\n", argc - 1, argv[argc - 1]);
+        }
+    }
+
     /* powrprof.dll calls reach Wine's own (the game calls PowerGetActiveScheme). */
     {
         GUID *scheme = NULL;
