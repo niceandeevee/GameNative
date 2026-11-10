@@ -27,12 +27,14 @@
 #include <winternl.h>
 #include <wchar.h>
 #include <stdint.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../steamcache/iwdcache.h"
 #include "dircache.h"
+#include "listcache.h"
 
 BOOL proxy_init(HINSTANCE self);
 
@@ -62,6 +64,8 @@ static SetFilePointerExFn k_SetFilePointerEx;
 
 static iwd_cache cache;
 static dc_cache dirs;
+static lc_cache files;
+static volatile LONG64 missing_files;
 static CRITICAL_SECTION lock;
 static int read_cache_on;
 static int dir_cache_on;
@@ -133,15 +137,36 @@ static int os_dir_state(const wchar_t *dir)
 
 static uint64_t os_now_ms(void) { return GetTickCount64(); }
 
+static int os_list_dir(const wchar_t *dir, void (*add)(void *, const wchar_t *), void *ctx)
+{
+    WCHAR pattern[LC_MAX_PATH + 4];
+    if (swprintf(pattern, LC_MAX_PATH + 4, L"%ls\\*", dir) < 0) return 0;
+    WIN32_FIND_DATAW fd;
+    HANDLE f = FindFirstFileExW(pattern, FindExInfoBasic, &fd, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
+    if (f == INVALID_HANDLE_VALUE) return 0;
+    do add(ctx, fd.cFileName);
+    while (FindNextFileW(f, &fd));
+    DWORD err = GetLastError();
+    FindClose(f);
+    return err == ERROR_NO_MORE_FILES;
+}
+
 /* ---- hooks ---- */
+
+/* Files the read-ahead cache serves: any file under the game folder (archives and loose files). */
+static int under_root(LPCWSTR name)
+{
+    if (!name) return 0;
+    WCHAR full[DC_MAX_PATH], norm[DC_MAX_PATH];
+    DWORD n = GetFullPathNameW(name, DC_MAX_PATH, full, NULL);
+    if (!n || n >= DC_MAX_PATH) return 0;
+    uint32_t len = dc_normalize(full, norm, DC_MAX_PATH);
+    return len > dirs.root_len && !wcsncmp(norm, dirs.root, dirs.root_len);
+}
 
 static int is_cached_archive(LPCWSTR name)
 {
-    if (!name) return 0;
-    size_t n = wcslen(name);
-    if (n < 4) return 0;
-    const WCHAR *e = name + n - 4;
-    return e[0] == L'.' && (e[1] | 0x20) == L'm' && (e[2] | 0x20) == L'e' && (e[3] | 0x20) == L'g';
+    return under_root(name);
 }
 
 static int read_only_open(DWORD access, DWORD creation)
@@ -155,9 +180,12 @@ static int read_only_open(DWORD access, DWORD creation)
  * (from the cache vs. through Wine) and the time spent in the real file calls. Shows whether a slow
  * load waits on files or on the game's own processing.
  */
-enum { EXT_MEG, EXT_XML, EXT_MODEL, EXT_TEXTURE, EXT_AUDIO, EXT_OTHER, EXT_N };
-static const char *const ext_names[EXT_N] = {"meg", "xml", "model", "texture", "audio", "other"};
-static volatile LONG64 st_opens[EXT_N], st_open_fail, st_reads, st_read_bytes, st_cached_reads, st_cached_bytes;
+/* Opens counted by extension (the first EXT_SLOTS distinct ones; the rest go to "other"). */
+#define EXT_SLOTS 31
+static char ext_names[EXT_SLOTS + 1][8];
+static volatile LONG64 st_opens[EXT_SLOTS + 1];
+static volatile LONG ext_used;
+static volatile LONG64 st_open_fail, st_reads, st_read_bytes, st_cached_reads, st_cached_bytes;
 static volatile LONG64 st_open_us, st_read_us, st_seek_us;
 static LARGE_INTEGER qpf;
 
@@ -168,80 +196,114 @@ static int64_t now_us(void)
     return qpf.QuadPart ? (int64_t)(c.QuadPart * 1000000 / qpf.QuadPart) : 0;
 }
 
-static int ext_kind(LPCWSTR name)
+static int ext_slot(LPCWSTR name)
 {
+    char ext[8] = "none";
     const WCHAR *dot = name ? wcsrchr(name, L'.') : NULL;
-    if (!dot || wcschr(dot, L'\\') || wcschr(dot, L'/')) return EXT_OTHER;
-    dot++;
-    if (!_wcsicmp(dot, L"meg")) return EXT_MEG;
-    if (!_wcsicmp(dot, L"xml")) return EXT_XML;
-    if (!_wcsicmp(dot, L"alo") || !_wcsicmp(dot, L"ala")) return EXT_MODEL;
-    if (!_wcsicmp(dot, L"dds") || !_wcsicmp(dot, L"tga")) return EXT_TEXTURE;
-    if (!_wcsicmp(dot, L"wav") || !_wcsicmp(dot, L"mp3")) return EXT_AUDIO;
-    return EXT_OTHER;
+    if (dot && !wcschr(dot, L'\\') && !wcschr(dot, L'/') && dot[1]) {
+        int k = 0;
+        for (const WCHAR *c = dot + 1; *c && k < 7; c++) ext[k++] = (char)(*c < 128 ? tolower(*c) : '?');
+        ext[k] = 0;
+    }
+    EnterCriticalSection(&lock);
+    int slot = EXT_SLOTS; /* "other" */
+    for (int i = 0; i < ext_used; i++)
+        if (!strcmp(ext_names[i], ext)) {
+            slot = i;
+            break;
+        }
+    if (slot == EXT_SLOTS && ext_used < EXT_SLOTS) {
+        slot = ext_used;
+        strcpy(ext_names[slot], ext);
+        ext_used++;
+    }
+    LeaveCriticalSection(&lock);
+    return slot;
 }
 
 static void count_open(LPCWSTR name, HANDLE h, int64_t t0)
 {
     InterlockedAdd64(&st_open_us, now_us() - t0);
     if (h == INVALID_HANDLE_VALUE) InterlockedIncrement64(&st_open_fail);
-    else InterlockedIncrement64(&st_opens[ext_kind(name)]);
+    else InterlockedIncrement64(&st_opens[ext_slot(name)]);
 }
 
 static DWORD WINAPI stats_thread(LPVOID arg)
 {
     (void)arg;
-    LONG64 last[EXT_N + 9] = {0};
+    strcpy(ext_names[EXT_SLOTS], "other");
+    enum { FAIL, PROBES, MISSF, READS, RBYTES, CREADS, CBYTES, OPUS, RDUS, SKUS, N_TOTALS };
+    LONG64 last_opens[EXT_SLOTS + 1] = {0}, last[N_TOTALS] = {0};
     char env[16];
     DWORD interval_ms = 10000;
     if (GetEnvironmentVariableA("GAMECACHE_STATS_MS", env, sizeof(env)) && atoi(env) >= 100) interval_ms = (DWORD)atoi(env);
     for (;;) {
         Sleep(interval_ms);
-        LONG64 cur[EXT_N + 9];
-        for (int i = 0; i < EXT_N; i++) cur[i] = st_opens[i];
-        cur[EXT_N] = st_open_fail;
-        cur[EXT_N + 1] = failed_probes;
-        cur[EXT_N + 2] = st_reads;
-        cur[EXT_N + 3] = st_read_bytes;
-        cur[EXT_N + 4] = st_cached_reads;
-        cur[EXT_N + 5] = st_cached_bytes;
-        cur[EXT_N + 6] = st_open_us;
-        cur[EXT_N + 7] = st_read_us;
-        cur[EXT_N + 8] = st_seek_us;
-        LONG64 d[EXT_N + 9], opens = 0;
-        for (int i = 0; i < EXT_N + 9; i++) d[i] = cur[i] - last[i];
-        for (int i = 0; i < EXT_N; i++) opens += d[i];
+        LONG64 cur[N_TOTALS] = {st_open_fail, failed_probes, missing_files, st_reads, st_read_bytes, st_cached_reads,
+                                st_cached_bytes, st_open_us, st_read_us, st_seek_us};
+        LONG64 d[N_TOTALS], dopen[EXT_SLOTS + 1], opens = 0;
+        for (int i = 0; i < N_TOTALS; i++) d[i] = cur[i] - last[i];
+        for (int i = 0; i <= EXT_SLOTS; i++) {
+            LONG64 v = st_opens[i];
+            dopen[i] = v - last_opens[i];
+            last_opens[i] = v;
+            opens += dopen[i];
+        }
         memcpy(last, cur, sizeof(last));
-        if (!opens && !d[EXT_N] && !d[EXT_N + 1] && !d[EXT_N + 2] && !d[EXT_N + 4]) continue;
-        char by_type[200] = "";
+        if (!opens && !d[FAIL] && !d[PROBES] && !d[MISSF] && !d[READS] && !d[CREADS]) continue;
+        /* the 6 busiest extensions */
+        char by_type[240] = "";
         size_t len = 0;
-        for (int i = 0; i < EXT_N; i++)
-            if (d[i]) len += snprintf(by_type + len, sizeof(by_type) - len, "%s%lld %s", len ? ", " : "", (long long)d[i], ext_names[i]);
-        char msg[600];
+        int shown[EXT_SLOTS + 1] = {0};
+        for (int round = 0; round < 6; round++) {
+            int best = -1;
+            for (int i = 0; i <= EXT_SLOTS; i++)
+                if (dopen[i] && !shown[i] && (best < 0 || dopen[i] > dopen[best])) best = i;
+            if (best < 0) break;
+            shown[best] = 1;
+            len += snprintf(by_type + len, sizeof(by_type) - len, "%s%lld %s", len ? ", " : "", (long long)dopen[best],
+                            ext_names[best]);
+        }
+        char msg[700];
         snprintf(msg, sizeof(msg),
-                 "gamecache: last %.1f s: %lld opens (%s), %lld failed, %lld missing-folder answers; "
-                 "%lld reads %.1f MB through Wine, %lld reads %.1f MB from cache; "
+                 "gamecache: last %.1f s: %lld opens (%s), %lld failed, %lld missing-folder answers, "
+                 "%lld missing-file answers; %lld reads %.1f MB through Wine, %lld reads %.1f MB from cache; "
                  "time in file calls: opens %.2f s, reads %.2f s, seeks %.2f s\n",
-                 interval_ms / 1000.0, (long long)opens, len ? by_type : "none", (long long)d[EXT_N], (long long)d[EXT_N + 1],
-                 (long long)d[EXT_N + 2], d[EXT_N + 3] / 1048576.0, (long long)d[EXT_N + 4], d[EXT_N + 5] / 1048576.0,
-                 d[EXT_N + 6] / 1e6, d[EXT_N + 7] / 1e6, d[EXT_N + 8] / 1e6);
+                 interval_ms / 1000.0, (long long)opens, len ? by_type : "none", (long long)d[FAIL], (long long)d[PROBES],
+                 (long long)d[MISSF], (long long)d[READS], d[RBYTES] / 1048576.0, (long long)d[CREADS],
+                 d[CBYTES] / 1048576.0, d[OPUS] / 1e6, d[RDUS] / 1e6, d[SKUS] / 1e6);
         log_line(msg);
     }
     return 0;
 }
 
-/* 1 when the open can fail right away because its directory is known to be missing. */
-static int probe_misses(LPCWSTR name, DWORD access, DWORD creation)
+/*
+ * When the open can fail right away: ERROR_PATH_NOT_FOUND (its folder is known to be missing),
+ * ERROR_FILE_NOT_FOUND (its folder's listing doesn't have it), or 0 for the real call.
+ */
+static DWORD probe_misses(LPCWSTR name, DWORD access, DWORD creation)
 {
     if (!dir_cache_on || !name || !read_only_open(access, creation)) return 0;
     WCHAR full[DC_MAX_PATH];
     DWORD n = GetFullPathNameW(name, DC_MAX_PATH, full, NULL);
     if (!n || n >= DC_MAX_PATH) return 0;
     EnterCriticalSection(&lock);
-    int missing = dc_parent_missing(&dirs, full);
+    DWORD result = dc_parent_missing(&dirs, full) ? ERROR_PATH_NOT_FOUND
+                   : lc_file_missing(&files, full)  ? ERROR_FILE_NOT_FOUND
+                                                    : 0;
     LeaveCriticalSection(&lock);
-    if (missing) InterlockedIncrement(&failed_probes);
-    return missing;
+    if (result == ERROR_PATH_NOT_FOUND) InterlockedIncrement(&failed_probes);
+    if (result == ERROR_FILE_NOT_FOUND) InterlockedIncrement64(&missing_files);
+    return result;
+}
+
+/* A write, create, move or copy under the game folder: forget the folder listings. */
+static void files_changed(LPCWSTR name)
+{
+    if (!dir_cache_on || (name && !under_root(name))) return;
+    EnterCriticalSection(&lock);
+    lc_clear(&files);
+    LeaveCriticalSection(&lock);
 }
 
 static void maybe_track(HANDLE h, LPCWSTR name, DWORD access, DWORD creation, DWORD flags)
@@ -320,10 +382,12 @@ static HANDLE WINAPI hook_CreateFileW(LPCWSTR name, DWORD access, DWORD share, L
         HANDLE h = open_empty();
         if (h != INVALID_HANDLE_VALUE) return h;
     }
-    if (probe_misses(name, access, creation)) {
-        SetLastError(ERROR_PATH_NOT_FOUND);
+    DWORD miss = probe_misses(name, access, creation);
+    if (miss) {
+        SetLastError(miss);
         return INVALID_HANDLE_VALUE;
     }
+    if (!read_only_open(access, creation)) files_changed(name);
     int64_t t0 = now_us();
     HANDLE h = real_CreateFileW(name, access, share, sa, creation, flags, templ);
     DWORD err = GetLastError();
@@ -342,10 +406,12 @@ static HANDLE WINAPI hook_CreateFileA(LPCSTR name, DWORD access, DWORD share, LP
         HANDLE h = open_empty();
         if (h != INVALID_HANDLE_VALUE) return h;
     }
-    if (ok && probe_misses(wide, access, creation)) {
-        SetLastError(ERROR_PATH_NOT_FOUND);
+    DWORD miss = ok ? probe_misses(wide, access, creation) : 0;
+    if (miss) {
+        SetLastError(miss);
         return INVALID_HANDLE_VALUE;
     }
+    if (!read_only_open(access, creation)) files_changed(ok ? wide : NULL);
     int64_t t0 = now_us();
     HANDLE h = real_CreateFileA(name, access, share, sa, creation, flags, templ);
     DWORD err = GetLastError();
@@ -456,6 +522,7 @@ static BOOL WINAPI hook_CreateDirectoryW(LPCWSTR name, LPSECURITY_ATTRIBUTES sa)
     if (ok) {
         EnterCriticalSection(&lock);
         dc_clear(&dirs);
+        lc_clear(&files);
         LeaveCriticalSection(&lock);
     }
     return ok;
@@ -467,8 +534,66 @@ static BOOL WINAPI hook_CreateDirectoryA(LPCSTR name, LPSECURITY_ATTRIBUTES sa)
     if (ok) {
         EnterCriticalSection(&lock);
         dc_clear(&dirs);
+        lc_clear(&files);
         LeaveCriticalSection(&lock);
     }
+    return ok;
+}
+
+/* Moves and copies can put a file into a listed folder. */
+typedef BOOL(WINAPI *MoveFileWFn)(LPCWSTR, LPCWSTR);
+typedef BOOL(WINAPI *MoveFileAFn)(LPCSTR, LPCSTR);
+typedef BOOL(WINAPI *MoveFileExWFn)(LPCWSTR, LPCWSTR, DWORD);
+typedef BOOL(WINAPI *MoveFileExAFn)(LPCSTR, LPCSTR, DWORD);
+typedef BOOL(WINAPI *CopyFileWFn)(LPCWSTR, LPCWSTR, BOOL);
+typedef BOOL(WINAPI *CopyFileAFn)(LPCSTR, LPCSTR, BOOL);
+static MoveFileWFn real_MoveFileW;
+static MoveFileAFn real_MoveFileA;
+static MoveFileExWFn real_MoveFileExW;
+static MoveFileExAFn real_MoveFileExA;
+static CopyFileWFn real_CopyFileW;
+static CopyFileAFn real_CopyFileA;
+
+static void files_changed_a(LPCSTR name)
+{
+    WCHAR wide[DC_MAX_PATH];
+    files_changed(name && MultiByteToWideChar(CP_ACP, 0, name, -1, wide, DC_MAX_PATH) > 0 ? wide : NULL);
+}
+
+static BOOL WINAPI hook_MoveFileW(LPCWSTR from, LPCWSTR to)
+{
+    BOOL ok = real_MoveFileW(from, to);
+    files_changed(to);
+    return ok;
+}
+static BOOL WINAPI hook_MoveFileA(LPCSTR from, LPCSTR to)
+{
+    BOOL ok = real_MoveFileA(from, to);
+    files_changed_a(to);
+    return ok;
+}
+static BOOL WINAPI hook_MoveFileExW(LPCWSTR from, LPCWSTR to, DWORD flags)
+{
+    BOOL ok = real_MoveFileExW(from, to, flags);
+    files_changed(to);
+    return ok;
+}
+static BOOL WINAPI hook_MoveFileExA(LPCSTR from, LPCSTR to, DWORD flags)
+{
+    BOOL ok = real_MoveFileExA(from, to, flags);
+    files_changed_a(to);
+    return ok;
+}
+static BOOL WINAPI hook_CopyFileW(LPCWSTR from, LPCWSTR to, BOOL fail_if_exists)
+{
+    BOOL ok = real_CopyFileW(from, to, fail_if_exists);
+    files_changed(to);
+    return ok;
+}
+static BOOL WINAPI hook_CopyFileA(LPCSTR from, LPCSTR to, BOOL fail_if_exists)
+{
+    BOOL ok = real_CopyFileA(from, to, fail_if_exists);
+    files_changed_a(to);
     return ok;
 }
 
@@ -659,6 +784,12 @@ static hook_def hooks[] = {
     {"CloseHandle", (void *)hook_CloseHandle, (void **)&real_CloseHandle, 0},
     {"CreateDirectoryW", (void *)hook_CreateDirectoryW, (void **)&real_CreateDirectoryW, 0},
     {"CreateDirectoryA", (void *)hook_CreateDirectoryA, (void **)&real_CreateDirectoryA, 0},
+    {"MoveFileW", (void *)hook_MoveFileW, (void **)&real_MoveFileW, 0},
+    {"MoveFileA", (void *)hook_MoveFileA, (void **)&real_MoveFileA, 0},
+    {"MoveFileExW", (void *)hook_MoveFileExW, (void **)&real_MoveFileExW, 0},
+    {"MoveFileExA", (void *)hook_MoveFileExA, (void **)&real_MoveFileExA, 0},
+    {"CopyFileW", (void *)hook_CopyFileW, (void **)&real_CopyFileW, 0},
+    {"CopyFileA", (void *)hook_CopyFileA, (void **)&real_CopyFileA, 0},
     {"GetCommandLineW", (void *)hook_GetCommandLineW, (void **)&real_GetCommandLineW, 0},
     {"GetCommandLineA", (void *)hook_GetCommandLineA, (void **)&real_GetCommandLineA, 0},
     /* C runtime (ucrtbase / api-ms-win-crt-runtime / msvcrt imports): */
@@ -745,6 +876,8 @@ static void install(void)
     iwd_init(&cache, &iops);
     dc_ops dops = {os_dir_state, os_now_ms, os_alloc, os_release};
     dc_init(&dirs, &dops, exe);
+    lc_ops lops = {os_list_dir, os_now_ms, os_alloc, os_release};
+    lc_init(&files, &lops, exe);
 
     /*
      * Patch the exe and every DLL loaded from the game's folder (Miles audio, Bink and friends may be
