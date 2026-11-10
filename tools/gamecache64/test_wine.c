@@ -15,6 +15,18 @@
 static int failures;
 #define CHECK(cond, ...) do { if (!(cond)) { printf("FAIL: " __VA_ARGS__); printf("\n"); failures++; } } while (0)
 
+/* Probe a name (listed missing), move a file in under that name, then it must open. */
+static int lc_probe_then_move(void)
+{
+    HANDLE m = CreateFileW(L"Loose\\moved.alo", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    if (m != INVALID_HANDLE_VALUE) return 0;
+    if (!MoveFileW(L"moved_src.tmp", L"Loose\\moved.alo")) return 0;
+    m = CreateFileW(L"Loose\\moved.alo", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    if (m == INVALID_HANDLE_VALUE) return 0;
+    CloseHandle(m);
+    return 1;
+}
+
 static double now_s(void)
 {
     LARGE_INTEGER f, c;
@@ -116,6 +128,56 @@ int main(int argc, char **argv)
     HANDLE h = CreateFileW(L"Data\\NoSuch.ALA", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
     CHECK(h == INVALID_HANDLE_VALUE && GetLastError() == ERROR_FILE_NOT_FOUND, "missing file in real folder err %lu", GetLastError());
 
+    /* Missing files in a folder that exists: answered from its listing, with Windows' error. */
+    double t_files;
+    {
+        CreateDirectoryW(L"Loose", NULL);
+        HANDLE w2 = CreateFileW(L"Loose\\present.xml", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+        static char text[70000];
+        for (int i = 0; i < (int)sizeof(text); i++) text[i] = (char)('a' + i % 26);
+        DWORD wr2;
+        WriteFile(w2, text, sizeof(text), &wr2, NULL);
+        CloseHandle(w2);
+        double t1 = now_s();
+        for (int i = 0; i < 20000; i++) {
+            WCHAR p[100];
+            swprintf(p, 100, L"Loose\\Missing_%d.ALO", i);
+            HANDLE m = CreateFileW(p, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+            DWORD e = GetLastError();
+            CHECK(m == INVALID_HANDLE_VALUE && e == ERROR_FILE_NOT_FOUND, "missing file %d err %lu", i, e);
+            if (failures > 5) break;
+        }
+        t_files = now_s() - t1;
+        /* present files (any case) still open */
+        HANDLE r = CreateFileW(L"loose\\PRESENT.XML", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+        CHECK(r != INVALID_HANDLE_VALUE, "present file in a listed folder (err %lu)", GetLastError());
+        /* small reads from a loose file come back right (read-ahead cache) */
+        char small[61];
+        DWORD got2 = 0, total = 0;
+        int bad = 0;
+        while (ReadFile(r, small, sizeof(small), &got2, NULL) && got2) {
+            for (DWORD i = 0; i < got2; i++) if (small[i] != text[total + i]) bad = 1;
+            total += got2;
+        }
+        CHECK(!bad && total == sizeof(text), "loose file small reads (%lu bytes, bad %d)", total, bad);
+        CloseHandle(r);
+        /* a file created after the folder was listed is seen at once */
+        w2 = CreateFileW(L"Loose\\new.alo", GENERIC_WRITE, 0, NULL, CREATE_NEW, 0, NULL);
+        CHECK(w2 != INVALID_HANDLE_VALUE, "create new.alo");
+        CloseHandle(w2);
+        r = CreateFileW(L"Loose\\NEW.ALO", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+        CHECK(r != INVALID_HANDLE_VALUE, "file created in a listed folder (err %lu)", GetLastError());
+        CloseHandle(r);
+        /* and one moved in */
+        w2 = CreateFileW(L"moved_src.tmp", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+        CloseHandle(w2);
+        CHECK(lc_probe_then_move(), "file moved into a listed folder");
+        DeleteFileW(L"Loose\\present.xml");
+        DeleteFileW(L"Loose\\new.alo");
+        DeleteFileW(L"Loose\\moved.alo");
+        RemoveDirectoryW(L"Loose");
+    }
+
     /* A folder created after it was found missing is seen at once. */
     CHECK(CreateDirectoryW(L"Data\\Art", NULL) || GetLastError() == ERROR_ALREADY_EXISTS, "mkdir Art");
     CHECK(CreateDirectoryW(L"Data\\Art\\Models", NULL), "mkdir Models");
@@ -155,7 +217,7 @@ int main(int argc, char **argv)
     }
 
     if (GetEnvironmentVariableW(L"GAMECACHE_STATS_MS", NULL, 0)) Sleep(1500); /* let a stats line through */
-    printf("archive reads: %.3f s, 20000 missing-folder probes: %.3f s\n", t_reads, t_probes);
+    printf("archive reads: %.3f s, 20000 missing-folder probes: %.3f s, 20000 missing files: %.3f s\n", t_reads, t_probes, t_files);
     printf(failures ? "FAILED (%d)\n" : "ALL OK\n", failures);
     free(data);
     return failures != 0;
