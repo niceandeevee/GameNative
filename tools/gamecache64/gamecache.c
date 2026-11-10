@@ -28,6 +28,7 @@
 #include <wchar.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "../steamcache/iwdcache.h"
@@ -149,6 +150,86 @@ static int read_only_open(DWORD access, DWORD creation)
     return !(access & writes) && creation == OPEN_EXISTING;
 }
 
+/* ---- load statistics ----
+ * Every 10 s with file activity, one line: opens (by type, failed ones, missing-folder answers), reads
+ * (from the cache vs. through Wine) and the time spent in the real file calls. Shows whether a slow
+ * load waits on files or on the game's own processing.
+ */
+enum { EXT_MEG, EXT_XML, EXT_MODEL, EXT_TEXTURE, EXT_AUDIO, EXT_OTHER, EXT_N };
+static const char *const ext_names[EXT_N] = {"meg", "xml", "model", "texture", "audio", "other"};
+static volatile LONG64 st_opens[EXT_N], st_open_fail, st_reads, st_read_bytes, st_cached_reads, st_cached_bytes;
+static volatile LONG64 st_open_us, st_read_us, st_seek_us;
+static LARGE_INTEGER qpf;
+
+static int64_t now_us(void)
+{
+    LARGE_INTEGER c;
+    QueryPerformanceCounter(&c);
+    return qpf.QuadPart ? (int64_t)(c.QuadPart * 1000000 / qpf.QuadPart) : 0;
+}
+
+static int ext_kind(LPCWSTR name)
+{
+    const WCHAR *dot = name ? wcsrchr(name, L'.') : NULL;
+    if (!dot || wcschr(dot, L'\\') || wcschr(dot, L'/')) return EXT_OTHER;
+    dot++;
+    if (!_wcsicmp(dot, L"meg")) return EXT_MEG;
+    if (!_wcsicmp(dot, L"xml")) return EXT_XML;
+    if (!_wcsicmp(dot, L"alo") || !_wcsicmp(dot, L"ala")) return EXT_MODEL;
+    if (!_wcsicmp(dot, L"dds") || !_wcsicmp(dot, L"tga")) return EXT_TEXTURE;
+    if (!_wcsicmp(dot, L"wav") || !_wcsicmp(dot, L"mp3")) return EXT_AUDIO;
+    return EXT_OTHER;
+}
+
+static void count_open(LPCWSTR name, HANDLE h, int64_t t0)
+{
+    InterlockedAdd64(&st_open_us, now_us() - t0);
+    if (h == INVALID_HANDLE_VALUE) InterlockedIncrement64(&st_open_fail);
+    else InterlockedIncrement64(&st_opens[ext_kind(name)]);
+}
+
+static DWORD WINAPI stats_thread(LPVOID arg)
+{
+    (void)arg;
+    LONG64 last[EXT_N + 9] = {0};
+    char env[16];
+    DWORD interval_ms = 10000;
+    if (GetEnvironmentVariableA("GAMECACHE_STATS_MS", env, sizeof(env)) && atoi(env) >= 100) interval_ms = (DWORD)atoi(env);
+    for (;;) {
+        Sleep(interval_ms);
+        LONG64 cur[EXT_N + 9];
+        for (int i = 0; i < EXT_N; i++) cur[i] = st_opens[i];
+        cur[EXT_N] = st_open_fail;
+        cur[EXT_N + 1] = failed_probes;
+        cur[EXT_N + 2] = st_reads;
+        cur[EXT_N + 3] = st_read_bytes;
+        cur[EXT_N + 4] = st_cached_reads;
+        cur[EXT_N + 5] = st_cached_bytes;
+        cur[EXT_N + 6] = st_open_us;
+        cur[EXT_N + 7] = st_read_us;
+        cur[EXT_N + 8] = st_seek_us;
+        LONG64 d[EXT_N + 9], opens = 0;
+        for (int i = 0; i < EXT_N + 9; i++) d[i] = cur[i] - last[i];
+        for (int i = 0; i < EXT_N; i++) opens += d[i];
+        memcpy(last, cur, sizeof(last));
+        if (!opens && !d[EXT_N] && !d[EXT_N + 1] && !d[EXT_N + 2] && !d[EXT_N + 4]) continue;
+        char by_type[200] = "";
+        size_t len = 0;
+        for (int i = 0; i < EXT_N; i++)
+            if (d[i]) len += snprintf(by_type + len, sizeof(by_type) - len, "%s%lld %s", len ? ", " : "", (long long)d[i], ext_names[i]);
+        char msg[600];
+        snprintf(msg, sizeof(msg),
+                 "gamecache: last %.1f s: %lld opens (%s), %lld failed, %lld missing-folder answers; "
+                 "%lld reads %.1f MB through Wine, %lld reads %.1f MB from cache; "
+                 "time in file calls: opens %.2f s, reads %.2f s, seeks %.2f s\n",
+                 interval_ms / 1000.0, (long long)opens, len ? by_type : "none", (long long)d[EXT_N], (long long)d[EXT_N + 1],
+                 (long long)d[EXT_N + 2], d[EXT_N + 3] / 1048576.0, (long long)d[EXT_N + 4], d[EXT_N + 5] / 1048576.0,
+                 d[EXT_N + 6] / 1e6, d[EXT_N + 7] / 1e6, d[EXT_N + 8] / 1e6);
+        log_line(msg);
+    }
+    return 0;
+}
+
 /* 1 when the open can fail right away because its directory is known to be missing. */
 static int probe_misses(LPCWSTR name, DWORD access, DWORD creation)
 {
@@ -243,7 +324,11 @@ static HANDLE WINAPI hook_CreateFileW(LPCWSTR name, DWORD access, DWORD share, L
         SetLastError(ERROR_PATH_NOT_FOUND);
         return INVALID_HANDLE_VALUE;
     }
+    int64_t t0 = now_us();
     HANDLE h = real_CreateFileW(name, access, share, sa, creation, flags, templ);
+    DWORD err = GetLastError();
+    count_open(name, h, t0);
+    SetLastError(err);
     maybe_track(h, name, access, creation, flags);
     return h;
 }
@@ -261,9 +346,26 @@ static HANDLE WINAPI hook_CreateFileA(LPCSTR name, DWORD access, DWORD share, LP
         SetLastError(ERROR_PATH_NOT_FOUND);
         return INVALID_HANDLE_VALUE;
     }
+    int64_t t0 = now_us();
     HANDLE h = real_CreateFileA(name, access, share, sa, creation, flags, templ);
+    DWORD err = GetLastError();
+    count_open(ok ? wide : NULL, h, t0);
+    SetLastError(err);
     if (ok) maybe_track(h, wide, access, creation, flags);
     return h;
+}
+
+static BOOL timed_read(HANDLE h, LPVOID buf, DWORD count, LPDWORD read, LPOVERLAPPED ov)
+{
+    int64_t t0 = now_us();
+    DWORD got = 0;
+    BOOL ok = real_ReadFile(h, buf, count, read ? read : &got, ov);
+    DWORD err = GetLastError();
+    InterlockedAdd64(&st_read_us, now_us() - t0);
+    InterlockedIncrement64(&st_reads);
+    if (ok) InterlockedAdd64(&st_read_bytes, read ? *read : got);
+    SetLastError(err);
+    return ok;
 }
 
 static BOOL WINAPI hook_ReadFile(HANDLE h, LPVOID buf, DWORD count, LPDWORD read, LPOVERLAPPED ov)
@@ -279,12 +381,14 @@ static BOOL WINAPI hook_ReadFile(HANDLE h, LPVOID buf, DWORD count, LPDWORD read
         if (served) {
             if (read) *read = done;
             InterlockedIncrement(&served_reads);
+            InterlockedIncrement64(&st_cached_reads);
+            InterlockedAdd64(&st_cached_bytes, done);
             return TRUE;
         }
-        return real_ReadFile(h, buf, count, read, ov); /* given back at the game's position */
+        return timed_read(h, buf, count, read, ov); /* given back at the game's position */
     }
     LeaveCriticalSection(&lock);
-    return real_ReadFile(h, buf, count, read, ov);
+    return timed_read(h, buf, count, read, ov);
 }
 
 static BOOL WINAPI hook_SetFilePointerEx(HANDLE h, LARGE_INTEGER distance, PLARGE_INTEGER newpos, DWORD method)
@@ -303,7 +407,12 @@ static BOOL WINAPI hook_SetFilePointerEx(HANDLE h, LARGE_INTEGER distance, PLARG
         return TRUE;
     }
     LeaveCriticalSection(&lock);
-    return real_SetFilePointerEx(h, distance, newpos, method);
+    int64_t t0 = now_us();
+    BOOL r = real_SetFilePointerEx(h, distance, newpos, method);
+    DWORD err = GetLastError();
+    InterlockedAdd64(&st_seek_us, now_us() - t0);
+    SetLastError(err);
+    return r;
 }
 
 static DWORD WINAPI hook_SetFilePointer(HANDLE h, LONG low, PLONG high, DWORD method)
@@ -324,7 +433,12 @@ static DWORD WINAPI hook_SetFilePointer(HANDLE h, LONG low, PLONG high, DWORD me
         return (DWORD)pos;
     }
     LeaveCriticalSection(&lock);
-    return real_SetFilePointer(h, low, high, method);
+    int64_t t0 = now_us();
+    DWORD r = real_SetFilePointer(h, low, high, method);
+    DWORD err = GetLastError();
+    InterlockedAdd64(&st_seek_us, now_us() - t0);
+    SetLastError(err);
+    return r;
 }
 
 static BOOL WINAPI hook_CloseHandle(HANDLE h)
@@ -625,6 +739,7 @@ static void install(void)
         *slash = 0;
     }
 
+    QueryPerformanceFrequency(&qpf);
     InitializeCriticalSection(&lock);
     iwd_ops iops = {os_pread, os_seek, os_same_file, os_alloc, os_release};
     iwd_init(&cache, &iops);
@@ -662,6 +777,10 @@ static void install(void)
     snprintf(msg, sizeof(msg), "gamecache: hooks installed (archive read cache %s, missing-folder cache %s)\n",
              read_cache_on ? "on" : "off", dir_cache_on ? "on" : "off");
     log_line(msg);
+    if (dir_cache_on) {
+        HANDLE t = CreateThread(NULL, 0, stats_thread, NULL, 0, NULL);
+        if (t) CloseHandle(t);
+    }
 }
 
 BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)

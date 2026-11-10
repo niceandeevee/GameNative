@@ -4058,7 +4058,9 @@ object WorkshopManager {
             // What the game will find there (a mod needs its Data folder at the top), and whether the
             // download looks whole.
             val dir = File(contentDir, id.toString())
-            val files = dir.walkTopDown().filter { it.isFile && !it.path.contains("/.") }.toList()
+            // Hidden entries (the downloader's .DepotDownloader store) are judged inside the item only:
+            // every item path runs through the prefix's .wine folder.
+            val files = dir.walkTopDown().filter { it.isFile && !it.relativeTo(dir).path.split('/').any { p -> p.startsWith(".") } }.toList()
             Timber.tag(TAG).i(
                 "Workshop item $id: ${files.size} files, ${files.sumOf { it.length() } / (1024 * 1024)} MB; top level: " +
                     (dir.listFiles()?.filter { !it.name.startsWith(".") }?.joinToString { it.name + if (it.isDirectory) "/" else "" } ?: "")
@@ -4082,7 +4084,7 @@ object WorkshopManager {
         val accountId = runCatching { SteamService.userSteamId?.accountID ?: 0L }.getOrDefault(0L)
         val items = ids.map { id ->
             val dir = File(contentDir, id.toString())
-            val files = dir.walkTopDown().filter { it.isFile && !it.path.contains("/.") }.toList()
+            val files = dir.walkTopDown().filter { it.isFile && !it.relativeTo(dir).path.split('/').any { p -> p.startsWith(".") } }.toList()
             val manifest = dir.walkTopDown().maxDepth(3)
                 .mapNotNull { Regex("""^\d+_(\d+)\.manifest$""").find(it.name)?.groupValues?.get(1) }
                 .firstOrNull() ?: "0"

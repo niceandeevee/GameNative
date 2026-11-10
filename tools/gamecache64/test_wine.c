@@ -154,6 +154,7 @@ int main(int argc, char **argv)
         CHECK(o == INVALID_HANDLE_VALUE, "menu movie was replaced");
     }
 
+    if (GetEnvironmentVariableW(L"GAMECACHE_STATS_MS", NULL, 0)) Sleep(1500); /* let a stats line through */
     printf("archive reads: %.3f s, 20000 missing-folder probes: %.3f s\n", t_reads, t_probes);
     printf(failures ? "FAILED (%d)\n" : "ALL OK\n", failures);
     free(data);
