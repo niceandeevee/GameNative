@@ -51,6 +51,10 @@ val STEAM_Fix_32470: KeyedGameFix = KeyedCompositeGameFix(
         ),
         WineAppDefaultsFix("swfoc.exe", "DllOverrides", mapOf("gameoverlayrenderer64" to "")),
         WineAppDefaultsFix("runme2.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
+        // FEX keeps the x86 code it translates in %LOCALAPPDATA%\fex-emu\DiskCache (in the prefix) and reuses it on
+        // the next launch, so startup and loads don't translate the same code again. Off by default in FEX; set
+        // only when the user hasn't set FEX_DISKCACHE themselves.
+        WineEnvVarFix(mapOf("FEX_DISKCACHE" to "1")),
         // Forces of Corruption and the original campaign each run their own StarWarsG.exe.
         GameDirAssetFix("gamefixes/gamecache64/powrprof.dll", "corruption/powrprof.dll"),
         GameDirAssetFix("gamefixes/gamecache64/powrprof.dll", "GameData/powrprof.dll"),
