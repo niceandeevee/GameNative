@@ -916,6 +916,43 @@ static void install(void)
     }
 }
 
+/* How much translated code FEX's disk cache (FEX_DISKCACHE) already holds: 0 on the first launch, then growing. */
+static void dir_size(const WCHAR *dir, int depth, uint64_t *bytes, uint32_t *files)
+{
+    WCHAR pattern[MAX_PATH];
+    if (swprintf(pattern, MAX_PATH, L"%ls\\*", dir) < 0) return;
+    WIN32_FIND_DATAW fd;
+    HANDLE f = FindFirstFileExW(pattern, FindExInfoBasic, &fd, FindExSearchNameMatch, NULL, 0);
+    if (f == INVALID_HANDLE_VALUE) return;
+    do {
+        if (!wcscmp(fd.cFileName, L".") || !wcscmp(fd.cFileName, L"..")) continue;
+        if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            WCHAR sub[MAX_PATH];
+            if (depth > 0 && swprintf(sub, MAX_PATH, L"%ls\\%ls", dir, fd.cFileName) > 0) dir_size(sub, depth - 1, bytes, files);
+        } else {
+            *bytes += ((uint64_t)fd.nFileSizeHigh << 32) | fd.nFileSizeLow;
+            (*files)++;
+        }
+    } while (FindNextFileW(f, &fd));
+    FindClose(f);
+}
+
+static void log_fex_cache(void)
+{
+    char on[8];
+    if (!GetEnvironmentVariableA("FEX_DISKCACHE", on, sizeof(on)) || on[0] != '1') return;
+    WCHAR base[MAX_PATH];
+    DWORD n = GetEnvironmentVariableW(L"LOCALAPPDATA", base, MAX_PATH);
+    if (!n || n >= MAX_PATH - 32) return;
+    wcscat(base, L"\\fex-emu\\DiskCache");
+    uint64_t bytes = 0;
+    uint32_t files = 0;
+    dir_size(base, 3, &bytes, &files);
+    char msg[200];
+    snprintf(msg, sizeof(msg), "gamecache: FEX disk cache at start: %u files, %.1f MB\n", files, bytes / 1048576.0);
+    log_line(msg);
+}
+
 BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)
 {
     (void)inst;
@@ -930,6 +967,7 @@ BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved)
             log_line(cmd);
         }
         install();
+        log_fex_cache();
     } else if (reason == DLL_PROCESS_DETACH) {
         (void)reserved;
         char msg[200];
