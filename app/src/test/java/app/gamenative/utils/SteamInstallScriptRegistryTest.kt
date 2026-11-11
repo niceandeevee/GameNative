@@ -981,10 +981,15 @@ class SteamInstallScriptRegistryTest {
             {
                 "process 1" "%INSTALLDIR%\\Engine\\Extras\\Redist\\en-us\\UEPrereqSetup_x64.exe"
             }
+            "UE3Redist"
+            {
+                "process 1" "%INSTALLDIR%\\Binaries\\Redist\\UE3Redist.exe"
+                "command 1" "-progressonly"
+            }
             """,
         )
 
-        assertEquals(listOf("BothArches", "UnrealPrereqs", "UnrealPrereqsNew"), marked)
+        assertEquals(listOf("BothArches", "UnrealPrereqs", "UnrealPrereqsNew", "UE3Redist"), marked)
     }
 
     @Test
