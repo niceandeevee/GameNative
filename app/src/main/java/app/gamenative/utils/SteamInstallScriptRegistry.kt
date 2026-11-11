@@ -98,7 +98,7 @@ object SteamInstallScriptRegistry {
     private val PROCESS_KEY_PATTERN = Regex("(?i)^process\\s*(\\d+)$")
     private val COMMAND_KEY_PATTERN = Regex("(?i)^command\\s*(\\d+)$")
     private val REDIST_PROCESS = Regex(
-        "(?i)vc_redist|vcredist|msvc|ue4?prereqsetup|dxsetup|dxwebsetup|directx|dotnet|netfx|ndp4|\\.net|xna|physx|oalinst|openal|" +
+        "(?i)vc_redist|vcredist|msvc|ue4?prereqsetup|ue3redist|dxsetup|dxwebsetup|directx|dotnet|netfx|ndp4|\\.net|xna|physx|oalinst|openal|" +
             "eaappinstaller|eadesktop|originsetup|originthinsetup|\\\\__installer\\\\origin\\\\|uplay|ubisoftconnect|" +
             "ubisoft game launcher|rockstar-games-launcher",
     )
