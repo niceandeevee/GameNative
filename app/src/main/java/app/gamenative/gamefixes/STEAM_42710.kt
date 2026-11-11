@@ -52,7 +52,9 @@ import com.winlator.container.Container
  *   thread spent ~75% of every second waiting on them, and Create-a-Class (~50 calls per frame) ran
  *   at ~5 fps with the GPU idle. The DLL forwards all of XInput to Wine's builtins and caches those two
  *   answers (refreshed every 250 ms). With Wine debug logging off it also drops the game's
- *   OutputDebugString prints (each an exception under Wine). The fix puts the file back on each
+ *   OutputDebugString prints (each an exception under Wine). It also ends the game quietly if it
+ *   crashes after it has shut Steam down: quitting from the menu crashed at the very end of the
+ *   game's own shutdown and left a "Fatal Error" console to close. The fix puts the file back on each
  *   launch, so removing it
  *   means dropping these two lines.
  * - No Steam overlay in the game (gameoverlayrenderer disabled for the exe): it is injected into the

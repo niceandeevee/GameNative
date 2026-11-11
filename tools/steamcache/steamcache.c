@@ -21,6 +21,14 @@
  *
  * And the game's .iwd archives get a self-checking read-ahead cache (iwdcache.c, iwdhooks.c): Black
  * Ops reads them in 512-byte pieces with a seek before each, ~270,000 calls at startup.
+ *
+ * Finally, a clean exit after quitting: under Wine, Black Ops crashes at the very end of its own
+ * shutdown. It has already shut Steam down and unloaded every fastfile ("PMem_Free( ..., High )" is
+ * the last console line, cut off mid-word), and then its crash handler opens a "Fatal Error" console
+ * the player has to close. Once the game has shut Steam down, a crash (access violation, illegal
+ * instruction and the like) in the game process ends it quietly with exit code 0 instead. Faults
+ * raised inside kernel32/kernelbase are left alone, because Wine's IsBadReadPtr-style probes there
+ * raise and handle access violations themselves. While Steam is up, nothing changes.
  */
 #include <windows.h>
 #include <stdint.h>
@@ -142,6 +150,65 @@ static void drop_debug_prints_when_logging_off(void)
     }
 }
 
+/* --- Clean exit when the game crashes after it has shut Steam down ------------------------------ */
+
+typedef struct {
+    uintptr_t base, end;
+} module_range;
+
+static module_range probe_modules[2]; /* kernelbase, kernel32 */
+
+static module_range range_of(const char *name)
+{
+    module_range r = {0, 0};
+    unsigned char *base = (unsigned char *)GetModuleHandleA(name);
+    if (!base) return r;
+    IMAGE_DOS_HEADER *dos = (IMAGE_DOS_HEADER *)base;
+    IMAGE_NT_HEADERS *nt = (IMAGE_NT_HEADERS *)(base + dos->e_lfanew);
+    r.base = (uintptr_t)base;
+    r.end = r.base + nt->OptionalHeader.SizeOfImage;
+    return r;
+}
+
+static int fatal_code(DWORD code)
+{
+    switch (code) {
+    case EXCEPTION_ACCESS_VIOLATION:
+    case EXCEPTION_IN_PAGE_ERROR:
+    case EXCEPTION_ILLEGAL_INSTRUCTION:
+    case EXCEPTION_PRIV_INSTRUCTION:
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:
+    case EXCEPTION_STACK_OVERFLOW:
+    case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+static LONG CALLBACK quit_crash_handler(EXCEPTION_POINTERS *info)
+{
+    const EXCEPTION_RECORD *rec = info->ExceptionRecord;
+    if (!fatal_code(rec->ExceptionCode)) return EXCEPTION_CONTINUE_SEARCH;
+    /* Only once Steam was up and the game has shut it down: that happens only when it quits. */
+    if (!steam_user_fn || steam_alive()) return EXCEPTION_CONTINUE_SEARCH;
+    uintptr_t at = (uintptr_t)rec->ExceptionAddress;
+    for (int i = 0; i < 2; i++)
+        if (at >= probe_modules[i].base && at < probe_modules[i].end) return EXCEPTION_CONTINUE_SEARCH;
+
+    /* Straight to Wine's log: OutputDebugString may have been turned into a no-op above. */
+    int(__cdecl * dbg_output)(const char *) =
+        (int(__cdecl *)(const char *))(void (*)(void))GetProcAddress(GetModuleHandleA("ntdll.dll"), "__wine_dbg_output");
+    if (dbg_output) {
+        char line[160];
+        wsprintfA(line, "steamcache: game crashed after quitting (code %08lx at %p); ending it cleanly\n",
+                  (unsigned long)rec->ExceptionCode, rec->ExceptionAddress);
+        dbg_output(line);
+    }
+    TerminateProcess(GetCurrentProcess(), 0);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
 static DWORD WINAPI patch_thread(void *unused)
 {
     (void)unused;
@@ -177,6 +244,10 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, void *reserved)
          * exists and none can be inside the functions while their first bytes are rewritten. */
         drop_debug_prints_when_logging_off();
         install_iwd_cache();
+        probe_modules[0] = range_of("kernelbase.dll");
+        probe_modules[1] = range_of("kernel32.dll");
+        /* First in line, so it runs before the game's own handlers turn the crash into a dialog. */
+        AddVectoredExceptionHandler(1, quit_crash_handler);
         HANDLE thread = CreateThread(NULL, 0, patch_thread, NULL, 0, NULL);
         if (thread) CloseHandle(thread);
     }
