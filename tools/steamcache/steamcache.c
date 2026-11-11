@@ -186,25 +186,61 @@ static int fatal_code(DWORD code)
     }
 }
 
+/* Straight to Wine's log (the app's log): OutputDebugString may have been turned into a no-op above. */
+static int(__cdecl *dbg_output)(const char *);
+
+/* Names where a crash happened (module and offset, thread, and for an access violation what was
+ * touched), so a crash during play can be traced from an ordinary app log. At most 64 per session. */
+static volatile LONG crashes_logged;
+
+static void log_crash(const EXCEPTION_RECORD *rec, const char *what)
+{
+    if (!dbg_output || InterlockedIncrement(&crashes_logged) > 64) return;
+    char module[MAX_PATH] = "?";
+    HMODULE m = NULL;
+    uintptr_t at = (uintptr_t)rec->ExceptionAddress;
+    if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                           (LPCSTR)rec->ExceptionAddress, &m) &&
+        m) {
+        char path[MAX_PATH];
+        DWORD n = GetModuleFileNameA(m, path, sizeof(path));
+        if (n && n < sizeof(path)) {
+            const char *name = path + n;
+            while (name > path && name[-1] != '\\' && name[-1] != '/') name--;
+            lstrcpynA(module, name, sizeof(module));
+        }
+    }
+    char access[64] = "";
+    if (rec->ExceptionCode == EXCEPTION_ACCESS_VIOLATION && rec->NumberParameters >= 2)
+        wsprintfA(access, ", %s %08lx", rec->ExceptionInformation[0] == 1 ? "writing" : rec->ExceptionInformation[0] == 8 ? "executing" : "reading",
+                  (unsigned long)rec->ExceptionInformation[1]);
+    char line[400];
+    wsprintfA(line, "steamcache: %s: exception %08lx at %s+0x%lx (%p), thread %04lx%s\n", what,
+              (unsigned long)rec->ExceptionCode, module, (unsigned long)(m ? at - (uintptr_t)m : at),
+              rec->ExceptionAddress, (unsigned long)GetCurrentThreadId(), access);
+    dbg_output(line);
+}
+
 static LONG CALLBACK quit_crash_handler(EXCEPTION_POINTERS *info)
 {
     const EXCEPTION_RECORD *rec = info->ExceptionRecord;
-    if (!fatal_code(rec->ExceptionCode)) return EXCEPTION_CONTINUE_SEARCH;
-    /* Only once Steam was up and the game has shut it down: that happens only when it quits. */
-    if (!steam_user_fn || steam_alive()) return EXCEPTION_CONTINUE_SEARCH;
+    if (!fatal_code(rec->ExceptionCode)) {
+        /* Not ended here, only named: debug breaks, failed security checks and C++ throws. */
+        DWORD code = rec->ExceptionCode;
+        if (code == EXCEPTION_BREAKPOINT || code == 0xC0000409 /* STATUS_STACK_BUFFER_OVERRUN */ ||
+            code == 0xE06D7363 /* MSVC C++ throw */)
+            log_crash(rec, "exception during play (left to the game)");
+        return EXCEPTION_CONTINUE_SEARCH;
+    }
     uintptr_t at = (uintptr_t)rec->ExceptionAddress;
     for (int i = 0; i < 2; i++)
         if (at >= probe_modules[i].base && at < probe_modules[i].end) return EXCEPTION_CONTINUE_SEARCH;
-
-    /* Straight to Wine's log: OutputDebugString may have been turned into a no-op above. */
-    int(__cdecl * dbg_output)(const char *) =
-        (int(__cdecl *)(const char *))(void (*)(void))GetProcAddress(GetModuleHandleA("ntdll.dll"), "__wine_dbg_output");
-    if (dbg_output) {
-        char line[160];
-        wsprintfA(line, "steamcache: game crashed after quitting (code %08lx at %p); ending it cleanly\n",
-                  (unsigned long)rec->ExceptionCode, rec->ExceptionAddress);
-        dbg_output(line);
+    /* Only once Steam was up and the game has shut it down: that happens only when it quits. */
+    if (!steam_user_fn || steam_alive()) {
+        log_crash(rec, "crash during play (left to the game)");
+        return EXCEPTION_CONTINUE_SEARCH;
     }
+    log_crash(rec, "game crashed after quitting; ending it cleanly");
     TerminateProcess(GetCurrentProcess(), 0);
     return EXCEPTION_CONTINUE_SEARCH;
 }
@@ -246,6 +282,7 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, void *reserved)
         install_iwd_cache();
         probe_modules[0] = range_of("kernelbase.dll");
         probe_modules[1] = range_of("kernel32.dll");
+        dbg_output = (int(__cdecl *)(const char *))(void (*)(void))GetProcAddress(GetModuleHandleA("ntdll.dll"), "__wine_dbg_output");
         /* First in line, so it runs before the game's own handlers turn the crash into a dialog. */
         AddVectoredExceptionHandler(1, quit_crash_handler);
         HANDLE thread = CreateThread(NULL, 0, patch_thread, NULL, 0, NULL);
