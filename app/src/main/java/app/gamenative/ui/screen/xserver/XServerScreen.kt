@@ -136,6 +136,7 @@ import app.gamenative.utils.downloader.DXWrapperDownloader
 import app.gamenative.utils.downloader.GraphicsDriverDownloader
 import app.gamenative.utils.NativeXAudioRepair
 import app.gamenative.utils.PreInstallSteps
+import app.gamenative.utils.DotNetBitness
 import app.gamenative.utils.SteamHostAuth
 import app.gamenative.utils.SteamInstallScriptRegistry
 import app.gamenative.utils.RedistComponents
@@ -4034,6 +4035,11 @@ private fun setupXEnvironment(
         SteamInstallScriptRegistry.applyForLaunch(container, appId)
     } catch (e: Exception) {
         Timber.w(e, "Install-script registry apply failed before launch")
+    }
+    try {
+        PreInstallSteps.getGameDir(container)?.let(DotNetBitness::applyForLaunch)
+    } catch (e: Exception) {
+        Timber.w(e, "Setting .NET tools to 32-bit failed before launch")
     }
     if (container.startupSelection == Container.STARTUP_SELECTION_AGGRESSIVE) {
         if (container.containerVariant.equals(Container.BIONIC)){
