@@ -137,6 +137,7 @@ import app.gamenative.utils.downloader.GraphicsDriverDownloader
 import app.gamenative.utils.NativeXAudioRepair
 import app.gamenative.utils.PreInstallSteps
 import app.gamenative.utils.DotNetBitness
+import app.gamenative.utils.UnrealCrashLog
 import app.gamenative.utils.SteamHostAuth
 import app.gamenative.utils.SteamInstallScriptRegistry
 import app.gamenative.utils.RedistComponents
@@ -494,6 +495,9 @@ private val REAL_STEAM_PROCESSES = setOf(
 )
 
 private var realSteamGameExecutable = ""
+
+// When this session's launch began; an Unreal crash report written after it is copied into the app log at exit.
+private var sessionStartedAt = 0L
 
 // Set by getWineStartCommand when it put the container's extra arguments on the game's own command
 // line (real Steam: the wine command is steam.exe's), so they aren't appended to steam.exe too.
@@ -4050,6 +4054,7 @@ private fun setupXEnvironment(
     } catch (e: Exception) {
         Timber.w(e, "Install-script registry apply failed before launch")
     }
+    sessionStartedAt = System.currentTimeMillis()
     try {
         PreInstallSteps.getGameDir(container)?.let(DotNetBitness::applyForLaunch)
     } catch (e: Exception) {
@@ -4707,6 +4712,16 @@ private fun exit(
     if (!isExiting.compareAndSet(false, true)) {
         Timber.i("Exit already in progress, ignoring duplicate request")
         return
+    }
+
+    if (sessionStartedAt > 0L) {
+        val since = sessionStartedAt
+        sessionStartedAt = 0L
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                PreInstallSteps.getGameDir(container)?.let { UnrealCrashLog.logRecentCrash(it, since) }
+            }.onFailure { Timber.w(it, "Could not read the game's crash log") }
+        }
     }
 
 
