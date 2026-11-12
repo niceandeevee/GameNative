@@ -46,6 +46,38 @@ class SteamInstallScriptRegistryTest {
     }
 
     @Test
+    fun removeRedistAutoruns_dropsInstallerEntriesAndKeepsTheRest() {
+        File(prefixDir, "system.reg").writeText(
+            """
+            WINE REGISTRY Version 2
+            ;; All keys relative to \\Machine
+
+            [Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce] 1762900000
+            #time=1dc0000000000000
+            "UE3Redist"="\\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Viscera\\Binaries\\Redist\\UE3Redist.exe\\" -progressonly"
+            "Keep"="C:\\windows\\notepad.exe"
+
+            [Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Run] 1762900000
+            #time=1dc0000000000000
+            "NetSetup"=str(2):"%TEMP%\\Epic-1\\dotNetFx40_Full_setup.exe /q"
+
+            [Software\\Other] 1762900000
+            "UE3Redist"="C:\\UE3Redist.exe"
+            """.trimIndent() + "\n",
+        )
+
+        assertEquals(2, SteamInstallScriptRegistry.removeRedistAutoruns(prefixDir))
+
+        WineRegistryEditor(File(prefixDir, "system.reg")).use { editor ->
+            assertEquals(null, editor.getStringValue("Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce", "UE3Redist"))
+            assertEquals("C:\\windows\\notepad.exe", editor.getStringValue("Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce", "Keep"))
+            assertEquals(null, editor.getExpandStringValue("Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", "NetSetup"))
+            assertEquals("C:\\UE3Redist.exe", editor.getStringValue("Software\\Other", "UE3Redist"))
+        }
+        assertEquals(0, SteamInstallScriptRegistry.removeRedistAutoruns(prefixDir))
+    }
+
+    @Test
     fun parse_skipsUnsupportedHivesAndKeepsExistingWow6432Node() {
         val entries = SteamInstallScriptRegistry.parse(
             """

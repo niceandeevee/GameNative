@@ -120,6 +120,11 @@ object SteamInstallScriptRegistry {
     fun applyForLaunch(container: Container, appId: String) {
         val prefixDir = File(container.rootDir, ".wine")
         try {
+            removeRedistAutoruns(prefixDir)
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to clear redistributable autoruns")
+        }
+        try {
             writeRedistMarks(prefixDir)
         } catch (e: Exception) {
             Timber.w(e, "Failed to write Steam redistributable marks")
@@ -315,6 +320,59 @@ object SteamInstallScriptRegistry {
             .sortedBy { it.path }
             .toList()
     }
+
+    private val AUTORUN_KEYS = listOf("Run", "RunOnce", "RunServices", "RunServicesOnce")
+        .flatMap { bothViews("Software\\Microsoft\\Windows\\CurrentVersion\\$it") }
+    private val REG_VALUE_LINE = Regex("^\"((?:[^\"\\\\]|\\\\.)*)\"=(?:str\\(2\\):)?\"((?:[^\"\\\\]|\\\\.)*)\"\\s*$")
+
+    /**
+     * Removes Run/RunOnce entries that start a redistributable installer. wineboot runs them at every
+     * prefix start before anything else and waits for them: an installer that was killed half way
+     * (Viscera Cleanup Detail's UE3Redist.exe, which hangs in the .NET 4.0 web setup) re-registers
+     * itself there and then blocks every later launch at "Starting Steam".
+     */
+    internal fun removeRedistAutoruns(prefixDir: File): Int {
+        var removed = 0
+        for (regName in listOf("system.reg", "user.reg")) {
+            val regFile = File(prefixDir, regName)
+            if (!regFile.isFile) continue
+            val found = findRedistAutoruns(regFile)
+            if (found.isEmpty()) continue
+            WineRegistryEditor(regFile).use { editor ->
+                for ((key, name, data) in found) {
+                    editor.removeValue(key, name)
+                    Timber.i("Removed autorun $key\\$name (\"$data\"): it starts a redistributable installer")
+                    removed++
+                }
+            }
+        }
+        return removed
+    }
+
+    private fun findRedistAutoruns(regFile: File): List<Triple<String, String, String>> {
+        val wanted = AUTORUN_KEYS.map { it.lowercase() }.toSet()
+        val found = mutableListOf<Triple<String, String, String>>()
+        var currentKey: String? = null
+        regFile.bufferedReader().useLines { lines ->
+            for (line in lines) {
+                if (line.startsWith("[")) {
+                    val raw = line.substring(1, line.indexOf(']').takeIf { it > 0 } ?: line.length)
+                    // the key as the file spells it: the editor matches key names case-sensitively
+                    val key = unescapeReg(raw)
+                    currentKey = key.takeIf { it.lowercase() in wanted }
+                    continue
+                }
+                val key = currentKey ?: continue
+                val match = REG_VALUE_LINE.find(line) ?: continue
+                val name = unescapeReg(match.groupValues[1])
+                val data = unescapeReg(match.groupValues[2])
+                if (namesRedist(data)) found += Triple(key, name, data)
+            }
+        }
+        return found
+    }
+
+    private fun unescapeReg(text: String): String = text.replace("\\\"", "\"").replace("\\\\", "\\")
 
     /** A re-extracted prefix template brings fresh registry files; every mark stamp must go with them. */
     fun clearPrefixStamps(prefixDir: File) {
