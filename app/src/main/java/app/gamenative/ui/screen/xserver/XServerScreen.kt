@@ -470,6 +470,19 @@ private fun windowIsInstallExecutable(window: Window, installDir: String): Boole
     }
 }
 
+private val SETUP_PROGRAM_NAME = Regex("(?i)setup|redist|install|unins|eula")
+
+/**
+ * Whether [window] belongs to a setup tool (UnSetup.exe, RKSetup.exe, UE3Redist.exe, vcredist...).
+ * Steam runs these from the game folder before it starts the game itself, so one of them closing
+ * doesn't mean the game has ended: Viscera Cleanup Detail's session was shut down when RKSetup.exe
+ * closed, before Steam could start UDK.exe. The launch executable itself always counts.
+ */
+private fun windowIsSetupProgram(window: Window): Boolean =
+    listOf(window.name, window.className).any { candidate ->
+        candidate.split('\u0000').any { it.isNotBlank() && SETUP_PROGRAM_NAME.containsMatchIn(normalizeProcessName(it)) }
+    }
+
 private val REAL_STEAM_PROCESSES = setOf(
     "steam",
     "steamerrorreporter",
@@ -968,6 +981,7 @@ fun XServerScreen(
         )
         if (!windowMatchesExecutable(window, targetExecutable) &&
             !(ContainerUtils.extractGameSourceFromContainerId(appId) == GameSource.STEAM &&
+                !windowIsSetupProgram(window) &&
                 windowIsInstallExecutable(window, runCatching { SteamService.getAppDirPath(gameId) }.getOrDefault("")))
         ) {
             return
