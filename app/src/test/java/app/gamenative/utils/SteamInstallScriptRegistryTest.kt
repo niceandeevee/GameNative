@@ -54,7 +54,7 @@ class SteamInstallScriptRegistryTest {
 
             [Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce] 1762900000
             #time=1dc0000000000000
-            "UE3Redist"="\\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Viscera\\Binaries\\Redist\\UE3Redist.exe\\" -progressonly"
+            "UE3Redist"="\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Viscera\\Binaries\\Redist\\UE3Redist.exe\" -progressonly"
             "Keep"="C:\\windows\\notepad.exe"
 
             [Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Run] 1762900000
