@@ -157,6 +157,7 @@ typedef struct {
 } module_range;
 
 static module_range probe_modules[2]; /* kernelbase, kernel32 */
+static module_range ntdll_range;
 
 static module_range range_of(const char *name)
 {
@@ -193,54 +194,110 @@ static int(__cdecl *dbg_output)(const char *);
  * touched), so a crash during play can be traced from an ordinary app log. At most 64 per session. */
 static volatile LONG crashes_logged;
 
-static void log_crash(const EXCEPTION_RECORD *rec, const char *what)
+/* "module+0xoffset" for an address, or the bare address outside any module. */
+static void describe_address(uintptr_t at, char *out, int size)
 {
-    if (!dbg_output || InterlockedIncrement(&crashes_logged) > 64) return;
-    char module[MAX_PATH] = "?";
     HMODULE m = NULL;
-    uintptr_t at = (uintptr_t)rec->ExceptionAddress;
     if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                           (LPCSTR)rec->ExceptionAddress, &m) &&
+                           (LPCSTR)at, &m) &&
         m) {
         char path[MAX_PATH];
         DWORD n = GetModuleFileNameA(m, path, sizeof(path));
         if (n && n < sizeof(path)) {
             const char *name = path + n;
             while (name > path && name[-1] != '\\' && name[-1] != '/') name--;
-            lstrcpynA(module, name, sizeof(module));
+            wsprintfA(out, "%s+0x%lx", name, (unsigned long)(at - (uintptr_t)m));
+            return;
         }
     }
+    wsprintfA(out, "%08lx", (unsigned long)at);
+    (void)size;
+}
+
+static int in_probe_module(uintptr_t at)
+{
+    for (int i = 0; i < 2; i++)
+        if (at >= probe_modules[i].base && at < probe_modules[i].end) return 1;
+    return 0;
+}
+
+/* A field of this thread's TIB (fs:[offset]); the intrinsic trips -Warray-bounds in mingw's headers. */
+static uintptr_t read_tib(uintptr_t offset)
+{
+    uintptr_t value;
+    __asm__ volatile("movl %%fs:(%1), %0" : "=r"(value) : "r"(offset));
+    return value;
+}
+
+/* Return addresses on the stack that lead back out of kernel32/kernelbase: for a fault inside a
+ * Windows function, the first of them is where the game called it. Reads only within this thread's
+ * stack (TEB StackLimit..StackBase). */
+static void game_callers(const CONTEXT *ctx, char *out, int size)
+{
+    out[0] = 0;
+    uintptr_t base = read_tib(0x04), limit = read_tib(0x08);
+    uintptr_t sp = ctx->Esp;
+    if (sp < limit || sp >= base) return;
+    int found = 0, len = 0;
+    for (uintptr_t p = sp; p + 4 <= base && p < sp + 256 * 4 && found < 3; p += 4) {
+        uintptr_t value = *(const uintptr_t *)p;
+        if (value < 0x10000 || in_probe_module(value) || (value >= ntdll_range.base && value < ntdll_range.end)) continue;
+        HMODULE m = NULL;
+        if (!GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                (LPCSTR)value, &m) || !m)
+            continue;
+        char where[MAX_PATH + 16];
+        describe_address(value, where, sizeof(where));
+        if (len + lstrlenA(where) + 4 >= size) break;
+        len += wsprintfA(out + len, "%s%s", found ? ", " : ", called from ", where);
+        found++;
+    }
+}
+
+static void log_crash(const EXCEPTION_POINTERS *info, const char *what)
+{
+    const EXCEPTION_RECORD *rec = info->ExceptionRecord;
+    if (!dbg_output || InterlockedIncrement(&crashes_logged) > 64) return;
+    char where[MAX_PATH + 16];
+    describe_address((uintptr_t)rec->ExceptionAddress, where, sizeof(where));
     char access[64] = "";
     if (rec->ExceptionCode == EXCEPTION_ACCESS_VIOLATION && rec->NumberParameters >= 2)
         wsprintfA(access, ", %s %08lx", rec->ExceptionInformation[0] == 1 ? "writing" : rec->ExceptionInformation[0] == 8 ? "executing" : "reading",
                   (unsigned long)rec->ExceptionInformation[1]);
-    char line[400];
-    wsprintfA(line, "steamcache: %s: exception %08lx at %s+0x%lx (%p), thread %04lx%s\n", what,
-              (unsigned long)rec->ExceptionCode, module, (unsigned long)(m ? at - (uintptr_t)m : at),
-              rec->ExceptionAddress, (unsigned long)GetCurrentThreadId(), access);
+    char callers[3 * (MAX_PATH + 16) + 32] = "";
+    uintptr_t at = (uintptr_t)rec->ExceptionAddress;
+    int in_system = in_probe_module(at) || (at >= ntdll_range.base && at < ntdll_range.end);
+    if (in_system && info->ContextRecord) game_callers(info->ContextRecord, callers, sizeof(callers));
+    char line[1400];
+    wsprintfA(line, "steamcache: %s: exception %08lx at %s (%p), thread %04lx%s%s\n", what,
+              (unsigned long)rec->ExceptionCode, where, rec->ExceptionAddress, (unsigned long)GetCurrentThreadId(), access, callers);
     dbg_output(line);
+}
+
+/* Exceptions raised as part of normal running: debug prints, thread names, Wine's 32-bit callback
+ * returns, and C++ throws (Black Ops throws a few while loading). */
+static int routine_code(DWORD code)
+{
+    return code == 0x40010006 /* DBG_PRINTEXCEPTION_C */ || code == 0x4001000A /* DBG_PRINTEXCEPTION_WIDE_C */ ||
+           code == 0x406D1388 /* MS_VC thread name */ || code == 0x80000026 /* STATUS_LONGJUMP */ ||
+           code == 0xE06D7363 /* MSVC C++ throw */;
 }
 
 static LONG CALLBACK quit_crash_handler(EXCEPTION_POINTERS *info)
 {
     const EXCEPTION_RECORD *rec = info->ExceptionRecord;
-    if (!fatal_code(rec->ExceptionCode)) {
-        /* Not ended here, only named: debug breaks, failed security checks and C++ throws. */
-        DWORD code = rec->ExceptionCode;
-        if (code == EXCEPTION_BREAKPOINT || code == 0xC0000409 /* STATUS_STACK_BUFFER_OVERRUN */ ||
-            code == 0xE06D7363 /* MSVC C++ throw */)
-            log_crash(rec, "exception during play (left to the game)");
+    DWORD code = rec->ExceptionCode;
+    if (routine_code(code)) return EXCEPTION_CONTINUE_SEARCH;
+    int in_probe = in_probe_module((uintptr_t)rec->ExceptionAddress);
+    /* Only once Steam was up and the game has shut it down (that happens only when it quits), and
+     * never for a fault inside kernel32/kernelbase, where Wine's pointer probes raise and catch their
+     * own: everything else is only named in the log and left to the game. */
+    if (!fatal_code(code) || in_probe || !steam_user_fn || steam_alive()) {
+        log_crash(info, in_probe ? "exception inside kernel32/kernelbase during play (left to the game)"
+                                 : "exception during play (left to the game)");
         return EXCEPTION_CONTINUE_SEARCH;
     }
-    uintptr_t at = (uintptr_t)rec->ExceptionAddress;
-    for (int i = 0; i < 2; i++)
-        if (at >= probe_modules[i].base && at < probe_modules[i].end) return EXCEPTION_CONTINUE_SEARCH;
-    /* Only once Steam was up and the game has shut it down: that happens only when it quits. */
-    if (!steam_user_fn || steam_alive()) {
-        log_crash(rec, "crash during play (left to the game)");
-        return EXCEPTION_CONTINUE_SEARCH;
-    }
-    log_crash(rec, "game crashed after quitting; ending it cleanly");
+    log_crash(info, "game crashed after quitting; ending it cleanly");
     TerminateProcess(GetCurrentProcess(), 0);
     return EXCEPTION_CONTINUE_SEARCH;
 }
@@ -282,6 +339,7 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, void *reserved)
         install_iwd_cache();
         probe_modules[0] = range_of("kernelbase.dll");
         probe_modules[1] = range_of("kernel32.dll");
+        ntdll_range = range_of("ntdll.dll");
         dbg_output = (int(__cdecl *)(const char *))(void (*)(void))GetProcAddress(GetModuleHandleA("ntdll.dll"), "__wine_dbg_output");
         /* First in line, so it runs before the game's own handlers turn the crash into a dialog. */
         AddVectoredExceptionHandler(1, quit_crash_handler);
