@@ -448,6 +448,35 @@ private fun windowMatchesExecutable(window: Window, targetExecutable: String): B
 
 // Basenames (normalized, no ".exe") of the programs in a game's install folder, by folder.
 private val installExecutablesCache = java.util.concurrent.ConcurrentHashMap<String, Set<String>>()
+private val installExecutablesLoading = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+
+/**
+ * The .exe names in [installDir] (up to 3 folders deep), or null while they are still being listed.
+ * Never lists on the caller's thread: window callbacks run on the X server thread while it holds the
+ * server lock, and listing a large game folder there (Viscera Cleanup Detail) took over 10 s, which
+ * blocked touch and controller input on the main thread until Android killed the app (ANR). The list
+ * is started at launch ([prewarmInstallExecutables]), so it is normally ready before any window closes.
+ */
+private fun installExecutables(installDir: String): Set<String>? {
+    installExecutablesCache[installDir]?.let { return it }
+    if (installExecutablesLoading.add(installDir)) {
+        Thread({
+            val exes = runCatching {
+                File(installDir).walkTopDown().maxDepth(4)
+                    .filter { it.isFile && it.name.endsWith(".exe", ignoreCase = true) }
+                    .map { normalizeProcessName(it.name) }
+                    .toSet()
+            }.getOrDefault(emptySet())
+            installExecutablesCache[installDir] = exes
+            installExecutablesLoading.remove(installDir)
+        }, "install-exe-scan").apply { isDaemon = true }.start()
+    }
+    return null
+}
+
+private fun prewarmInstallExecutables(installDir: String) {
+    if (installDir.isNotBlank()) installExecutables(installDir)
+}
 
 /**
  * Whether [window] belongs to a program shipped with the game, found by its window name or class
@@ -457,14 +486,7 @@ private val installExecutablesCache = java.util.concurrent.ConcurrentHashMap<Str
  */
 private fun windowIsInstallExecutable(window: Window, installDir: String): Boolean {
     if (installDir.isBlank()) return false
-    val exes = installExecutablesCache.getOrPut(installDir) {
-        runCatching {
-            File(installDir).walkTopDown().maxDepth(4)
-                .filter { it.isFile && it.name.endsWith(".exe", ignoreCase = true) }
-                .map { normalizeProcessName(it.name) }
-                .toSet()
-        }.getOrDefault(emptySet())
-    }
+    val exes = installExecutables(installDir) ?: return false
     if (exes.isEmpty()) return false
     return listOf(window.name, window.className).any { candidate ->
         candidate.split('\u0000').any { it.isNotBlank() && normalizeProcessName(it) in exes }
@@ -4055,6 +4077,9 @@ private fun setupXEnvironment(
         Timber.w(e, "Install-script registry apply failed before launch")
     }
     sessionStartedAt = System.currentTimeMillis()
+    if (ContainerUtils.extractGameSourceFromContainerId(appId) == GameSource.STEAM) {
+        runCatching { prewarmInstallExecutables(SteamService.getAppDirPath(ContainerUtils.extractGameIdFromContainerId(appId))) }
+    }
     try {
         PreInstallSteps.getGameDir(container)?.let(DotNetBitness::applyForLaunch)
     } catch (e: Exception) {

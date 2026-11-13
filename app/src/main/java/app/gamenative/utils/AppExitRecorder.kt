@@ -109,6 +109,7 @@ object AppExitRecorder {
                 }
                 stored.put(entry)
                 Timber.w("AppExitRecorder: previous process ended: %s %s", entry.optString("reason"), entry.optString("description"))
+                if (info.reason in HARD_REASONS) copyToDownloads(context, entry, trace)
             }
             val kept = JSONArray()
             val start = (stored.length() - MAX_RECORDS).coerceAtLeast(0)
@@ -118,6 +119,38 @@ object AppExitRecorder {
             writeLastSeen(lastSeenFile, fresh.last().timestamp)
         } catch (e: Exception) {
             Timber.w(e, "AppExitRecorder: failed to record exit reasons")
+        }
+    }
+
+    /**
+     * Puts a report of a hard exit (ANR, native crash, low-memory kill, ...) in the public
+     * Download/GameNative folder next to the crash reports. Those exits never reach the Java crash
+     * handler, so without this the crash-report folder stays unchanged after the app was killed.
+     */
+    private fun copyToDownloads(context: Context, entry: JSONObject, trace: String?) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        try {
+            val stamp = java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", java.util.Locale.US)
+                .format(java.util.Date(entry.optLong("timestamp")))
+            val text = buildString {
+                appendLine("GameNative ended: ${entry.optString("reason")} at $stamp")
+                appendLine("Description: ${entry.optString("description")}")
+                appendLine("Status: ${entry.optInt("status")}, PSS: ${entry.optLong("pssKb")} kB, RSS: ${entry.optLong("rssKb")} kB")
+                if (trace != null) {
+                    appendLine()
+                    append(trace)
+                }
+            }
+            val values = android.content.ContentValues().apply {
+                put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, "gamenative_${entry.optString("reason").lowercase()}_$stamp.txt")
+                put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_DOWNLOADS + "/GameNative")
+            }
+            val resolver = context.contentResolver
+            val uri = resolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return
+            resolver.openOutputStream(uri)?.use { it.write(text.toByteArray()) }
+        } catch (e: Exception) {
+            Timber.w(e, "AppExitRecorder: could not copy the exit report to Downloads")
         }
     }
 
