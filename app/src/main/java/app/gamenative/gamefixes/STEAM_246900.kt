@@ -14,11 +14,18 @@ import app.gamenative.data.GameSource
  *   Vector and memcpy TSO stay off, as in the INTERMEDIATE preset (the app's default), to keep most of the speed.
  *   Set only when the user hasn't set these variables for the container themselves.
  * - FEX's disk cache of translated code, so later launches don't translate the same code again.
+ * - No Steam overlay in the game (gameoverlayrenderer disabled for UDK.exe and RUSTClientProcess.exe, as for
+ *   Black Ops). Steam injects it into UDK.exe, where it hooks D3D9/D3D11/DXGI; in the sessions that froze, its
+ *   64-bit UI process (gameoverlayui64.exe) started, Steam's error reporter followed a second later, and a game
+ *   thread then sat on the process heap's lock, held by no thread ("heap.cs ... blocked by 0000"), until
+ *   the game died. The overlay can't be opened from a touch screen anyway.
  */
 val STEAM_Fix_246900: KeyedGameFix = KeyedCompositeGameFix(
     gameSource = GameSource.STEAM,
     gameId = "246900",
     fixes = listOf(
+        WineAppDefaultsFix("UDK.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
+        WineAppDefaultsFix("RUSTClientProcess.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
         WineEnvVarFix(
             mapOf(
                 "FEX_TSOENABLED" to "1",
