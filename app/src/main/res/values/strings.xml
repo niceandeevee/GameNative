@@ -12,6 +12,7 @@
     <string name="steam_install_not_enough_space">The app being installed needs %1$s of space but there is only %2$s left on this device</string>
     <string name="steam_cancel_download_message">Are you sure you want to cancel the download of the app?</string>
     <string name="steam_delete_download_message">Delete all downloaded data for this game?</string>
+    <string name="library_cancel_download_keep_game_message">Stop the download for %1$s? The installed game is kept.</string>
     <string name="steam_imagefs_download_install_title">Download &amp; Install ImageFS</string>
     <string name="steam_imagefs_download_install_message">The Ubuntu image needs to be downloaded and installed before being able to edit the configuration. This operation might take a few minutes. Would you like to continue?</string>
     <string name="steam_imagefs_install_title">Install ImageFS</string>
