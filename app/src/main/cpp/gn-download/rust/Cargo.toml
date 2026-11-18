@@ -40,5 +40,5 @@ lzma-rs = "0.3"
 
 [profile.release]
 codegen-units = 1
-lto = "thin"
+lto = "fat"
 strip = "symbols"

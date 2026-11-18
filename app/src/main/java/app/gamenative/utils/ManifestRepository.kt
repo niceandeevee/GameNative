@@ -15,7 +15,11 @@ import okhttp3.Request
 import timber.log.Timber
 
 object ManifestRepository {
-    private const val ONE_DAY_MS = 24 * 60 * 60 * 1000L
+    // How long a fetched list of downloadable components (FEX, Proton, DXVK, drivers) is served before it is
+    // fetched again. GameNative adds builds during the day (FEX 2611-gn-7 appeared about 18 h after the
+    // copy a phone had fetched), and a stale copy is only refreshed in the background, so a new entry shows
+    // up one app start after this expires.
+    private const val REFRESH_AFTER_MS = 6 * 60 * 60 * 1000L
     private const val MANIFEST_URL = "https://raw.githubusercontent.com/utkarshdalal/GameNative/refs/heads/master/manifest.json"
     private val json = Json { ignoreUnknownKeys = true }
     private val refreshScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -32,7 +36,7 @@ object ManifestRepository {
         val cachedJson = PrefManager.componentManifestJson
         val cachedManifest = parseManifest(cachedJson) ?: ManifestData.empty()
         val lastFetchedAt = PrefManager.componentManifestFetchedAt
-        val isStale = System.currentTimeMillis() - lastFetchedAt >= ONE_DAY_MS
+        val isStale = System.currentTimeMillis() - lastFetchedAt >= REFRESH_AFTER_MS
 
         if (cachedJson.isNotEmpty() && !isStale) {
             return cachedManifest
@@ -50,7 +54,7 @@ object ManifestRepository {
 
     private suspend fun refresh(): ManifestData? = refreshLock.withLock {
         if (PrefManager.componentManifestJson.isNotEmpty() &&
-            System.currentTimeMillis() - PrefManager.componentManifestFetchedAt < ONE_DAY_MS
+            System.currentTimeMillis() - PrefManager.componentManifestFetchedAt < REFRESH_AFTER_MS
         ) {
             return@withLock parseManifest(PrefManager.componentManifestJson)
         }
