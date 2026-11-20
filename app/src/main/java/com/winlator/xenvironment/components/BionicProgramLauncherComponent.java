@@ -109,6 +109,9 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
 
     private Runnable preUnpack;
     public void setPreUnpack(Runnable r) { this.preUnpack = r; }
+    // Runs after each guest launch, with the guest's own wine already spawned.
+    private Runnable onGuestStarted;
+    public void setOnGuestStarted(Runnable r) { this.onGuestStarted = r; }
     @Override
     public void start() {
         synchronized (lock) {
@@ -120,6 +123,7 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
             if (preUnpack != null) preUnpack.run();
             pid = execGuestProgram();
             Log.d("BionicProgramLauncherComponent", "Process " + pid + " started");
+            if (pid != -1 && onGuestStarted != null) onGuestStarted.run();
             SteamService.setKeepAlive(true);
         }
     }
