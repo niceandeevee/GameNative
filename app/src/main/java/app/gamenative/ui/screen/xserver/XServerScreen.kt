@@ -4148,6 +4148,17 @@ private fun setupXEnvironment(
     if (!dllOverrides.contains("winemenubuilder")) {
         envVars.put("WINEDLLOVERRIDES", if (dllOverrides.isEmpty()) "winemenubuilder.exe=d" else "$dllOverrides;winemenubuilder.exe=d")
     }
+    // No Steam overlay in any game launched through the real Steam client. Steam injects
+    // gameoverlayrenderer(64).dll into the game, where it hooks every graphics API and costs time each
+    // frame; under Wine it hung or crashed Black Ops, Viscera Cleanup Detail and others (seven games had
+    // it turned off one by one), and it can't be opened from a touch screen. A container that needs it
+    // can name gameoverlayrenderer in its own WINEDLLOVERRIDES (e.g. gameoverlayrenderer=n), which wins.
+    if (container.isLaunchRealSteam) {
+        val overrides = envVars.get("WINEDLLOVERRIDES")
+        if (!overrides.contains("gameoverlayrenderer", ignoreCase = true)) {
+            envVars.put("WINEDLLOVERRIDES", "$overrides;gameoverlayrenderer,gameoverlayrenderer64=d")
+        }
+    }
     envVars.remove("DXVK_FRAME_RATE")
     envVars.remove("VKD3D_FRAME_RATE")
     if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
