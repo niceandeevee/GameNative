@@ -166,6 +166,7 @@ object ContainerUtils {
             useDRI3 = PrefManager.useDRI3,
             hdrEnabled = PrefManager.hdrEnabled,
             gamescopeOutputResolution = PrefManager.gamescopeOutputResolution,
+            gamescopeGuestGl = PrefManager.gamescopeGuestGl,
             useSteamInput = PrefManager.useSteamInput,
             enableXInput = PrefManager.xinputEnabled,
 			enableDInput = PrefManager.dinputEnabled,
@@ -218,6 +219,7 @@ object ContainerUtils {
         PrefManager.useDRI3 = containerData.useDRI3
         PrefManager.hdrEnabled = containerData.hdrEnabled
         PrefManager.gamescopeOutputResolution = containerData.gamescopeOutputResolution
+        PrefManager.gamescopeGuestGl = containerData.gamescopeGuestGl
         PrefManager.disableMouseInput = containerData.disableMouseInput
         PrefManager.externalDisplayInputMode = containerData.externalDisplayMode
         PrefManager.externalDisplaySwap = containerData.externalDisplaySwap
@@ -376,6 +378,10 @@ object ContainerUtils {
             gamescopeOutputResolution = container.getExtra(
                 GamescopeSettings.EXTRA_OUTPUT_RESOLUTION,
                 GamescopeSettings.OUTPUT_RESOLUTION_DEFAULT,
+            ),
+            gamescopeGuestGl = container.getExtra(
+                GamescopeSettings.EXTRA_GUEST_GL,
+                GamescopeSettings.GUEST_GL_DEFAULT,
             ),
             videoMemorySize = videoMemorySize,
             mouseWarpOverride = mouseWarpOverride,
@@ -581,6 +587,7 @@ object ContainerUtils {
         }
         container.putExtra("sharpnessEffect", containerData.sharpnessEffect)
         container.putExtra(GamescopeSettings.EXTRA_OUTPUT_RESOLUTION, containerData.gamescopeOutputResolution)
+        container.putExtra(GamescopeSettings.EXTRA_GUEST_GL, containerData.gamescopeGuestGl)
         container.putExtra("sharpnessLevel", containerData.sharpnessLevel.toString())
         container.putExtra("sharpnessDenoise", containerData.sharpnessDenoise.toString())
         container.putExtra("vibrationIntensity", containerData.vibrationIntensity.coerceIn(0, 100).toString())
@@ -876,6 +883,7 @@ object ContainerUtils {
                 useDRI3 = PrefManager.useDRI3,
                 hdrEnabled = PrefManager.hdrEnabled,
                 gamescopeOutputResolution = PrefManager.gamescopeOutputResolution,
+                gamescopeGuestGl = PrefManager.gamescopeGuestGl,
                 videoMemorySize = PrefManager.videoMemorySize,
                 mouseWarpOverride = PrefManager.mouseWarpOverride,
                 enableXInput = PrefManager.xinputEnabled,
