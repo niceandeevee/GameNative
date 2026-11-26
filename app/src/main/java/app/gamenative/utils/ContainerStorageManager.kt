@@ -485,7 +485,7 @@ object ContainerStorageManager {
             SteamService.getAppDirName(app),
             app.name,
         )
-            .filter { it.isNotBlank() }
+            .filter { SteamService.isSafeAppDirName(it) }
             .distinct()
 
         if (installNames.isEmpty()) return null

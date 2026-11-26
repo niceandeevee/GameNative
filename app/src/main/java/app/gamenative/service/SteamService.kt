@@ -29,6 +29,7 @@ import app.gamenative.data.EncryptedAppTicket
 import app.gamenative.data.GameProcessInfo
 import app.gamenative.data.GameSource
 import app.gamenative.data.LaunchInfo
+import app.gamenative.data.forBranch
 import app.gamenative.data.OwnedGames
 import app.gamenative.data.PostSyncInfo
 import app.gamenative.data.PreferredCopyOption
@@ -1685,6 +1686,19 @@ class SteamService : Service(), IChallengeUrlChanged {
         }
 
         /**
+         * Whether the parent app's own depot entry gives this depot, with content, to a DLC other
+         * than [dlcAppId]. A DLC app's record can list a depot that belongs to a sibling DLC, at a
+         * manifest the parent no longer uses (XCOM: Enemy Unknown: app 209811 lists depot 209812,
+         * which the parent assigns to DLC 209812). The parent's entry is the one the update check
+         * reads, so it has to win or the depot installs at a gid that never matches.
+         */
+        fun parentAssignsDepotToOtherDlc(parentDepot: DepotInfo?, dlcAppId: Int): Boolean {
+            if (parentDepot == null) return false
+            if (parentDepot.dlcAppId == INVALID_APP_ID || parentDepot.dlcAppId == dlcAppId) return false
+            return parentDepot.manifests.isNotEmpty() || parentDepot.encryptedManifests.isNotEmpty()
+        }
+
+        /**
          * Depots eligible for preference-flag computation: delegates to
          * [filterForDownloadableDepots] with both preference flags false
          * so arch and Steam Deck checks become no-ops. This gives us the pool from
@@ -1817,6 +1831,9 @@ class SteamService : Service(), IChallengeUrlChanged {
                         )
                     }
                     .forEach { (depotId, depot) ->
+                        // Checked against the parent's full depot list, not `map`: the owning DLC may be
+                        // unowned or unselected, and the depot still isn't this DLC's to install.
+                        if (parentAssignsDepotToOtherDlc(appInfo.depots[depotId], dlcApp.id)) return@forEach
                         // Add DLC Depots with custom object
                         map[depotId] = DepotInfo(
                             depotId = depot.depotId,
@@ -1838,13 +1855,31 @@ class SteamService : Service(), IChallengeUrlChanged {
             return map
         }
 
+        /**
+         * True when [name] is a folder below an install root. Steam app info can carry an
+         * installdir such as "." (app 3082170), which would resolve to the install root itself.
+         */
+        fun isSafeAppDirName(name: String): Boolean {
+            val segments = name.split('/', '\\').filter { it.isNotBlank() }
+            return segments.isNotEmpty() && segments.none { it.trim() == "." || it.trim() == ".." }
+        }
+
         fun getAppDirName(app: SteamApp?): String {
             // The folder name, if it got made
-            var appName = app?.config?.installDir.orEmpty()
-            if (appName.isEmpty()) {
-                appName = app?.name.orEmpty()
+            val installDir = app?.config?.installDir.orEmpty()
+            if (isSafeAppDirName(installDir)) return installDir
+            val name = app?.name.orEmpty()
+            if (isSafeAppDirName(name)) return name
+            return app?.id?.toString().orEmpty()
+        }
+
+        /** True when [dir] is one of [installRoots] or a parent of one: never a single game's folder. */
+        fun isInstallRootOrAbove(dir: File, installRoots: List<String> = allInstallPaths): Boolean {
+            val target = runCatching { dir.canonicalFile }.getOrElse { dir.absoluteFile }.toPath()
+            return installRoots.any { root ->
+                val rootPath = runCatching { File(root).canonicalFile }.getOrElse { File(root).absoluteFile }.toPath()
+                rootPath.startsWith(target)
             }
-            return appName
         }
 
         /**
@@ -1855,7 +1890,7 @@ class SteamService : Service(), IChallengeUrlChanged {
             var firstExisting: String? = null
             for (basePath in installPaths) {
                 for (name in names) {
-                    if (name.isEmpty()) continue
+                    if (!isSafeAppDirName(name)) continue
                     val path = Paths.get(basePath, name)
                     if (Files.isDirectory(path)) {
                         if (MarkerUtils.hasMarker(path.pathString, Marker.DOWNLOAD_COMPLETE_MARKER)) {
@@ -2008,7 +2043,7 @@ class SteamService : Service(), IChallengeUrlChanged {
         fun getInstalledExe(appId: Int): String {
             val appInfo = getAppInfoOf(appId) ?: return ""
 
-            val installDir = appInfo.config.installDir.ifEmpty { appInfo.name }
+            val installDir = getAppDirName(appInfo)
 
             val depots = appInfo.depots.values.filter { d ->
                 !d.sharedInstall && d.isWindowsCompatible
@@ -2016,7 +2051,7 @@ class SteamService : Service(), IChallengeUrlChanged {
             Timber.i("Depots considered: $depots")
 
             /* launch targets (lower-case) */
-            val launchTargets = appInfo.config.launch
+            val launchTargets = appInfo.config.launch.forBranch { getInstalledApp(appId)?.branch }
                 .mapNotNull { it.executable.lowercase() }.toSet() ?: emptySet()
 
             Timber.i("Launch targets from appinfo: $launchTargets")
@@ -2151,11 +2186,17 @@ class SteamService : Service(), IChallengeUrlChanged {
                 val appDirPath = getAppDirPath(appId)
                 val appDir = File(appDirPath)
 
-                if (appDir.exists()) {
-                    MarkerUtils.removeMarker(appDirPath, Marker.DOWNLOAD_COMPLETE_MARKER)
-                }
+                if (isInstallRootOrAbove(appDir)) {
+                    // no app info, or a folder name that points at the root: other games live here
+                    Timber.e("Refusing to delete $appDirPath for app $appId: it is an install root")
+                    false
+                } else {
+                    if (appDir.exists()) {
+                        MarkerUtils.removeMarker(appDirPath, Marker.DOWNLOAD_COMPLETE_MARKER)
+                    }
 
-                NativeTreeDelete.deleteTreeFast(File(appDirPath))
+                    NativeTreeDelete.deleteTreeFast(appDir)
+                }
             }
 
             // Remove from DB
@@ -3195,7 +3236,7 @@ class SteamService : Service(), IChallengeUrlChanged {
                 appInfo.config.launch.filter { launchInfo ->
                     // since configOS was unreliable and configArch was even more unreliable
                     launchInfo.executable.endsWith(".exe", ignoreCase = true)
-                }
+                }.forBranch { getInstalledApp(appId)?.branch }
             }.orEmpty()
         }
 

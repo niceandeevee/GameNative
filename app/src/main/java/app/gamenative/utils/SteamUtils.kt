@@ -682,7 +682,7 @@ object SteamUtils {
                 appendLine("\t\"buildid\"\t\t\"$buildId\"")
 
                 // Use the actual install directory name
-                val actualInstallDir = appInfo.config.installDir.ifEmpty { gameName }
+                val actualInstallDir = appInfo.config.installDir.takeIf { SteamService.isSafeAppDirName(it) } ?: gameName
                 appendLine("\t\"installdir\"\t\t\"${escapeString(actualInstallDir)}\"")
 
                 appendLine("\t\"LastOwner\"\t\t\"0\"")
@@ -771,9 +771,11 @@ object SteamUtils {
         }
     }
 
-    private fun escapeString(input: String?): String {
+    internal fun escapeString(input: String?): String {
         if (input == null) return ""
-        return input.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r")
+        // Backslash first: KeyValues text treats it as the escape character, so a CheckGuid path like
+        // Binaries\Win32\XComGame.exe must be written Binaries\\Win32\\XComGame.exe, as Steam writes it.
+        return input.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r")
     }
 
     private fun calculateDirectorySize(directory: File): Long {
@@ -1237,7 +1239,7 @@ object SteamUtils {
                 // Some games required this path to be setup for detecting dlc, e.g. Vampire Survivors
                 val gameDir = File(SteamService.getAppDirPath(steamAppId))
                 val gameName = gameDir.name
-                val actualInstallDir = appInfo.config.installDir.ifEmpty { gameName }
+                val actualInstallDir = appInfo.config.installDir.takeIf { SteamService.isSafeAppDirName(it) } ?: gameName
                 appendLine()
                 appendLine("[app::paths]")
                 appendLine("$steamAppId=./steamapps/common/$actualInstallDir")

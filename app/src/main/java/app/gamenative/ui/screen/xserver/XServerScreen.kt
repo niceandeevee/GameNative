@@ -4162,7 +4162,6 @@ private fun setupXEnvironment(
     envVars.remove("DXVK_FRAME_RATE")
     envVars.remove("VKD3D_FRAME_RATE")
     if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
-    if (!envVars.has("_JAVA_OPTIONS")) envVars.put("_JAVA_OPTIONS", "-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:-UseZGC")
 
     val graphicsDriverConfig = KeyValueSet(container.getGraphicsDriverConfig())
     if (graphicsDriverConfig.get("version").lowercase(Locale.getDefault()).contains("gen8")) {
