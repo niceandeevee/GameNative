@@ -213,7 +213,7 @@ class KnownInstallScriptStepTest {
 
     @Test
     fun itIsSteamOnlyAndFollowsTheMarker() {
-        assertFalse(KnownInstallScriptStep.appliesTo(container, GameSource.GOG, gameDir.absolutePath))
+        assertFalse(KnownInstallScriptStep.appliesTo(container, GameSource.CUSTOM_GAME, gameDir.absolutePath))
         assertTrue(KnownInstallScriptStep.appliesTo(container, GameSource.STEAM, gameDir.absolutePath))
 
         MarkerUtils.addMarker(gameDir.absolutePath, Marker.KNOWN_INSTALL_SCRIPT_RUN)
