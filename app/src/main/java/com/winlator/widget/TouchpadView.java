@@ -36,6 +36,8 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
     private static final short MAX_TWO_FINGERS_SCROLL_DISTANCE = 350;
     public static final byte MAX_TAP_TRAVEL_DISTANCE = 10;
     public static final short MAX_TAP_MILLISECONDS = 200;
+    // Logcat tag of the touchscreen gesture decisions (finger down/up and why a lift did or didn't click).
+    private static final String GESTURE_TAG = "TouchGesture";
     public static final float CURSOR_ACCELERATION = 1.5f;
     public static final byte CURSOR_ACCELERATION_THRESHOLD = 6;
     private Finger fingerPointerButtonLeft;
@@ -741,6 +743,11 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
         int action = event.getActionMasked();
         int actionIndex = event.getActionIndex();
         int pointerId = event.getPointerId(actionIndex);
+        if (action != MotionEvent.ACTION_MOVE) {
+            Timber.tag(GESTURE_TAG).i("%s id=%d pointers=%d owned=%s fingers=%d multi=%b moved=%b",
+                    MotionEvent.actionToString(action), pointerId, event.getPointerCount(),
+                    gestureOwnedPointerIds, gestureFingerCount, multiFingerGestureUsed, movedBeyondTapThreshold);
+        }
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -1210,6 +1217,7 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
         }
         // Two-finger tap detection
         else if (twoFingerTapPossible && !twoFingerDragging && gestureConfig.getTwoFingerTapEnabled()) {
+            Timber.tag(GESTURE_TAG).i("two-finger tap: %s", gestureConfig.getTwoFingerTapAction());
             // Move cursor to midpoint between the two fingers
             float midX = (twoFingerLastX0 + twoFingerLastX1) / 2f;
             float midY = (twoFingerLastY0 + twoFingerLastY1) / 2f;
@@ -1243,11 +1251,13 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
         stopGestureRefresh();
 
         if (holdMouseButtonTouchActive) {
+            Timber.tag(GESTURE_TAG).i("up: hold-mouse-button touch ended");
             finishHoldMouseButtonTouch();
             return;
         }
 
         if (longPressTriggered) {
+            Timber.tag(GESTURE_TAG).i("up: long press released");
             // Release the long-press action
             longPressActionHeld = releaseHoldAction(longPressActionHeld, gestureConfig.getLongPressAction());
             longPressTriggered = false;
@@ -1260,6 +1270,7 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
         float[] pt = XForm.transformPoint(xform, event.getX(actionIndex), event.getY(actionIndex));
 
         if (isDragging && dragButtonPressed) {
+            Timber.tag(GESTURE_TAG).i("up: drag ended");
             // End drag (release any held drag buttons/keys)
             releasePanKeys();
             releaseAllDragButtons();
@@ -1274,23 +1285,29 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
 
         // Double-tap already sent its clicks on DOWN — skip the tap on UP
         if (doubleTapDetected) {
+            Timber.tag(GESTURE_TAG).i("up: double tap already sent");
             doubleTapDetected = false;
             return;
         }
 
         // Two-finger tap already sent its click on POINTER_UP — skip the tap on UP
         if (twoFingerTapFired) {
+            Timber.tag(GESTURE_TAG).i("up: two-finger tap already sent");
             twoFingerTapFired = false;
             return;
         }
 
         // Three-finger tap already sent its click — skip the tap on UP
         if (threeFingerTapFired) {
+            Timber.tag(GESTURE_TAG).i("up: three-finger tap already sent");
             threeFingerTapFired = false;
             return;
         }
 
         // Simple tap — only if finger stayed within tap tolerance
+        Timber.tag(GESTURE_TAG).i("up: tap=%b (tapEnabled=%b moved=%b dragging=%b action=%s)",
+                gestureConfig.getTapEnabled() && !movedBeyondTapThreshold, gestureConfig.getTapEnabled(),
+                movedBeyondTapThreshold, isDragging, gestureConfig.getTapAction());
         if (gestureConfig.getTapEnabled() && !movedBeyondTapThreshold) {
             if (delayedPress != null) {
                 // If there's a new single tap within 'CLICK_DELAYED_TIME' ms
