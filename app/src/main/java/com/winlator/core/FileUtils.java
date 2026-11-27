@@ -159,25 +159,44 @@ public abstract class FileUtils {
         }
     }
 
+    /**
+     * Deletes a file, a symlink (never followed) or a whole directory tree. Best effort: an entry
+     * that can't be removed doesn't stop the rest from going, and a directory without write or
+     * search permission (as Wine prefixes and game installs can leave) is made writable and tried
+     * again. Returns true only when nothing is left at the path.
+     */
     public static boolean delete(File targetFile) {
         if (targetFile == null) return false;
-        if (targetFile.isDirectory()) {
-            if (!isSymlink(targetFile)) if (!clear(targetFile)) return false;
+        if (targetFile.isDirectory() && !isSymlink(targetFile)) clear(targetFile);
+        if (targetFile.delete()) return true;
+        File parent = targetFile.getParentFile();
+        if (parent != null) {
+            // Removing an entry needs write permission on the directory holding it.
+            parent.setWritable(true, true);
+            parent.setExecutable(true, true);
+            if (targetFile.delete()) return true;
         }
-        return targetFile.delete();
+        return !targetFile.exists() && !isSymlink(targetFile);
     }
 
+    /** Empties a directory, best effort as [delete]; true when every entry went. */
     public static boolean clear(File targetFile) {
         if (targetFile == null) return false;
-        if (targetFile.isDirectory()) {
-            File[] files = targetFile.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (!delete(file)) return false;
-                }
-            }
+        if (!targetFile.isDirectory()) return true;
+        File[] files = targetFile.listFiles();
+        if (files == null) {
+            // Unreadable directory: make it listable and try once more.
+            targetFile.setReadable(true, true);
+            targetFile.setExecutable(true, true);
+            files = targetFile.listFiles();
         }
-        return true;
+        if (files == null) return false;
+        targetFile.setWritable(true, true);
+        boolean allDeleted = true;
+        for (File file : files) {
+            if (!delete(file)) allDeleted = false;
+        }
+        return allDeleted;
     }
 
     public static boolean isEmpty(File targetFile) {
