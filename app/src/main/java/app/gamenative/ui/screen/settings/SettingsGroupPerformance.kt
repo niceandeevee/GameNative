@@ -27,5 +27,17 @@ fun SettingsGroupPerformance() {
                 PrefManager.powerControlDefaultEnabled = it
             },
         )
+
+        var fexCodeCacheEnabled by rememberSaveable { mutableStateOf(PrefManager.fexCodeCacheEnabled) }
+        SettingsSwitch(
+            colors = settingsTileColorsAlt(),
+            state = fexCodeCacheEnabled,
+            title = { Text(stringResource(R.string.settings_performance_fex_code_cache_title)) },
+            subtitle = { Text(stringResource(R.string.settings_performance_fex_code_cache_subtitle)) },
+            onCheckedChange = {
+                fexCodeCacheEnabled = it
+                PrefManager.fexCodeCacheEnabled = it
+            },
+        )
     }
 }

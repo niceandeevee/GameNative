@@ -124,6 +124,7 @@ import app.gamenative.ui.widget.PerformanceHudView
 import app.gamenative.utils.AssetUtils
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.ExtractionFingerprint
+import app.gamenative.utils.FexCodeCaches
 import app.gamenative.utils.downloader.CoreDriverDownloader
 import app.gamenative.utils.protonFixes.CommonControlsV6
 import app.gamenative.utils.CustomGameScanner
@@ -4332,6 +4333,10 @@ private fun setupXEnvironment(
     guestProgramLauncherComponent.setFEXCorePreset(container.fexCorePreset)
 
     guestProgramLauncherComponent.setPreUnpack {
+        // First: the launcher has just stopped every Wine process, and the steps below may start Wine again.
+        if (!bootToContainer && !testGraphics) {
+            FexCodeCaches.buildBeforeLaunch(context, guestProgramLauncherComponent) { false }
+        }
         unpackExecutableFile(
             context = context,
             needsUnpacking = container.isNeedsUnpacking,
@@ -4935,6 +4940,16 @@ private fun exit(
 
     GameNativeDrm.nativeStop()
     PluviaApp.shutdownEnvironment()
+
+    // FEX writes its code maps as it goes and flushes on a normal guest exit. Compile them into code
+    // caches on the device once the environment is down; nothing is uploaded.
+    (frameRating?.context ?: PluviaApp.xServerView?.context)?.applicationContext?.let { appContext ->
+        val sessionLauncher = FexCodeCaches.endSession(container)
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching { FexCodeCaches.afterSession(appContext, container, sessionLauncher) }
+                .onFailure { Timber.w(it, "Code cache compile could not start") }
+        }
+    }
 
     // Bionic-Steam mode brought up libsteamclient.so inside this Android process
     // (see BionicProgramLauncherComponent.bootstrapNativeSteamClient). Tear it
