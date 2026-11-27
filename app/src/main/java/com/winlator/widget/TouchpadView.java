@@ -493,11 +493,19 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
                 if (event.isFromSource(InputDevice.SOURCE_MOUSE)) return true;
+                // ACTION_DOWN starts a new touch: no finger can still be down. A finger left over from a lift
+                // Android never delivered (a pointer an on-screen control took, a system gesture) would keep
+                // the count high for the rest of the session, and the count decides what a lift does: at 2 a
+                // single tap stops clicking, at 3 the cursor stops moving.
+                if (actionMasked == MotionEvent.ACTION_DOWN) dropStaleFingers("new touch");
+                else if (fingers[pointerId] != null) dropStaleFinger(pointerId, "pointer id reused");
                 scrollAccumY = 0;
                 scrolling = false;
                 suppressNextLeftTap = false;
                 fingers[pointerId] = new Finger(event.getX(actionIndex), event.getY(actionIndex));
-                numFingers++;
+                numFingers = countFingers();
+                Timber.tag(GESTURE_TAG).i("touchpad %s id=%d fingers=%d",
+                        MotionEvent.actionToString(actionMasked), pointerId, numFingers);
                 if (simTouchScreen) {
                     if (pointerId == 0) {
                         continueClick = true;
@@ -535,7 +543,7 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
                             } else {
                                 handleFingerUp(fingers[i]);
                                 fingers[i] = null;
-                                numFingers--;
+                                numFingers = countFingers();
                                 if (numFingers == 0) cancelSimulatedTouchPress();
                             }
                         }
@@ -546,15 +554,43 @@ public class TouchpadView extends View implements View.OnCapturedPointerListener
             case MotionEvent.ACTION_POINTER_UP:
                 if (fingers[pointerId] != null) {
                     fingers[pointerId].update(event.getX(actionIndex), event.getY(actionIndex));
+                    Timber.tag(GESTURE_TAG).i("touchpad %s id=%d fingers=%d tap=%b",
+                            MotionEvent.actionToString(actionMasked), pointerId, numFingers, fingers[pointerId].isTap());
                     handleFingerUp(fingers[pointerId]);
                     fingers[pointerId] = null;
-                    numFingers--;
-                    if (numFingers == 0) cancelSimulatedTouchPress();
+                    numFingers = countFingers();
                 }
+                // ACTION_UP is the last finger: any other still recorded is stale.
+                if (actionMasked == MotionEvent.ACTION_UP) dropStaleFingers("last finger lifted");
+                if (numFingers == 0) cancelSimulatedTouchPress();
                 break;
         }
 
         return true;
+    }
+
+    private byte countFingers() {
+        byte count = 0;
+        for (byte i = 0; i < MAX_FINGERS; i++) {
+            if (fingers[i] != null) count++;
+        }
+        return count;
+    }
+
+    /** Forgets a finger whose lift never arrived, releasing any button it holds, without acting on it as a lift. */
+    private void dropStaleFinger(int pointerId, String reason) {
+        Finger stale = fingers[pointerId];
+        if (stale == null) return;
+        Timber.tag(GESTURE_TAG).w("touchpad: dropping stale finger id=%d (%s)", pointerId, reason);
+        cancelPointerButtonLeft(stale);
+        cancelPointerButtonRight(stale);
+        fingers[pointerId] = null;
+        numFingers = countFingers();
+    }
+
+    private void dropStaleFingers(String reason) {
+        for (byte i = 0; i < MAX_FINGERS; i++) dropStaleFinger(i, reason);
+        numFingers = 0;
     }
 
     void cancelTouchInput() {
