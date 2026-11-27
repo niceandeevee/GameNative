@@ -12,6 +12,7 @@
     <string name="steam_install_not_enough_space">The app being installed needs %1$s of space but there is only %2$s left on this device</string>
     <string name="steam_cancel_download_message">Are you sure you want to cancel the download of the app?</string>
     <string name="steam_delete_download_message">Delete all downloaded data for this game?</string>
+    <string name="library_cancel_download_keep_game_message">Stop the download for %1$s? The installed game is kept.</string>
     <string name="steam_imagefs_download_install_title">Download &amp; Install ImageFS</string>
     <string name="steam_imagefs_download_install_message">The Ubuntu image needs to be downloaded and installed before being able to edit the configuration. This operation might take a few minutes. Would you like to continue?</string>
     <string name="steam_imagefs_install_title">Install ImageFS</string>
@@ -753,6 +754,10 @@
     <string name="gamescope_output_resolution">Upscaling Resolution</string>
     <string name="gamescope_output_resolution_device">Device\'s Resolution</string>
     <string name="gamescope_reshade">ReShade Effects</string>
+    <string name="gamescope_guest_gl">OpenGL Driver</string>
+    <string name="gamescope_guest_gl_description">Kopper presents through the compositor, so frame limiting and frame generation reach OpenGL titles. Zink renders into the X server instead.</string>
+    <string name="gamescope_guest_gl_zink">Zink</string>
+    <string name="gamescope_guest_gl_kopper">Kopper</string>
     <string name="gamescope_look_grayscale">Grayscale</string>
     <string name="gamescope_look_invertcolors">Invert Colors</string>
     <string name="gamescope_look_invertbrightness">Invert Brightness</string>
@@ -1029,6 +1034,12 @@
     <string name="container_storage_remove_message">This removes the container for %1$s and frees internal storage. The game files stay installed, but local settings or saves stored inside the Windows environment may be lost.</string>
     <string name="container_storage_remove_success">Removed container for %1$s</string>
     <string name="container_storage_remove_failed">Failed to remove container</string>
+    <string name="container_storage_leftovers_button">Remove %1$d leftover containers (%2$s)</string>
+    <string name="container_storage_leftovers_removing">Removing leftover containers…</string>
+    <string name="container_storage_leftovers_title">Remove leftover containers?</string>
+    <string name="container_storage_leftovers_message">These %1$d containers belong to games that are no longer installed and use %2$s: %3$s.\n\nRemoving them deletes any local saves or settings inside them. Steam Cloud saves are not affected.</string>
+    <string name="container_storage_leftovers_removed">Removed %1$d leftover containers, freed %2$s</string>
+    <string name="container_storage_leftovers_partial">Removed %1$d leftover containers; %2$d could not be removed</string>
     <string name="container_storage_uninstall_button">Uninstall game</string>
     <string name="container_storage_uninstall_title">Uninstall game and container?</string>
     <string name="container_storage_uninstall_message">This uninstalls %1$s, removes its game files, and deletes the linked container.</string>
@@ -1109,6 +1120,8 @@
     <string name="download_failed_title">Download Failed</string>
     <string name="download_failed_message">A required file could not be downloaded. Please check your network connection and try again.</string>
     <string name="install_failed_title">Installation Failed</string>
+    <string name="container_create_failed_title">Could not create the game container</string>
+    <string name="container_create_failed_message">GameNative could not create the folder this game runs in. This usually means the device is out of storage space.\n\n%1$s</string>
     <string name="install_failed_message">System files could not be installed. Please try again. If the problem persists, try a different network or use a VPN.</string>
 
     <!-- PluviaMain: Session Conflicts -->
@@ -2016,7 +2029,7 @@
     <string name="local_mod_folder_single">Select one folder at a time.</string>
     <string name="local_mod_reselect">Select the local content again to continue this import.</string>
     <string name="local_mod_invalid_request">The local mod import request is invalid.</string>
-    <string name="local_mod_too_large">The selected content exceeds the 20 GiB import limit.</string>
+    <string name="local_mod_too_large">The selected content exceeds the 150 GiB import limit.</string>
     <string name="local_mod_uri_payload_too_large">The selected file references are too large to import together. Select their containing folder instead.</string>
     <string name="local_mod_already_importing">This local mod is already being imported.</string>
     <string name="local_mod_import_failed">Failed to import the local mod.</string>

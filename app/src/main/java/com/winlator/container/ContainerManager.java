@@ -205,7 +205,13 @@ public class ContainerManager {
     }
 
     private void removeContainer(Container container) {
-        if (FileUtils.delete(container.getRootDir())) containers.remove(container);
+        File rootDir = container.getRootDir();
+        boolean deleted = FileUtils.delete(rootDir);
+        if (!deleted) {
+            Log.w("Container Manager", "Container " + container.id + " left files behind in " + rootDir);
+        }
+        // The config goes with the rest, so a partly deleted container can't be loaded again either way.
+        containers.remove(container);
     }
 
     public ArrayList<Shortcut> loadShortcuts() {

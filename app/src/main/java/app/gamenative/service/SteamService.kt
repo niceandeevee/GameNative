@@ -12,6 +12,8 @@ import android.os.IBinder
 import android.util.Base64
 import app.gamenative.ui.data.Achievement
 import app.gamenative.ui.util.GameInviteNotificationManager
+import app.gamenative.ui.util.SnackbarManager
+import app.gamenative.service.PicsAppInfo.resolveAppKeyValues
 import app.gamenative.service.callback.GameInviteCallback
 import app.gamenative.service.cloud.CloseSyncTracker
 import app.gamenative.service.handler.GameInviteHandler
@@ -104,6 +106,7 @@ import `in`.dragonbra.javasteam.steam.discovery.FileServerListProvider
 import `in`.dragonbra.javasteam.steam.discovery.ServerQuality
 import `in`.dragonbra.javasteam.steam.handlers.steamapps.GamePlayedInfo
 import `in`.dragonbra.javasteam.steam.handlers.steamapps.License
+import `in`.dragonbra.javasteam.steam.handlers.steamapps.PICSProductInfo
 import `in`.dragonbra.javasteam.steam.handlers.steamapps.PICSRequest
 import `in`.dragonbra.javasteam.steam.handlers.steamapps.SteamApps
 import `in`.dragonbra.javasteam.steam.handlers.steamapps.callback.DepotKeyCallback
@@ -156,6 +159,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.io.path.pathString
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -166,6 +170,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -343,10 +351,17 @@ class SteamService : Service(), IChallengeUrlChanged {
     /** steamId64 → display name for family members when known */
     private val familyMemberNames: ConcurrentHashMap<Long, String> = ConcurrentHashMap()
 
-    // EParentalFeature.Library: when this bit is set in enabled_features the whole library is allowed.
-    private val PARENTAL_FEATURE_LIBRARY = 11
-
     sealed class ParentalState {
+        companion object {
+            // EParentalFeature.Library: when this bit is set in enabled_features the whole library is allowed.
+            private const val PARENTAL_FEATURE_LIBRARY = 11
+
+            // Only a child member of a Steam family is held to the allowlist. An adult with Family View on
+            // their own account unlocks it with a PIN in Steam, and the app has no PIN entry.
+            fun restrictsLibrary(isChildMember: Boolean, isEnabled: Boolean, enabledFeatures: Int): Boolean =
+                isChildMember && isEnabled && (enabledFeatures and (1 shl PARENTAL_FEATURE_LIBRARY)) == 0
+        }
+
         data object Loading : ParentalState()
         data object Unrestricted : ParentalState()
         data class Restricted(val allowedAppIds: Set<Int>) : ParentalState()
@@ -999,7 +1014,11 @@ class SteamService : Service(), IChallengeUrlChanged {
                         Timber.d("resolveDlcIdsForApp appId=$appId PICS returned no app; total=$ids")
                         return ids
                     }
-                val generated = remote.keyValues.generateSteamApp()
+                val remoteKeyValues = remote.resolveAppKeyValues() ?: run {
+                    Timber.d("resolveDlcIdsForApp appId=$appId PICS returned no app data; total=$ids")
+                    return ids
+                }
+                val generated = remoteKeyValues.generateSteamApp().copy(id = appId)
                 collectFromApp(generated, fromPics, fromDepots)
 
                 // Persist so subsequent opens start with a fuller local catalog.
@@ -2154,6 +2173,9 @@ class SteamService : Service(), IChallengeUrlChanged {
         fun dropMissingExecutable(gameId: Int, container: Container) {
             val exe = container.executablePath
             if (exe.isEmpty() || ContainerUtils.isAbsoluteWindowsPath(exe)) return
+            // no app info (service not up yet on a cold offline launch): getAppDirPath falls back
+            // to the bare install root, where no exe can be found, so the check would wipe a valid path
+            if (getAppInfoOf(gameId) == null) return
             val appDir = getAppDirPath(gameId)
             if (appDir.isEmpty() || !File(appDir).isDirectory) return
             if (File(appDir, exe.replace('\\', '/')).isFile) return
@@ -2222,6 +2244,31 @@ class SteamService : Service(), IChallengeUrlChanged {
             }
 
             return@withContext result
+        }
+
+        /**
+         * Stops an update, verify or DLC download of an installed game and keeps the game: the
+         * complete marker stays, and the download record goes so the run is not offered as a resume.
+         */
+        suspend fun cancelDownloadKeepingGame(appId: Int) = withContext(Dispatchers.IO) {
+            val downloadInfo = getAppDownloadInfo(appId)
+            downloadInfo?.cancel()
+            downloadInfo?.awaitCompletion()
+            removeDownloadJob(appId)
+            workshopPausedApps.remove(appId)
+            instance?.appDao?.setWorkshopDownloadPending(appId, false)
+            instance?.applicationContext?.let { context ->
+                GameDownloadService.removeDownload(context, GameSource.STEAM, appId.toString())
+            }
+            instance?.downloadingAppInfoDao?.deleteApp(appId)
+            PrefManager.clearSteamDownloadMode(appId)
+            // The interrupted run may have put original Steam DLLs back, so the next launch
+            // must patch again, as it does after a finished run.
+            val appDirPath = getAppDirPath(appId)
+            MarkerUtils.removeMarker(appDirPath, Marker.STEAM_DLL_REPLACED)
+            MarkerUtils.removeMarker(appDirPath, Marker.STEAM_COLDCLIENT_USED)
+            MarkerUtils.removeMarker(appDirPath, Marker.STEAM_CEG_WRAPPED)
+            downloadInfo?.clearPersistedBytesDownloaded(appDirPath)
         }
 
         /**
@@ -4922,6 +4969,8 @@ class SteamService : Service(), IChallengeUrlChanged {
 
                 // Request family share info if we have a familyGroupId.
                 // Set id synchronously so UI can observe hydration before the RPC finishes.
+                // null = the family group lookup failed, so the role is unknown
+                val isChildMember = CompletableDeferred<Boolean?>()
                 if (callback.familyGroupId != 0L) {
                     setFamilyGroupId(callback.familyGroupId)
                     scope.launch {
@@ -4945,11 +4994,20 @@ class SteamService : Service(), IChallengeUrlChanged {
                                 val accountID = steamId.accountID.toInt()
                                 familyGroupMembers.add(accountID)
                             }
+
+                            val ownSteamId = steamClient?.steamID?.convertToUInt64()
+                            isChildMember.complete(
+                                response.membersList.any { member ->
+                                    member.steamid == ownSteamId &&
+                                        member.role == SteammessagesFamilygroupsSteamclient.EFamilyGroupRole.k_EFamilyGroupRole_Child
+                                },
+                            )
                         }
 
                         refreshFamilyPreferredCopyData()
-                    }
+                    }.invokeOnCompletion { isChildMember.complete(null) }
                 } else {
+                    isChildMember.complete(false)
                     setFamilyGroupId(0L)
                     familyGroupMembers.clear()
                     familyAppOwnerSteamIds.clear()
@@ -4977,9 +5035,15 @@ class SteamService : Service(), IChallengeUrlChanged {
                         }
 
                         val settings = it.body.settings
-                        val libraryUnlocked = (settings.enabledFeatures and (1 shl PARENTAL_FEATURE_LIBRARY)) != 0
-                        if (!settings.isEnabled || libraryUnlocked) {
-                            Timber.i("Parental controls not restricting the library (enabled=${settings.isEnabled}, features=${settings.enabledFeatures}).")
+                        val isChild = isChildMember.await()
+                        if (steamClient?.steamID != sessionSteamId) return@launch
+                        if (isChild == null) {
+                            Timber.w("Family role unknown, parental state left as it was.")
+                            return@launch
+                        }
+
+                        if (!ParentalState.restrictsLibrary(isChild, settings.isEnabled, settings.enabledFeatures)) {
+                            Timber.i("Parental controls not restricting the library (child=$isChild, enabled=${settings.isEnabled}, features=${settings.enabledFeatures}).")
                             parentalState = ParentalState.Unrestricted
                             PrefManager.parentalAllowedAppIds = null
                         } else {
@@ -5571,6 +5635,48 @@ class SteamService : Service(), IChallengeUrlChanged {
     /**
      * A buffered flow to parse so many PICS requests in a given moment.
      */
+    /** Caps concurrent appinfo downloads while a PICS batch is resolved. */
+    private val appInfoHttpLimiter = Semaphore(8)
+
+    /** Builds the row for one PICS app result, or null when it is unchanged or has no data yet. */
+    private suspend fun resolvePicsApp(app: PICSProductInfo): SteamApp? {
+        val appFromDb = appDao.findApp(app.id)
+        val packageId = appFromDb?.packageId ?: INVALID_PKG_ID
+        val packageFromDb = if (packageId != INVALID_PKG_ID) licenseDao.findLicense(packageId) else null
+        val ownerAccountId = packageFromDb?.ownerAccountId ?: emptyList()
+
+        // Apps with -1 for the ownerAccountId should be added.
+        //  This can help with friend game names.
+
+        // TODO maybe apps with -1 for the ownerAccountId can be stripped with necessities and name.
+
+        val ufsParseVersionOutdated = appFromDb != null && appFromDb.ufsParseVersion < CURRENT_UFS_PARSE_VERSION
+
+        return if (app.changeNumber != appFromDb?.lastChangeNumber || ufsParseVersionOutdated) {
+            // Steam serves large app info over HTTP with an empty inline buffer. An empty
+            // KeyValue would otherwise generate a row with INVALID_APP_ID and overwrite the
+            // previous one, leaving this app as a hidden type-0 stub. Skip it instead and let
+            // the next sync retry; keep the row keyed by the app we asked for.
+            val keyValues = app.resolveAppKeyValues() ?: return null
+            val newApp = keyValues.generateSteamApp().copy(
+                id = app.id,
+                packageId = packageId,
+                ownerAccountId = ownerAccountId,
+                receivedPICS = true,
+                lastChangeNumber = app.changeNumber,
+                licenseFlags = packageFromDb?.licenseFlags ?: EnumSet.noneOf(ELicenseFlags::class.java),
+            )
+            if (ufsParseVersionOutdated && newApp.ufs.saveFilePatterns.any { it.uploadRoot != it.root || it.uploadPath != it.path }) {
+                // UFS path logic changed and this app has rootoverrides: store 0 to force one
+                // full cloud query while preserving the local sync snapshot.
+                changeNumbersDao.insert(app.id, 0L)
+            }
+            newApp
+        } else {
+            null
+        }
+    }
+
     private fun continuousPICSGetProductInfo(): Job = scope.launch {
         // Launch both coroutines within this parent job
         launch {
@@ -5598,36 +5704,11 @@ class SteamService : Service(), IChallengeUrlChanged {
                             )
 
                             ensureActive()
-                            val steamAppsMap = picsCallback.apps.values.mapNotNull { app ->
-                                val appFromDb = appDao.findApp(app.id)
-                                val packageId = appFromDb?.packageId ?: INVALID_PKG_ID
-                                val packageFromDb = if (packageId != INVALID_PKG_ID) licenseDao.findLicense(packageId) else null
-                                val ownerAccountId = packageFromDb?.ownerAccountId ?: emptyList()
-
-                                // Apps with -1 for the ownerAccountId should be added.
-                                //  This can help with friend game names.
-
-                                // TODO maybe apps with -1 for the ownerAccountId can be stripped with necessities and name.
-
-                                val ufsParseVersionOutdated = appFromDb != null && appFromDb.ufsParseVersion < CURRENT_UFS_PARSE_VERSION
-
-                                if (app.changeNumber != appFromDb?.lastChangeNumber || ufsParseVersionOutdated) {
-                                    val newApp = app.keyValues.generateSteamApp().copy(
-                                        packageId = packageId,
-                                        ownerAccountId = ownerAccountId,
-                                        receivedPICS = true,
-                                        lastChangeNumber = app.changeNumber,
-                                        licenseFlags = packageFromDb?.licenseFlags ?: EnumSet.noneOf(ELicenseFlags::class.java),
-                                    )
-                                    if (ufsParseVersionOutdated && newApp.ufs.saveFilePatterns.any { it.uploadRoot != it.root || it.uploadPath != it.path }) {
-                                        // UFS path logic changed and this app has rootoverrides: store 0 to force one
-                                        // full cloud query while preserving the local sync snapshot.
-                                        changeNumbersDao.insert(app.id, 0L)
-                                    }
-                                    newApp
-                                } else {
-                                    null
-                                }
+                            // Resolved concurrently: most results now need an HTTP round trip each.
+                            val steamAppsMap = coroutineScope {
+                                picsCallback.apps.values.map { app ->
+                                    async { appInfoHttpLimiter.withPermit { resolvePicsApp(app) } }
+                                }.awaitAll().filterNotNull()
                             }
 
                             if (steamAppsMap.isNotEmpty()) {

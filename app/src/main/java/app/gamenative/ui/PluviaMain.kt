@@ -133,6 +133,9 @@ private var steamUpdateDeferred: CompletableDeferred<Boolean>? = null
 /** Valve Windows client tree (build 1788652215, 2026-09-03) + headless steam.exe for Real Steam mode; see extractSteamFiles. */
 const val REAL_STEAM_CLIENT_ARCHIVE = "steamhost-20261119.tzst"
 
+/** gbe_fork release-2026_09_27 experimental steamclient + ColdClientLoader, plus StubDRM64; see SteamUtils.replaceSteamclientDll. */
+const val STEAM_EMULATOR_ARCHIVE = "experimental-drm-20261029.tzst"
+
 private fun NavHostController.navigateFromLoginIfNeeded(
     targetRoute: String,
     logTag: String = "PluviaMain",
@@ -1436,10 +1439,31 @@ fun preLaunchApp(
         // create container if it does not already exist
         // TODO: combine somehow with container creation in HomeLibraryAppScreen
         val containerManager = ContainerManager(context)
-        val container = if (useTemporaryOverride) {
-            ContainerUtils.getOrCreateContainerWithOverride(context, appId)
-        } else {
-            ContainerUtils.getOrCreateContainer(context, appId)
+        val container = try {
+            if (useTemporaryOverride) {
+                ContainerUtils.getOrCreateContainerWithOverride(context, appId)
+            } else {
+                ContainerUtils.getOrCreateContainer(context, appId)
+            }
+        } catch (e: Exception) {
+            // Mostly ENOSPC on small-storage phones: mkdirs() fails and the game has no prefix.
+            // Tell the user instead of letting the launch coroutine take the process down.
+            Timber.tag("preLaunchApp").e(e, "Could not create the container for $appId")
+            if (useTemporaryOverride) {
+                IntentLaunchManager.restoreOriginalConfiguration(context, appId)
+                IntentLaunchManager.clearTemporaryOverride(appId)
+            }
+            setLoadingDialogVisible(false)
+            setMessageDialogState(
+                MessageDialogState(
+                    visible = true,
+                    type = DialogType.SYNC_FAIL,
+                    title = context.getString(R.string.container_create_failed_title),
+                    message = context.getString(R.string.container_create_failed_message, e.message ?: e.toString()),
+                    dismissBtnText = context.getString(R.string.ok),
+                ),
+            )
+            return@launch
         }
 
         // Clear session metadata on every launch to ensure fresh values
@@ -1571,14 +1595,14 @@ fun preLaunchApp(
             }
 
             if (!container.isLaunchRealSteam &&
-                !SteamService.isFileInstallable(context, "experimental-drm-20260116.tzst")
+                !SteamService.isFileInstallable(context, STEAM_EMULATOR_ARCHIVE)
             ) {
                 setLoadingMessage("Downloading extras")
                 SteamService.downloadFile(
                     onDownloadProgress = { setLoadingProgress(it / 1.0f) },
                     this,
                     context = context,
-                    "experimental-drm-20260116.tzst",
+                    STEAM_EMULATOR_ARCHIVE,
                 ).await()
             }
             if (gameSource == GameSource.STEAM && container.isLaunchRealSteam && !isOffline && !container.isSteamOfflineMode &&

@@ -109,6 +109,9 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
 
     private Runnable preUnpack;
     public void setPreUnpack(Runnable r) { this.preUnpack = r; }
+    // Runs after each guest launch, with the guest's own wine already spawned.
+    private Runnable onGuestStarted;
+    public void setOnGuestStarted(Runnable r) { this.onGuestStarted = r; }
     @Override
     public void start() {
         synchronized (lock) {
@@ -120,6 +123,7 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
             if (preUnpack != null) preUnpack.run();
             pid = execGuestProgram();
             Log.d("BionicProgramLauncherComponent", "Process " + pid + " started");
+            if (pid != -1 && onGuestStarted != null) onGuestStarted.run();
             SteamService.setKeepAlive(true);
         }
     }
@@ -485,6 +489,23 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         String gamescopeLibPath = gsDir + "/lib";
         String libPath = envVars.get("LD_LIBRARY_PATH");
         envVars.put("LD_LIBRARY_PATH", libPath.isEmpty() ? gamescopeLibPath : gamescopeLibPath + ":" + libPath);
+        boolean kopperGl = GamescopeSettings.GUEST_GL_KOPPER.equals(
+                container.getExtra(GamescopeSettings.EXTRA_GUEST_GL, GamescopeSettings.GUEST_GL_DEFAULT));
+        if (kopperGl && new File(gsDir, "lib/gl/libGL.so.1").exists()) {
+            envVars.put("LD_LIBRARY_PATH", gsDir + "/lib/gl:" + envVars.get("LD_LIBRARY_PATH"));
+            envVars.put("LIBGL_DRIVERS_PATH", gsDir + "/lib/gl/dri:" + gsDir + "/lib/dri");
+            envVars.put("MESA_LOADER_DRIVER_OVERRIDE", "zink");
+            envVars.put("MESA_GLX_FORCE_DIRECT", "1");
+        } else {
+            File legacyGl = new File(rootDir, "usr/lib/libGL.so.1");
+            if (legacyGl.exists()) {
+                File zinkGlDir = new File(gsDir, "tmp/zink-gl");
+                zinkGlDir.mkdirs();
+                FileUtils.symlink(legacyGl, new File(zinkGlDir, "libGL.so.1"));
+                FileUtils.symlink(legacyGl, new File(zinkGlDir, "libGL.so"));
+                envVars.put("LD_LIBRARY_PATH", zinkGlDir.getPath() + ":" + envVars.get("LD_LIBRARY_PATH"));
+            }
+        }
         // gamescope execvp's gamescopereaper and wlroots spawns xkbcomp.
         String path = envVars.get("PATH");
         envVars.put("PATH", path.isEmpty() ? gsDir + "/bin" : gsDir + "/bin:" + path);
@@ -500,8 +521,6 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         envVars.put("XKB_CONFIG_ROOT", gsDir + "/share/xkeyboard-config-2");
         envVars.put("GAMESCOPE_PNP_IDS_PATH", gsDir + "/share/hwdata/pnp.ids");
         envVars.put("__EGL_VENDOR_LIBRARY_DIRS", gsDir + "/share/glvnd/egl_vendor.d");
-        envVars.put("LIBGL_DRIVERS_PATH", gsDir + "/lib/dri");
-        envVars.put("MESA_LOADER_DRIVER_OVERRIDE", "zink");
         envVars.put("WLR_XWAYLAND", gsDir + "/bin/Xwayland");
 
         // Non-Adreno (system Vulkan driver): glamor over zink stalls Xwayland, and Vulkan guests present through the shim.
@@ -520,9 +539,8 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         if (container != null && container.getGraphicsDriver() != null)
             envVars.put("GNDRM_DRIVER_TYPE", container.getGraphicsDriver());
 
-        // Same source as gamescope's -W/-H, so the two cannot drift. The nested pair is seeded from the
-        // same value the -w/-h arguments are formatted from (see gamescopeNestedSize).
-        int[] scanoutOutput = AppUtils.parseScreenSize(GamescopeSettings.outputResolution(container));
+        // Same source as gamescope's -W/-H and the daemon's mode; the panel is the fallback when the resolution is unreadable.
+        int[] scanoutOutput = GamescopeSettings.scanoutSize(container);
         if (scanoutOutput == null)
             scanoutOutput = displaySize();
         if (scanoutOutput == null)
@@ -605,7 +623,6 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
                 + (hdr ? " --hdr-enabled" : "")
                 + (reshade.isEmpty() ? "" : " --reshade-effect " + reshade)
                 + GamescopeSettings.scalerArg(container)
-                + GamescopeSettings.gridArg()
                 + gamescopeModeGeometry() + " -- " + command;
     }
 
@@ -733,11 +750,7 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         return AppUtils.parseScreenSize(container != null ? container.getScreenSize() : null);
     }
 
-    /**
-     * The panel's real pixel size, or null if unreadable. This is what scanout needs: the
-     * container's screen size is an internal desktop resolution, so using it here would make
-     * gamescope present at 720p (or whatever preset) and resample onto the panel.
-     */
+    /** The panel's real pixel size, or null if unreadable; only the shim seed's last-resort fallback. */
     private static int[] displaySize() {
         int[] nativeSize = AppUtils.parseScreenSize(PluviaApp.getNativeDisplaySize());
         if (nativeSize != null) return nativeSize;

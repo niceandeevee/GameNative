@@ -601,16 +601,26 @@ class DownloadsViewModel @Inject constructor(
         }
     }
 
-    /** Store-level cancel + delete. Destructive: removes the partial download. */
+    /** Whether a cancel stops an update, verify or DLC download of an installed game and keeps the game. */
+    private fun keepsInstalledGame(gameSource: GameSource, appId: String): Boolean = when (gameSource) {
+        GameSource.STEAM -> appId.toIntOrNull()?.let { SteamService.isAppInstalled(it) } == true
+        else -> false
+    }
+
+    /** Store-level cancel. Deletes the download unless [keepsInstalledGame] keeps the installed game. */
     private suspend fun cancelOnStore(appId: String, gameSource: GameSource, gameName: String) {
         when (gameSource) {
             GameSource.STEAM -> {
                 val id = appId.toIntOrNull() ?: return
-                SteamService.getAppDownloadInfo(id)?.cancel()
-                // A queued (auto-paused) entry has no live job left to remove it —
-                // drop it explicitly (no-op when the job's completion already did).
-                SteamService.removeDownloadJob(id)
-                SteamService.deleteApp(id)
+                if (keepsInstalledGame(GameSource.STEAM, appId)) {
+                    SteamService.cancelDownloadKeepingGame(id)
+                } else {
+                    SteamService.getAppDownloadInfo(id)?.cancel()
+                    // A queued (auto-paused) entry has no live job left to remove it —
+                    // drop it explicitly (no-op when the job's completion already did).
+                    SteamService.removeDownloadJob(id)
+                    SteamService.deleteApp(id)
+                }
                 PluviaApp.events.emit(AndroidEvent.LibraryInstallStatusChanged(id, GameSource.STEAM))
                 scheduleRefreshDownloads()
             }

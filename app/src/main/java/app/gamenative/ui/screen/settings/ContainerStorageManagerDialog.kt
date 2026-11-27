@@ -79,7 +79,9 @@ import app.gamenative.utils.ContainerStorageManager
 import app.gamenative.utils.StorageUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @Stable
@@ -106,6 +108,17 @@ class ContainerStorageManagerUiState internal constructor(
         private set
 
     var pendingUninstall by mutableStateOf<ContainerStorageManager.Entry?>(null)
+        private set
+
+    /** Leftover containers waiting on the user's confirmation to remove them all. */
+    var pendingLeftoverRemoval by mutableStateOf<List<ContainerStorageManager.Entry>>(emptyList())
+        private set
+
+    var isRemovingLeftovers by mutableStateOf(false)
+        private set
+
+    /** Computed off the main thread with [entries]: the check reads the download database. */
+    var leftovers by mutableStateOf<List<ContainerStorageManager.Entry>>(emptyList())
         private set
 
     var movingEntryName by mutableStateOf<String?>(null)
@@ -155,7 +168,9 @@ class ContainerStorageManagerUiState internal constructor(
             }
 
             try {
-                entries = ContainerStorageManager.loadEntries(appContext)
+                val loaded = ContainerStorageManager.loadEntries(appContext)
+                leftovers = withContext(Dispatchers.IO) { loaded.filter(ContainerStorageManager::isLeftover) }
+                entries = loaded
                 hasLoaded = true
             } catch (e: CancellationException) {
                 throw e
@@ -197,6 +212,52 @@ class ContainerStorageManagerUiState internal constructor(
                 refresh()
             } else {
                 SnackbarManager.show(appContext.getString(R.string.container_storage_remove_failed))
+            }
+        }
+    }
+
+    fun requestRemoveLeftovers() {
+        if (isMoving || isRemovingLeftovers) return
+        pendingLeftoverRemoval = leftovers
+    }
+
+    fun dismissRemoveLeftovers() {
+        pendingLeftoverRemoval = emptyList()
+    }
+
+    fun confirmRemoveLeftovers() {
+        val targets = pendingLeftoverRemoval
+        pendingLeftoverRemoval = emptyList()
+        if (targets.isEmpty()) return
+
+        scope.launch {
+            isRemovingLeftovers = true
+            try {
+                var removed = 0
+                var freedBytes = 0L
+                for (entry in targets) {
+                    // Re-check: a download may have started since the list was shown.
+                    if (!withContext(Dispatchers.IO) { ContainerStorageManager.isLeftover(entry) }) continue
+                    if (ContainerStorageManager.removeContainer(appContext, entry.containerId)) {
+                        removed++
+                        freedBytes += entry.containerSizeBytes
+                    }
+                }
+                val failed = targets.size - removed
+                SnackbarManager.show(
+                    if (failed == 0) {
+                        appContext.getString(
+                            R.string.container_storage_leftovers_removed,
+                            removed,
+                            StorageUtils.formatBinarySize(freedBytes),
+                        )
+                    } else {
+                        appContext.getString(R.string.container_storage_leftovers_partial, removed, failed)
+                    },
+                )
+            } finally {
+                isRemovingLeftovers = false
+                refresh()
             }
         }
     }
@@ -347,6 +408,37 @@ fun ContainerStorageManagerTransientUi(
         )
     }
 
+    if (state.pendingLeftoverRemoval.isNotEmpty()) {
+        val targets = state.pendingLeftoverRemoval
+        AlertDialog(
+            onDismissRequest = state::dismissRemoveLeftovers,
+            title = { Text(stringResource(R.string.container_storage_leftovers_title)) },
+            text = {
+                Text(
+                    stringResource(
+                        R.string.container_storage_leftovers_message,
+                        targets.size,
+                        StorageUtils.formatBinarySize(targets.sumOf { it.containerSizeBytes }),
+                        targets.joinToString(", ") { it.displayName.ifBlank { it.containerId } },
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = state::confirmRemoveLeftovers) {
+                    Text(
+                        text = stringResource(R.string.container_storage_remove_button),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = state::dismissRemoveLeftovers) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
+
     state.pendingUninstall?.let { entry ->
         val entryName = entry.displayName.ifBlank {
             stringResource(R.string.container_storage_unknown_container)
@@ -478,6 +570,27 @@ fun ContainerStorageManagerContent(
                     )
                 }
             }
+        }
+
+        val leftovers = state.leftovers
+        if (leftovers.isNotEmpty() || state.isRemovingLeftovers) {
+            Spacer(modifier = Modifier.height(10.dp))
+            StorageActionButton(
+                text = if (state.isRemovingLeftovers) {
+                    stringResource(R.string.container_storage_leftovers_removing)
+                } else {
+                    stringResource(
+                        R.string.container_storage_leftovers_button,
+                        leftovers.size,
+                        StorageUtils.formatBinarySize(leftovers.sumOf { it.containerSizeBytes }),
+                    )
+                },
+                icon = Icons.Default.Delete,
+                onClick = state::requestRemoveLeftovers,
+                enabled = !state.isMoving && !state.isRemovingLeftovers && !state.isLoading,
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+            )
         }
 
         Spacer(modifier = Modifier.height(10.dp))

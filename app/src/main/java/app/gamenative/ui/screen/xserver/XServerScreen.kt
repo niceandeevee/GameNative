@@ -59,8 +59,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import app.gamenative.MainActivity
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -103,6 +101,7 @@ import app.gamenative.data.SteamApp
 import app.gamenative.display.GameNativeDrm
 import app.gamenative.display.GamescopeCommandQueue
 import app.gamenative.display.GamescopeServerComponent
+import app.gamenative.display.GamescopeSettings
 import app.gamenative.events.AndroidEvent
 import app.gamenative.events.SteamEvent
 import app.gamenative.ui.enums.Orientation
@@ -126,6 +125,7 @@ import app.gamenative.utils.AssetUtils
 import app.gamenative.utils.ContainerUtils
 import app.gamenative.utils.ExtractionFingerprint
 import app.gamenative.utils.downloader.CoreDriverDownloader
+import app.gamenative.utils.protonFixes.CommonControlsV6
 import app.gamenative.utils.CustomGameScanner
 import app.gamenative.utils.LsfgQuickMenuHelper
 import app.gamenative.utils.LsfgVkManager
@@ -192,6 +192,7 @@ import com.winlator.widget.FrameRating
 import com.winlator.widget.InputControlsView
 import com.winlator.widget.TouchpadView
 import com.winlator.renderer.ASurfaceRenderer
+import com.winlator.renderer.AHBImage
 import com.winlator.renderer.GLRenderer
 import com.winlator.renderer.VulkanRenderer
 import com.winlator.widget.XServerRendererView
@@ -235,6 +236,8 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import android.system.Os
+import android.system.ErrnoException
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -299,25 +302,38 @@ private fun initialFpsLimiterTarget(container: Container): Int =
     parsePositiveFpsLimit(container.getExtra(FPS_LIMITER_TARGET_EXTRA))
         ?: DEFAULT_FPS_LIMITER_TARGET_HZ
 
-internal fun detectMaxRefreshRateHz(context: Context, attachedView: View?): Int {
+/**
+ * The panel's refresh rate in Hz: the mode the display is in now, not the fastest it
+ * supports. The gndrm daemon measures the panel's latch grid against this period and the
+ * FPS limiter's ceiling is derived from it, so a panel a user holds at 60 Hz counts as 60
+ * even when it can do 120; a mode change mid-session is reported again by the display
+ * listener below.
+ */
+internal fun detectRefreshRateHz(context: Context, attachedView: View?): Int {
     val display = attachedView?.display
         ?: context.display
         ?: ContextCompat.getSystemService(context, DisplayManager::class.java)?.getDisplay(Display.DEFAULT_DISPLAY)
-
-    val refreshRate = when {
-        display == null -> DEFAULT_FPS_LIMITER_MAX_HZ.toFloat()
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-            val supportedMax = display.supportedModes.maxOfOrNull { it.refreshRate } ?: display.refreshRate
-            if (supportedMax.isFinite() && supportedMax > 0f) supportedMax else display.refreshRate
-        }
-        else -> display.refreshRate
-    }
-
-    return refreshRate
-        .takeIf { it.isFinite() && it > 0f }
+    return display?.refreshRate
+        ?.takeIf { it.isFinite() && it > 0f }
         ?.roundToInt()
         ?.coerceAtLeast(5)
         ?: DEFAULT_FPS_LIMITER_MAX_HZ
+}
+
+
+/** Re-reports the panel's active refresh rate to the daemon while a session runs. */
+private var panelRefreshListener: Pair<DisplayManager, DisplayManager.DisplayListener>? = null
+
+/**
+ * Drops the panel-refresh listener. Both session-end paths call this — `exit()` for a finished
+ * session and the view's `onRelease` for one disposed without it — so it has to tolerate a
+ * second call and a listener another path has already dropped.
+ */
+private fun releasePanelRefreshListener() {
+    panelRefreshListener?.let { (displayManager, listener) ->
+        displayManager.unregisterDisplayListener(listener)
+        panelRefreshListener = null
+    }
 }
 
 private data class XServerViewReleaseBinding(
@@ -710,6 +726,8 @@ fun XServerScreen(
     var lsfgMultiplier by rememberSaveable(container.id) { mutableIntStateOf(initialLsfgSettings.multiplier) }
     var lsfgFlowScale by rememberSaveable(container.id) { mutableStateOf(initialLsfgSettings.flowScale) }
     var lsfgPerformanceMode by rememberSaveable(container.id) { mutableStateOf(initialLsfgSettings.performanceMode) }
+    /** The rate last reported to the daemon, so a mode nudge is only asked for when it changes. */
+    var advertisedPanelHz by remember(container.id) { mutableIntStateOf(0) }
 
     fun persistFpsLimiterState() {
         container.putExtra(FPS_LIMITER_ENABLED_EXTRA, fpsLimiterEnabled)
@@ -765,6 +783,28 @@ fun XServerScreen(
         }
     }
 
+    /**
+     * Report the rate the session's emulated display advertises: the display's own, and nothing else.
+     *
+     * Neither the cap nor the frame-generation multiplier enters it. The mode is the rate the
+     * compositor runs at, so it belongs to the display and changes only when the display does; the
+     * cap lives at acquire, before a frame is drawn, and generation inserts `multiplier - 1` frames
+     * per source frame whatever the mode — a 40 cap at x4 produces and counts 160 on a 120 Hz mode.
+     * Advertising the produced rate instead would make the compositor's grid follow the QuickMenu.
+     */
+    fun applyPanelRefresh(panelHz: Int = detectRefreshRateHz(context, ui.xServerView as? View)) {
+        if (isX11Display || panelHz <= 0) return
+        GameNativeDrm.nativeSetPanelRefreshHz(panelHz)
+        // The daemon's connector advertises the new rate from here on, but gamescope reads the mode
+        // once, when the session starts: dirty its backend so a display change becomes the mode now
+        // rather than on the next launch. Only on a change — a nudge forces a modeset — and not on
+        // the first report, which is the rate the session starts on anyway.
+        if (advertisedPanelHz != 0 && advertisedPanelHz != panelHz) {
+            GamescopeCommandQueue.nudgeDisplayMode()
+        }
+        advertisedPanelHz = panelHz
+    }
+
     fun applyFpsLimiterToEngines(limit: Int) {
         if (isX11Display) {
             // With LSFG active the layer owns ALL pacing (vsync-locked via vsync.txt) and presents at limit *
@@ -778,9 +818,9 @@ fun XServerScreen(
             ShmFramePacer.setFrameRateLimit(limit)
         } else {
             // Gamescope owns the present path, so the cap goes to it instead of the X11 engines above.
-            // With frame generation active the presenter owns pacing, exactly as the layer does on X11:
-            // the cap is disarmed and the output rate becomes limit x multiplier.
-            GamescopeCommandQueue.setFpsLimit(if (isLsfgAvailable && lsfgMultiplier >= 2) 0 else limit)
+            GamescopeCommandQueue.setFpsLimit(limit)
+            // The mode is the display's rate: the cap and the multiplier never move it.
+            applyPanelRefresh()
         }
 
         PowerManager.targetFps = limit
@@ -791,6 +831,7 @@ fun XServerScreen(
 
     fun effectiveFpsLimit(): Int =
         if (fpsLimiterEnabled) fpsLimiterTarget else 0
+
 
     fun applyLsfgSettings() {
         LsfgQuickMenuHelper.applySettings(
@@ -824,8 +865,10 @@ fun XServerScreen(
 
     fun applyLsfgMultiplier(mult: Int) {
         lsfgMultiplier = LsfgQuickMenuHelper.sanitizeMultiplier(mult)
-        applyLsfgSettings()
+        // The rate first, then the settings: the session's config carries the rate, and the shim
+        // opens the generator from what the daemon holds when it is created.
         applyFpsLimiterToEngines(effectiveFpsLimit())
+        applyLsfgSettings()
     }
 
     fun applyLsfgFlowScale(scale: Float) {
@@ -836,6 +879,33 @@ fun XServerScreen(
     fun applyLsfgPerformanceMode(enabled: Boolean) {
         lsfgPerformanceMode = enabled
         applyLsfgSettings()
+    }
+
+    fun refreshFpsLimit(view: View?, isX11Display: Boolean) {
+        val refreshHz = detectRefreshRateHz(context, view)
+        ui.detectedMaxRefreshRateHz = refreshHz * FPS_LIMITER_MAX_MULTIPLIER
+
+        if (!isX11Display)
+            applyPanelRefresh(refreshHz)
+    }
+
+    /**
+     * Registers the display listener that re-reports the panel's rate when the display changes mode.
+     * Called from both the view factory and its update block: a session reusing a cached view skips
+     * the factory, and would otherwise run without one.
+     */
+    fun ensurePanelRefreshListener() {
+        if (panelRefreshListener != null) return
+        val displayManager = ContextCompat.getSystemService(context, DisplayManager::class.java) ?: return
+        val listener = object : DisplayManager.DisplayListener {
+            override fun onDisplayAdded(displayId: Int) {}
+            override fun onDisplayRemoved(displayId: Int) {}
+            override fun onDisplayChanged(displayId: Int) {
+                refreshFpsLimit(ui.xServerView as? View, isX11Display = isX11Display)
+            }
+        }
+        displayManager.registerDisplayListener(listener, Handler(Looper.getMainLooper()))
+        panelRefreshListener = displayManager to listener
     }
 
     LaunchedEffect(ui.xServerView) {
@@ -849,7 +919,7 @@ fun XServerScreen(
             true
         }
         // Scaled here, not in the resolver, which must keep returning the display's real rate.
-        val detectedMax = detectMaxRefreshRateHz(context, ui.xServerView as? View) * FPS_LIMITER_MAX_MULTIPLIER
+        val detectedMax = detectRefreshRateHz(context, ui.xServerView as? View) * FPS_LIMITER_MAX_MULTIPLIER
         ui.detectedMaxRefreshRateHz = detectedMax
         val clampedTarget = fpsLimiterTarget.coerceAtMost(detectedMax).coerceAtLeast(5)
         if (clampedTarget != fpsLimiterTarget) {
@@ -2034,6 +2104,9 @@ fun XServerScreen(
             // other containers as well. Uncheck the per-container useLegacyRenderer
             // setting to switch to the Vulkan renderer.
             val useGLRenderer = isX11Display && (container.graphicsDriver == "virgl" || container.displayRenderer.equals("gl", true))
+            // Before the first drawable: the SurfaceFlinger display renderer hands its window buffers to
+            // surfaceflinger, so they follow the same scan-out layout rule as the gamescope daemon's pool.
+            if (isX11Display) AHBImage.setCpuScanoutRgba(resolveScanoutLayout(container) == "rgba")
             val xServerViewInstance: XServerRendererView = if (useGLRenderer) {
                 XServerViewGL(context, xServerToUse)
             } else {
@@ -2051,16 +2124,21 @@ fun XServerScreen(
                     xServerViewInstance.setScanoutLayoutOverride(
                         EnvVars(container.envVars).get("GNDRM_SCANOUT_LAYOUT"),
                     )
-                    xServerToUse.setInputEventSink(GamescopeInputSink())
-                    // Ahead of nativeStart, which fixes the emulated mode's rate from this
-                    // view's surface callback, so the panel's real rate must be set first.
-                    GameNativeDrm.nativeSetPanelRefreshHz(detectMaxRefreshRateHz(context, xServerViewInstance as? View))
+                    xServerToUse.setInputEventSink(GamescopeInputSink(xServerToUse.screenInfo))
+                    // Ahead of nativeStart: the daemon's mode is the Upscaling Resolution.
+                    GamescopeSettings.scanoutSize(container)?.let {
+                        GameNativeDrm.nativeSetScanoutGeometry(it[0], it[1])
+                    } ?: GameNativeDrm.nativeSetScanoutGeometry(0, 0)
                     // The presenter opens its frame-generation session on the first
                     // present, from whatever the daemon holds: without this the daemon
                     // has nothing until the first Quick Menu change.
                     applyLsfgSettings()
                 }
             }
+
+            // Always refresh FPS Limit, Both X11 and Gamescope should refresh the fps limit when display is changed
+            refreshFpsLimit(xServerViewInstance as? View, isX11Display = sessionDisplay == SessionDisplay.X11)
+            ensurePanelRefreshListener()
 
             val xServerView = xServerViewInstance.apply {
                 ui.xServerView = this
@@ -2433,6 +2511,7 @@ fun XServerScreen(
                                     envVars,
                                     firstTimeBoot,
                                     vkbasaltConfig,
+                                    sessionDisplay,
                                 )
                             }
 
@@ -2770,6 +2849,10 @@ fun XServerScreen(
             if (!isX11Display) {
                 GameNativeDrm.setFrameRating(null)
             }
+
+            // A view released without exit() (the activity-destroyed fallback, a restart) still ends
+            // the session, so the panel listener goes with it; exit() calls this too, harmlessly.
+            releasePanelRefreshListener()
 
             val releaseBinding = view.tag as? XServerViewReleaseBinding
             releaseBinding?.let { binding ->
@@ -3769,6 +3852,64 @@ private fun assignTaskAffinity(
     }
 }
 
+/**
+ * Start the window-activation helper for a gamescope session.
+ *
+ * Under `explorer /desktop=shell` the guest's window is an override-redirect
+ * child of the desktop, which wine never activates: the title comes up with no
+ * foreground window, so injected input has nowhere to land and buttons do
+ * nothing until something clicks the window. Only a Win32 call can fix that --
+ * measured, X focus and the EWMH/ICCCM activation messages are all accepted and
+ * leave wine's foreground at <none>.
+ *
+ * The helper is `bin/gn-activate.exe` from the gamescope payload: it sets the
+ * foreground window, then watches for later ones. The app launches it because
+ * the app is what starts a session.
+ *
+ * The helper is a second wine process with the plain shell environment, so it
+ * must never be the one that boots the prefix: wineserver and the services it
+ * starts would inherit that environment instead of the game's, and the game
+ * would run without the controller shim. It is therefore started after each
+ * guest launch, and only once the guest's own wineserver is up.
+ */
+private fun armGamescopeWindowHelper(
+    context: Context,
+    launcher: GuestProgramLauncherComponent,
+    delay: Long = 8_000L, /** Delay between the guest's wineserver coming up and the helper. */
+    serverTimeout: Long = 120_000L, /** How long to wait for the guest's wineserver. */
+) {
+    val bionic = launcher as? BionicProgramLauncherComponent ?: return
+    val exe = File(GamescopePayload.directory(context.filesDir), "bin/gn-activate.exe")
+    if (!exe.isFile) {
+        Timber.w("gn-activate.exe missing from the gamescope payload")
+        return
+    }
+    val winePath = "Z:" + exe.absolutePath.replace('/', '\\')
+    val launches = AtomicInteger()
+    bionic.setOnGuestStarted {
+        val launch = launches.incrementAndGet()
+        Thread {
+            runCatching {
+                val deadline = SystemClock.elapsedRealtime() + serverTimeout
+                while (!ProcessHelper.isWineServerRunning()) {
+                    if (launch != launches.get()) return@Thread
+                    if (SystemClock.elapsedRealtime() > deadline) {
+                        Timber.w("gn-activate not started: the guest's wineserver did not come up")
+                        return@Thread
+                    }
+                    Thread.sleep(250)
+                }
+                Thread.sleep(delay)
+                if (launch != launches.get() || !ProcessHelper.isWineServerRunning()) return@Thread
+                bionic.execShellCommand("wine $winePath --watch")
+            }.onFailure { Timber.w(it, "gn-activate spawn failed") }
+        }.apply {
+            name = "gn-activate"
+            isDaemon = true
+        }.start()
+    }
+}
+
 private fun shiftXEnvironmentToContext(
     context: Context,
     xEnvironment: XEnvironment,
@@ -4161,6 +4302,15 @@ private fun setupXEnvironment(
     }
     envVars.remove("DXVK_FRAME_RATE")
     envVars.remove("VKD3D_FRAME_RATE")
+    // Gamescope takes the present mode from the guest's own request, and the shim alone decides the
+    // image count it advertises (3, floored). Neither variable belongs on that route: a mode would
+    // have the shim declare one the guest never asked for, and a ceiling set here would compete
+    // with what the surface capabilities report. Covers the container default, a best config, the
+    // Environments tab and a game fix.
+    if (!isX11Display) {
+        envVars.remove("MESA_VK_WSI_PRESENT_MODE")
+        envVars.remove("WRAPPER_MAX_IMAGE_COUNT")
+    }
     if (!envVars.has("WINEESYNC")) envVars.put("WINEESYNC", "1")
 
     val graphicsDriverConfig = KeyValueSet(container.getGraphicsDriverConfig())
@@ -4359,6 +4509,10 @@ private fun setupXEnvironment(
     }
 
     environment.addComponent(guestProgramLauncherComponent)
+
+    if (sessionDisplay == SessionDisplay.GAMESCOPE) {
+        armGamescopeWindowHelper(context, guestProgramLauncherComponent)
+    }
 
     environment.addComponent(WineRequestComponent())
 
@@ -4775,8 +4929,10 @@ private fun exit(
     } catch (e: Exception) {
         Timber.e(e, "winHandler.stop() failed during exit")
     }
-    // The gndrm daemon (gamescope display mode) is torn down only at session exit: a display power
-    // cycle retargets the surface in XServerView instead of stopping it.
+
+    // The panel listener is session-wide, so both display types drop it here.
+    releasePanelRefreshListener()
+
     GameNativeDrm.nativeStop()
     PluviaApp.shutdownEnvironment()
 
@@ -5331,6 +5487,9 @@ private suspend fun setupWineSystemFiles(
     WineStartMenuCreator.create(context, container)
     WineUtils.createDosdevicesSymlinks(context, container)
 
+    // Wine 11 moved TaskDialog (ordinals 344/345) into the Common-Controls 6.0 SxS assembly; heal prefixes that lack it.
+    CommonControlsV6.ensureInstalled(context, container, xServerState.value.wineInfo)
+
     val effectiveStartupSelection = container.startupSelection
     val startupSelection = effectiveStartupSelection.toString()
     if (startupSelection != container.getExtra("startupSelection")) {
@@ -5394,6 +5553,29 @@ private fun hasContainerVariantChanged(container: Container, imageFs: ImageFs): 
 /** Launch-time check that the container selects X11; */
 internal fun resolveDisplayX11(container: Container?): Boolean {
     return container == null || Container.isX11Display(container.containerVariant, container.displayServer)
+}
+
+/**
+ * The scan-out layout for buffers this process hands to SurfaceFlinger, "bgra" or "rgba": the container's
+ * GNDRM_SCANOUT_LAYOUT override, else the gndrm daemon's device rule (RGBA on Android 16 with a GLES render
+ * engine, which aborts surfaceflinger on a BGRA_8888 layer). The override is put in this process's
+ * environment first, the way the daemon reads it, and cleared otherwise so an earlier session's does not linger.
+ */
+internal fun resolveScanoutLayout(container: Container): String {
+    val override = EnvVars(container.envVars).get("GNDRM_SCANOUT_LAYOUT")
+    try {
+        if (override.isNotEmpty()) Os.setenv("GNDRM_SCANOUT_LAYOUT", override, true) else Os.unsetenv("GNDRM_SCANOUT_LAYOUT")
+    } catch (e: ErrnoException) {
+        Timber.w(e, "Could not set GNDRM_SCANOUT_LAYOUT")
+    }
+    val layout = try {
+        GameNativeDrm.nativeScanoutLayout() ?: "bgra"
+    } catch (e: LinkageError) {
+        Timber.w(e, "Scan-out layout rule unavailable, assuming bgra")
+        "bgra"
+    }
+    Timber.i("X11 scan-out layout %s (%s)", layout, if (override.isNotEmpty()) "container override" else "device rule")
+    return layout
 }
 
 private fun refreshComponentsFiles(context: Context) {
@@ -5723,6 +5905,7 @@ private suspend fun extractGraphicsDriverFiles(
     envVars: EnvVars,
     firstTimeBoot: Boolean,
     vkbasaltConfig: String,
+    sessionDisplay: SessionDisplay,
 ) {
     var adrenoToolsDriverId: String? = ""
     val selectedDriverVersion: String?
@@ -5761,7 +5944,7 @@ private suspend fun extractGraphicsDriverFiles(
     ) envVars.put("VK_ICD_FILENAMES", imageFs.getShareDir().path + "/vulkan/icd.d/freedreno_icd.aarch64.json")
     else envVars.put("VK_ICD_FILENAMES", imageFs.getShareDir().path + "/vulkan/icd.d/wrapper_icd.aarch64.json")
     envVars.put("GALLIUM_DRIVER", "zink")
-    envVars.put("LIBGL_KOPPER_DISABLE", "true")
+    if (sessionDisplay == SessionDisplay.X11) envVars.put("LIBGL_KOPPER_DISABLE", "true")
 
     if (currentWrapperVersion.lowercase(Locale.getDefault()).contains("turnip")
         && GPUInformation.isAdreno710_720_732(context)) {
