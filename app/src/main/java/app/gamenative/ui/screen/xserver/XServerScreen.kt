@@ -101,6 +101,7 @@ import app.gamenative.data.SteamApp
 import app.gamenative.display.GameNativeDrm
 import app.gamenative.display.GamescopeCommandQueue
 import app.gamenative.display.GamescopeServerComponent
+import app.gamenative.display.GamescopeSettings
 import app.gamenative.events.AndroidEvent
 import app.gamenative.events.SteamEvent
 import app.gamenative.ui.enums.Orientation
