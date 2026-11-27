@@ -4779,7 +4779,9 @@ private fun getWineStartCommand(
             guestProgramLauncherComponent.workingDir = File(executableDir)
             Timber.i("Bionic-Steam working directory is $executableDir")
             val gameFolderName = appDirPath.substringAfterLast('/').ifEmpty { gameId.toString() }
-            "\"C:\\\\Program Files (x86)\\\\Steam\\\\steamapps\\\\common\\\\$gameFolderName\\\\$normalizedExe\""
+            val launchArgs = SteamUtils.launchConfigArguments(appLaunchInfo, exePath)
+            "\"C:\\\\Program Files (x86)\\\\Steam\\\\steamapps\\\\common\\\\$gameFolderName\\\\$normalizedExe\"" +
+                (if (launchArgs.isNotEmpty()) " $launchArgs" else "")
         } else if (container.isLaunchRealSteam && !container.isLaunchHeadlessSteam) {
             // Valve GUI client boots and starts the game itself
             "\"C:\\\\Program Files (x86)\\\\Steam\\\\steam.exe\" -silent -vgui -tcp " +
@@ -4791,7 +4793,7 @@ private fun getWineStartCommand(
             // and keeps the config's arguments only when it is the same executable.
             val launchExe = appLaunchInfo?.executable?.trim('/').orEmpty()
             val exePath = container.executablePath.ifEmpty { launchExe.ifEmpty { SteamService.getInstalledExe(gameId) } }
-            val launchArgs = if (appLaunchInfo != null && exePath.replace('\\', '/').trim('/').equals(launchExe, ignoreCase = true)) appLaunchInfo.arguments.trim() else ""
+            val launchArgs = SteamUtils.launchConfigArguments(appLaunchInfo, exePath)
             val normalizedExe = exePath.replace('/', '\\').trimStart('\\')
             val gameFolderName = appDirPath.substringAfterLast('/').ifEmpty { gameId.toString() }
             val steamRoot = "C:\\Program Files (x86)\\Steam"
