@@ -83,6 +83,12 @@ public class GamescopeServerComponent extends EnvironmentComponent {
         stopped = true;
         GamescopeCommandQueue.reset();
         GameNativeDrm.nativeInjectorStop();
+        // The session's daemon goes with it. exit() stops it too, but an environment can also be shut down
+        // without exit() (Android ending the session while the app was in the background), and a daemon left
+        // running is retargeted by the next session's window instead of being restarted: that session's
+        // gamescope then found no KMS device ("'(null)' is not a KMS device", "failed to find Vulkan format
+        // suitable for KMS") and quit before the game started. nativeStop is a no-op when nothing runs.
+        GameNativeDrm.nativeStop();
     }
 
     public void pause() {
