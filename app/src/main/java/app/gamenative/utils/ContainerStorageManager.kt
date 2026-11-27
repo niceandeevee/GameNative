@@ -307,6 +307,31 @@ object ContainerStorageManager {
         Result.success(Unit)
     }
 
+    /**
+     * A container left behind by a game that is no longer installed: its game files are gone, its game
+     * can't be resolved, or its config can't be read (a delete that stopped partway). A game that is
+     * downloading right now is never a leftover, even before its folder appears.
+     */
+    fun isLeftover(entry: Entry): Boolean {
+        if (!entry.hasContainer) return false
+        if (entry.status != Status.GAME_FILES_MISSING &&
+            entry.status != Status.ORPHANED &&
+            entry.status != Status.UNREADABLE
+        ) {
+            return false
+        }
+        val normalized = normalizeContainerId(entry.containerId)
+        if (detectGameSource(normalized) == GameSource.STEAM) {
+            val gameId = extractGameId(normalized)
+            if (gameId != null &&
+                (SteamService.getAppDownloadInfo(gameId) != null || SteamService.getDownloadingAppInfoOf(gameId) != null)
+            ) {
+                return false
+            }
+        }
+        return true
+    }
+
     suspend fun removeContainer(context: Context, containerId: String): Boolean = withContext(Dispatchers.IO) {
         val homeDir = File(ImageFs.find(context).rootDir, "home")
         val containerDir = File(homeDir, "${ImageFs.USER}-$containerId")
