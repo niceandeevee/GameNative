@@ -1,5 +1,7 @@
 package app.gamenative.utils
 
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import android.content.Context
 import app.gamenative.R
 import app.gamenative.data.GameSource
@@ -37,6 +39,8 @@ class LaunchDependencies {
         setLoadingMessage: (String) -> Unit,
         setLoadingProgress: (Float) -> Unit,
     ) {
+        // An on-device code cache compile from the last session must not compete with this launch.
+        withContext(Dispatchers.IO) { FexCodeCaches.stopForLaunch("a launch was requested") }
         val callbacks = LaunchDependencyCallbacks(setLoadingMessage, setLoadingProgress)
         try {
             for (dep in getLaunchDependencies(container, gameSource, gameId)) {

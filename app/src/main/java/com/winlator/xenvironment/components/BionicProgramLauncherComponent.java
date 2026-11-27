@@ -16,6 +16,8 @@ import com.winlator.PrefManager;
 import app.gamenative.PluviaApp;
 import app.gamenative.display.GameNativeDrm;
 import app.gamenative.display.GamescopeSettings;
+import app.gamenative.utils.FexCodeCaches;
+import app.gamenative.utils.FexCodeMaps;
 import app.gamenative.utils.LsfgQuickMenuHelper;
 import app.gamenative.utils.LsfgVkManager;
 import com.winlator.box86_64.Box86_64Preset;
@@ -115,12 +117,14 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
     @Override
     public void start() {
         synchronized (lock) {
+            FexCodeCaches.onGuestStarting(environment.getContext(), contentsManager, this, true);
             stop();
             if (wineInfo.isArm64EC())
                 extractEmulatorsDlls();
             else
                 extractBox64Files();
             if (preUnpack != null) preUnpack.run();
+            FexCodeCaches.onGuestReady(this);
             pid = execGuestProgram();
             Log.d("BionicProgramLauncherComponent", "Process " + pid + " started");
             if (pid != -1 && onGuestStarted != null) onGuestStarted.run();
@@ -194,6 +198,7 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
     }
 
     public void setFEXCorePreset (String fexcorePreset) { this.fexcorePreset = fexcorePreset; }
+    public String getFexCorePreset() { return this.fexcorePreset; }
 
     public File getWorkingDir() {
         return workingDir;
@@ -398,6 +403,19 @@ public class BionicProgramLauncherComponent extends GuestProgramLauncherComponen
         // Merge any additional environment variables from external sources
         if (this.envVars != null) {
             envVars.putAll(this.envVars);
+        }
+
+        // Code-map capture (the input for the on-device code caches) is decided here, after every preset and
+        // container variable has been merged, so nothing can override the gate.
+        envVars.remove("FEX_ENABLECODECACHINGWIP");
+        fexConfig.remove("FEX_ENABLECODECACHINGWIP");
+        envVars.remove("FEX_CODEMAPINDIRECTBRANCHES");
+        fexConfig.remove("FEX_CODEMAPINDIRECTBRANCHES");
+        if (container != null && FexCodeMaps.captureEnabled(context, contentsManager, container)) {
+            (fexContainerConfig ? fexConfig : envVars).put("FEX_ENABLECODECACHINGWIP", "1");
+            if (FexCodeMaps.indirectBranchesEnabled()) {
+                (fexContainerConfig ? fexConfig : envVars).put("FEX_CODEMAPINDIRECTBRANCHES", "1");
+            }
         }
 
         // Through Config.json so the per-app files of the Steam client and launcher helpers override these options.

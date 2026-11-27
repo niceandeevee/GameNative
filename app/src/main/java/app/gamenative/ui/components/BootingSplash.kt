@@ -38,6 +38,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.ui.text.font.FontFamily
 import app.gamenative.PrefManager
+import app.gamenative.utils.LaunchSkip
+import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -91,6 +93,9 @@ fun BootingSplash(
     heroImageUrl: String = "",
     onAbort: (() -> Unit)? = null,
 ) {
+    // A launch step that may take long and isn't needed to start the game (the FEX code cache build) offers a Skip.
+    val skipAction = LaunchSkip.action.collectAsState().value
+
     // Tips rotation (no animation cost, safe outside visibility check)
     val context = LocalContext.current
     val tips = remember(context) {
@@ -325,6 +330,13 @@ fun BootingSplash(
                     },
                     textAlign = TextAlign.Center,
                 )
+
+                if (skipAction != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedButton(onClick = skipAction) {
+                        Text(text = stringResource(R.string.launch_skip), color = Color.White)
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(15.dp))
                 Spacer(modifier = Modifier.weight(0.3f))

@@ -928,6 +928,10 @@
     <string name="settings_performance_title">Performance</string>
     <string name="settings_performance_power_control_title">Power Control</string>
     <string name="settings_performance_power_control_subtitle">Enable in-game power control by default (enabled on tested devices: AYN Odin 3, Retroid Pocket 6/Nova)</string>
+    <string name="settings_performance_fex_code_cache_title">FEX code caches</string>
+    <string name="settings_performance_fex_code_cache_subtitle">Compile the game code FEX translated into caches on this device after you play, so later launches load faster and stutter less. Needs FEXCore 2611-gn-6 or newer. Nothing is uploaded.</string>
+    <string name="fex_code_cache_building">Building FEX code caches (%1$d of %2$d)</string>
+    <string name="launch_skip">Skip</string>
 
     <!-- Settings: Emulation Group -->
     <string name="settings_emulation_title">Emulation</string>

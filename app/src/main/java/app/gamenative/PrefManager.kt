@@ -1422,6 +1422,14 @@ object PrefManager {
         get() = getPref(WARN_BEFORE_EXIT, false)
         set(value) { setPref(WARN_BEFORE_EXIT, value) }
 
+    // FEX code caches: record which guest code a session ran and compile it into caches on the device
+    // after the session, so later launches load translated code instead of translating it again
+    // (FexCodeMaps, FexCodeCaches). Needs a FEXCore pack with the offline compiler (gn-6 and later).
+    private val FEX_CODE_CACHE_ENABLED = booleanPreferencesKey("fex_code_cache_local_enabled")
+    var fexCodeCacheEnabled: Boolean
+        get() = getPref(FEX_CODE_CACHE_ENABLED, true)
+        set(value) { setPref(FEX_CODE_CACHE_ENABLED, value) }
+
     private val NEXUS_LAST_PLACEMENT_JSON = stringPreferencesKey("nexus_last_placement_json")
     var nexusLastPlacementJson: String
         get() = getPref(NEXUS_LAST_PLACEMENT_JSON, "{}")
