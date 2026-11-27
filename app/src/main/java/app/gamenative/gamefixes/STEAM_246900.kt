@@ -1,6 +1,7 @@
 package app.gamenative.gamefixes
 
 import app.gamenative.data.GameSource
+import com.winlator.container.Container
 
 /**
  * Viscera Cleanup Detail (Steam)
@@ -19,11 +20,18 @@ import app.gamenative.data.GameSource
  *   64-bit UI process (gameoverlayui64.exe) started, Steam's error reporter followed a second later, and a game
  *   thread then sat on the process heap's lock, held by no thread ("heap.cs ... blocked by 0000"), until
  *   the game died. The overlay can't be opened from a touch screen anyway.
+ * - X11 display server, as for the other 32-bit Direct3D games (Black Ops, STEAM_42700). Under the gamescope
+ *   session a 32-bit game's Vulkan skips the wrapper ICD, so its memory mappings land above 4 GB, out of
+ *   the process's reach. A gamescope launch showed RKSetup's window but never UDK.exe's: UDK.exe stopped
+ *   after its first Vulkan probe (DXGI adapter query) and went 6 s without loading anything, where an X11
+ *   launch moves on to its device in under a second and maps its window about 4.5 s after starting.
+ *   Set once per container, so a later choice of gamescope in the container settings is kept.
  */
 val STEAM_Fix_246900: KeyedGameFix = KeyedCompositeGameFix(
     gameSource = GameSource.STEAM,
     gameId = "246900",
     fixes = listOf(
+        ContainerSettingDefaultFix.displayServer(Container.DISPLAY_SERVER_X11),
         WineAppDefaultsFix("UDK.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
         WineAppDefaultsFix("RUSTClientProcess.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
         WineEnvVarFix(
