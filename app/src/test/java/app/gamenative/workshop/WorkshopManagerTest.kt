@@ -26,9 +26,6 @@ class WorkshopManagerTest {
     // configureModSymlinks reads PrefManager.launchBionicSteam for its default argument
     private lateinit var prefs: PrefManagerTestScope
 
-    // configureModSymlinks reads PrefManager.launchBionicSteam as a default argument.
-    private lateinit var prefs: PrefManagerTestScope
-
     @Before
     fun setUp() {
         prefs = installFakePrefManager(FakeDataStore())
