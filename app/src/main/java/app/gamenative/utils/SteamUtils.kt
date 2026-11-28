@@ -725,6 +725,12 @@ object SteamUtils {
                         appendLine("\t\t{")
                         appendLine("\t\t\t\"manifest\"\t\t\"${manifest?.gid ?: "0"}\"")
                         appendLine("\t\t\t\"size\"\t\t\"${manifest?.size ?: 0}\"")
+                        // Steam marks a DLC installed from its depots' dlcappid here, as its own manifests
+                        // do; without it the client reports owned, downloaded DLC as not installed
+                        // (BIsDlcInstalled false), so games hide its content (BO2 multiplayer map packs).
+                        if (depotInfo.dlcAppId != SteamService.INVALID_APP_ID) {
+                            appendLine("\t\t\t\"dlcappid\"\t\t\"${depotInfo.dlcAppId}\"")
+                        }
                         appendLine("\t\t}")
                     }
                     appendLine("\t}")
