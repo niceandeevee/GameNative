@@ -49,6 +49,7 @@ import app.gamenative.R
 import app.gamenative.data.DepotInfo
 import app.gamenative.data.ManifestInfo
 import app.gamenative.service.SteamService
+import app.gamenative.utils.DepotManifestFiles
 import app.gamenative.service.SteamService.Companion.INVALID_APP_ID
 import app.gamenative.ui.component.LoadingScreen
 import app.gamenative.ui.component.topbar.BackButton
@@ -107,10 +108,6 @@ fun GameManagerDialog(
         SteamService.getDownloadableDlcAppsOf(gameId).orEmpty().map { it.id }
     }
 
-    val mainAppDlcIdsWithoutProperDepotDlcIds = remember(gameId) {
-        SteamService.getMainAppDlcIdsWithoutProperDepotDlcIds(gameId).toList()
-    }
-
     LaunchedEffect(visible) {
         // Keep the scroll off the critical path: on D-pad devices (Android TV) the focus
         // system scrolls the dialog as it opens, cancelling this animation and killing the
@@ -129,6 +126,22 @@ fun GameManagerDialog(
             .filter { it.value.optionalDlcId == it.value.dlcAppId }
             .map { it.value.dlcAppId }
 
+        // Depots this game's folder records as installed. A DLC's own app dir can resolve to the same
+        // shared folder (Black Ops II's three apps share one), so its download marker says nothing about
+        // whether THIS game's depots for it are installed: judge a DLC by its depots instead.
+        val recordedDepots = withContext(Dispatchers.IO) {
+            runCatching { DepotManifestFiles.installedManifests(SteamService.getAppDirPath(gameId)).keys }
+                .getOrDefault(emptySet())
+        }
+        fun dlcInstalled(dlcAppId: Int): Boolean {
+            if (recordedDepots.isEmpty()) {
+                // Installs from before the per-depot record: fall back to the old markers.
+                return SteamService.isAppInstalled(dlcAppId) || installedDlcIds.contains(dlcAppId)
+            }
+            val dlcDepotIds = downloadableDepots.values.filter { it.dlcAppId == dlcAppId }.map { it.depotId }
+            return dlcDepotIds.isNotEmpty() && recordedDepots.containsAll(dlcDepotIds)
+        }
+
         // Add DLCs
         downloadableDepots
             .toSortedMap()
@@ -140,13 +153,12 @@ fun GameManagerDialog(
                 .toMap()
             .forEach { (_, depotInfo) ->
                 allDownloadableApps.add(Pair(depotInfo.dlcAppId, depotInfo))
-                val installed = SteamService.isAppInstalled(depotInfo.dlcAppId)
+                val installed = dlcInstalled(depotInfo.dlcAppId)
                 selectedAppIds[depotInfo.dlcAppId] =
-                        installed || // For installed Base Game and Indirect DLC App
-                        installedDlcIds.contains(depotInfo.dlcAppId) || // For installed DLC from Main Depot
+                        installed ||
                         ( !indirectDlcAppIds.contains(depotInfo.dlcAppId) && !optionalDlcIds.contains(depotInfo.dlcAppId) ) // Not in indirect DLC and not in optional DLC ids
 
-                enabledAppIds[depotInfo.dlcAppId] = !installedDlcIds.contains(depotInfo.dlcAppId) && !installed
+                enabledAppIds[depotInfo.dlcAppId] = !installed
             }
 
         allDownloadableApps.sortBy { it.first }
@@ -291,9 +303,8 @@ fun GameManagerDialog(
         }
 
         if (isBaseGameInstalled) {
-            val installed = installedDlcIds.toSet() - mainAppDlcIdsWithoutProperDepotDlcIds.toSet()
-            val realSelectedAppIds = selectedAppIds.filter { it.value }.keys - installed
-            return (realSelectedAppIds.size - 1) > 0 // -1 for main app
+            // Something not yet installed is selected: installed DLC rows are disabled.
+            return selectedAppIds.any { (id, selected) -> selected && id != gameId && enabledAppIds[id] == true }
         }
 
         return selectedAppIds.filter { it.value }.isNotEmpty()
