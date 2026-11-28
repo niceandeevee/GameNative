@@ -22,6 +22,12 @@
  * And the game's .iwd archives get a self-checking read-ahead cache (iwdcache.c, iwdhooks.c): Black
  * Ops reads them in 512-byte pieces with a seek before each, ~270,000 calls at startup.
  *
+ * ShowCursor is answered locally while it would not change whether the cursor is visible: Black Ops
+ * calls ShowCursor(FALSE) and ShowCursor(TRUE) in pairs, ~50 times per frame across two threads
+ * (BO2 ~200 a second), and each call is a wineserver round trip. The count is tracked per thread
+ * (as Wine keeps it); the real call is made, as many times as needed to catch the server up, only
+ * when the count crosses between hidden (< 0) and shown (>= 0).
+ *
  * Finally, a clean exit after quitting: under Wine, Black Ops crashes at the very end of its own
  * shutdown. It has already shut Steam down and unloaded every fastfile ("PMem_Free( ..., High )" is
  * the last console line, cut off mid-word), and then its crash handler opens a "Fatal Error" console
@@ -147,6 +153,67 @@ static void drop_debug_prints_when_logging_off(void)
         HMODULE module = GetModuleHandleA(modules[m]);
         if (!module) continue;
         for (int i = 0; i < 2; i++) make_return((void *)GetProcAddress(module, names[i]));
+    }
+}
+
+/* --- ShowCursor answered locally ----------------------------------------------------------------- */
+
+static int(WINAPI *real_show_cursor)(BOOL show);
+static DWORD show_cursor_tls = TLS_OUT_OF_INDEXES;
+
+/* Per thread, packed into the TLS slot: bit 0 = valid, bits 1-15 = the server's count + 16384,
+ * bits 16-31 = the count the game sees + 32768. */
+static int WINAPI cached_show_cursor(BOOL show)
+{
+    uintptr_t v = (uintptr_t)TlsGetValue(show_cursor_tls);
+    if (!(v & 1)) {
+        int r = real_show_cursor(show);
+        if (r > -16384 && r < 16384)
+            TlsSetValue(show_cursor_tls, (void *)(1 | ((uintptr_t)(r + 16384) << 1) | ((uintptr_t)(r + 32768) << 16)));
+        return r;
+    }
+    int server = (int)((v >> 1) & 0x7FFF) - 16384;
+    int local = (int)((v >> 16) & 0xFFFF) - 32768 + (show ? 1 : -1);
+    if (local <= -16384 || local >= 16384) { /* out of range for the packing: hand back to Wine */
+        TlsSetValue(show_cursor_tls, NULL);
+        while (server != local) server = real_show_cursor(local > server);
+        return server;
+    }
+    if ((local >= 0) != (server >= 0)) {
+        /* Visibility changes: bring the server to the same count. */
+        while (server != local) {
+            int r = real_show_cursor(local > server);
+            if (r == server) break; /* no progress: don't spin */
+            server = r;
+        }
+        local = server;
+    }
+    TlsSetValue(show_cursor_tls, (void *)(1 | ((uintptr_t)(server + 16384) << 1) | ((uintptr_t)(local + 32768) << 16)));
+    return local;
+}
+
+/* user32's ShowCursor is a thunk through user32's import of win32u!NtUserShowCursor, so redirecting
+ * that import covers every caller, however the game resolved ShowCursor. */
+static void cache_show_cursor(void)
+{
+    HMODULE user32 = GetModuleHandleA("user32.dll");
+    HMODULE win32u = GetModuleHandleA("win32u.dll");
+    if (!user32 || !win32u) return;
+    void *target = (void *)GetProcAddress(win32u, "NtUserShowCursor");
+    if (!target) return;
+    unsigned char *base = (unsigned char *)user32;
+    IMAGE_NT_HEADERS *nt = (IMAGE_NT_HEADERS *)(base + ((IMAGE_DOS_HEADER *)base)->e_lfanew);
+    IMAGE_DATA_DIRECTORY dir = nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+    if (!dir.VirtualAddress) return;
+    show_cursor_tls = TlsAlloc();
+    if (show_cursor_tls == TLS_OUT_OF_INDEXES) return;
+    for (IMAGE_IMPORT_DESCRIPTOR *d = (IMAGE_IMPORT_DESCRIPTOR *)(base + dir.VirtualAddress); d->Name; d++) {
+        if (lstrcmpiA((const char *)(base + d->Name), "win32u.dll") != 0) continue;
+        for (void **slot = (void **)(base + d->FirstThunk); *slot; slot++) {
+            if (*slot != target) continue;
+            patch_slot(slot, (void *)cached_show_cursor, (void **)&real_show_cursor);
+            return;
+        }
     }
 }
 
@@ -337,6 +404,7 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, void *reserved)
          * exists and none can be inside the functions while their first bytes are rewritten. */
         drop_debug_prints_when_logging_off();
         install_iwd_cache();
+        cache_show_cursor();
         probe_modules[0] = range_of("kernelbase.dll");
         probe_modules[1] = range_of("kernel32.dll");
         ntdll_range = range_of("ntdll.dll");
