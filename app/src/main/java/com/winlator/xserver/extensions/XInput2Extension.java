@@ -438,6 +438,15 @@ public class XInput2Extension implements Extension {
         selections.removeIf(sel -> sel.client == client);
     }
 
+    /** Whether [client] has selected XI raw motion for the master pointer. */
+    public boolean isRawMotionSelectedBy(XClient client) {
+        for (Selection sel : selections) {
+            if (sel.client == client && matchesSelection(sel, MASTER_POINTER_ID) && sel.mask.isSet(XI_RawMotion_MASK))
+                return true;
+        }
+        return false;
+    }
+
     public void emitRawMotion(int deviceId, double deltaX, double deltaY) {
         for (Selection sel : selections) {
             if (!matchesSelection(sel, deviceId)) continue;

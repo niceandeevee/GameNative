@@ -45,6 +45,10 @@ public class GrabManager implements WindowManager.OnWindowModificationListener {
         return eventListener != null ? eventListener.client : null;
     }
 
+    public Window getConfineToWindow() {
+        return confineToWindow;
+    }
+
     public Rect getConfinementBounds() {
         if (confineToWindow == null) return null;
         return confineToWindow.getAbsoluteBounds();
