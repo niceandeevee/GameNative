@@ -20,6 +20,12 @@ import com.winlator.container.Container
  *   2.7 GB allocation a 32-bit process can't satisfy, and Wine's WMA path deadlocks or silences audio.
  * - No 3D for WineD3D in t6zm.exe and no Steam overlay in it (overlay injection hooks every
  *   graphics API with throwaway devices and its UI process crashes).
+ * - The Black Ops helper DLL (steamcache, a pass-through xinput1_3.dll next to the exe, loaded native
+ *   for t6zm.exe; see STEAM_42700): quitting crashed at the end of the game's own shutdown, after it had
+ *   unloaded steam.dll, and the game's crash handler then put up an error box to close. Once the game
+ *   has shut Steam down, a crash ends it quietly instead; a crash while Steam is up is only logged
+ *   (module, offset, thread). It also answers ISteamUser::BLoggedOn/GetSteamID from memory and drops
+ *   debug prints while Wine logging is off. XInput itself is forwarded to Wine's builtins.
  *
  * Unlike Black Ops the game has controller support, so the virtual gamepad and the controller
  * profile are left at their defaults.
@@ -37,6 +43,7 @@ val STEAM_Fix_212910: KeyedGameFix = KeyedCompositeGameFix(
         ContainerSettingDefaultFix.winComponent("directsound", "0"),
         ContainerSettingDefaultFix.winComponent("xaudio", "1"),
         WineAppDefaultsFix("t6zm.exe", "Direct3D", mapOf("renderer" to "no3d")),
-        WineAppDefaultsFix("t6zm.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "")),
+        WineAppDefaultsFix("t6zm.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "", "xinput1_3" to "native,builtin")),
+        GameDirAssetFix("gamefixes/steamcache/xinput1_3.dll", "xinput1_3.dll"),
     ),
 )
