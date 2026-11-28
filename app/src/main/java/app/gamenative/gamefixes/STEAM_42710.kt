@@ -61,6 +61,13 @@ import com.winlator.container.Container
  *   32-bit game, hooks every graphics API by creating throwaway devices (the likely source of the
  *   DirectDraw/GL contexts above), and its UI process (gameoverlayui64) crashed on every run.
  *   It can't be opened from a touch screen anyway.
+ * - Wine's fullscreen cursor grab (AppDefaults X11 Driver GrabFullscreen=Y): the game aims by reading
+ *   the cursor and warping it back to the window centre every frame, from a different thread than
+ *   the one that receives X pointer motion. Absolute X positions then race the warps (logs: warp
+ *   683 -> motion 704 -> 683), so stick aiming jumped as steps were counted twice or lost. Wine only
+ *   clips a fullscreen window inside its virtual desktop with this option; while clipped it moves
+ *   the cursor from XI raw motion, relative to where the game last put it, and the X server sends no
+ *   core motion during that grab (XServer.injectPointerMoveDelta).
  */
 val STEAM_Fix_42710: KeyedGameFix = KeyedCompositeGameFix(
     gameSource = GameSource.STEAM,
@@ -78,6 +85,7 @@ val STEAM_Fix_42710: KeyedGameFix = KeyedCompositeGameFix(
         ContainerSettingDefaultFix.winComponent("directsound", "0"),
         ContainerSettingDefaultFix.winComponent("xaudio", "1"),
         WineAppDefaultsFix("BlackOpsMP.exe", "Direct3D", mapOf("renderer" to "no3d")),
+        WineAppDefaultsFix("BlackOpsMP.exe", "X11 Driver", mapOf("GrabFullscreen" to "Y")),
         WineAppDefaultsFix("BlackOpsMP.exe", "DllOverrides", mapOf("gameoverlayrenderer" to "", "xinput1_3" to "native,builtin")),
         GameDirAssetFix("gamefixes/steamcache/xinput1_3.dll", "xinput1_3.dll"),
         ControlProfileDefaultFix("Call of Duty (Console Layout)"),

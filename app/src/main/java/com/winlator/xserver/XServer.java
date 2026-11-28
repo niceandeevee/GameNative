@@ -278,6 +278,20 @@ public class XServer {
             if (xi != null)
                 xi.emitRawMotion(2, dx, dy);
 
+            if (isWineClipGrabLocked(xi)) {
+                // Wine is clipping the cursor (ClipCursor or its fullscreen grab) and moves it from XI
+                // raw motion, relative to wherever the game last put it. A core MotionNotify would
+                // also set the Win32 cursor to the X pointer's absolute position, which lags the
+                // game's own SetCursorPos recentring and undoes or doubles the raw steps. Track the
+                // position without the core event; raw motion alone carries the movement.
+                dx += pendingWarpDx;
+                dy += pendingWarpDy;
+                pendingWarpDx = 0;
+                pendingWarpDy = 0;
+                movePointerSilentlyLocked(dx, dy);
+                return;
+            }
+
             long now = System.nanoTime();
             if (lastWarpNanos != 0 && now - lastWarpNanos < WARP_SYNC_WINDOW_NANOS) {
                 // The client is recentring the pointer every frame (mouselook). Moving the pointer now
@@ -302,6 +316,13 @@ public class XServer {
      * reaches the client exactly once, after the client's own recentring.
      */
     public void onClientWarpPointer(int x, int y) {
+        if (isWineClipGrabLocked(getExtension(XInput2Extension.MAJOR_OPCODE))) {
+            // Wine set the Win32 cursor itself before warping (SetCursorPos); a MotionNotify for the
+            // warp would reach it late and reset raw steps made since then.
+            pointer.setX(x);
+            pointer.setY(y);
+            return;
+        }
         lastWarpNanos = System.nanoTime();
         if (pendingWarpDx == 0 && pendingWarpDy == 0) {
             pointer.setPosition(x, y);
@@ -313,6 +334,32 @@ public class XServer {
         pointer.setX(x);
         pointer.setY(y);
         movePointerByLocked(dx, dy);
+    }
+
+    /**
+     * Whether the pointer is grabbed the way winex11 clips the cursor: a grab confined to its own
+     * window by a client that listens to XI raw motion, which it then uses as the mouse input.
+     */
+    private boolean isWineClipGrabLocked(XInput2Extension xi) {
+        if (xi == null) return false;
+        Window grabWindow = grabManager.getWindow();
+        if (grabWindow == null || grabManager.getConfineToWindow() != grabWindow) return false;
+        XClient client = grabManager.getClient();
+        return client != null && xi.isRawMotionSelectedBy(client);
+    }
+
+    private void movePointerSilentlyLocked(int dx, int dy) {
+        ScreenInfo screen = getEffectiveScreenInfo();
+        int minX = 0, minY = 0, maxX = screen.width - 1, maxY = screen.height - 1;
+        Rect confinement = grabManager.getConfinementBounds();
+        if (confinement != null) {
+            minX = Math.max(minX, confinement.left);
+            minY = Math.max(minY, confinement.top);
+            maxX = Math.min(maxX, confinement.right - 1);
+            maxY = Math.min(maxY, confinement.bottom - 1);
+        }
+        pointer.setX((short) Mathf.clamp(pointer.getX() + dx, minX, maxX));
+        pointer.setY((short) Mathf.clamp(pointer.getY() + dy, minY, maxY));
     }
 
     private void movePointerByLocked(int dx, int dy) {
