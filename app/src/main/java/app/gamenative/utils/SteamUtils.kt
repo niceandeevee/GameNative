@@ -678,6 +678,17 @@ object SteamUtils {
                 }
             }
 
+            // Which depots go into the record, and which owned depots are left out for want of an installed
+            // manifest: a DLC whose depots are left out is reported to the game as not installed.
+            val dlcDepots = downloadableDepots.filter { it.value.dlcAppId != SteamService.INVALID_APP_ID }
+            Timber.i(
+                "ACF for $steamAppId: ${regularDepots.size}/${downloadableDepots.size} depots installed " +
+                    "(${regularDepots.keys.sorted().joinToString()}); DLC depots: " +
+                    dlcDepots.entries.sortedBy { it.key }.joinToString { (id, d) ->
+                        "$id->dlc ${d.dlcAppId}${if (id in regularDepots) "" else " (no installed manifest)"}"
+                    },
+            )
+
             // Find the main content depot (owner) - typically the one with the lowest ID that has content
             val mainDepotId = regularDepots.keys.minOrNull()
 
