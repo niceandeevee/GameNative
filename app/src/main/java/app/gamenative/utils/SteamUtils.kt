@@ -678,6 +678,17 @@ object SteamUtils {
                 }
             }
 
+            // Which depots go into the record, and which owned depots are left out for want of an installed
+            // manifest: a DLC whose depots are left out is reported to the game as not installed.
+            val dlcDepots = downloadableDepots.filter { it.value.dlcAppId != SteamService.INVALID_APP_ID }
+            Timber.i(
+                "ACF for $steamAppId: ${regularDepots.size}/${downloadableDepots.size} depots installed " +
+                    "(${regularDepots.keys.sorted().joinToString()}); DLC depots: " +
+                    dlcDepots.entries.sortedBy { it.key }.joinToString { (id, d) ->
+                        "$id->dlc ${d.dlcAppId}${if (id in regularDepots) "" else " (no installed manifest)"}"
+                    },
+            )
+
             // Find the main content depot (owner) - typically the one with the lowest ID that has content
             val mainDepotId = regularDepots.keys.minOrNull()
 
@@ -725,6 +736,12 @@ object SteamUtils {
                         appendLine("\t\t{")
                         appendLine("\t\t\t\"manifest\"\t\t\"${manifest?.gid ?: "0"}\"")
                         appendLine("\t\t\t\"size\"\t\t\"${manifest?.size ?: 0}\"")
+                        // Steam marks a DLC installed from its depots' dlcappid here, as its own manifests
+                        // do; without it the client reports owned, downloaded DLC as not installed
+                        // (BIsDlcInstalled false), so games hide its content (BO2 multiplayer map packs).
+                        if (depotInfo.dlcAppId != SteamService.INVALID_APP_ID) {
+                            appendLine("\t\t\t\"dlcappid\"\t\t\"${depotInfo.dlcAppId}\"")
+                        }
                         appendLine("\t\t}")
                     }
                     appendLine("\t}")
