@@ -131,12 +131,13 @@ object FexCodeCaches {
             // A prerequisite installer can run with other FEX settings; only the game's own start may judge the caches.
             if (!gameStart) return
             val state = readState(container)
+            val droppedHelpers = dropHelperImages(container, state)
             val changed = if (PrefManager.fexCodeCacheEnabled) {
                 invalidateIfBuildChanged(container, state, buildId(context, container, launcher))
             } else {
                 deleteCachesWhileOff(container, state)
             }
-            if (changed) writeState(container, state)
+            if (changed || droppedHelpers) writeState(container, state)
             if (PrefManager.fexCodeCacheEnabled) captureLauncher = launcher
         } catch (e: Exception) {
             Timber.tag(TAG).w(e, "Code cache check before launch failed")
@@ -429,6 +430,7 @@ object FexCodeCaches {
                         builtins++
                         continue
                     }
+                    if (isGameNativeHelper(path)) continue
                     val image = images.getOrPut(fileId) { SessionImage(record, path, info.bitness) }
                     for (i in 0 until offsets.size) image.offsets.add(offsets.values[i])
                 }
@@ -470,6 +472,40 @@ object FexCodeCaches {
 
     // Wine substitutes its own builtins for these at load time, so a cache compiled from the file is invalid.
     private fun isWineBuiltin(path: String): Boolean = path.lowercase(Locale.ROOT).contains(":\\windows\\")
+
+    /**
+     * The helper DLLs game fixes place next to a game (GameDirAssetFix: steamcache's xinput1_3.dll,
+     * gamecache's powrprof.dll). They are never cached: a launch of Black Ops II Zombies that loaded
+     * the first cache compiled for steamcache's xinput1_3.dll overflowed the stack while the game's
+     * DLLs initialised (wow64 "stack overflow" right after binkw32/d3d11/imm32 loaded) and never
+     * opened a window, on two launches in a row; the session before, without that cache, ran. The
+     * DLLs are small and patch other modules' code at load, so a cache buys nothing for them.
+     */
+    private val GAMENATIVE_HELPER_DLLS = setOf("xinput1_3.dll", "powrprof.dll")
+
+    private fun isGameNativeHelper(path: String): Boolean =
+        !isWineBuiltin(path) && imageName(path).lowercase(Locale.ROOT) in GAMENATIVE_HELPER_DLLS
+
+    /** Deletes the maps and caches of GameNative's helper DLLs left from earlier builds. Returns whether [state] changed. */
+    private fun dropHelperImages(container: Container, state: JSONObject): Boolean {
+        var changed = false
+        val entries = imagesOf(state)
+        for (key in entries.keys().asSequence().toList()) {
+            val entry = entries.getJSONObject(key)
+            if (!isGameNativeHelper(entry.optString("path"))) continue
+            File(mapsDir(container), "$key.bin").delete()
+            entry.optString("cacheName").takeIf { it.isNotEmpty() }?.let { File(cacheDir(container), it).delete() }
+            entries.remove(key)
+            changed = true
+            Timber.tag(TAG).i("Dropped ${entry.optString("name")} ($key): GameNative helper DLLs are not cached")
+        }
+        cacheDir(container).listFiles().orEmpty().filter { f ->
+            GAMENATIVE_HELPER_DLLS.any { f.name.lowercase(Locale.ROOT).startsWith("$it-") }
+        }.forEach { f ->
+            if (f.delete()) Timber.tag(TAG).i("Deleted code cache ${f.name}: GameNative helper DLLs are not cached")
+        }
+        return changed
+    }
 
     private fun imageName(path: String): String = path.substringAfterLast('\\').substringAfterLast('/')
 
